@@ -12,6 +12,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import JobCard from "@/components/JobCard";
+import JobSearchFilters from "@/components/JobSearchFilters";
+import type { JobSearchFilters as JobSearchFiltersType } from "@/components/JobSearchFilters";
 import { 
   Search, 
   Filter, 
@@ -28,22 +30,13 @@ import {
   TrendingUp
 } from "lucide-react";
 
-interface JobSearchFilters {
-  location?: string;
-  jobType?: string;
-  experienceLevel?: string;
-  salaryMin?: number;
-  salaryMax?: number;
-  skills?: string[];
-}
-
 export default function JobSearch() {
   const { user, isLoading, isAuthenticated } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
   const [searchQuery, setSearchQuery] = useState("");
-  const [filters, setFilters] = useState<JobSearchFilters>({});
+  const [filters, setFilters] = useState<JobSearchFiltersType>({});
   const [activeTab, setActiveTab] = useState("search");
 
   // Redirect to home if not authenticated
@@ -180,6 +173,10 @@ export default function JobSearch() {
       jobType: filters.jobType,
       experienceLevel: filters.experienceLevel,
       salaryMin: filters.salaryMin,
+      salaryMax: filters.salaryMax,
+      remote: filters.remote,
+      skills: filters.skills,
+      platforms: filters.platforms,
       limit: 50
     });
   };
@@ -227,10 +224,10 @@ export default function JobSearch() {
         </div>
 
         {/* Search Interface */}
-        <Card className="mb-8">
-          <CardContent className="p-6">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-              <div className="relative">
+        <div className="mb-8">
+          <div className="mb-6">
+            <div className="flex gap-4 mb-4">
+              <div className="relative flex-1">
                 <Input
                   type="text"
                   placeholder="Job title or keywords"
@@ -240,64 +237,24 @@ export default function JobSearch() {
                 />
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               </div>
-              <div className="relative">
-                <Input
-                  type="text"
-                  placeholder="Location"
-                  value={filters.location || ""}
-                  onChange={(e) => setFilters(prev => ({ ...prev, location: e.target.value }))}
-                  className="pl-10"
-                />
-                <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-              </div>
-              <Select value={filters.experienceLevel} onValueChange={(value) => setFilters(prev => ({ ...prev, experienceLevel: value }))}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Experience Level" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="entry">Entry Level</SelectItem>
-                  <SelectItem value="mid">Mid Level</SelectItem>
-                  <SelectItem value="senior">Senior Level</SelectItem>
-                  <SelectItem value="executive">Executive</SelectItem>
-                </SelectContent>
-              </Select>
-              <div className="flex space-x-2">
-                <Button onClick={handleSearch} className="flex-1">
-                  <Search className="w-4 h-4 mr-2" />
-                  Search
-                </Button>
-                <Button 
-                  onClick={handleAISearch} 
-                  className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600"
-                  disabled={externalSearchMutation.isPending}
-                >
-                  <Zap className="w-4 h-4 mr-2" />
-                  AI Search
-                </Button>
-              </div>
+              <Button 
+                onClick={handleAISearch} 
+                className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600"
+                disabled={externalSearchMutation.isPending}
+              >
+                <Zap className="w-4 h-4 mr-2" />
+                AI Search
+              </Button>
             </div>
-            
-            {/* Filter Tags */}
-            <div className="flex flex-wrap gap-2">
-              <Badge variant="outline" className="bg-white dark:bg-gray-800">
-                <MapPin className="w-3 h-3 mr-1" />
-                Remote
-              </Badge>
-              <Badge variant="outline" className="bg-white dark:bg-gray-800">
-                <DollarSign className="w-3 h-3 mr-1" />
-                $100k+
-              </Badge>
-              <Badge variant="outline" className="bg-white dark:bg-gray-800">
-                <Building className="w-3 h-3 mr-1" />
-                Tech
-              </Badge>
-              <Badge variant="outline" className="bg-white dark:bg-gray-800">
-                <TrendingUp className="w-3 h-3 mr-1" />
-                Startup
-              </Badge>
-            </div>
-          </CardContent>
-        </Card>
+          </div>
+          
+          <JobSearchFilters 
+            filters={filters}
+            onFiltersChange={setFilters}
+            onSearch={handleSearch}
+            isLoading={jobsLoading || externalSearchMutation.isPending}
+          />
+        </div>
 
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab}>

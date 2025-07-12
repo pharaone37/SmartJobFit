@@ -18,7 +18,8 @@ import {
   Briefcase,
   X,
   Search,
-  Filter
+  Filter,
+  Globe
 } from 'lucide-react';
 
 export interface JobSearchFilters {
@@ -36,6 +37,36 @@ export interface JobSearchFilters {
   educationLevel?: string;
   platforms?: string[];
 }
+
+// Platform Logo Component
+const PlatformLogo = ({ platform }: { platform: string }) => {
+  const logoClass = "w-4 h-4 rounded-sm";
+  const platformColors: { [key: string]: string } = {
+    'LinkedIn': 'bg-blue-700',
+    'Indeed': 'bg-blue-600',
+    'Glassdoor': 'bg-green-600',
+    'ZipRecruiter': 'bg-blue-500',
+    'Monster': 'bg-purple-600',
+    'CareerBuilder': 'bg-orange-500',
+    'Dice': 'bg-red-600',
+    'AngelList': 'bg-black',
+    'Stack Overflow': 'bg-orange-600',
+    'GitHub Jobs': 'bg-gray-800',
+    'Reed (UK)': 'bg-red-500',
+    'Xing (DACH)': 'bg-green-700',
+    'Seek (Australia)': 'bg-pink-600',
+    'Naukri (India)': 'bg-blue-800',
+    'StepStone': 'bg-orange-600'
+  };
+  
+  return (
+    <div className={`${logoClass} ${platformColors[platform] || 'bg-gray-500'} flex items-center justify-center`}>
+      <span className="text-white text-xs font-bold">
+        {platform.charAt(0).toUpperCase()}
+      </span>
+    </div>
+  );
+};
 
 interface JobSearchFiltersProps {
   filters: JobSearchFilters;
@@ -380,7 +411,10 @@ export default function JobSearchFilters({
                         checked={filters.platforms?.includes(platform) || false}
                         onCheckedChange={() => handlePlatformToggle(platform)}
                       />
-                      <Label htmlFor={platform} className="text-sm">{platform}</Label>
+                      <Label htmlFor={platform} className="text-sm flex items-center gap-2">
+                        <PlatformLogo platform={platform} />
+                        {platform}
+                      </Label>
                     </div>
                   ))}
                 </div>

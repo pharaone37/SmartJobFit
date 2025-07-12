@@ -14,6 +14,36 @@ import {
   Zap
 } from "lucide-react";
 
+// Platform Logo Component
+const PlatformLogo = ({ platform }: { platform: string }) => {
+  const logoClass = "w-4 h-4 rounded-sm";
+  const platformColors: { [key: string]: string } = {
+    'LinkedIn': 'bg-blue-700',
+    'Indeed': 'bg-blue-600',
+    'Glassdoor': 'bg-green-600',
+    'ZipRecruiter': 'bg-blue-500',
+    'Monster': 'bg-purple-600',
+    'CareerBuilder': 'bg-orange-500',
+    'Dice': 'bg-red-600',
+    'AngelList': 'bg-black',
+    'Stack Overflow': 'bg-orange-600',
+    'GitHub Jobs': 'bg-gray-800',
+    'Reed (UK)': 'bg-red-500',
+    'Xing (DACH)': 'bg-green-700',
+    'Seek (Australia)': 'bg-pink-600',
+    'Naukri (India)': 'bg-blue-800',
+    'StepStone': 'bg-orange-600'
+  };
+  
+  return (
+    <div className={`${logoClass} ${platformColors[platform] || 'bg-gray-500'} flex items-center justify-center mr-1`}>
+      <span className="text-white text-xs font-bold">
+        {platform.charAt(0).toUpperCase()}
+      </span>
+    </div>
+  );
+};
+
 interface JobCardProps {
   job: {
     id: string;
@@ -129,7 +159,7 @@ export default function JobCard({
                     )}
                     {job.source && (
                       <span className="flex items-center">
-                        <ExternalLink className="w-4 h-4 mr-1" />
+                        <PlatformLogo platform={job.source} />
                         {job.source}
                       </span>
                     )}
