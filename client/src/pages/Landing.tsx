@@ -36,125 +36,90 @@ export default function Landing() {
   const features = [
     {
       icon: Search,
-      title: "Universal Job Search",
-      description: "Search across 15+ major job boards simultaneously. LinkedIn, Indeed, Glassdoor, ZipRecruiter, and more.",
+      title: t.landing.features.aiSearch.title,
+      description: t.landing.features.aiSearch.description,
       gradient: "from-purple-500 to-blue-500"
     },
     {
       icon: FileText,
-      title: "AI Resume Optimization",
-      description: "ATS-optimized resumes tailored for each job. Instant compatibility scoring and suggestions.",
+      title: t.landing.features.resumeOptimization.title,
+      description: t.landing.features.resumeOptimization.description,
       gradient: "from-blue-500 to-indigo-500"
     },
     {
       icon: Video,
-      title: "Interview Prep AI",
-      description: "Practice with AI interviewer. Voice analysis, body language feedback, and personalized coaching.",
+      title: t.landing.features.interviewPrep.title,
+      description: t.landing.features.interviewPrep.description,
       gradient: "from-indigo-500 to-purple-500"
     }
   ];
 
   const stats = [
     { label: "Faster Job Search", value: "10x", color: "text-purple-600" },
-    { label: "More Interviews", value: "5x", color: "text-blue-600" },
-    { label: "Job Matches Found", value: "1M+", color: "text-indigo-600" }
+    { label: t.landing.stats.interviews, value: "5x", color: "text-blue-600" },
+    { label: t.landing.stats.matches, value: "1M+", color: "text-indigo-600" }
   ];
 
   const interviewFeatures = [
     {
       icon: Video,
-      title: "AI Mock Interviews",
-      description: "Practice with our AI interviewer that adapts to your industry and role. Get realistic interview experience.",
-      features: ["Industry-specific questions", "Real-time feedback", "Voice & body language analysis"],
+      title: t.landing.interviewFeatures.mockInterviews.title,
+      description: t.landing.interviewFeatures.mockInterviews.description,
+      features: t.landing.interviewFeatures.mockInterviews.features,
       color: "purple"
     },
     {
       icon: BookOpen,
-      title: "Question Bank",
-      description: "Access 1000+ interview questions tailored to your role, with expert answers and explanations.",
-      features: ["Behavioral questions", "Technical challenges", "Company-specific prep"],
+      title: t.landing.interviewFeatures.questionBank.title,
+      description: t.landing.interviewFeatures.questionBank.description,
+      features: t.landing.interviewFeatures.questionBank.features,
       color: "blue"
     },
     {
       icon: Target,
-      title: "Salary Negotiation",
-      description: "Learn to negotiate like a pro with AI-powered coaching and market data insights.",
-      features: ["Market salary data", "Negotiation strategies", "Practice scenarios"],
+      title: t.landing.interviewFeatures.salaryNegotiation.title,
+      description: t.landing.interviewFeatures.salaryNegotiation.description,
+      features: t.landing.interviewFeatures.salaryNegotiation.features,
       color: "green"
     }
   ];
 
-  const testimonials = [
-    {
-      name: "Sarah Johnson",
-      role: "Product Manager at TechCorp",
-      content: "SmartJobFit helped me land my dream job in just 3 weeks! The AI resume optimization increased my response rate by 300%.",
-      rating: 5,
-      avatar: "SJ"
-    },
-    {
-      name: "Michael Chen",
-      role: "Software Engineer at StartupCo",
-      content: "The interview prep AI was incredible. I felt confident going into my interviews and nailed every one. Highly recommended!",
-      rating: 5,
-      avatar: "MC"
-    },
-    {
-      name: "Emily Rodriguez",
-      role: "UX Designer at DesignStudio",
-      content: "Amazing platform! The salary negotiation coaching helped me get 25% more than my initial offer. Worth every penny!",
-      rating: 5,
-      avatar: "ER"
-    }
-  ];
+  const testimonials = t.landing.testimonials.reviews.map((review, index) => ({
+    name: review.name,
+    role: review.role,
+    content: review.content,
+    rating: 5,
+    avatar: review.name.split(' ').map(n => n[0]).join('')
+  }));
 
   const pricingPlans = [
     {
-      name: "Free",
+      name: t.landing.pricing.free.title,
       price: 0,
       period: "month",
-      description: "Perfect for getting started",
-      features: [
-        "5 AI job searches per month",
-        "Basic resume optimization",
-        "Limited job board access",
-        "Email support"
-      ],
-      buttonText: "Get Started Free",
+      description: t.landing.pricing.free.description,
+      features: t.landing.pricing.free.features,
+      buttonText: t.landing.pricing.free.buttonText,
       buttonVariant: "outline" as const,
       popular: false
     },
     {
-      name: "Professional",
+      name: t.landing.pricing.professional.title,
       price: 29,
       period: "month",
-      description: "For serious job seekers",
-      features: [
-        "Unlimited AI job searches",
-        "Advanced resume optimization",
-        "All 15+ job board access",
-        "AI interview preparation",
-        "Priority support",
-        "Analytics dashboard"
-      ],
-      buttonText: "Upgrade to Professional",
+      description: t.landing.pricing.professional.description,
+      features: t.landing.pricing.professional.features,
+      buttonText: t.landing.pricing.professional.buttonText,
       buttonVariant: "default" as const,
       popular: true
     },
     {
-      name: "AI Career Coach",
+      name: t.landing.pricing.enterprise.title,
       price: 79,
       period: "month",
-      description: "For career professionals",
-      features: [
-        "Everything in Professional",
-        "Advanced analytics",
-        "AI salary negotiation coaching",
-        "24/7 AI career agent coaching",
-        "AI-powered strategic planning",
-        "Custom AI integrations"
-      ],
-      buttonText: "Upgrade to AI Career Coach",
+      description: t.landing.pricing.enterprise.description,
+      features: t.landing.pricing.enterprise.features,
+      buttonText: t.landing.pricing.enterprise.buttonText,
       buttonVariant: "outline" as const,
       popular: false
     }
@@ -191,7 +156,7 @@ export default function Landing() {
               <div className="relative w-full sm:w-96">
                 <Input
                   type="text"
-                  placeholder="Search job titles or companies..."
+                  placeholder={t.landing.searchPlaceholder}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="h-14 pl-6 pr-12 text-lg rounded-2xl border-2 border-purple-200 focus:border-purple-500"
@@ -203,7 +168,7 @@ export default function Landing() {
                 size="lg"
                 className="h-14 px-8 rounded-2xl text-lg font-medium hover-lift gradient-bg"
               >
-                Start AI Search
+                {t.landing.searchButton}
               </Button>
             </div>
 
@@ -225,9 +190,9 @@ export default function Landing() {
         <div className="container-custom">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold mb-4">
-              Why SmartJobFit is <span className="gradient-text">Different</span>
+              {t.landing.features.title}
             </h2>
-            <p className="text-xl text-muted-foreground">Revolutionary AI-powered features that transform your job search</p>
+            <p className="text-xl text-muted-foreground">{t.landing.features.subtitle}</p>
           </div>
           <div className="grid md:grid-cols-3 gap-8">
             {features.map((feature, index) => {
@@ -408,7 +373,7 @@ export default function Landing() {
         <div className="container-custom">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold mb-4">
-              Master Your <span className="gradient-text">Interview Skills</span>
+              {t.landing.interviewFeatures.title}
             </h2>
             <p className="text-xl text-muted-foreground">Practice with AI, get real-time feedback, and land your dream job</p>
           </div>
@@ -455,9 +420,9 @@ export default function Landing() {
         <div className="container-custom">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold mb-4">
-              Loved by <span className="gradient-text">Job Seekers</span>
+              {t.landing.testimonials.title}
             </h2>
-            <p className="text-xl text-muted-foreground">See how SmartJobFit has transformed careers worldwide</p>
+            <p className="text-xl text-muted-foreground">{t.landing.testimonials.subtitle}</p>
           </div>
           
           <div className="grid md:grid-cols-3 gap-8">
@@ -493,9 +458,9 @@ export default function Landing() {
         <div className="container-custom">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold mb-4">
-              Choose Your <span className="gradient-text">Plan</span>
+              {t.landing.pricing.title}
             </h2>
-            <p className="text-xl text-muted-foreground">Start free, upgrade when you're ready to accelerate your career</p>
+            <p className="text-xl text-muted-foreground">{t.landing.pricing.subtitle}</p>
           </div>
           
           <div className="grid md:grid-cols-3 gap-8">
@@ -503,7 +468,7 @@ export default function Landing() {
               <Card key={index} className={`hover-lift card-shadow relative ${plan.popular ? 'ring-2 ring-purple-500' : ''}`}>
                 {plan.popular && (
                   <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                    <Badge className="gradient-bg text-white px-6 py-2">Most Popular</Badge>
+                    <Badge className="gradient-bg text-white px-6 py-2">{t.landing.pricing.mostPopular}</Badge>
                   </div>
                 )}
                 <CardContent className="p-8">
@@ -542,11 +507,11 @@ export default function Landing() {
       <section className="section-padding gradient-bg">
         <div className="container-custom">
           <div className="text-center text-white">
-            <h2 className="text-4xl font-bold mb-6">Ready to Transform Your Job Search?</h2>
-            <p className="text-xl text-purple-100 mb-8">Join 50,000+ job seekers who've already found their dream jobs with SmartJobFit</p>
+            <h2 className="text-4xl font-bold mb-6">{t.landing.hero.title}</h2>
+            <p className="text-xl text-purple-100 mb-8">{t.landing.hero.subtitle}</p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button size="lg" variant="secondary" className="text-purple-600 hover:text-purple-700" asChild>
-                <Link to="/api/login">Get Started Free</Link>
+                <Link to="/api/login">{t.landing.hero.cta}</Link>
               </Button>
             </div>
           </div>

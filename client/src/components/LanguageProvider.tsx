@@ -25,13 +25,7 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
   useEffect(() => {
     localStorage.setItem('language', language);
     document.documentElement.lang = language;
-    
-    // Set RTL for Arabic
-    if (language === 'ar') {
-      document.documentElement.dir = 'rtl';
-    } else {
-      document.documentElement.dir = 'ltr';
-    }
+    document.documentElement.dir = 'ltr';
   }, [language]);
 
   const value = {
