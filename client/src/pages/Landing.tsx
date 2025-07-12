@@ -557,7 +557,7 @@ export default function Landing() {
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">{content.pricing.subtitle}</p>
           </div>
           
-          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
             {pricingPlans.map((plan, index) => (
               <Card key={index} className={`border-0 shadow-lg hover:shadow-xl transition-shadow relative ${plan.popular ? 'ring-2 ring-purple-500' : ''}`}>
                 {plan.popular && (
@@ -605,7 +605,7 @@ export default function Landing() {
               <Button size="lg" className="bg-white text-purple-600 hover:bg-gray-100 px-8" asChild>
                 <Link to="/api/login">Get Started Free</Link>
               </Button>
-              <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-purple-600 px-8" asChild>
+              <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/20 hover:text-white px-8" asChild>
                 <a href="#features">Learn More</a>
               </Button>
             </div>
