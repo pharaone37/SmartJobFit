@@ -81,6 +81,81 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Dashboard routes
+  app.get('/api/dashboard', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const user = await storage.getUser(userId);
+      const applications = await storage.getJobApplications(userId);
+      const interviews = await storage.getInterviews(userId);
+      const resumes = await storage.getResumes(userId);
+      
+      const dashboardData = {
+        jobSearches: 23, // This would be tracked in the database
+        applications: applications.length,
+        interviews: interviews.length,
+        resumeScore: resumes.length > 0 ? 85 : 0,
+        profileStrength: user ? 92 : 0,
+        matchingJobs: 47,
+        plan: 'free' // Would come from user subscription
+      };
+      
+      res.json(dashboardData);
+    } catch (error) {
+      console.error("Error fetching dashboard data:", error);
+      res.status(500).json({ message: "Failed to fetch dashboard data" });
+    }
+  });
+
+  // Job search routes
+  app.post('/api/jobs/search', async (req, res) => {
+    try {
+      const { query, filters, page = 1, pageSize = 20 } = req.body;
+      const result = await jobService.searchJobs(query, filters, page, pageSize);
+      res.json(result);
+    } catch (error) {
+      console.error("Error searching jobs:", error);
+      res.status(500).json({ message: "Failed to search jobs" });
+    }
+  });
+
+  app.get('/api/jobs/recommendations', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const limit = parseInt(req.query.limit as string) || 10;
+      const jobs = await jobService.getJobRecommendations(userId, limit);
+      res.json(jobs);
+    } catch (error) {
+      console.error("Error fetching job recommendations:", error);
+      res.status(500).json({ message: "Failed to fetch job recommendations" });
+    }
+  });
+
+  app.get('/api/jobs/:id', async (req, res) => {
+    try {
+      const job = await jobService.getJobById(req.params.id);
+      if (!job) {
+        return res.status(404).json({ message: "Job not found" });
+      }
+      res.json(job);
+    } catch (error) {
+      console.error("Error fetching job:", error);
+      res.status(500).json({ message: "Failed to fetch job" });
+    }
+  });
+
+  // User stats route
+  app.get('/api/user/stats', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const stats = await storage.getJobApplicationStats(userId);
+      res.json(stats);
+    } catch (error) {
+      console.error("Error fetching user stats:", error);
+      res.status(500).json({ message: "Failed to fetch user stats" });
+    }
+  });
+
   // Subscription management routes
   app.get('/api/subscription/plans', async (req, res) => {
     try {

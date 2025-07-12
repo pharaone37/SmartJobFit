@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useTranslation } from "@/lib/i18n";
+import { content } from "@/lib/content";
 import { 
   Bot, 
   Search, 
@@ -25,106 +25,112 @@ import {
   Shield,
   Rocket,
   Heart,
-  Award
+  Award,
+  Globe,
+  BarChart3
 } from "lucide-react";
 
 export default function Landing() {
-  const { t } = useTranslation();
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTestimonial, setActiveTestimonial] = useState(0);
 
   const features = [
     {
       icon: Search,
-      title: t.landing.features.aiSearch.title,
-      description: t.landing.features.aiSearch.description,
+      title: content.features.aiSearch.title,
+      description: content.features.aiSearch.description,
       gradient: "from-purple-500 to-blue-500"
     },
     {
       icon: FileText,
-      title: t.landing.features.resumeOptimization.title,
-      description: t.landing.features.resumeOptimization.description,
+      title: content.features.resumeOptimization.title,
+      description: content.features.resumeOptimization.description,
       gradient: "from-blue-500 to-indigo-500"
     },
     {
       icon: Video,
-      title: t.landing.features.interviewPrep.title,
-      description: t.landing.features.interviewPrep.description,
+      title: content.features.interviewPrep.title,
+      description: content.features.interviewPrep.description,
       gradient: "from-indigo-500 to-purple-500"
     }
   ];
 
   const stats = [
     { label: "Faster Job Search", value: "10x", color: "text-purple-600" },
-    { label: t.landing.stats.interviews, value: "5x", color: "text-blue-600" },
-    { label: t.landing.stats.matches, value: "1M+", color: "text-indigo-600" }
+    { label: content.stats.interviews, value: "5x", color: "text-blue-600" },
+    { label: content.stats.matches, value: "95%", color: "text-indigo-600" },
+    { label: content.stats.platforms, value: "15+", color: "text-green-600" }
   ];
 
   const interviewFeatures = [
     {
       icon: Video,
-      title: t.landing.interviewFeatures.mockInterviews.title,
-      description: t.landing.interviewFeatures.mockInterviews.description,
-      features: t.landing.interviewFeatures.mockInterviews.features,
+      title: content.interviewFeatures.mockInterviews.title,
+      description: content.interviewFeatures.mockInterviews.description,
+      features: content.interviewFeatures.mockInterviews.features,
       color: "purple"
     },
     {
       icon: BookOpen,
-      title: t.landing.interviewFeatures.questionBank.title,
-      description: t.landing.interviewFeatures.questionBank.description,
-      features: t.landing.interviewFeatures.questionBank.features,
+      title: content.interviewFeatures.questionBank.title,
+      description: content.interviewFeatures.questionBank.description,
+      features: content.interviewFeatures.questionBank.features,
       color: "blue"
     },
     {
       icon: Target,
-      title: t.landing.interviewFeatures.salaryNegotiation.title,
-      description: t.landing.interviewFeatures.salaryNegotiation.description,
-      features: t.landing.interviewFeatures.salaryNegotiation.features,
+      title: content.interviewFeatures.salaryNegotiation.title,
+      description: content.interviewFeatures.salaryNegotiation.description,
+      features: content.interviewFeatures.salaryNegotiation.features,
       color: "green"
     }
   ];
 
-  const testimonials = t.landing.testimonials.reviews.map((review, index) => ({
+  const testimonials = content.testimonials.reviews.map((review, index) => ({
     name: review.name,
     role: review.role,
     content: review.content,
     rating: 5,
-    avatar: review.name.split(' ').map(n => n[0]).join('')
+    avatar: review.name.split(' ').map(n => n[0]).join(''),
+    country: review.country,
+    flag: review.flag,
+    jobs: review.jobs
   }));
 
   const pricingPlans = [
     {
-      name: t.landing.pricing.free.title,
+      name: content.pricing.free.title,
       price: 0,
       period: "month",
-      description: t.landing.pricing.free.description,
-      features: t.landing.pricing.free.features,
-      buttonText: t.landing.pricing.free.buttonText,
+      description: content.pricing.free.description,
+      features: content.pricing.free.features,
+      buttonText: content.pricing.free.buttonText,
       buttonVariant: "outline" as const,
       popular: false
     },
     {
-      name: t.landing.pricing.professional.title,
-      price: 29,
+      name: content.pricing.professional.title,
+      price: 19,
       period: "month",
-      description: t.landing.pricing.professional.description,
-      features: t.landing.pricing.professional.features,
-      buttonText: t.landing.pricing.professional.buttonText,
+      description: content.pricing.professional.description,
+      features: content.pricing.professional.features,
+      buttonText: content.pricing.professional.buttonText,
       buttonVariant: "default" as const,
       popular: true
     },
     {
-      name: t.landing.pricing.enterprise.title,
-      price: 79,
+      name: content.pricing.enterprise.title,
+      price: 49,
       period: "month",
-      description: t.landing.pricing.enterprise.description,
-      features: t.landing.pricing.enterprise.features,
-      buttonText: t.landing.pricing.enterprise.buttonText,
-      buttonVariant: "outline" as const,
+      description: content.pricing.enterprise.description,
+      features: content.pricing.enterprise.features,
+      buttonText: content.pricing.enterprise.buttonText,
+      buttonVariant: "default" as const,
       popular: false
     }
   ];
 
+  // Auto-rotate testimonials
   useEffect(() => {
     const interval = setInterval(() => {
       setActiveTestimonial((prev) => (prev + 1) % testimonials.length);
@@ -132,320 +138,86 @@ export default function Landing() {
     return () => clearInterval(interval);
   }, [testimonials.length]);
 
-  const handleSearch = () => {
-    // This would trigger the AI search functionality
-    console.log("Searching for:", searchQuery);
-  };
-
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
-      <section className="relative pt-20 pb-16 bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-50 dark:from-purple-950/20 dark:via-blue-950/20 dark:to-indigo-950/20">
-        <div className="container-custom section-padding">
-          <div className="text-center mb-12 fade-in">
-            <h1 className="text-5xl md:text-6xl font-bold mb-6">
-              <span className="gradient-text">SmartJobFit</span><br />
-              <span className="text-4xl md:text-5xl">{t.landing.heroTitle}</span>
+      <section className="relative bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 text-white">
+        <div className="absolute inset-0 bg-black/20"></div>
+        <div className="relative container mx-auto px-4 py-20 text-center">
+          <div className="max-w-4xl mx-auto space-y-8">
+            <h1 className="text-5xl md:text-7xl font-bold leading-tight">
+              <span className="bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
+                {content.hero.title}
+              </span>
             </h1>
-            <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto text-balance">
-              {t.landing.heroDescription}
+            <p className="text-xl md:text-2xl text-purple-100 max-w-3xl mx-auto">
+              {content.hero.subtitle}
             </p>
             
             {/* Search Bar */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12 max-w-2xl mx-auto">
-              <div className="relative w-full sm:w-96">
-                <Input
-                  type="text"
-                  placeholder={t.landing.searchPlaceholder}
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="h-14 pl-6 pr-12 text-lg rounded-2xl border-2 border-purple-200 focus:border-purple-500"
-                />
-                <Search className="absolute right-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+            <div className="max-w-2xl mx-auto">
+              <div className="flex flex-col sm:flex-row gap-4 p-2 bg-white/10 backdrop-blur-sm rounded-2xl">
+                <div className="flex-1">
+                  <Input
+                    placeholder={content.hero.searchPlaceholder}
+                    className="border-0 bg-white/20 text-white placeholder:text-white/60 text-lg h-12"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
+                </div>
+                <Button 
+                  size="lg"
+                  className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white px-8 h-12"
+                >
+                  <Search className="mr-2 h-5 w-5" />
+                  {content.hero.searchButton}
+                </Button>
               </div>
-              <Button 
-                onClick={handleSearch}
-                size="lg"
-                className="h-14 px-8 rounded-2xl text-lg font-medium hover-lift gradient-bg"
-              >
-                {t.landing.searchButton}
-              </Button>
             </div>
 
             {/* Stats */}
-            <div className="flex flex-wrap justify-center gap-8 text-center">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-3xl mx-auto">
               {stats.map((stat, index) => (
-                <div key={index} className="flex flex-col items-center slide-up" style={{ animationDelay: `${index * 0.2}s` }}>
+                <div key={index} className="text-center">
                   <div className={`text-3xl font-bold ${stat.color} mb-1`}>{stat.value}</div>
-                  <div className="text-sm text-muted-foreground">{stat.label}</div>
+                  <div className="text-sm text-white/70">{stat.label}</div>
                 </div>
               ))}
+            </div>
+
+            <div className="pt-8">
+              <Button size="lg" className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white px-8">
+                <Link to="/api/login" className="flex items-center">
+                  {content.hero.cta}
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Link>
+              </Button>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Features Overview */}
-      <section className="section-padding bg-background">
-        <div className="container-custom">
+      {/* Features Section */}
+      <section className="py-20 bg-background">
+        <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4">
-              {t.landing.features.title}
+            <h2 className="text-4xl md:text-5xl font-bold mb-4">
+              {content.features.title}
             </h2>
-            <p className="text-xl text-muted-foreground">{t.landing.features.subtitle}</p>
-          </div>
-          <div className="grid md:grid-cols-3 gap-8">
-            {features.map((feature, index) => {
-              const Icon = feature.icon;
-              return (
-                <Card key={index} className="text-center hover-lift card-shadow border-0 bg-gradient-to-br from-gray-50 to-blue-50/30 dark:from-gray-900 dark:to-blue-950/30">
-                  <CardHeader>
-                    <div className={`w-16 h-16 bg-gradient-to-br ${feature.gradient} rounded-2xl flex items-center justify-center mx-auto mb-6`}>
-                      <Icon className="w-8 h-8 text-white" />
-                    </div>
-                    <CardTitle className="text-xl">{feature.title}</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-muted-foreground">{feature.description}</p>
-                  </CardContent>
-                </Card>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* Dashboard Preview */}
-      <section className="section-padding bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-blue-950/30">
-        <div className="container-custom">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4">
-              {t.landing.dashboard.title}
-            </h2>
-            <p className="text-xl text-muted-foreground">{t.landing.dashboard.subtitle}</p>
-          </div>
-          
-          <Card className="card-shadow border-0">
-            <CardContent className="p-8">
-              {/* Dashboard Header */}
-              <div className="flex items-center justify-between mb-8 pb-6 border-b">
-                <div>
-                  <h3 className="text-2xl font-bold">Welcome back, Sarah!</h3>
-                  <p className="text-muted-foreground">Here's your job search progress</p>
-                </div>
-                <div className="flex items-center space-x-4">
-                  <Button className="gradient-bg">
-                    <Zap className="w-4 h-4 mr-2" />
-                    New Application
-                  </Button>
-                </div>
-              </div>
-
-              {/* Stats Cards */}
-              <div className="grid md:grid-cols-4 gap-6 mb-8">
-                <Card className="gradient-bg text-white">
-                  <CardContent className="p-6">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-purple-100 text-sm">Total Applications</p>
-                        <p className="text-3xl font-bold">47</p>
-                      </div>
-                      <Rocket className="w-8 h-8 text-purple-200" />
-                    </div>
-                  </CardContent>
-                </Card>
-                <Card>
-                  <CardContent className="p-6">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-muted-foreground text-sm">Interviews Scheduled</p>
-                        <p className="text-3xl font-bold text-green-600">8</p>
-                      </div>
-                      <Video className="w-8 h-8 text-green-400" />
-                    </div>
-                  </CardContent>
-                </Card>
-                <Card>
-                  <CardContent className="p-6">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-muted-foreground text-sm">Response Rate</p>
-                        <p className="text-3xl font-bold text-blue-600">67%</p>
-                      </div>
-                      <TrendingUp className="w-8 h-8 text-blue-400" />
-                    </div>
-                  </CardContent>
-                </Card>
-                <Card>
-                  <CardContent className="p-6">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-muted-foreground text-sm">Avg. Match Score</p>
-                        <p className="text-3xl font-bold text-purple-600">92%</p>
-                      </div>
-                      <Star className="w-8 h-8 text-purple-400" />
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-
-              {/* Recent Applications */}
-              <div className="grid md:grid-cols-2 gap-8">
-                <div>
-                  <h4 className="text-lg font-semibold mb-4">Recent Applications</h4>
-                  <div className="space-y-4">
-                    {[
-                      { title: "Senior Product Manager", company: "TechCorp Inc.", status: "Interview", match: "94%" },
-                      { title: "UX Designer", company: "StartupCo", status: "Under Review", match: "87%" },
-                      { title: "Frontend Developer", company: "DevStudio", status: "Applied", match: "91%" }
-                    ].map((job, index) => (
-                      <Card key={index} className="p-4">
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center space-x-4">
-                            <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-blue-500 rounded-lg flex items-center justify-center">
-                              <Building className="w-6 h-6 text-white" />
-                            </div>
-                            <div>
-                              <p className="font-semibold">{job.title}</p>
-                              <p className="text-sm text-muted-foreground">{job.company}</p>
-                            </div>
-                          </div>
-                          <div className="text-right">
-                            <Badge variant="secondary">{job.status}</Badge>
-                            <p className="text-sm text-muted-foreground mt-1">Match: {job.match}</p>
-                          </div>
-                        </div>
-                      </Card>
-                    ))}
-                  </div>
-                </div>
-                <div>
-                  <h4 className="text-lg font-semibold mb-4">AI Recommendations</h4>
-                  <div className="space-y-4">
-                    {[
-                      { 
-                        title: "Optimize Your Resume", 
-                        description: "Add \"React\" and \"Node.js\" to increase match rate by 15%",
-                        icon: FileText,
-                        color: "purple"
-                      },
-                      { 
-                        title: "Interview Prep", 
-                        description: "Practice common PM questions for TechCorp interview",
-                        icon: Video,
-                        color: "blue"
-                      },
-                      { 
-                        title: "Salary Negotiation", 
-                        description: "Market data shows you can negotiate 20% higher",
-                        icon: DollarSign,
-                        color: "green"
-                      }
-                    ].map((rec, index) => {
-                      const Icon = rec.icon;
-                      return (
-                        <Card key={index} className={`p-4 border-${rec.color}-200 bg-gradient-to-r from-${rec.color}-50 to-${rec.color}-50/30`}>
-                          <div className="flex items-start space-x-3">
-                            <div className={`w-10 h-10 bg-${rec.color}-500 rounded-lg flex items-center justify-center`}>
-                              <Icon className="w-5 h-5 text-white" />
-                            </div>
-                            <div className="flex-1">
-                              <p className="font-semibold mb-1">{rec.title}</p>
-                              <p className="text-sm text-muted-foreground mb-3">{rec.description}</p>
-                              <Button variant="link" className={`text-${rec.color}-600 p-0 h-auto`}>
-                                Apply Suggestion <ArrowRight className="w-4 h-4 ml-1" />
-                              </Button>
-                            </div>
-                          </div>
-                        </Card>
-                      );
-                    })}
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      </section>
-
-      {/* Interview Preparation */}
-      <section className="section-padding bg-background">
-        <div className="container-custom">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4">
-              {t.landing.interviewFeatures.title}
-            </h2>
-            <p className="text-xl text-muted-foreground">Practice with AI, get real-time feedback, and land your dream job</p>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">{content.features.subtitle}</p>
           </div>
           
           <div className="grid md:grid-cols-3 gap-8">
-            {interviewFeatures.map((feature, index) => {
-              const Icon = feature.icon;
-              const colorClasses = {
-                purple: "border-purple-200 bg-gradient-to-br from-purple-50 to-blue-50 dark:from-purple-950/20 dark:to-blue-950/20",
-                blue: "border-blue-200 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20",
-                green: "border-green-200 bg-gradient-to-br from-green-50 to-teal-50 dark:from-green-950/20 dark:to-teal-950/20"
-              };
-              
-              return (
-                <Card key={index} className={`hover-lift card-shadow ${colorClasses[feature.color as keyof typeof colorClasses]}`}>
-                  <CardContent className="p-8">
-                    <div className={`w-16 h-16 bg-gradient-to-br from-${feature.color}-500 to-${feature.color === 'green' ? 'teal' : feature.color === 'blue' ? 'indigo' : 'blue'}-500 rounded-2xl flex items-center justify-center mb-6`}>
-                      <Icon className="w-8 h-8 text-white" />
-                    </div>
-                    <h3 className="text-xl font-semibold mb-4">{feature.title}</h3>
-                    <p className="text-muted-foreground mb-6">{feature.description}</p>
-                    <ul className="space-y-2 text-sm text-muted-foreground mb-6">
-                      {feature.features.map((item, itemIndex) => (
-                        <li key={itemIndex} className="flex items-center">
-                          <Check className="w-4 h-4 text-green-500 mr-2" />
-                          {item}
-                        </li>
-                      ))}
-                    </ul>
-                    <Button className={`w-full bg-gradient-to-r from-${feature.color}-500 to-${feature.color === 'green' ? 'teal' : feature.color === 'blue' ? 'indigo' : 'blue'}-500 hover:from-${feature.color}-600 hover:to-${feature.color === 'green' ? 'teal' : feature.color === 'blue' ? 'indigo' : 'blue'}-600`}>
-                      {feature.title === 'AI Mock Interviews' ? 'Start Practice' : 
-                       feature.title === 'Question Bank' ? 'Browse Questions' : 'Start Coaching'}
-                    </Button>
-                  </CardContent>
-                </Card>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* Testimonials */}
-      <section className="section-padding bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-blue-950/30">
-        <div className="container-custom">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4">
-              {t.landing.testimonials.title}
-            </h2>
-            <p className="text-xl text-muted-foreground">{t.landing.testimonials.subtitle}</p>
-          </div>
-          
-          <div className="grid md:grid-cols-3 gap-8">
-            {testimonials.map((testimonial, index) => (
-              <Card key={index} className={`hover-lift card-shadow ${index === activeTestimonial ? 'ring-2 ring-purple-500' : ''}`}>
-                <CardContent className="p-8">
-                  <div className="flex items-center mb-4">
-                    <div className="flex space-x-1">
-                      {[...Array(testimonial.rating)].map((_, i) => (
-                        <Star key={i} className="w-5 h-5 fill-yellow-400 text-yellow-400" />
-                      ))}
-                    </div>
+            {features.map((feature, index) => (
+              <Card key={index} className="border-0 shadow-lg hover:shadow-xl transition-shadow">
+                <CardHeader className="text-center">
+                  <div className={`mx-auto w-16 h-16 rounded-full bg-gradient-to-r ${feature.gradient} flex items-center justify-center mb-4`}>
+                    <feature.icon className="h-8 w-8 text-white" />
                   </div>
-                  <p className="text-muted-foreground mb-6">"{testimonial.content}"</p>
-                  <div className="flex items-center">
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-white font-semibold mr-4">
-                      {testimonial.avatar}
-                    </div>
-                    <div>
-                      <p className="font-semibold">{testimonial.name}</p>
-                      <p className="text-sm text-muted-foreground">{testimonial.role}</p>
-                    </div>
-                  </div>
+                  <CardTitle className="text-xl">{feature.title}</CardTitle>
+                </CardHeader>
+                <CardContent className="text-center">
+                  <p className="text-muted-foreground">{feature.description}</p>
                 </CardContent>
               </Card>
             ))}
@@ -453,48 +225,216 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* Pricing Plans */}
-      <section className="section-padding bg-background">
-        <div className="container-custom">
+      {/* Platforms Section */}
+      <section className="py-20 bg-muted/30">
+        <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4">
-              {t.landing.pricing.title}
+            <h2 className="text-4xl md:text-5xl font-bold mb-4">
+              {content.platforms.title}
             </h2>
-            <p className="text-xl text-muted-foreground">{t.landing.pricing.subtitle}</p>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">{content.platforms.subtitle}</p>
+          </div>
+          
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 max-w-4xl mx-auto">
+            {content.platforms.list.map((platform, index) => (
+              <div key={index} className="bg-white dark:bg-gray-800 p-4 rounded-lg text-center shadow-sm hover:shadow-md transition-shadow">
+                <div className="text-sm font-medium text-muted-foreground">{platform}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Dashboard Preview */}
+      <section className="py-20 bg-background">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold mb-4">
+              {content.dashboard.title}
+            </h2>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">{content.dashboard.subtitle}</p>
+          </div>
+          
+          <div className="max-w-4xl mx-auto">
+            <div className="bg-gradient-to-br from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 rounded-2xl p-8 border">
+              <div className="grid md:grid-cols-2 gap-8">
+                <div className="space-y-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full flex items-center justify-center">
+                      <BarChart3 className="h-5 w-5 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold">Smart Analytics</h3>
+                      <p className="text-sm text-muted-foreground">Track your job search progress</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full flex items-center justify-center">
+                      <Target className="h-5 w-5 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold">AI Matching</h3>
+                      <p className="text-sm text-muted-foreground">Get matched with perfect jobs</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full flex items-center justify-center">
+                      <Rocket className="h-5 w-5 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold">Career Acceleration</h3>
+                      <p className="text-sm text-muted-foreground">Land your dream job faster</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
+                  <div className="space-y-4">
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm font-medium">Job Match Score</span>
+                      <span className="text-sm text-green-600 font-semibold">95%</span>
+                    </div>
+                    <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                      <div className="bg-gradient-to-r from-green-500 to-blue-500 h-2 rounded-full" style={{ width: '95%' }}></div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4 text-center">
+                      <div>
+                        <div className="text-2xl font-bold text-purple-600">24</div>
+                        <div className="text-xs text-muted-foreground">Applications</div>
+                      </div>
+                      <div>
+                        <div className="text-2xl font-bold text-blue-600">8</div>
+                        <div className="text-xs text-muted-foreground">Interviews</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Interview Features */}
+      <section className="py-20 bg-muted/30">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold mb-4">
+              {content.interviewFeatures.title}
+            </h2>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+              Practice interviews in English, Spanish, French, German, Portuguese, or Italian
+            </p>
           </div>
           
           <div className="grid md:grid-cols-3 gap-8">
+            {interviewFeatures.map((feature, index) => (
+              <Card key={index} className="border-0 shadow-lg hover:shadow-xl transition-shadow">
+                <CardHeader className="text-center">
+                  <div className={`mx-auto w-16 h-16 rounded-full bg-gradient-to-r from-${feature.color}-500 to-${feature.color}-600 flex items-center justify-center mb-4`}>
+                    <feature.icon className="h-8 w-8 text-white" />
+                  </div>
+                  <CardTitle className="text-xl">{feature.title}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground mb-4">{feature.description}</p>
+                  <ul className="space-y-2">
+                    {feature.features.map((item, idx) => (
+                      <li key={idx} className="flex items-center gap-2">
+                        <Check className="h-4 w-4 text-green-500" />
+                        <span className="text-sm">{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials */}
+      <section className="py-20 bg-background">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold mb-4">
+              {content.testimonials.title}
+            </h2>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">{content.testimonials.subtitle}</p>
+          </div>
+          
+          <div className="max-w-4xl mx-auto">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {testimonials.map((testimonial, index) => (
+                <Card key={index} className="border-0 shadow-lg hover:shadow-xl transition-shadow">
+                  <CardContent className="pt-6">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full flex items-center justify-center text-white font-semibold">
+                        {testimonial.avatar}
+                      </div>
+                      <div>
+                        <div className="font-semibold">{testimonial.name}</div>
+                        <div className="text-sm text-muted-foreground">{testimonial.role}</div>
+                        <div className="flex items-center gap-1 text-xs">
+                          <span>{testimonial.flag}</span>
+                          <span>{testimonial.country}</span>
+                          <Badge variant="secondary" className="text-xs">{testimonial.jobs}</Badge>
+                        </div>
+                      </div>
+                    </div>
+                    <p className="text-muted-foreground text-sm italic">"{testimonial.content}"</p>
+                    <div className="flex gap-1 mt-4">
+                      {[...Array(testimonial.rating)].map((_, i) => (
+                        <Star key={i} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Pricing */}
+      <section className="py-20 bg-muted/30">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold mb-4">
+              {content.pricing.title}
+            </h2>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">{content.pricing.subtitle}</p>
+          </div>
+          
+          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
             {pricingPlans.map((plan, index) => (
-              <Card key={index} className={`hover-lift card-shadow relative ${plan.popular ? 'ring-2 ring-purple-500' : ''}`}>
+              <Card key={index} className={`border-0 shadow-lg hover:shadow-xl transition-shadow relative ${plan.popular ? 'ring-2 ring-purple-500' : ''}`}>
                 {plan.popular && (
-                  <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                    <Badge className="gradient-bg text-white px-6 py-2">{t.landing.pricing.mostPopular}</Badge>
+                  <div className="absolute -top-4 left-1/2 -translate-x-1/2">
+                    <Badge className="bg-gradient-to-r from-purple-500 to-blue-500 text-white px-6 py-2">{content.pricing.mostPopular}</Badge>
                   </div>
                 )}
-                <CardContent className="p-8">
-                  <div className="text-center mb-8">
-                    <h3 className="text-2xl font-bold mb-2">{plan.name}</h3>
-                    <div className="text-4xl font-bold mb-2">
-                      ${plan.price}<span className="text-lg font-normal text-muted-foreground">/{plan.period}</span>
-                    </div>
-                    <p className="text-muted-foreground">{plan.description}</p>
+                <CardHeader className="text-center">
+                  <CardTitle className="text-2xl">{plan.name}</CardTitle>
+                  <div className="text-4xl font-bold">
+                    ${plan.price}
+                    <span className="text-lg font-normal text-muted-foreground">/{plan.period}</span>
                   </div>
-                  <ul className="space-y-4 mb-8">
-                    {plan.features.map((feature, featureIndex) => (
-                      <li key={featureIndex} className="flex items-center">
-                        <Check className="w-5 h-5 text-green-500 mr-3" />
-                        <span className="text-muted-foreground">{feature}</span>
+                  <p className="text-muted-foreground">{plan.description}</p>
+                </CardHeader>
+                <CardContent>
+                  <ul className="space-y-3 mb-6">
+                    {plan.features.map((feature, idx) => (
+                      <li key={idx} className="flex items-center gap-2">
+                        <Check className="h-4 w-4 text-green-500" />
+                        <span className="text-sm">{feature}</span>
                       </li>
                     ))}
                   </ul>
                   <Button 
+                    className={`w-full ${plan.popular ? 'bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600' : ''}`}
                     variant={plan.buttonVariant}
-                    className={`w-full ${plan.popular ? 'gradient-bg hover:opacity-90' : ''}`}
-                    asChild
                   >
-                    <Link to="/api/login">
-                      {plan.buttonText}
-                    </Link>
+                    {plan.buttonText}
                   </Button>
                 </CardContent>
               </Card>
@@ -504,14 +444,17 @@ export default function Landing() {
       </section>
 
       {/* CTA Section */}
-      <section className="section-padding gradient-bg">
-        <div className="container-custom">
-          <div className="text-center text-white">
-            <h2 className="text-4xl font-bold mb-6">{t.landing.hero.title}</h2>
-            <p className="text-xl text-purple-100 mb-8">{t.landing.hero.subtitle}</p>
+      <section className="py-20 bg-gradient-to-r from-purple-600 to-blue-600 text-white">
+        <div className="container mx-auto px-4 text-center">
+          <div className="max-w-3xl mx-auto space-y-8">
+            <h2 className="text-4xl md:text-5xl font-bold mb-6">Ready to Find Your Dream Job?</h2>
+            <p className="text-xl text-purple-100 mb-8">Join thousands of professionals who've accelerated their careers with SmartJobFit</p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" variant="secondary" className="text-purple-600 hover:text-purple-700" asChild>
-                <Link to="/api/login">{t.landing.hero.cta}</Link>
+              <Button size="lg" className="bg-white text-purple-600 hover:bg-gray-100 px-8">
+                <Link to="/api/login">Get Started Free</Link>
+              </Button>
+              <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-purple-600 px-8">
+                Learn More
               </Button>
             </div>
           </div>
