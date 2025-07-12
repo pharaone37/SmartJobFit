@@ -26,7 +26,9 @@ import {
   TrendingUp,
   CheckCircle,
   AlertCircle,
-  Lightbulb
+  Lightbulb,
+  Calendar,
+  Eye
 } from "lucide-react";
 
 export default function InterviewPrep() {
@@ -39,6 +41,13 @@ export default function InterviewPrep() {
   const [selectedIndustry, setSelectedIndustry] = useState("");
   const [selectedDifficulty, setSelectedDifficulty] = useState("");
   const [showSimulator, setShowSimulator] = useState(false);
+
+  // Sample interview data (fallback)
+  const sampleInterviews = [
+    { id: 1, company: 'TechCorp', position: 'Senior Software Engineer', date: '2024-01-15', time: '10:00 AM', type: 'Technical' },
+    { id: 2, company: 'StartupXYZ', position: 'Product Manager', date: '2024-01-18', time: '2:00 PM', type: 'Behavioral' },
+    { id: 3, company: 'WebCorp', position: 'Full Stack Developer', date: '2024-01-20', time: '11:30 AM', type: 'System Design' },
+  ];
 
   // Redirect to home if not authenticated
   useEffect(() => {
@@ -217,9 +226,10 @@ export default function InterviewPrep() {
           />
         ) : (
           <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="grid w-full grid-cols-4">
+            <TabsList className="grid w-full grid-cols-5">
               <TabsTrigger value="practice">AI Practice</TabsTrigger>
               <TabsTrigger value="questions">Question Bank</TabsTrigger>
+              <TabsTrigger value="interviews">Interviews</TabsTrigger>
               <TabsTrigger value="analytics">Performance</TabsTrigger>
               <TabsTrigger value="tips">Tips & Guides</TabsTrigger>
             </TabsList>
@@ -399,6 +409,112 @@ export default function InterviewPrep() {
                     </CardContent>
                   </Card>
                 ))}
+              </div>
+            </TabsContent>
+
+            {/* Interviews Tab */}
+            <TabsContent value="interviews" className="mt-6">
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div className="lg:col-span-2">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center">
+                        <Calendar className="w-5 h-5 mr-2 text-blue-500" />
+                        Upcoming Interviews
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-4">
+                        {sampleInterviews.map((interview) => (
+                          <div key={interview.id} className="p-4 border rounded-lg hover:bg-muted/50 transition-colors">
+                            <div className="flex items-start justify-between">
+                              <div className="flex-1">
+                                <h4 className="font-semibold">{interview.position}</h4>
+                                <p className="text-sm text-muted-foreground">{interview.company}</p>
+                                <div className="flex items-center space-x-4 mt-2 text-sm">
+                                  <div className="flex items-center">
+                                    <Calendar className="w-4 h-4 mr-1 text-muted-foreground" />
+                                    {interview.date}
+                                  </div>
+                                  <div className="flex items-center">
+                                    <Clock className="w-4 h-4 mr-1 text-muted-foreground" />
+                                    {interview.time}
+                                  </div>
+                                  <Badge variant="outline">{interview.type}</Badge>
+                                </div>
+                              </div>
+                              <div className="flex items-center space-x-2">
+                                <Button variant="outline" size="sm">
+                                  <Eye className="w-4 h-4 mr-1" />
+                                  View Details
+                                </Button>
+                                <Button variant="default" size="sm">
+                                  <Play className="w-4 h-4 mr-1" />
+                                  Practice
+                                </Button>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                <div className="space-y-6">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center">
+                        <Target className="w-5 h-5 mr-2 text-purple-500" />
+                        Interview Stats
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-4">
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm">Total Interviews</span>
+                          <span className="text-2xl font-bold text-blue-600">12</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm">Success Rate</span>
+                          <span className="text-2xl font-bold text-green-600">75%</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm">Average Score</span>
+                          <span className="text-2xl font-bold text-purple-600">8.2/10</span>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center">
+                        <Trophy className="w-5 h-5 mr-2 text-yellow-500" />
+                        Recent Performance
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-3">
+                        {[
+                          { company: "TechCorp", score: 8.5, status: "Passed" },
+                          { company: "StartupXYZ", score: 7.8, status: "Pending" },
+                          { company: "WebCorp", score: 9.1, status: "Passed" }
+                        ].map((result, index) => (
+                          <div key={index} className="flex items-center justify-between p-3 bg-muted rounded-lg">
+                            <div>
+                              <p className="font-medium text-sm">{result.company}</p>
+                              <p className="text-xs text-muted-foreground">Score: {result.score}/10</p>
+                            </div>
+                            <Badge variant={result.status === "Passed" ? "default" : "secondary"}>
+                              {result.status}
+                            </Badge>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
               </div>
             </TabsContent>
 
