@@ -1,0 +1,234 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+@layer base {
+  :root {
+    --background: hsl(0, 0%, 100%);
+    --foreground: hsl(222.2, 84%, 4.9%);
+    --card: hsl(0, 0%, 100%);
+    --card-foreground: hsl(222.2, 84%, 4.9%);
+    --popover: hsl(0, 0%, 100%);
+    --popover-foreground: hsl(222.2, 84%, 4.9%);
+    --primary: hsl(262.1, 83.3%, 57.8%);
+    --primary-foreground: hsl(210, 40%, 98%);
+    --secondary: hsl(210, 40%, 96%);
+    --secondary-foreground: hsl(222.2, 84%, 4.9%);
+    --muted: hsl(210, 40%, 96%);
+    --muted-foreground: hsl(215.4, 16.3%, 46.9%);
+    --accent: hsl(210, 40%, 96%);
+    --accent-foreground: hsl(222.2, 84%, 4.9%);
+    --destructive: hsl(0, 84.2%, 60.2%);
+    --destructive-foreground: hsl(210, 40%, 98%);
+    --border: hsl(214.3, 31.8%, 91.4%);
+    --input: hsl(214.3, 31.8%, 91.4%);
+    --ring: hsl(262.1, 83.3%, 57.8%);
+    --radius: 0.75rem;
+    --chart-1: hsl(262.1, 83.3%, 57.8%);
+    --chart-2: hsl(221.2, 83.2%, 53.3%);
+    --chart-3: hsl(262.1, 83.3%, 57.8%);
+    --chart-4: hsl(221.2, 83.2%, 53.3%);
+    --chart-5: hsl(262.1, 83.3%, 57.8%);
+    --sidebar-background: hsl(0, 0%, 98%);
+    --sidebar-foreground: hsl(240, 5.3%, 26.1%);
+    --sidebar-primary: hsl(262.1, 83.3%, 57.8%);
+    --sidebar-primary-foreground: hsl(0, 0%, 100%);
+    --sidebar-accent: hsl(220, 14.3%, 95.9%);
+    --sidebar-accent-foreground: hsl(220, 8.9%, 46.1%);
+    --sidebar-border: hsl(220, 13%, 91%);
+    --sidebar-ring: hsl(262.1, 83.3%, 57.8%);
+    
+    /* Custom JobMatch AI Colors */
+    --purple-50: hsl(270, 100%, 98%);
+    --purple-100: hsl(268, 100%, 95%);
+    --purple-500: hsl(262.1, 83.3%, 57.8%);
+    --purple-600: hsl(258.3, 89.5%, 66.3%);
+    --purple-700: hsl(252.5, 94.7%, 67.1%);
+    --purple-900: hsl(263.4, 70%, 50.4%);
+    --blue-50: hsl(213, 100%, 97%);
+    --blue-100: hsl(214, 95%, 93%);
+    --blue-500: hsl(221.2, 83.2%, 53.3%);
+    --blue-600: hsl(221.2, 83.2%, 53.3%);
+    --blue-700: hsl(224.3, 76.3%, 48%);
+    --gradient-primary: linear-gradient(135deg, hsl(262.1, 83.3%, 57.8%) 0%, hsl(221.2, 83.2%, 53.3%) 100%);
+  }
+
+  .dark {
+    --background: hsl(222.2, 84%, 4.9%);
+    --foreground: hsl(210, 40%, 98%);
+    --card: hsl(222.2, 84%, 4.9%);
+    --card-foreground: hsl(210, 40%, 98%);
+    --popover: hsl(222.2, 84%, 4.9%);
+    --popover-foreground: hsl(210, 40%, 98%);
+    --primary: hsl(262.1, 83.3%, 57.8%);
+    --primary-foreground: hsl(222.2, 84%, 4.9%);
+    --secondary: hsl(217.2, 32.6%, 17.5%);
+    --secondary-foreground: hsl(210, 40%, 98%);
+    --muted: hsl(217.2, 32.6%, 17.5%);
+    --muted-foreground: hsl(215, 20.2%, 65.1%);
+    --accent: hsl(217.2, 32.6%, 17.5%);
+    --accent-foreground: hsl(210, 40%, 98%);
+    --destructive: hsl(0, 62.8%, 30.6%);
+    --destructive-foreground: hsl(210, 40%, 98%);
+    --border: hsl(217.2, 32.6%, 17.5%);
+    --input: hsl(217.2, 32.6%, 17.5%);
+    --ring: hsl(262.1, 83.3%, 57.8%);
+    --chart-1: hsl(262.1, 83.3%, 57.8%);
+    --chart-2: hsl(221.2, 83.2%, 53.3%);
+    --chart-3: hsl(262.1, 83.3%, 57.8%);
+    --chart-4: hsl(221.2, 83.2%, 53.3%);
+    --chart-5: hsl(262.1, 83.3%, 57.8%);
+    --sidebar-background: hsl(222.2, 84%, 4.9%);
+    --sidebar-foreground: hsl(210, 40%, 98%);
+    --sidebar-primary: hsl(262.1, 83.3%, 57.8%);
+    --sidebar-primary-foreground: hsl(0, 0%, 100%);
+    --sidebar-accent: hsl(217.2, 32.6%, 17.5%);
+    --sidebar-accent-foreground: hsl(210, 40%, 98%);
+    --sidebar-border: hsl(217.2, 32.6%, 17.5%);
+    --sidebar-ring: hsl(262.1, 83.3%, 57.8%);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+}
+
+@layer components {
+  .gradient-text {
+    @apply bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent;
+  }
+  
+  .gradient-bg {
+    background: var(--gradient-primary);
+  }
+  
+  .glass {
+    @apply backdrop-blur-sm bg-white/95 dark:bg-gray-900/95;
+  }
+  
+  .animate-gradient {
+    background-size: 200% 200%;
+    animation: gradient 3s ease infinite;
+  }
+  
+  @keyframes gradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+  
+  .hover-lift {
+    @apply transition-all duration-300 hover:scale-105 hover:shadow-lg;
+  }
+  
+  .section-padding {
+    @apply py-16 px-4 sm:px-6 lg:px-8;
+  }
+  
+  .container-custom {
+    @apply max-w-7xl mx-auto;
+  }
+  
+  .card-shadow {
+    @apply shadow-lg hover:shadow-xl transition-shadow duration-300;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-gray-100 dark:bg-gray-800;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-300 dark:bg-gray-600 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-gray-400 dark:bg-gray-500;
+}
+
+/* Focus styles */
+.focus-ring {
+  @apply focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900;
+}
+
+/* Animation utilities */
+.fade-in {
+  animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.slide-up {
+  animation: slideUp 0.6s ease-out;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Chart and visualization styles */
+.recharts-surface {
+  @apply overflow-visible;
+}
+
+.recharts-legend-wrapper {
+  @apply text-sm;
+}
+
+/* Loading states */
+.skeleton {
+  @apply animate-pulse bg-gray-200 dark:bg-gray-700 rounded;
+}
+
+/* Print styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  :root {
+    --border: hsl(0, 0%, 0%);
+    --input: hsl(0, 0%, 0%);
+  }
+  
+  .dark {
+    --border: hsl(0, 0%, 100%);
+    --input: hsl(0, 0%, 100%);
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
