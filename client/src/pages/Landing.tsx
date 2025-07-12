@@ -161,6 +161,42 @@ export default function Landing() {
       title: content.features.interviewPrep.title,
       description: content.features.interviewPrep.description,
       gradient: "from-indigo-500 to-purple-500"
+    },
+    {
+      icon: BarChart3,
+      title: content.features.analytics.title,
+      description: content.features.analytics.description,
+      gradient: "from-green-500 to-teal-500"
+    },
+    {
+      icon: Target,
+      title: "Job Alerts",
+      description: "Get notified about relevant opportunities instantly",
+      gradient: "from-orange-500 to-red-500"
+    },
+    {
+      icon: DollarSign,
+      title: "Salary Insights",
+      description: "Market-based salary data and negotiation tips",
+      gradient: "from-emerald-500 to-green-500"
+    },
+    {
+      icon: Users,
+      title: "Application Tracking",
+      description: "Manage all your job applications in one place",
+      gradient: "from-pink-500 to-rose-500"
+    },
+    {
+      icon: Clock,
+      title: "Interview Scheduling",
+      description: "Smart scheduling with calendar integration",
+      gradient: "from-cyan-500 to-blue-500"
+    },
+    {
+      icon: Shield,
+      title: "Career Coaching",
+      description: "AI-powered career guidance and recommendations",
+      gradient: "from-violet-500 to-purple-500"
     }
   ];
 
@@ -629,8 +665,9 @@ export default function Landing() {
             </div>
             
             <div>
-              <h4 className="text-lg font-semibold mb-4">Features</h4>
+              <h4 className="text-lg font-semibold mb-4">Support</h4>
               <ul className="space-y-2 text-gray-300">
+                <li><Link to="/help" className="hover:text-white transition-colors">Help Center</Link></li>
                 <li>AI Job Search</li>
                 <li>Resume Optimization</li>
                 <li>Interview Preparation</li>
