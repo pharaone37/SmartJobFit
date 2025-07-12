@@ -28,7 +28,9 @@ import {
   Award,
   Globe,
   BarChart3,
-  CreditCard
+  CreditCard,
+  ChevronLeft,
+  ChevronRight
 } from "lucide-react";
 import { 
   SiLinkedin, 
@@ -42,6 +44,46 @@ import {
   SiApple,
   SiGooglepay
 } from "react-icons/si";
+import dashboardScreenshot from "@assets/Screenshot 2025-07-13 at 01.32.37_1752363160764.png";
+
+// Dashboard Screenshots Data
+const dashboardScreenshots = [
+  {
+    id: 1,
+    title: "Overview Dashboard",
+    description: "Track your job search progress with AI-powered insights",
+    image: dashboardScreenshot,
+    features: ["Application tracking", "Interview scheduling", "Performance metrics"]
+  },
+  {
+    id: 2,
+    title: "Job Search Filters",
+    description: "Advanced filtering across 15+ job boards",
+    image: dashboardScreenshot,
+    features: ["Smart filters", "Salary ranges", "Remote options"]
+  },
+  {
+    id: 3,
+    title: "Resume Analytics",
+    description: "AI-powered resume optimization and ATS scoring",
+    image: dashboardScreenshot,
+    features: ["ATS compliance", "Keyword optimization", "Industry insights"]
+  },
+  {
+    id: 4,
+    title: "Interview Preparation",
+    description: "Practice interviews with AI coaching",
+    image: dashboardScreenshot,
+    features: ["Mock interviews", "Voice analysis", "Multi-language support"]
+  },
+  {
+    id: 5,
+    title: "Career Analytics",
+    description: "Comprehensive career insights and recommendations",
+    image: dashboardScreenshot,
+    features: ["Success metrics", "Trend analysis", "Career roadmaps"]
+  }
+];
 
 // Job Platform Logo Component
 const JobPlatformLogo = ({ platform }: { platform: string }) => {
@@ -78,6 +120,28 @@ const JobPlatformLogo = ({ platform }: { platform: string }) => {
 export default function Landing() {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTestimonial, setActiveTestimonial] = useState(0);
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  // Auto-advance carousel
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % dashboardScreenshots.length);
+    }, 5000); // Change slide every 5 seconds
+
+    return () => clearInterval(interval);
+  }, []);
+
+  const nextSlide = () => {
+    setCurrentSlide((prev) => (prev + 1) % dashboardScreenshots.length);
+  };
+
+  const prevSlide = () => {
+    setCurrentSlide((prev) => (prev - 1 + dashboardScreenshots.length) % dashboardScreenshots.length);
+  };
+
+  const goToSlide = (index: number) => {
+    setCurrentSlide(index);
+  };
 
   const features = [
     {
@@ -185,8 +249,49 @@ export default function Landing() {
 
   return (
     <div className="min-h-screen bg-background">
+      {/* Landing Page Navigation */}
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-between h-16">
+            {/* Logo */}
+            <div className="flex items-center space-x-2">
+              <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-blue-500 rounded-lg flex items-center justify-center">
+                <Bot className="w-5 h-5 text-white" />
+              </div>
+              <span className="text-xl font-bold gradient-text">SmartJobFit</span>
+            </div>
+
+            {/* Navigation Links */}
+            <div className="hidden md:flex items-center space-x-8">
+              <a href="#features" className="text-sm font-medium transition-colors hover:text-primary text-muted-foreground">
+                Features
+              </a>
+              <a href="#dashboard" className="text-sm font-medium transition-colors hover:text-primary text-muted-foreground">
+                Dashboard
+              </a>
+              <a href="#testimonials" className="text-sm font-medium transition-colors hover:text-primary text-muted-foreground">
+                Reviews
+              </a>
+              <a href="#pricing" className="text-sm font-medium transition-colors hover:text-primary text-muted-foreground">
+                Pricing
+              </a>
+            </div>
+
+            {/* Right Side Actions */}
+            <div className="flex items-center space-x-4">
+              <Button variant="outline" size="sm">
+                <Link to="/api/login">Sign In</Link>
+              </Button>
+              <Button size="sm" className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white">
+                <Link to="/api/login">Get Started</Link>
+              </Button>
+            </div>
+          </div>
+        </div>
+      </nav>
+
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 text-white">
+      <section className="relative bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 text-white pt-16">
         <div className="absolute inset-0 bg-black/20"></div>
         <div className="relative container mx-auto px-4 py-20 text-center">
           <div className="max-w-4xl mx-auto space-y-8">
@@ -243,7 +348,7 @@ export default function Landing() {
       </section>
 
       {/* Features Section */}
-      <section className="py-20 bg-background">
+      <section id="features" className="py-20 bg-background">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold mb-4">
@@ -291,7 +396,7 @@ export default function Landing() {
       </section>
 
       {/* Dashboard Preview */}
-      <section className="py-20 bg-background">
+      <section id="dashboard" className="py-20 bg-background">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold mb-4">
@@ -300,59 +405,70 @@ export default function Landing() {
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">{content.dashboard.subtitle}</p>
           </div>
           
-          <div className="max-w-4xl mx-auto">
-            <div className="bg-gradient-to-br from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 rounded-2xl p-8 border">
-              <div className="grid md:grid-cols-2 gap-8">
-                <div className="space-y-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full flex items-center justify-center">
-                      <BarChart3 className="h-5 w-5 text-white" />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold">Smart Analytics</h3>
-                      <p className="text-sm text-muted-foreground">Track your job search progress</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full flex items-center justify-center">
-                      <Target className="h-5 w-5 text-white" />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold">AI Matching</h3>
-                      <p className="text-sm text-muted-foreground">Get matched with perfect jobs</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full flex items-center justify-center">
-                      <Rocket className="h-5 w-5 text-white" />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold">Career Acceleration</h3>
-                      <p className="text-sm text-muted-foreground">Land your dream job faster</p>
-                    </div>
-                  </div>
-                </div>
-                <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
-                  <div className="space-y-4">
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm font-medium">Job Match Score</span>
-                      <span className="text-sm text-green-600 font-semibold">95%</span>
-                    </div>
-                    <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                      <div className="bg-gradient-to-r from-green-500 to-blue-500 h-2 rounded-full" style={{ width: '95%' }}></div>
-                    </div>
-                    <div className="grid grid-cols-2 gap-4 text-center">
-                      <div>
-                        <div className="text-2xl font-bold text-purple-600">24</div>
-                        <div className="text-xs text-muted-foreground">Applications</div>
-                      </div>
-                      <div>
-                        <div className="text-2xl font-bold text-blue-600">8</div>
-                        <div className="text-xs text-muted-foreground">Interviews</div>
+          <div className="max-w-6xl mx-auto">
+            <div className="relative">
+              {/* Carousel Container */}
+              <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 border">
+                <div className="flex transition-transform duration-500 ease-in-out" style={{ transform: `translateX(-${currentSlide * 100}%)` }}>
+                  {dashboardScreenshots.map((screenshot, index) => (
+                    <div key={screenshot.id} className="w-full flex-shrink-0">
+                      <div className="grid md:grid-cols-2 gap-8 p-8">
+                        <div className="space-y-6">
+                          <div>
+                            <h3 className="text-2xl font-bold mb-3">{screenshot.title}</h3>
+                            <p className="text-muted-foreground text-lg mb-6">{screenshot.description}</p>
+                          </div>
+                          <div className="space-y-4">
+                            {screenshot.features.map((feature, featureIndex) => (
+                              <div key={featureIndex} className="flex items-center gap-3">
+                                <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full flex items-center justify-center">
+                                  <Check className="h-4 w-4 text-white" />
+                                </div>
+                                <span className="text-sm font-medium">{feature}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                        <div className="bg-white dark:bg-gray-800 rounded-xl p-2 shadow-lg">
+                          <img 
+                            src={screenshot.image} 
+                            alt={screenshot.title}
+                            className="w-full h-auto rounded-lg"
+                          />
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  ))}
                 </div>
+                
+                {/* Navigation Arrows */}
+                <button
+                  onClick={prevSlide}
+                  className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white dark:bg-gray-800 rounded-full shadow-lg hover:shadow-xl transition-shadow flex items-center justify-center"
+                >
+                  <ChevronLeft className="h-6 w-6 text-gray-600 dark:text-gray-300" />
+                </button>
+                <button
+                  onClick={nextSlide}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white dark:bg-gray-800 rounded-full shadow-lg hover:shadow-xl transition-shadow flex items-center justify-center"
+                >
+                  <ChevronRight className="h-6 w-6 text-gray-600 dark:text-gray-300" />
+                </button>
+              </div>
+              
+              {/* Dots Indicator */}
+              <div className="flex justify-center mt-6 space-x-2">
+                {dashboardScreenshots.map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => goToSlide(index)}
+                    className={`w-3 h-3 rounded-full transition-colors ${
+                      index === currentSlide 
+                        ? 'bg-gradient-to-r from-purple-500 to-blue-500' 
+                        : 'bg-gray-300 dark:bg-gray-600'
+                    }`}
+                  />
+                ))}
               </div>
             </div>
           </div>
@@ -398,7 +514,7 @@ export default function Landing() {
       </section>
 
       {/* Testimonials */}
-      <section className="py-20 bg-background">
+      <section id="testimonials" className="py-20 bg-background">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold mb-4">
@@ -441,7 +557,7 @@ export default function Landing() {
       </section>
 
       {/* Pricing */}
-      <section className="py-20 bg-muted/30">
+      <section id="pricing" className="py-20 bg-muted/30">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold mb-4">
@@ -498,8 +614,8 @@ export default function Landing() {
               <Button size="lg" className="bg-white text-purple-600 hover:bg-gray-100 px-8" asChild>
                 <Link to="/api/login">Get Started Free</Link>
               </Button>
-              <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-purple-600 px-8">
-                Learn More
+              <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-purple-600 px-8" asChild>
+                <a href="#features">Learn More</a>
               </Button>
             </div>
           </div>
@@ -516,12 +632,8 @@ export default function Landing() {
                 AI-powered job search platform helping professionals find their dream jobs 10x faster.
               </p>
               <div className="flex gap-4">
-                <Button variant="outline" size="sm" className="border-gray-600 text-gray-300 hover:bg-gray-800">
-                  Privacy Policy
-                </Button>
-                <Button variant="outline" size="sm" className="border-gray-600 text-gray-300 hover:bg-gray-800">
-                  Terms of Service
-                </Button>
+                <a href="#privacy" className="text-gray-300 hover:text-white transition-colors">Privacy Policy</a>
+                <a href="#terms" className="text-gray-300 hover:text-white transition-colors">Terms of Service</a>
               </div>
             </div>
             
