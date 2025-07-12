@@ -1,459 +1,460 @@
-import { useState, useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { useAuth } from "@/hooks/useAuth";
-import { useToast } from "@/hooks/use-toast";
-import { isUnauthorizedError } from "@/lib/authUtils";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
+import { useState } from 'react';
+import { useAuth } from '@/hooks/useAuth';
+import { useTranslation } from '@/lib/i18n';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Progress } from '@/components/ui/progress';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
+  Search, 
+  FileText, 
+  MessageSquare, 
   BarChart3, 
-  Briefcase, 
-  Calendar, 
-  TrendingUp, 
-  Star, 
-  Plus, 
-  ArrowRight,
-  Building,
-  MapPin,
-  Clock,
-  Users,
+  Users, 
+  Calendar,
   Target,
-  FileText,
-  Video,
-  DollarSign,
-  Zap,
-  Bell,
-  Settings
-} from "lucide-react";
+  TrendingUp,
+  Award,
+  BookOpen,
+  Briefcase,
+  Star,
+  Upload,
+  Eye,
+  Edit,
+  Plus,
+  Filter
+} from 'lucide-react';
 
 export default function Dashboard() {
-  const { user, isLoading, isAuthenticated } = useAuth();
-  const { toast } = useToast();
+  const { user } = useAuth();
+  const { t } = useTranslation();
+  const [activeTab, setActiveTab] = useState('overview');
 
-  // Redirect to home if not authenticated
-  useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
-      toast({
-        title: "Unauthorized",
-        description: "You are logged out. Logging in again...",
-        variant: "destructive",
-      });
-      setTimeout(() => {
-        window.location.href = "/api/login";
-      }, 500);
-      return;
-    }
-  }, [isAuthenticated, isLoading, toast]);
-
-  const { data: applicationStats, isLoading: statsLoading } = useQuery({
-    queryKey: ["/api/applications/stats"],
-    retry: false,
-    enabled: isAuthenticated,
-    meta: {
-      onError: (error: Error) => {
-        if (isUnauthorizedError(error)) {
-          toast({
-            title: "Unauthorized",
-            description: "You are logged out. Logging in again...",
-            variant: "destructive",
-          });
-          setTimeout(() => {
-            window.location.href = "/api/login";
-          }, 500);
-          return;
-        }
-      }
-    }
-  });
-
-  const { data: applications, isLoading: applicationsLoading } = useQuery({
-    queryKey: ["/api/applications"],
-    retry: false,
-    enabled: isAuthenticated,
-    meta: {
-      onError: (error: Error) => {
-        if (isUnauthorizedError(error)) {
-          toast({
-            title: "Unauthorized",
-            description: "You are logged out. Logging in again...",
-            variant: "destructive",
-          });
-          setTimeout(() => {
-            window.location.href = "/api/login";
-          }, 500);
-          return;
-        }
-      }
-    }
-  });
-
-  const { data: recommendations } = useQuery({
-    queryKey: ["/api/jobs/recommendations"],
-    retry: false,
-    enabled: isAuthenticated,
-  });
-
-  const { data: notifications } = useQuery({
-    queryKey: ["/api/notifications"],
-    retry: false,
-    enabled: isAuthenticated,
-  });
-
-  if (isLoading || !isAuthenticated) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full" />
-      </div>
-    );
-  }
-
-  const stats = [
-    {
-      title: "Total Applications",
-      value: applicationStats?.totalApplications || 0,
-      icon: Briefcase,
-      color: "bg-gradient-to-r from-purple-500 to-blue-500",
-      textColor: "text-white"
-    },
-    {
-      title: "Interviews Scheduled",
-      value: applicationStats?.interviewCount || 0,
-      icon: Calendar,
-      color: "bg-white dark:bg-gray-800",
-      textColor: "text-green-600"
-    },
-    {
-      title: "Response Rate",
-      value: `${applicationStats?.responseRate || 0}%`,
-      icon: TrendingUp,
-      color: "bg-white dark:bg-gray-800",
-      textColor: "text-blue-600"
-    },
-    {
-      title: "Avg. Match Score",
-      value: "92%", // This would come from AI analysis
-      icon: Star,
-      color: "bg-white dark:bg-gray-800",
-      textColor: "text-purple-600"
-    }
-  ];
-
-  const aiRecommendations = [
-    {
-      type: "resume",
-      title: "Optimize Your Resume",
-      description: 'Add "React" and "Node.js" to increase match rate by 15%',
-      icon: FileText,
-      color: "purple",
-      action: "Apply Suggestion"
-    },
-    {
-      type: "interview",
-      title: "Interview Prep",
-      description: "Practice common PM questions for TechCorp interview",
-      icon: Video,
-      color: "blue",
-      action: "Start Practice"
-    },
-    {
-      type: "salary",
-      title: "Salary Negotiation",
-      description: "Market data shows you can negotiate 20% higher",
-      icon: DollarSign,
-      color: "green",
-      action: "View Analysis"
-    }
-  ];
-
-  const getStatusBadgeVariant = (status: string) => {
-    switch (status) {
-      case "interview":
-        return "default";
-      case "offer":
-        return "default";
-      case "rejected":
-        return "destructive";
-      default:
-        return "secondary";
-    }
+  // Mock data - in real app, this would come from API
+  const dashboardData = {
+    jobSearches: 23,
+    applications: 12,
+    interviews: 3,
+    resumeScore: 85,
+    profileStrength: 92,
+    matchingJobs: 47,
+    plan: user?.subscriptionPlan || 'free'
   };
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "interview":
-        return "text-green-600";
-      case "offer":
-        return "text-green-600";
-      case "rejected":
-        return "text-red-600";
-      default:
-        return "text-blue-600";
-    }
-  };
+  const recentActivity = [
+    { id: 1, type: 'job_search', title: 'Software Engineer at TechCorp', time: '2 hours ago' },
+    { id: 2, type: 'resume_update', title: 'Updated resume skills section', time: '1 day ago' },
+    { id: 3, type: 'interview', title: 'Interview scheduled with StartupXYZ', time: '2 days ago' },
+    { id: 4, type: 'application', title: 'Applied to Product Manager role', time: '3 days ago' },
+  ];
+
+  const matchingJobs = [
+    { id: 1, title: 'Senior Software Engineer', company: 'TechCorp', match: 95, location: 'San Francisco' },
+    { id: 2, title: 'Product Manager', company: 'StartupXYZ', match: 88, location: 'New York' },
+    { id: 3, title: 'Full Stack Developer', company: 'WebCorp', match: 82, location: 'Remote' },
+    { id: 4, title: 'Data Scientist', company: 'DataTech', match: 78, location: 'Boston' },
+  ];
+
+  const resumes = [
+    { id: 1, title: 'Senior Software Engineer Resume', score: 85, lastUpdated: '2 days ago', isActive: true },
+    { id: 2, title: 'Product Manager Resume', score: 78, lastUpdated: '1 week ago', isActive: false },
+    { id: 3, title: 'Full Stack Developer Resume', score: 92, lastUpdated: '3 days ago', isActive: false },
+  ];
+
+  const interviews = [
+    { id: 1, company: 'TechCorp', position: 'Senior Software Engineer', date: '2024-01-15', time: '10:00 AM', type: 'Technical' },
+    { id: 2, company: 'StartupXYZ', position: 'Product Manager', date: '2024-01-18', time: '2:00 PM', type: 'Behavioral' },
+    { id: 3, company: 'WebCorp', position: 'Full Stack Developer', date: '2024-01-20', time: '11:30 AM', type: 'System Design' },
+  ];
 
   return (
-    <div className="min-h-screen bg-background pt-20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="min-h-screen bg-background">
+      <div className="container mx-auto px-4 py-8">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8 pb-6 border-b">
+        <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-3xl font-bold">
-              Welcome back, {user?.firstName || "there"}!
-            </h1>
-            <p className="text-muted-foreground mt-2">Here's your job search progress</p>
+            <h1 className="text-3xl font-bold">{t.dashboard.welcome}, {user?.firstName || 'User'}!</h1>
+            <p className="text-muted-foreground mt-1">
+              {t.dashboard.analytics} - {dashboardData.plan === 'free' ? 'Free Plan' : dashboardData.plan === 'professional' ? 'Professional Plan' : 'AI Career Coach Plan'}
+            </p>
           </div>
-          <div className="flex items-center space-x-4">
-            <Button className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600">
-              <Plus className="w-4 h-4 mr-2" />
-              New Application
+          {dashboardData.plan === 'free' && (
+            <Button className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700">
+              {t.dashboard.upgrade}
             </Button>
-            <Button variant="outline">
-              <Settings className="w-4 h-4 mr-2" />
-              Settings
-            </Button>
-          </div>
+          )}
         </div>
 
-        {/* Stats Cards */}
+        {/* Stats Overview */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          {stats.map((stat, index) => {
-            const Icon = stat.icon;
-            return (
-              <Card key={index} className={`${stat.color} ${stat.textColor === "text-white" ? "text-white" : ""}`}>
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className={`text-sm ${stat.textColor === "text-white" ? "text-purple-100" : "text-muted-foreground"}`}>
-                        {stat.title}
-                      </p>
-                      <p className="text-3xl font-bold">{stat.value}</p>
-                    </div>
-                    <Icon className={`w-8 h-8 ${stat.textColor === "text-white" ? "text-purple-200" : stat.textColor.replace("text-", "text-") + " opacity-60"}`} />
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">{t.dashboard.jobSearches}</CardTitle>
+              <Search className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{dashboardData.jobSearches}</div>
+              <p className="text-xs text-muted-foreground">
+                +12% from last month
+              </p>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">{t.dashboard.applications}</CardTitle>
+              <FileText className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{dashboardData.applications}</div>
+              <p className="text-xs text-muted-foreground">
+                +3 this week
+              </p>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">{t.dashboard.interviews}</CardTitle>
+              <MessageSquare className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{dashboardData.interviews}</div>
+              <p className="text-xs text-muted-foreground">
+                2 upcoming
+              </p>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">{t.dashboard.resumeScore}</CardTitle>
+              <Award className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{dashboardData.resumeScore}%</div>
+              <Progress value={dashboardData.resumeScore} className="w-full mt-2" />
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Main Content Tabs */}
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+          <TabsList className="grid w-full grid-cols-6">
+            <TabsTrigger value="overview">Overview</TabsTrigger>
+            <TabsTrigger value="jobs">{t.dashboard.jobMatching}</TabsTrigger>
+            <TabsTrigger value="resumes">{t.dashboard.cvAnalysis}</TabsTrigger>
+            <TabsTrigger value="interviews">{t.dashboard.interviewPrep}</TabsTrigger>
+            <TabsTrigger value="applications">Applications</TabsTrigger>
+            <TabsTrigger value="analytics">{t.dashboard.analytics}</TabsTrigger>
+          </TabsList>
+
+          {/* Overview Tab */}
+          <TabsContent value="overview" className="space-y-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {/* Quick Actions */}
+              <Card className="lg:col-span-2">
+                <CardHeader>
+                  <CardTitle>{t.dashboard.quickActions}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-2 gap-4">
+                    <Button className="h-16 flex-col gap-2" variant="outline">
+                      <Search className="h-5 w-5" />
+                      <span className="text-sm">Search Jobs</span>
+                    </Button>
+                    <Button className="h-16 flex-col gap-2" variant="outline">
+                      <FileText className="h-5 w-5" />
+                      <span className="text-sm">Optimize Resume</span>
+                    </Button>
+                    <Button className="h-16 flex-col gap-2" variant="outline">
+                      <MessageSquare className="h-5 w-5" />
+                      <span className="text-sm">Practice Interview</span>
+                    </Button>
+                    <Button className="h-16 flex-col gap-2" variant="outline">
+                      <BarChart3 className="h-5 w-5" />
+                      <span className="text-sm">View Analytics</span>
+                    </Button>
                   </div>
                 </CardContent>
               </Card>
-            );
-          })}
-        </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Recent Applications */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center justify-between">
-                Recent Applications
-                <Button variant="ghost" size="sm">
-                  View All <ArrowRight className="w-4 h-4 ml-1" />
+              {/* Profile Strength */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>{t.dashboard.profileStrength}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-center">
+                    <div className="text-3xl font-bold text-green-600 mb-2">
+                      {dashboardData.profileStrength}%
+                    </div>
+                    <Progress value={dashboardData.profileStrength} className="w-full mb-4" />
+                    <div className="space-y-2 text-sm">
+                      <div className="flex items-center justify-between">
+                        <span>Resume Complete</span>
+                        <Badge variant="secondary">95%</Badge>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span>Skills Updated</span>
+                        <Badge variant="secondary">90%</Badge>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span>Experience Added</span>
+                        <Badge variant="secondary">85%</Badge>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Recent Activity */}
+            <Card>
+              <CardHeader>
+                <CardTitle>{t.dashboard.recentActivity}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {recentActivity.map((activity) => (
+                    <div key={activity.id} className="flex items-center space-x-4 p-3 rounded-lg hover:bg-muted/50">
+                      <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                        {activity.type === 'job_search' && <Search className="h-4 w-4 text-primary" />}
+                        {activity.type === 'resume_update' && <FileText className="h-4 w-4 text-primary" />}
+                        {activity.type === 'interview' && <MessageSquare className="h-4 w-4 text-primary" />}
+                        {activity.type === 'application' && <Briefcase className="h-4 w-4 text-primary" />}
+                      </div>
+                      <div className="flex-1">
+                        <p className="font-medium">{activity.title}</p>
+                        <p className="text-sm text-muted-foreground">{activity.time}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Job Matching Tab */}
+          <TabsContent value="jobs" className="space-y-6">
+            <div className="flex justify-between items-center">
+              <h2 className="text-2xl font-bold">{t.dashboard.matchingJobs}</h2>
+              <div className="flex gap-2">
+                <Button variant="outline" size="sm">
+                  <Filter className="h-4 w-4 mr-2" />
+                  Filter
                 </Button>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              {applicationsLoading ? (
-                <div className="space-y-4">
-                  {[...Array(3)].map((_, i) => (
-                    <div key={i} className="flex items-center space-x-4 p-4 border rounded-lg">
-                      <div className="w-12 h-12 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse" />
-                      <div className="flex-1 space-y-2">
-                        <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
-                        <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-2/3 animate-pulse" />
+                <Button>
+                  <Search className="h-4 w-4 mr-2" />
+                  New Search
+                </Button>
+              </div>
+            </div>
+            
+            <div className="grid gap-4">
+              {matchingJobs.map((job) => (
+                <Card key={job.id} className="hover:shadow-md transition-shadow">
+                  <CardContent className="p-6">
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <h3 className="font-semibold text-lg">{job.title}</h3>
+                        <p className="text-muted-foreground">{job.company}</p>
+                        <p className="text-sm text-muted-foreground mt-1">{job.location}</p>
                       </div>
-                    </div>
-                  ))}
-                </div>
-              ) : applications && applications.length > 0 ? (
-                <div className="space-y-4">
-                  {applications.slice(0, 3).map((application: any) => (
-                    <div key={application.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors">
-                      <div className="flex items-center space-x-4">
-                        <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-blue-500 rounded-lg flex items-center justify-center">
-                          <Building className="w-6 h-6 text-white" />
+                      <div className="flex items-center gap-4">
+                        <div className="text-center">
+                          <Badge variant={job.match >= 90 ? 'default' : job.match >= 80 ? 'secondary' : 'outline'}>
+                            {job.match}% Match
+                          </Badge>
                         </div>
-                        <div>
-                          <p className="font-semibold">{application.job?.title || "Job Title"}</p>
-                          <p className="text-sm text-muted-foreground">{application.job?.company || "Company"}</p>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <Badge variant={getStatusBadgeVariant(application.status)}>
-                          {application.status || "applied"}
-                        </Badge>
-                        {application.matchScore && (
-                          <p className="text-sm text-muted-foreground mt-1">
-                            Match: {application.matchScore}%
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="text-center py-8">
-                  <Briefcase className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                  <p className="text-muted-foreground">No applications yet</p>
-                  <Button className="mt-4" size="sm">
-                    Start Applying
-                  </Button>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-
-          {/* AI Recommendations */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <Zap className="w-5 h-5 mr-2 text-purple-500" />
-                AI Recommendations
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {aiRecommendations.map((rec, index) => {
-                  const Icon = rec.icon;
-                  const colorClasses = {
-                    purple: "bg-gradient-to-r from-purple-50 to-blue-50 border-purple-200 dark:from-purple-950/20 dark:to-blue-950/20",
-                    blue: "bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200 dark:from-blue-950/20 dark:to-indigo-950/20",
-                    green: "bg-gradient-to-r from-green-50 to-teal-50 border-green-200 dark:from-green-950/20 dark:to-teal-950/20"
-                  };
-                  
-                  return (
-                    <div key={index} className={`p-4 rounded-lg border ${colorClasses[rec.color as keyof typeof colorClasses]}`}>
-                      <div className="flex items-start space-x-3">
-                        <div className={`w-10 h-10 bg-${rec.color}-500 rounded-lg flex items-center justify-center flex-shrink-0`}>
-                          <Icon className="w-5 h-5 text-white" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="font-semibold mb-1">{rec.title}</p>
-                          <p className="text-sm text-muted-foreground mb-3">{rec.description}</p>
-                          <Button variant="link" className={`text-${rec.color}-600 p-0 h-auto`}>
-                            {rec.action} <ArrowRight className="w-4 h-4 ml-1" />
+                        <div className="flex gap-2">
+                          <Button variant="outline" size="sm">
+                            <Eye className="h-4 w-4" />
+                          </Button>
+                          <Button size="sm">
+                            Apply
                           </Button>
                         </div>
                       </div>
                     </div>
-                  );
-                })}
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </TabsContent>
 
-        {/* Job Recommendations */}
-        <Card className="mt-8">
-          <CardHeader>
-            <CardTitle className="flex items-center justify-between">
-              <span className="flex items-center">
-                <Target className="w-5 h-5 mr-2 text-blue-500" />
-                Recommended Jobs
-              </span>
-              <Button variant="ghost" size="sm">
-                View All <ArrowRight className="w-4 h-4 ml-1" />
+          {/* Resume Analysis Tab */}
+          <TabsContent value="resumes" className="space-y-6">
+            <div className="flex justify-between items-center">
+              <h2 className="text-2xl font-bold">{t.dashboard.cvAnalysis}</h2>
+              <Button>
+                <Upload className="h-4 w-4 mr-2" />
+                Upload New Resume
               </Button>
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            {recommendations && recommendations.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {recommendations.slice(0, 4).map((job: any, index: number) => (
-                  <div key={index} className="border rounded-lg p-6 hover:shadow-md transition-shadow">
-                    <div className="flex items-start justify-between mb-4">
-                      <div className="flex items-start space-x-4 flex-1">
-                        <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-blue-500 rounded-lg flex items-center justify-center flex-shrink-0">
-                          <Building className="w-6 h-6 text-white" />
+            </div>
+            
+            <div className="grid gap-4">
+              {resumes.map((resume) => (
+                <Card key={resume.id} className={`hover:shadow-md transition-shadow ${resume.isActive ? 'ring-2 ring-primary' : ''}`}>
+                  <CardContent className="p-6">
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2">
+                          <h3 className="font-semibold text-lg">{resume.title}</h3>
+                          {resume.isActive && <Badge>Active</Badge>}
                         </div>
-                        <div className="flex-1 min-w-0">
-                          <h3 className="font-semibold text-lg mb-1 truncate">{job.title}</h3>
-                          <p className="text-muted-foreground mb-2">{job.company}</p>
-                          <div className="flex items-center space-x-4 text-sm text-muted-foreground">
-                            <span className="flex items-center">
-                              <MapPin className="w-4 h-4 mr-1" />
-                              {job.location}
-                            </span>
-                            {job.salaryMin && (
-                              <span className="flex items-center">
-                                <DollarSign className="w-4 h-4 mr-1" />
-                                ${job.salaryMin?.toLocaleString()}+
-                              </span>
-                            )}
-                          </div>
+                        <p className="text-sm text-muted-foreground mt-1">Last updated: {resume.lastUpdated}</p>
+                      </div>
+                      <div className="flex items-center gap-4">
+                        <div className="text-center">
+                          <div className="text-2xl font-bold text-green-600">{resume.score}%</div>
+                          <p className="text-xs text-muted-foreground">ATS Score</p>
+                        </div>
+                        <div className="flex gap-2">
+                          <Button variant="outline" size="sm">
+                            <Eye className="h-4 w-4" />
+                          </Button>
+                          <Button variant="outline" size="sm">
+                            <Edit className="h-4 w-4" />
+                          </Button>
                         </div>
                       </div>
-                      <div className="text-right flex-shrink-0">
-                        <div className="flex items-center space-x-1 mb-2">
-                          <Star className="w-4 h-4 text-green-500" />
-                          <span className="text-sm font-semibold text-green-600">
-                            {job.matchScore || Math.floor(Math.random() * 20) + 80}% Match
-                          </span>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </TabsContent>
+
+          {/* Interview Preparation Tab */}
+          <TabsContent value="interviews" className="space-y-6">
+            <div className="flex justify-between items-center">
+              <h2 className="text-2xl font-bold">{t.dashboard.interviewPrep}</h2>
+              <Button>
+                <Plus className="h-4 w-4 mr-2" />
+                Schedule Practice
+              </Button>
+            </div>
+            
+            <div className="grid gap-4">
+              {interviews.map((interview) => (
+                <Card key={interview.id} className="hover:shadow-md transition-shadow">
+                  <CardContent className="p-6">
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <h3 className="font-semibold text-lg">{interview.position}</h3>
+                        <p className="text-muted-foreground">{interview.company}</p>
+                        <div className="flex items-center gap-4 mt-2">
+                          <div className="flex items-center gap-2">
+                            <Calendar className="h-4 w-4 text-muted-foreground" />
+                            <span className="text-sm">{interview.date}</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <MessageSquare className="h-4 w-4 text-muted-foreground" />
+                            <span className="text-sm">{interview.time}</span>
+                          </div>
+                          <Badge variant="outline">{interview.type}</Badge>
                         </div>
-                        <Button size="sm" className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600">
-                          Apply Now
+                      </div>
+                      <div className="flex gap-2">
+                        <Button variant="outline" size="sm">
+                          Practice
+                        </Button>
+                        <Button size="sm">
+                          Prepare
                         </Button>
                       </div>
                     </div>
-                    <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
-                      {job.description?.substring(0, 150)}...
-                    </p>
-                    <div className="flex flex-wrap gap-2">
-                      {job.skills?.slice(0, 3).map((skill: string, skillIndex: number) => (
-                        <Badge key={skillIndex} variant="secondary" className="text-xs">
-                          {skill}
-                        </Badge>
-                      ))}
-                      {job.skills?.length > 3 && (
-                        <Badge variant="outline" className="text-xs">
-                          +{job.skills.length - 3} more
-                        </Badge>
-                      )}
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </TabsContent>
+
+          {/* Applications Tab */}
+          <TabsContent value="applications" className="space-y-6">
+            <div className="flex justify-between items-center">
+              <h2 className="text-2xl font-bold">Job Applications</h2>
+              <Button>
+                <Plus className="h-4 w-4 mr-2" />
+                New Application
+              </Button>
+            </div>
+            
+            <div className="grid gap-4">
+              <Card>
+                <CardContent className="p-6">
+                  <div className="text-center text-muted-foreground">
+                    <Briefcase className="h-12 w-12 mx-auto mb-4" />
+                    <h3 className="font-medium mb-2">No applications yet</h3>
+                    <p className="text-sm">Start applying to jobs to track your progress here</p>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+
+          {/* Analytics Tab */}
+          <TabsContent value="analytics" className="space-y-6">
+            <h2 className="text-2xl font-bold">Advanced Analytics</h2>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Job Search Performance</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <span>Search to Application Rate</span>
+                      <Badge>52%</Badge>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span>Application to Interview Rate</span>
+                      <Badge>25%</Badge>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span>Interview Success Rate</span>
+                      <Badge>67%</Badge>
                     </div>
                   </div>
-                ))}
-              </div>
-            ) : (
-              <div className="text-center py-8">
-                <Target className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                <p className="text-muted-foreground">No job recommendations available</p>
-                <p className="text-sm text-muted-foreground mt-2">Complete your profile to get personalized recommendations</p>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        {/* Progress Overview */}
-        <Card className="mt-8">
-          <CardHeader>
-            <CardTitle>Job Search Progress</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div>
-                <div className="flex justify-between items-center mb-2">
-                  <span className="text-sm font-medium">Profile Completeness</span>
-                  <span className="text-sm text-muted-foreground">75%</span>
-                </div>
-                <Progress value={75} className="h-2" />
-                <p className="text-xs text-muted-foreground mt-2">Add skills and experience to reach 100%</p>
-              </div>
-              <div>
-                <div className="flex justify-between items-center mb-2">
-                  <span className="text-sm font-medium">Resume Optimization</span>
-                  <span className="text-sm text-muted-foreground">85%</span>
-                </div>
-                <Progress value={85} className="h-2" />
-                <p className="text-xs text-muted-foreground mt-2">Great! Your resume is well optimized</p>
-              </div>
-              <div>
-                <div className="flex justify-between items-center mb-2">
-                  <span className="text-sm font-medium">Interview Readiness</span>
-                  <span className="text-sm text-muted-foreground">60%</span>
-                </div>
-                <Progress value={60} className="h-2" />
-                <p className="text-xs text-muted-foreground mt-2">Practice more to improve your score</p>
-              </div>
+                </CardContent>
+              </Card>
+              
+              <Card>
+                <CardHeader>
+                  <CardTitle>Skills Analysis</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <span>JavaScript</span>
+                      <div className="flex items-center gap-2">
+                        <Progress value={85} className="w-20" />
+                        <span className="text-sm">85%</span>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span>React</span>
+                      <div className="flex items-center gap-2">
+                        <Progress value={78} className="w-20" />
+                        <span className="text-sm">78%</span>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span>Node.js</span>
+                      <div className="flex items-center gap-2">
+                        <Progress value={72} className="w-20" />
+                        <span className="text-sm">72%</span>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
-          </CardContent>
-        </Card>
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );

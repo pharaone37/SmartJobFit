@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useTheme } from "@/components/theme-provider";
+import { useTranslation } from "@/lib/i18n";
+import { LanguageSelector } from "@/components/LanguageSelector";
 import { Button } from "@/components/ui/button";
 import { 
   DropdownMenu, 
@@ -31,11 +33,12 @@ import {
 export default function Navbar() {
   const { isAuthenticated, user } = useAuth();
   const { theme, setTheme } = useTheme();
+  const { t } = useTranslation();
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const navigationItems = [
-    { name: "Dashboard", href: "/dashboard", icon: BarChart3 },
+    { name: t.nav.dashboard, href: "/dashboard", icon: BarChart3 },
     { name: "Job Search", href: "/jobs", icon: Search },
     { name: "Resume", href: "/resume", icon: FileText },
     { name: "Interview Prep", href: "/interview-prep", icon: Video },
@@ -43,9 +46,9 @@ export default function Navbar() {
   ];
 
   const publicNavigationItems = [
-    { name: "Features", href: "#features" },
+    { name: t.nav.features, href: "#features" },
     { name: "Dashboard", href: "#dashboard" },
-    { name: "Pricing", href: "#pricing" },
+    { name: t.nav.pricing, href: "#pricing" },
     { name: "Reviews", href: "#testimonials" },
   ];
 
@@ -63,7 +66,7 @@ export default function Navbar() {
               <Bot className="w-5 h-5 text-white" />
             </div>
             <span className="text-xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
-              JobMatch AI
+              SmartJobFit
             </span>
           </Link>
 
@@ -106,6 +109,9 @@ export default function Navbar() {
 
           {/* Right Side Actions */}
           <div className="flex items-center space-x-4">
+            {/* Language Selector */}
+            <LanguageSelector />
+            
             {/* Theme Toggle */}
             <Button
               variant="ghost"
@@ -122,10 +128,10 @@ export default function Navbar() {
             {!isAuthenticated ? (
               <>
                 <Button variant="ghost" asChild>
-                  <a href="/api/login">Sign In</a>
+                  <a href="/api/login">{t.nav.login}</a>
                 </Button>
                 <Button asChild>
-                  <a href="/api/login">Get Started</a>
+                  <a href="/api/login">{t.common.getStarted}</a>
                 </Button>
               </>
             ) : (

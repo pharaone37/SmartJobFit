@@ -51,6 +51,7 @@ export function PricingCard({
           {isFree && "Perfect for getting started"}
           {plan.id === 'professional' && "For serious job seekers"}
           {plan.id === 'enterprise' && "For career professionals"}
+          {plan.id === 'ai-career-coach' && "For career professionals"}
         </CardDescription>
       </CardHeader>
 
@@ -71,7 +72,7 @@ export function PricingCard({
             "w-full",
             isPopular && "button-gradient",
             isFree && "bg-gray-100 text-gray-700 hover:bg-gray-200",
-            plan.id === 'enterprise' && "bg-gray-900 text-white hover:bg-gray-800"
+            (plan.id === 'enterprise' || plan.id === 'ai-career-coach') && "bg-gray-900 text-white hover:bg-gray-800"
           )}
         >
           {isLoading ? (
@@ -80,7 +81,7 @@ export function PricingCard({
             'Current Plan'
           ) : isFree ? (
             'Get Started'
-          ) : plan.id === 'enterprise' ? (
+          ) : (plan.id === 'enterprise' || plan.id === 'ai-career-coach') ? (
             'Contact Sales'
           ) : (
             <>

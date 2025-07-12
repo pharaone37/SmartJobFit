@@ -3,6 +3,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/useAuth";
 import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "@/components/theme-provider";
+import { LanguageProvider } from "@/components/LanguageProvider";
 
 // Pages
 import Landing from "@/pages/Landing";
@@ -13,6 +14,7 @@ import InterviewPrep from "@/pages/InterviewPrep";
 import Analytics from "@/pages/Analytics";
 import Pricing from "@/pages/Pricing";
 import Subscribe from "@/pages/Subscribe";
+import HelpCenter from "@/pages/HelpCenter";
 import NotFound from "@/pages/not-found";
 
 // Components
@@ -49,6 +51,7 @@ function AppContent() {
               <>
                 <Route path="/" element={<Landing />} />
                 <Route path="/pricing" element={<Pricing />} />
+                <Route path="/help" element={<HelpCenter />} />
                 <Route path="*" element={<Navigate to="/" replace />} />
               </>
             ) : (
@@ -61,6 +64,7 @@ function AppContent() {
                 <Route path="/analytics" element={<Analytics />} />
                 <Route path="/pricing" element={<Pricing />} />
                 <Route path="/subscribe" element={<Subscribe />} />
+                <Route path="/help" element={<HelpCenter />} />
                 <Route path="*" element={<NotFound />} />
               </>
             )}
@@ -76,9 +80,11 @@ function AppContent() {
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider defaultTheme="light" storageKey="jobmatch-theme">
-        <AppContent />
-      </ThemeProvider>
+      <LanguageProvider>
+        <ThemeProvider defaultTheme="light" storageKey="smartjobfit-theme">
+          <AppContent />
+        </ThemeProvider>
+      </LanguageProvider>
     </QueryClientProvider>
   );
 }

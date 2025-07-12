@@ -1,145 +1,196 @@
 import { useState } from 'react';
-import { Bot, MessageCircle, Send, Search, CreditCard, Shield, User, FileText, HelpCircle } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
+import { useTranslation } from '@/lib/i18n';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { 
+  Search, 
+  BookOpen, 
+  MessageSquare, 
+  Mail, 
+  Phone,
+  Video,
+  FileText,
+  Users,
+  Settings,
+  CreditCard,
+  Shield,
+  Zap,
+  HelpCircle
+} from 'lucide-react';
 
 export default function HelpCenter() {
-  const [chatMessages, setChatMessages] = useState([
-    { role: 'assistant', content: 'Hi! I\'m your SmartJobFit assistant. I can help you with account setup, billing, upgrades, FAQ, and CV handling. What would you like to know?' }
-  ]);
-  const [inputMessage, setInputMessage] = useState('');
+  const { t } = useTranslation();
+  const [searchQuery, setSearchQuery] = useState('');
 
-  const faqCategories = [
+  const helpCategories = [
     {
-      title: 'Account Setup',
-      icon: User,
-      items: [
-        { q: 'How do I create an account?', a: 'Click "Get Started Free" and sign in with your Replit account. No additional registration needed.' },
-        { q: 'Can I change my account information?', a: 'Yes, you can update your profile information in your account settings.' },
-        { q: 'How do I delete my account?', a: 'Contact support through our help center to request account deletion.' }
+      id: 'getting-started',
+      title: 'Getting Started',
+      icon: Zap,
+      articles: [
+        { title: 'Creating Your Account', views: '2.3k', time: '3 min read' },
+        { title: 'Setting Up Your Profile', views: '1.8k', time: '5 min read' },
+        { title: 'Your First Job Search', views: '3.1k', time: '7 min read' },
+        { title: 'Understanding AI Matching', views: '1.5k', time: '4 min read' }
       ]
     },
     {
-      title: 'Billing & Upgrades',
-      icon: CreditCard,
-      items: [
-        { q: 'How does the free tier work?', a: 'Free tier includes 5 AI job searches per month, basic resume optimization, and limited job board access.' },
-        { q: 'What payment methods do you accept?', a: 'We accept all major credit cards and debit cards through Stripe.' },
-        { q: 'Can I cancel my subscription anytime?', a: 'Yes, you can cancel your subscription at any time. Your access continues until the end of the billing period.' },
-        { q: 'How do I upgrade to Professional?', a: 'Click "Upgrade to Professional" on any pricing plan. You\'ll get unlimited AI searches, advanced optimization, and priority support.' }
-      ]
-    },
-    {
-      title: 'CV & Resume Handling',
+      id: 'resume-optimization',
+      title: 'Resume Optimization',
       icon: FileText,
-      items: [
-        { q: 'What resume formats do you support?', a: 'We support PDF, DOC, and DOCX formats. We recommend PDF for best results.' },
-        { q: 'Is my resume data secure?', a: 'Yes, all resume data is encrypted and stored securely. We never share your information with third parties.' },
-        { q: 'How does AI resume optimization work?', a: 'Our AI analyzes your resume for ATS compatibility, suggests keywords, and provides improvement recommendations.' },
-        { q: 'Can I have multiple resumes?', a: 'Yes, Professional and Enterprise plans support multiple resume versions.' }
+      articles: [
+        { title: 'ATS Optimization Basics', views: '4.2k', time: '8 min read' },
+        { title: 'Keyword Matching Guide', views: '2.7k', time: '6 min read' },
+        { title: 'Resume Templates', views: '3.5k', time: '5 min read' },
+        { title: 'Common Resume Mistakes', views: '2.1k', time: '10 min read' }
       ]
     },
     {
-      title: 'Security & Privacy',
-      icon: Shield,
-      items: [
-        { q: 'How do you protect my data?', a: 'We use enterprise-grade encryption, secure servers, and follow strict data protection protocols.' },
-        { q: 'Do you share my information?', a: 'No, we never share your personal information or job search data with third parties.' },
-        { q: 'What about payment security?', a: 'All payments are processed through Stripe with bank-level security and PCI compliance.' },
-        { q: 'Can I export my data?', a: 'Yes, you can export your data anytime from your account settings.' }
+      id: 'interview-prep',
+      title: 'Interview Preparation',
+      icon: Video,
+      articles: [
+        { title: 'AI Mock Interview Guide', views: '3.8k', time: '12 min read' },
+        { title: 'Common Interview Questions', views: '5.1k', time: '15 min read' },
+        { title: 'Body Language Tips', views: '2.2k', time: '8 min read' },
+        { title: 'Technical Interview Prep', views: '1.9k', time: '20 min read' }
+      ]
+    },
+    {
+      id: 'billing',
+      title: 'Billing & Subscriptions',
+      icon: CreditCard,
+      articles: [
+        { title: 'Subscription Plans Explained', views: '1.7k', time: '4 min read' },
+        { title: 'Changing Your Plan', views: '980', time: '3 min read' },
+        { title: 'Payment Methods', views: '1.2k', time: '2 min read' },
+        { title: 'Refund Policy', views: '750', time: '3 min read' }
       ]
     }
   ];
 
-  const handleSendMessage = () => {
-    if (!inputMessage.trim()) return;
+  const faqs = [
+    {
+      question: 'How does AI job matching work?',
+      answer: 'Our AI analyzes your resume, skills, experience, and preferences to match you with relevant job opportunities across 15+ job boards. The system considers factors like job requirements, company culture, salary range, and location to provide highly accurate matches.'
+    },
+    {
+      question: 'Can I use SmartJobFit for free?',
+      answer: 'Yes! We offer a free plan that includes 5 AI job searches per month, basic resume optimization, and limited job board access. You can upgrade to unlock unlimited searches and advanced features.'
+    },
+    {
+      question: 'How accurate is the ATS resume optimization?',
+      answer: 'Our ATS optimization has a 95% accuracy rate based on testing with major ATS systems. We analyze over 100 formatting and content factors to ensure your resume passes through applicant tracking systems.'
+    },
+    {
+      question: 'What makes AI interviews different from practice questions?',
+      answer: 'Our AI interviewer adapts in real-time to your responses, provides voice and body language analysis, and offers personalized feedback. It\'s like having a professional coach available 24/7.'
+    },
+    {
+      question: 'Can I cancel my subscription anytime?',
+      answer: 'Absolutely! You can cancel your subscription at any time from your account settings. You\'ll continue to have access to premium features until the end of your billing period.'
+    },
+    {
+      question: 'Do you support multiple languages?',
+      answer: 'Yes! SmartJobFit is available in 10+ languages including English, German, French, Italian, Spanish, Portuguese, Japanese, Korean, Chinese, and Arabic.'
+    }
+  ];
 
-    setChatMessages([
-      ...chatMessages,
-      { role: 'user', content: inputMessage },
-      { role: 'assistant', content: 'I understand you need help with that. Based on our knowledge base, here are some relevant resources. For specific account issues, please check your account settings or contact our support team.' }
-    ]);
-    setInputMessage('');
-  };
+  const contactMethods = [
+    {
+      icon: MessageSquare,
+      title: 'Live Chat',
+      description: 'Get instant help from our support team',
+      action: 'Start Chat',
+      available: true
+    },
+    {
+      icon: Mail,
+      title: 'Email Support',
+      description: 'Detailed help via email within 24 hours',
+      action: 'Send Email',
+      available: true
+    },
+    {
+      icon: Phone,
+      title: 'Phone Support',
+      description: 'Available for Professional and AI Career Coach plans',
+      action: 'Call Us',
+      available: false
+    },
+    {
+      icon: BookOpen,
+      title: 'Video Tutorials',
+      description: 'Step-by-step guides and tutorials',
+      action: 'Watch Now',
+      available: true
+    }
+  ];
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pt-16">
       {/* Header */}
-      <div className="bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-950/20 dark:to-blue-950/20 py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <div className="flex items-center justify-center space-x-2 mb-4">
-              <Bot className="w-8 h-8 text-purple-600" />
-              <h1 className="text-3xl font-bold">SmartJobFit Help Center</h1>
-            </div>
-            <p className="text-lg text-muted-foreground">
-              Get instant help with account setup, billing, upgrades, and more
-            </p>
+      <div className="bg-gradient-to-b from-purple-50 to-white dark:from-purple-950/20 dark:to-background py-16">
+        <div className="container mx-auto px-4 text-center">
+          <h1 className="text-4xl font-bold mb-4">Help Center</h1>
+          <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
+            Find answers, get support, and learn how to make the most of SmartJobFit
+          </p>
+          
+          {/* Search Bar */}
+          <div className="relative max-w-md mx-auto">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Search for help..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10"
+            />
           </div>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid lg:grid-cols-3 gap-8">
-          {/* AI Assistant Chatbot */}
-          <div className="lg:col-span-1">
-            <Card className="h-fit">
-              <CardHeader>
-                <CardTitle className="flex items-center space-x-2">
-                  <MessageCircle className="w-5 h-5" />
-                  <span>AI Assistant</span>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="h-64 border rounded-lg p-4 overflow-y-auto mb-4 space-y-3">
-                  {chatMessages.map((msg, index) => (
-                    <div key={index} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                      <div className={`max-w-xs px-3 py-2 rounded-lg ${
-                        msg.role === 'user' 
-                          ? 'bg-purple-600 text-white' 
-                          : 'bg-gray-100 dark:bg-gray-800 text-foreground'
-                      }`}>
-                        {msg.content}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                <div className="flex space-x-2">
-                  <Input
-                    placeholder="Ask me anything..."
-                    value={inputMessage}
-                    onChange={(e) => setInputMessage(e.target.value)}
-                    onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-                  />
-                  <Button onClick={handleSendMessage} size="sm">
-                    <Send className="w-4 h-4" />
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
+      <div className="container mx-auto px-4 py-12">
+        <Tabs defaultValue="articles" className="space-y-8">
+          <div className="flex justify-center">
+            <TabsList className="grid w-full max-w-md grid-cols-3">
+              <TabsTrigger value="articles">Articles</TabsTrigger>
+              <TabsTrigger value="faq">FAQ</TabsTrigger>
+              <TabsTrigger value="contact">Contact</TabsTrigger>
+            </TabsList>
           </div>
 
-          {/* FAQ Categories */}
-          <div className="lg:col-span-2">
-            <div className="grid gap-6">
-              {faqCategories.map((category, index) => {
+          {/* Help Articles */}
+          <TabsContent value="articles" className="space-y-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {helpCategories.map((category) => {
                 const Icon = category.icon;
                 return (
-                  <Card key={index}>
+                  <Card key={category.id} className="hover:shadow-md transition-shadow">
                     <CardHeader>
-                      <CardTitle className="flex items-center space-x-2">
-                        <Icon className="w-5 h-5 text-purple-600" />
-                        <span>{category.title}</span>
-                      </CardTitle>
+                      <div className="flex items-center space-x-3">
+                        <div className="w-10 h-10 bg-purple-100 dark:bg-purple-900/20 rounded-lg flex items-center justify-center">
+                          <Icon className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+                        </div>
+                        <CardTitle className="text-lg">{category.title}</CardTitle>
+                      </div>
                     </CardHeader>
                     <CardContent>
-                      <div className="space-y-4">
-                        {category.items.map((item, itemIndex) => (
-                          <div key={itemIndex} className="border-l-2 border-purple-200 pl-4">
-                            <h4 className="font-medium text-foreground mb-2">{item.q}</h4>
-                            <p className="text-sm text-muted-foreground">{item.a}</p>
+                      <div className="space-y-3">
+                        {category.articles.map((article, index) => (
+                          <div key={index} className="flex items-center justify-between p-3 rounded-lg hover:bg-muted/50 cursor-pointer">
+                            <div>
+                              <p className="font-medium text-sm">{article.title}</p>
+                              <div className="flex items-center space-x-2 mt-1">
+                                <Badge variant="secondary" className="text-xs">{article.views} views</Badge>
+                                <span className="text-xs text-muted-foreground">{article.time}</span>
+                              </div>
+                            </div>
+                            <BookOpen className="w-4 h-4 text-muted-foreground" />
                           </div>
                         ))}
                       </div>
@@ -148,47 +199,105 @@ export default function HelpCenter() {
                 );
               })}
             </div>
-          </div>
-        </div>
+          </TabsContent>
 
-        {/* Quick Actions */}
-        <div className="mt-12">
-          <h2 className="text-2xl font-bold mb-6 text-center">Quick Actions</h2>
-          <div className="grid md:grid-cols-3 gap-6">
-            <Card className="hover:shadow-lg transition-shadow cursor-pointer">
-              <CardContent className="p-6 text-center">
-                <CreditCard className="w-12 h-12 text-purple-600 mx-auto mb-4" />
-                <h3 className="text-lg font-medium mb-2">Upgrade Account</h3>
-                <p className="text-sm text-muted-foreground mb-4">
-                  Unlock unlimited AI searches and premium features
-                </p>
-                <Button className="w-full">View Pricing</Button>
+          {/* FAQ */}
+          <TabsContent value="faq" className="max-w-4xl mx-auto">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center space-x-2">
+                  <HelpCircle className="w-5 h-5" />
+                  <span>Frequently Asked Questions</span>
+                </CardTitle>
+                <CardDescription>
+                  Quick answers to the most common questions about SmartJobFit
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Accordion type="single" collapsible className="w-full">
+                  {faqs.map((faq, index) => (
+                    <AccordionItem key={index} value={`item-${index}`}>
+                      <AccordionTrigger className="text-left">
+                        {faq.question}
+                      </AccordionTrigger>
+                      <AccordionContent className="text-muted-foreground">
+                        {faq.answer}
+                      </AccordionContent>
+                    </AccordionItem>
+                  ))}
+                </Accordion>
               </CardContent>
             </Card>
+          </TabsContent>
+
+          {/* Contact Support */}
+          <TabsContent value="contact" className="space-y-8">
+            <div className="text-center mb-8">
+              <h2 className="text-2xl font-bold mb-2">Get in Touch</h2>
+              <p className="text-muted-foreground">Choose the support method that works best for you</p>
+            </div>
             
-            <Card className="hover:shadow-lg transition-shadow cursor-pointer">
-              <CardContent className="p-6 text-center">
-                <FileText className="w-12 h-12 text-purple-600 mx-auto mb-4" />
-                <h3 className="text-lg font-medium mb-2">Optimize Resume</h3>
-                <p className="text-sm text-muted-foreground mb-4">
-                  Get AI-powered resume optimization and ATS scoring
-                </p>
-                <Button variant="outline" className="w-full">Upload Resume</Button>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {contactMethods.map((method, index) => {
+                const Icon = method.icon;
+                return (
+                  <Card key={index} className={`text-center hover:shadow-md transition-shadow ${!method.available ? 'opacity-60' : ''}`}>
+                    <CardHeader>
+                      <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/20 rounded-lg flex items-center justify-center mx-auto mb-4">
+                        <Icon className="w-6 h-6 text-purple-600 dark:text-purple-400" />
+                      </div>
+                      <CardTitle className="text-lg">{method.title}</CardTitle>
+                      <CardDescription>{method.description}</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <Button 
+                        className="w-full" 
+                        variant={method.available ? "default" : "secondary"}
+                        disabled={!method.available}
+                      >
+                        {method.action}
+                      </Button>
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
+
+            {/* Contact Form */}
+            <Card className="max-w-2xl mx-auto">
+              <CardHeader>
+                <CardTitle>Send us a Message</CardTitle>
+                <CardDescription>
+                  Can't find what you're looking for? Send us a detailed message and we'll get back to you.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Name</label>
+                    <Input placeholder="Your name" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Email</label>
+                    <Input type="email" placeholder="your@email.com" />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2">Subject</label>
+                  <Input placeholder="How can we help?" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2">Message</label>
+                  <textarea 
+                    className="w-full min-h-32 p-3 border rounded-md resize-none focus:outline-none focus:ring-2 focus:ring-purple-500"
+                    placeholder="Please describe your issue or question in detail..."
+                  />
+                </div>
+                <Button className="w-full">Send Message</Button>
               </CardContent>
             </Card>
-            
-            <Card className="hover:shadow-lg transition-shadow cursor-pointer">
-              <CardContent className="p-6 text-center">
-                <Shield className="w-12 h-12 text-purple-600 mx-auto mb-4" />
-                <h3 className="text-lg font-medium mb-2">Security Settings</h3>
-                <p className="text-sm text-muted-foreground mb-4">
-                  Manage your account security and privacy settings
-                </p>
-                <Button variant="outline" className="w-full">Manage Security</Button>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );

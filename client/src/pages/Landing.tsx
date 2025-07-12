@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useTranslation } from "@/lib/i18n";
 import { 
   Bot, 
   Search, 
@@ -28,6 +29,7 @@ import {
 } from "lucide-react";
 
 export default function Landing() {
+  const { t } = useTranslation();
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTestimonial, setActiveTestimonial] = useState(0);
 
@@ -140,19 +142,19 @@ export default function Landing() {
       popular: true
     },
     {
-      name: "Enterprise",
+      name: "AI Career Coach",
       price: 79,
       period: "month",
       description: "For career professionals",
       features: [
         "Everything in Professional",
         "Advanced analytics",
-        "Salary negotiation coaching",
-        "1:1 career coaching",
-        "White-glove service",
-        "Custom integrations"
+        "AI salary negotiation coaching",
+        "24/7 AI career agent coaching",
+        "AI-powered strategic planning",
+        "Custom AI integrations"
       ],
-      buttonText: "Upgrade to Enterprise",
+      buttonText: "Upgrade to AI Career Coach",
       buttonVariant: "outline" as const,
       popular: false
     }
@@ -178,11 +180,10 @@ export default function Landing() {
           <div className="text-center mb-12 fade-in">
             <h1 className="text-5xl md:text-6xl font-bold mb-6">
               <span className="gradient-text">SmartJobFit</span><br />
-              <span className="text-4xl md:text-5xl">Find Your Dream Job 10x Faster with AI</span>
+              <span className="text-4xl md:text-5xl">{t.landing.heroTitle}</span>
             </h1>
             <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto text-balance">
-              Search 1M+ jobs from 15+ sources. AI-optimized resumes. Smart matching. One-click applications. 
-              The future of job search is here.
+              {t.landing.heroDescription}
             </p>
             
             {/* Search Bar */}
