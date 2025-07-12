@@ -220,9 +220,9 @@ export default function Landing() {
         <div className="container-custom">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold mb-4">
-              Your Personal Job Search <span className="gradient-text">Command Center</span>
+              {t.landing.dashboard.title}
             </h2>
-            <p className="text-xl text-muted-foreground">Track everything in one beautiful, intelligent dashboard</p>
+            <p className="text-xl text-muted-foreground">{t.landing.dashboard.subtitle}</p>
           </div>
           
           <Card className="card-shadow border-0">

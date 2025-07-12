@@ -55,6 +55,10 @@ export interface Translations {
         description: string;
       };
     };
+    dashboard: {
+      title: string;
+      subtitle: string;
+    };
     interviewFeatures: {
       title: string;
       mockInterviews: {
@@ -254,6 +258,10 @@ const translations: Record<Language, Translations> = {
           title: 'Advanced Analytics',
           description: 'Track your progress and optimize your strategy with detailed insights.'
         }
+      },
+      dashboard: {
+        title: 'Your Personal Job Search Command Center',
+        subtitle: 'Track everything in one beautiful, intelligent dashboard'
       },
       interviewFeatures: {
         title: 'Master Your Interviews',
@@ -489,6 +497,10 @@ const translations: Record<Language, Translations> = {
           description: 'Verfolgen Sie Ihren Fortschritt und optimieren Sie Ihre Strategie mit detaillierten Einblicken.'
         }
       },
+      dashboard: {
+        title: 'Ihr persönliches Job-Such-Kommandozentrum',
+        subtitle: 'Verfolgen Sie alles in einem schönen, intelligenten Dashboard'
+      },
       interviewFeatures: {
         title: 'Meistern Sie Ihre Interviews',
         mockInterviews: {
@@ -723,6 +735,10 @@ const translations: Record<Language, Translations> = {
           title: 'Analyses avancées',
           description: 'Suivez vos progrès et optimisez votre stratégie avec des insights détaillés.'
         }
+      },
+      dashboard: {
+        title: 'Votre Centre de Commande Personnel de Recherche d\'Emploi',
+        subtitle: 'Suivez tout dans un tableau de bord intelligent et élégant'
       },
       interviewFeatures: {
         title: 'Maîtrisez vos entretiens',
