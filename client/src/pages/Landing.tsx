@@ -219,7 +219,7 @@ export default function Landing() {
     },
     {
       name: content.pricing.professional.title,
-      price: 19,
+      price: 29,
       period: "month",
       description: content.pricing.professional.description,
       features: content.pricing.professional.features,
@@ -227,16 +227,7 @@ export default function Landing() {
       buttonVariant: "default" as const,
       popular: true
     },
-    {
-      name: content.pricing.enterprise.title,
-      price: 49,
-      period: "month",
-      description: content.pricing.enterprise.description,
-      features: content.pricing.enterprise.features,
-      buttonText: content.pricing.enterprise.buttonText,
-      buttonVariant: "default" as const,
-      popular: false
-    }
+
   ];
 
   // Auto-rotate testimonials

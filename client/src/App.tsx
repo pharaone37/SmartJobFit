@@ -44,7 +44,8 @@ function AppContent() {
   return (
     <BrowserRouter>
       <div className="min-h-screen bg-background">
-        <Navbar />
+        {/* Only show main navbar for authenticated users */}
+        {isAuthenticated && <Navbar />}
         <main className="flex-1">
           <Routes>
             {!isAuthenticated ? (
@@ -70,7 +71,8 @@ function AppContent() {
             )}
           </Routes>
         </main>
-        <Footer />
+        {/* Only show footer for authenticated users */}
+        {isAuthenticated && <Footer />}
         <Toaster />
       </div>
     </BrowserRouter>

@@ -321,13 +321,6 @@ const translations: Record<Language, Translations> = {
           description: 'For serious job seekers',
           features: ['Unlimited AI job searches', 'Advanced resume optimization', 'All 15+ job board access', 'AI interview preparation', 'Priority support', 'Analytics dashboard'],
           buttonText: 'Upgrade to Professional'
-        },
-        enterprise: {
-          title: 'AI Career Coach',
-          price: '$79',
-          description: 'For career professionals',
-          features: ['Everything in Professional', 'Advanced analytics', 'AI salary negotiation coaching', '24/7 AI career agent coaching', 'AI-powered strategic planning', 'Custom AI integrations'],
-          buttonText: 'Upgrade to AI Career Coach'
         }
       },
       faq: {
