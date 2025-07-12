@@ -3,7 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useTheme } from "@/components/theme-provider";
 import { useTranslation } from "@/lib/i18n";
-import { LanguageSelector } from "@/components/LanguageSelector";
+
 import { Button } from "@/components/ui/button";
 import { 
   DropdownMenu, 
@@ -109,9 +109,6 @@ export default function Navbar() {
 
           {/* Right Side Actions */}
           <div className="flex items-center space-x-4">
-            {/* Language Selector */}
-            <LanguageSelector />
-            
             {/* Theme Toggle */}
             <Button
               variant="ghost"

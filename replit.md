@@ -8,6 +8,10 @@ SmartJobFit is a comprehensive full-stack web application that revolutionizes jo
 
 ```
 Preferred communication style: Simple, everyday language.
+Website language: English-only interface (language selector removed)
+Interview preparation: Support multiple languages for better user experience
+CV analytics: Support multiple languages for better user experience
+Design: Job platform logos on landing page, payment method logos in footer
 ```
 
 ## System Architecture

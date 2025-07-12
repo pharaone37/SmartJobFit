@@ -27,8 +27,53 @@ import {
   Heart,
   Award,
   Globe,
-  BarChart3
+  BarChart3,
+  CreditCard
 } from "lucide-react";
+import { 
+  SiLinkedin, 
+  SiGlassdoor, 
+  SiStackoverflow, 
+  SiGithub,
+  SiVisa,
+  SiMastercard,
+  SiAmericanexpress,
+  SiPaypal,
+  SiApple,
+  SiGooglepay
+} from "react-icons/si";
+
+// Job Platform Logo Component
+const JobPlatformLogo = ({ platform }: { platform: string }) => {
+  const platformLogos: { [key: string]: JSX.Element } = {
+    'LinkedIn': <SiLinkedin className="w-8 h-8 text-blue-700" />,
+    'Indeed': <div className="w-8 h-8 bg-blue-600 rounded text-white flex items-center justify-center font-bold text-sm">I</div>,
+    'Glassdoor': <SiGlassdoor className="w-8 h-8 text-green-600" />,
+    'ZipRecruiter': <div className="w-8 h-8 bg-blue-500 rounded text-white flex items-center justify-center font-bold text-sm">Z</div>,
+    'Monster': <div className="w-8 h-8 bg-purple-600 rounded text-white flex items-center justify-center font-bold text-sm">M</div>,
+    'CareerBuilder': <div className="w-8 h-8 bg-orange-500 rounded text-white flex items-center justify-center font-bold text-sm">C</div>,
+    'Dice': <div className="w-8 h-8 bg-red-600 rounded text-white flex items-center justify-center font-bold text-sm">D</div>,
+    'AngelList': <div className="w-8 h-8 bg-black dark:bg-white rounded text-white dark:text-black flex items-center justify-center font-bold text-sm">A</div>,
+    'Stack Overflow': <SiStackoverflow className="w-8 h-8 text-orange-600" />,
+    'GitHub Jobs': <SiGithub className="w-8 h-8 text-gray-800 dark:text-white" />,
+    'Reed (UK)': <div className="w-8 h-8 bg-red-500 rounded text-white flex items-center justify-center font-bold text-sm">R</div>,
+    'Xing (DACH)': <div className="w-8 h-8 bg-green-700 rounded text-white flex items-center justify-center font-bold text-sm">X</div>,
+    'Seek (Australia)': <div className="w-8 h-8 bg-pink-600 rounded text-white flex items-center justify-center font-bold text-sm">S</div>,
+    'Naukri (India)': <div className="w-8 h-8 bg-blue-800 rounded text-white flex items-center justify-center font-bold text-sm">N</div>,
+    'StepStone': <div className="w-8 h-8 bg-orange-600 rounded text-white flex items-center justify-center font-bold text-sm">S</div>
+  };
+  
+  return (
+    <div className="flex flex-col items-center gap-2">
+      {platformLogos[platform] || (
+        <div className="w-8 h-8 bg-gray-500 rounded text-white flex items-center justify-center font-bold text-sm">
+          {platform.charAt(0).toUpperCase()}
+        </div>
+      )}
+      <span className="text-sm font-medium text-center">{platform}</span>
+    </div>
+  );
+};
 
 export default function Landing() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -238,7 +283,7 @@ export default function Landing() {
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 max-w-4xl mx-auto">
             {content.platforms.list.map((platform, index) => (
               <div key={index} className="bg-white dark:bg-gray-800 p-4 rounded-lg text-center shadow-sm hover:shadow-md transition-shadow">
-                <div className="text-sm font-medium text-muted-foreground">{platform}</div>
+                <JobPlatformLogo platform={platform} />
               </div>
             ))}
           </div>
@@ -460,6 +505,59 @@ export default function Landing() {
           </div>
         </div>
       </section>
+
+      {/* Footer */}
+      <footer className="bg-gray-900 text-white py-12">
+        <div className="container mx-auto px-4">
+          <div className="grid md:grid-cols-3 gap-8">
+            <div>
+              <h3 className="text-xl font-semibold mb-4">SmartJobFit</h3>
+              <p className="text-gray-300 mb-4">
+                AI-powered job search platform helping professionals find their dream jobs 10x faster.
+              </p>
+              <div className="flex gap-4">
+                <Button variant="outline" size="sm" className="border-gray-600 text-gray-300 hover:bg-gray-800">
+                  Privacy Policy
+                </Button>
+                <Button variant="outline" size="sm" className="border-gray-600 text-gray-300 hover:bg-gray-800">
+                  Terms of Service
+                </Button>
+              </div>
+            </div>
+            
+            <div>
+              <h4 className="text-lg font-semibold mb-4">Features</h4>
+              <ul className="space-y-2 text-gray-300">
+                <li>AI Job Search</li>
+                <li>Resume Optimization</li>
+                <li>Interview Preparation</li>
+                <li>Career Analytics</li>
+                <li>Salary Negotiation</li>
+                <li>Job Alerts</li>
+              </ul>
+            </div>
+            
+            <div>
+              <h4 className="text-lg font-semibold mb-4">Secure Payments</h4>
+              <div className="flex gap-3 mb-4">
+                <SiVisa className="w-8 h-8 text-blue-600" />
+                <SiMastercard className="w-8 h-8 text-red-600" />
+                <SiAmericanexpress className="w-8 h-8 text-blue-500" />
+                <SiPaypal className="w-8 h-8 text-blue-400" />
+                <SiApple className="w-8 h-8 text-gray-300" />
+                <SiGooglepay className="w-8 h-8 text-green-500" />
+              </div>
+              <p className="text-gray-400 text-sm">
+                All transactions are secure and encrypted. Your payment information is never stored on our servers.
+              </p>
+            </div>
+          </div>
+          
+          <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+            <p>&copy; 2024 SmartJobFit. All rights reserved.</p>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
