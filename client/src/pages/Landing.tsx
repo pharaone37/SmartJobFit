@@ -177,8 +177,8 @@ export default function Landing() {
         <div className="container-custom section-padding">
           <div className="text-center mb-12 fade-in">
             <h1 className="text-5xl md:text-6xl font-bold mb-6">
-              Find Your Dream Job<br />
-              <span className="text-4xl md:text-5xl gradient-text">10x Faster with AI</span>
+              <span className="gradient-text">SmartJobFit</span><br />
+              <span className="text-4xl md:text-5xl">Find Your Dream Job 10x Faster with AI</span>
             </h1>
             <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto text-balance">
               Search 1M+ jobs from 15+ sources. AI-optimized resumes. Smart matching. One-click applications. 
@@ -456,7 +456,7 @@ export default function Landing() {
             <h2 className="text-4xl font-bold mb-4">
               Loved by <span className="gradient-text">Job Seekers</span>
             </h2>
-            <p className="text-xl text-muted-foreground">See how JobMatch AI has transformed careers worldwide</p>
+            <p className="text-xl text-muted-foreground">See how SmartJobFit has transformed careers worldwide</p>
           </div>
           
           <div className="grid md:grid-cols-3 gap-8">

@@ -1,8 +1,8 @@
-# JobMatch AI - AI-Powered Job Search Platform
+# SmartJobFit - AI-Powered Job Search Platform
 
 ## Overview
 
-JobMatch AI is a comprehensive full-stack web application that revolutionizes job searching by leveraging artificial intelligence. The platform provides job seekers with AI-powered job search across 15+ job boards, resume optimization, interview preparation, and analytics to help users find their dream job 10x faster.
+SmartJobFit is a comprehensive full-stack web application that revolutionizes job searching by leveraging artificial intelligence. The platform provides job seekers with AI-powered job search across 15+ job boards, resume optimization, interview preparation, and analytics to help users find their dream job 10x faster.
 
 ## User Preferences
 
