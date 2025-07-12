@@ -44,6 +44,9 @@ export const users = pgTable("users", {
   stripeSubscriptionId: varchar("stripe_subscription_id"),
   subscriptionStatus: varchar("subscription_status").default("free"),
   subscriptionPlan: varchar("subscription_plan").default("free"),
+  subscriptionEndsAt: timestamp("subscription_ends_at"),
+  jobSearchesThisMonth: integer("job_searches_this_month").default(0),
+  resumeOptimizationsThisMonth: integer("resume_optimizations_this_month").default(0),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });

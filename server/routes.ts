@@ -81,6 +81,127 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Subscription management routes
+  app.get('/api/subscription/plans', async (req, res) => {
+    try {
+      const plans = [
+        {
+          id: 'free',
+          name: 'Free',
+          price: 0,
+          period: 'forever',
+          description: 'Perfect for getting started',
+          features: [
+            '5 AI job searches per month',
+            'Basic resume optimization',
+            'Limited job board access',
+            'Email support'
+          ]
+        },
+        {
+          id: 'professional',
+          name: 'Professional',
+          price: 29,
+          period: 'month',
+          description: 'For serious job seekers',
+          features: [
+            'Unlimited AI job searches',
+            'Advanced resume optimization',
+            'All 15+ job board access',
+            'AI interview preparation',
+            'Priority support',
+            'Analytics dashboard'
+          ]
+        },
+        {
+          id: 'enterprise',
+          name: 'Enterprise',
+          price: 79,
+          period: 'month',
+          description: 'For career professionals',
+          features: [
+            'Everything in Professional',
+            'Advanced analytics',
+            'Salary negotiation coaching',
+            '1:1 career coaching',
+            'White-glove service',
+            'Custom integrations'
+          ]
+        }
+      ];
+      res.json(plans);
+    } catch (error) {
+      console.error("Error fetching subscription plans:", error);
+      res.status(500).json({ message: "Failed to fetch subscription plans" });
+    }
+  });
+
+  app.post('/api/subscription/create-checkout', isAuthenticated, async (req: any, res) => {
+    try {
+      const { planId } = req.body;
+      const userId = req.user.claims.sub;
+      
+      // Define price IDs for each plan
+      const priceMapping = {
+        'professional': process.env.STRIPE_PROFESSIONAL_PRICE_ID,
+        'enterprise': process.env.STRIPE_ENTERPRISE_PRICE_ID
+      };
+
+      const priceId = priceMapping[planId as keyof typeof priceMapping];
+      if (!priceId) {
+        return res.status(400).json({ message: "Invalid plan selected" });
+      }
+
+      const session = await stripe.checkout.sessions.create({
+        payment_method_types: ['card'],
+        line_items: [
+          {
+            price: priceId,
+            quantity: 1,
+          },
+        ],
+        mode: 'subscription',
+        success_url: `${req.protocol}://${req.get('host')}/dashboard?success=true`,
+        cancel_url: `${req.protocol}://${req.get('host')}/pricing?canceled=true`,
+        client_reference_id: userId,
+        metadata: {
+          userId: userId,
+          planId: planId
+        }
+      });
+
+      res.json({ sessionId: session.id });
+    } catch (error) {
+      console.error("Error creating checkout session:", error);
+      res.status(500).json({ message: "Failed to create checkout session" });
+    }
+  });
+
+  app.get('/api/subscription/status', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const user = await storage.getUser(userId);
+      
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      // Return subscription status
+      res.json({
+        currentPlan: user.subscriptionPlan || 'free',
+        subscriptionStatus: user.subscriptionStatus || 'inactive',
+        subscriptionEndsAt: user.subscriptionEndsAt,
+        usageThisMonth: {
+          jobSearches: user.jobSearchesThisMonth || 0,
+          resumeOptimizations: user.resumeOptimizationsThisMonth || 0
+        }
+      });
+    } catch (error) {
+      console.error("Error fetching subscription status:", error);
+      res.status(500).json({ message: "Failed to fetch subscription status" });
+    }
+  });
+
   // Job search routes
   app.get('/api/jobs', async (req, res) => {
     try {

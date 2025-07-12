@@ -86,7 +86,7 @@ export default function Landing() {
     {
       name: "Sarah Johnson",
       role: "Product Manager at TechCorp",
-      content: "JobMatch AI helped me land my dream job in just 3 weeks! The AI resume optimization increased my response rate by 300%.",
+      content: "SmartJobFit helped me land my dream job in just 3 weeks! The AI resume optimization increased my response rate by 300%.",
       rating: 5,
       avatar: "SJ"
     },
@@ -118,13 +118,13 @@ export default function Landing() {
         "Limited job board access",
         "Email support"
       ],
-      buttonText: "Get Started",
+      buttonText: "Get Started Free",
       buttonVariant: "outline" as const,
       popular: false
     },
     {
       name: "Professional",
-      price: 19,
+      price: 29,
       period: "month",
       description: "For serious job seekers",
       features: [
@@ -135,13 +135,13 @@ export default function Landing() {
         "Priority support",
         "Analytics dashboard"
       ],
-      buttonText: "Start Free Trial",
+      buttonText: "Upgrade to Professional",
       buttonVariant: "default" as const,
       popular: true
     },
     {
       name: "Enterprise",
-      price: 39,
+      price: 79,
       period: "month",
       description: "For career professionals",
       features: [
@@ -152,7 +152,7 @@ export default function Landing() {
         "White-glove service",
         "Custom integrations"
       ],
-      buttonText: "Contact Sales",
+      buttonText: "Upgrade to Enterprise",
       buttonVariant: "outline" as const,
       popular: false
     }
@@ -224,7 +224,7 @@ export default function Landing() {
         <div className="container-custom">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold mb-4">
-              Why JobMatch AI is <span className="gradient-text">Different</span>
+              Why SmartJobFit is <span className="gradient-text">Different</span>
             </h2>
             <p className="text-xl text-muted-foreground">Revolutionary AI-powered features that transform your job search</p>
           </div>
@@ -542,13 +542,10 @@ export default function Landing() {
         <div className="container-custom">
           <div className="text-center text-white">
             <h2 className="text-4xl font-bold mb-6">Ready to Transform Your Job Search?</h2>
-            <p className="text-xl text-purple-100 mb-8">Join 50,000+ job seekers who've already found their dream jobs with JobMatch AI</p>
+            <p className="text-xl text-purple-100 mb-8">Join 50,000+ job seekers who've already found their dream jobs with SmartJobFit</p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button size="lg" variant="secondary" className="text-purple-600 hover:text-purple-700" asChild>
-                <Link to="/api/login">Start Free Trial</Link>
-              </Button>
-              <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-purple-600">
-                Schedule Demo
+                <Link to="/api/login">Get Started Free</Link>
               </Button>
             </div>
           </div>
