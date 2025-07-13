@@ -2,13 +2,19 @@ import { useQuery } from "@tanstack/react-query";
 import { getQueryFn } from "@/lib/queryClient";
 
 export function useAuth() {
-  // Temporarily disable auth query to prevent rate limiting
-  const user = null;
-  const isLoading = false;
+  const { data: user, isLoading, error } = useQuery({
+    queryKey: ["/api/auth/user"],
+    queryFn: getQueryFn({ on401: "returnNull" }),
+    retry: false,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
 
   return {
     user,
     isLoading,
     isAuthenticated: !!user,
+    error,
   };
 }
