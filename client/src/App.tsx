@@ -20,6 +20,7 @@ import TermsOfService from "@/pages/TermsOfService";
 import AuthPage from "@/pages/auth";
 import ProfilePage from "@/pages/profile";
 import SettingsPage from "@/pages/settings";
+import Login from "@/pages/Login";
 import NotFound from "@/pages/not-found";
 
 // Components
@@ -50,6 +51,7 @@ function AppContent() {
               <>
                 <Route path="/" element={<Landing />} />
                 <Route path="/auth" element={<AuthPage />} />
+                <Route path="/login" element={<Login />} />
                 <Route path="/pricing" element={<Pricing />} />
                 <Route path="/help" element={<HelpCenter />} />
                 <Route path="/privacy" element={<PrivacyPolicy />} />

@@ -72,6 +72,12 @@ export async function setupAuth(app: Express) {
   app.use(passport.initialize());
   app.use(passport.session());
 
+  // Setup LinkedIn Auth if configured
+  if (process.env.LINKEDIN_CLIENT_ID && process.env.LINKEDIN_CLIENT_SECRET) {
+    const { setupLinkedInAuth } = await import('./auth/linkedinAuth');
+    setupLinkedInAuth(app);
+  }
+
   const config = await getOidcConfig();
 
   const verify: VerifyFunction = async (

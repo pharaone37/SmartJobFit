@@ -610,7 +610,7 @@ export default function Landing() {
             <p className="text-xl text-purple-100 mb-8">Join thousands of professionals who've accelerated their careers with SmartJobFit</p>
             <div className="flex justify-center">
               <Button size="lg" className="bg-white text-purple-600 hover:bg-gray-100 px-8" asChild>
-                <Link to="/api/login">Get Started Free</Link>
+                <Link to="/login">Get Started Free</Link>
               </Button>
             </div>
           </div>

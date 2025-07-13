@@ -125,10 +125,10 @@ export default function Navbar() {
             {!isAuthenticated ? (
               <>
                 <Button variant="ghost" asChild>
-                  <Link to="/auth">Sign In</Link>
+                  <Link to="/login">Sign In</Link>
                 </Button>
                 <Button asChild>
-                  <Link to="/auth">Get Started</Link>
+                  <Link to="/login">Get Started</Link>
                 </Button>
               </>
             ) : (

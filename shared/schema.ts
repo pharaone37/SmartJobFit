@@ -47,6 +47,7 @@ export const users = pgTable("users", {
   subscriptionEndsAt: timestamp("subscription_ends_at"),
   jobSearchesThisMonth: integer("job_searches_this_month").default(0),
   resumeOptimizationsThisMonth: integer("resume_optimizations_this_month").default(0),
+  provider: varchar("provider").default("replit"), // 'replit' or 'linkedin'
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
