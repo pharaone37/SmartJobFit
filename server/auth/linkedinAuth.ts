@@ -8,7 +8,7 @@ export function setupLinkedInAuth(app: Express) {
   passport.use(new LinkedInStrategy({
     clientID: process.env.LINKEDIN_CLIENT_ID!,
     clientSecret: process.env.LINKEDIN_CLIENT_SECRET!,
-    callbackURL: `${process.env.BASE_URL || 'https://smartjobfit.com'}/auth/linkedin/callback`,
+    callbackURL: `${process.env.REPLIT_DEV_DOMAIN ? `https://${process.env.REPLIT_DEV_DOMAIN}` : 'https://smartjobfit.com'}/auth/linkedin/callback`,
     scope: ['openid', 'profile', 'email'],
     state: true
   }, async (accessToken, refreshToken, profile, done) => {
@@ -47,8 +47,11 @@ export function setupLinkedInAuth(app: Express) {
 
   app.get('/auth/linkedin/callback',
     passport.authenticate('linkedin', { 
-      failureRedirect: '/login?error=linkedin_failed',
-      successRedirect: '/'
-    })
+      failureRedirect: '/login?error=linkedin_failed'
+    }),
+    (req, res) => {
+      // Successful authentication, redirect to home
+      res.redirect('/');
+    }
   );
 }
