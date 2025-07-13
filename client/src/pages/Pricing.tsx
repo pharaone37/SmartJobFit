@@ -39,11 +39,11 @@ export default function Pricing() {
       yearlyPrice: 0,
       description: "Perfect for getting started",
       features: [
-        "5 AI job searches per month",
+        "10 job searches per month",
         "Basic resume optimization",
-        "Limited job board access",
-        "Email support",
-        "Basic analytics"
+        "Interview practice in English",
+        "Access to 5 job platforms",
+        "Email support"
       ],
       limitations: [
         "Limited to 5 applications tracking",
@@ -58,24 +58,18 @@ export default function Pricing() {
     {
       id: "professional",
       name: "Professional",
-      price: 19,
-      yearlyPrice: 15,
+      price: 29,
+      yearlyPrice: 23,
       description: "For serious job seekers",
       features: [
-        "Unlimited AI job searches",
+        "Unlimited job searches",
         "Advanced resume optimization",
-        "All 15+ job board access",
-        "AI interview preparation",
+        "Multi-language interview prep",
+        "Access to all 15+ platforms",
         "Priority support",
-        "Advanced analytics dashboard",
         "Custom job alerts",
         "Application tracking",
-        "Cover letter generator",
-        "Salary insights",
-        "Advanced analytics & reporting",
-        "Salary negotiation coaching",
-        "1:1 career coaching sessions",
-        "White-glove service"
+        "Salary negotiation coaching"
       ],
       buttonText: "Start Free Trial",
       buttonVariant: "default" as const,
@@ -137,9 +131,7 @@ export default function Pricing() {
       items: [
         { name: "Email Support", free: true, pro: true },
         { name: "Priority Support", free: false, pro: true },
-        { name: "Career Coaching", free: false, pro: "1:1 Sessions" },
-        { name: "Dedicated Manager", free: false, pro: true },
-        { name: "Phone Support", free: false, pro: true }
+        { name: "Live Chat Support", free: false, pro: true }
       ]
     }
   ];
@@ -351,27 +343,7 @@ export default function Pricing() {
               </div>
             </div>
 
-            {/* Enterprise CTA */}
-            <Card className="bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-950/20 dark:to-blue-950/20 border-purple-200">
-              <CardContent className="p-8 text-center">
-                <Crown className="w-12 h-12 text-purple-500 mx-auto mb-4" />
-                <h3 className="text-2xl font-bold mb-4">Need something custom?</h3>
-                <p className="text-muted-foreground mb-6">
-                  Looking for team plans, custom integrations, or enterprise features? 
-                  Let's build a solution that fits your organization's needs.
-                </p>
-                <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                  <Button size="lg" className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600">
-                    <Phone className="w-4 h-4 mr-2" />
-                    Schedule a Call
-                  </Button>
-                  <Button size="lg" variant="outline">
-                    <Mail className="w-4 h-4 mr-2" />
-                    Contact Sales
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
+
           </TabsContent>
 
           {/* Features Tab */}

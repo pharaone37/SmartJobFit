@@ -171,7 +171,7 @@ export const content = {
     },
     professional: {
       title: 'Professional',
-      price: '$19',
+      price: '$29',
       description: 'For serious job seekers',
       features: [
         'Unlimited job searches',
