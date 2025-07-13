@@ -47,18 +47,20 @@ export class JobService {
 
   async searchJobs(query: string, filters: JobSearchFilters = {}, page: number = 1, pageSize: number = 20): Promise<JobSearchResult> {
     try {
-      // For now, return sample data to avoid rate limiting issues
-      // In production, this would search the local database and external sources
-      const sampleJobs = await this.getSampleJobs(query, filters);
+      // Search database first
+      const dbJobs = await storage.searchJobs(query, filters);
+      
+      // If no results in database, get sample jobs as fallback
+      const allJobs = dbJobs.length > 0 ? dbJobs : await this.getSampleJobs(query, filters);
       
       const startIndex = (page - 1) * pageSize;
       const endIndex = startIndex + pageSize;
       
       return {
-        jobs: sampleJobs.slice(startIndex, endIndex),
-        total: sampleJobs.length,
+        jobs: allJobs.slice(startIndex, endIndex),
+        total: allJobs.length,
         page,
-        hasMore: sampleJobs.length > endIndex,
+        hasMore: allJobs.length > endIndex,
       };
     } catch (error) {
       console.error('Search jobs error:', error);
@@ -76,7 +78,14 @@ export class JobService {
   }
 
   async getJobsWithFilters(filters: JobSearchFilters): Promise<Job[]> {
-    return storage.getJobs(filters);
+    try {
+      const dbJobs = await storage.getJobs(filters);
+      // If no results in database, get sample jobs as fallback
+      return dbJobs.length > 0 ? dbJobs : await this.getSampleJobs('', filters);
+    } catch (error) {
+      console.error('Get jobs with filters error:', error);
+      return [];
+    }
   }
 
   async getSampleJobs(query: string = '', filters: JobSearchFilters = {}): Promise<Job[]> {

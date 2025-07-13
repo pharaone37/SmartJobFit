@@ -362,10 +362,6 @@ export default function JobSearch() {
                 <p className="text-muted-foreground mb-4">
                   Save interesting jobs to review and apply to them later
                 </p>
-                <Button onClick={() => setActiveTab("search")}>
-                  <Search className="w-4 h-4 mr-2" />
-                  Search Jobs
-                </Button>
               </Card>
             )}
           </TabsContent>

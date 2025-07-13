@@ -268,14 +268,13 @@ export default function JobSearchFilters({
             <Slider
               value={[
                 (filters.salaryMin || 0) / 1000,
-                (filters.salaryMax || 200) / 1000
+                (filters.salaryMax || 200000) / 1000
               ]}
               onValueChange={handleSalaryChange}
               max={200}
               min={0}
               step={5}
               className="w-full"
-              defaultValue={[0, 200]}
             />
             <div className="flex justify-between text-sm text-muted-foreground mt-1">
               <span>${(filters.salaryMin || 0) / 1000}k</span>
