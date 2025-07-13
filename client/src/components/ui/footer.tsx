@@ -1,6 +1,14 @@
 import { Link } from "react-router-dom";
-import { Bot, Mail, Phone, MapPin } from "lucide-react";
+import { Bot } from "lucide-react";
 import { useTranslation } from "@/lib/i18n";
+import { 
+  SiVisa, 
+  SiMastercard, 
+  SiAmericanexpress, 
+  SiPaypal, 
+  SiApple, 
+  SiGooglepay 
+} from "react-icons/si";
 
 export default function Footer() {
   const { t } = useTranslation();
@@ -21,23 +29,28 @@ export default function Footer() {
             </p>
           </div>
 
-          {/* Features */}
-          <div>
-            <h4 className="text-lg font-semibold mb-4">{t.footer.features}</h4>
-            <ul className="space-y-2 text-gray-400">
-              <li><a href="#features" className="hover:text-white transition-colors">{t.footer.aiJobSearch}</a></li>
-              <li><a href="#features" className="hover:text-white transition-colors">{t.footer.resumeOptimization}</a></li>
-              <li><a href="#features" className="hover:text-white transition-colors">{t.footer.interviewPreparation}</a></li>
-              <li><Link to="/pricing" className="hover:text-white transition-colors">{t.footer.pricing}</Link></li>
-            </ul>
-          </div>
-
           {/* Support */}
           <div>
             <h4 className="text-lg font-semibold mb-4">{t.footer.support}</h4>
             <ul className="space-y-2 text-gray-400">
               <li><Link to="/help" className="hover:text-white transition-colors">{t.footer.helpCenter}</Link></li>
             </ul>
+          </div>
+
+          {/* Secure Payments */}
+          <div>
+            <h4 className="text-lg font-semibold mb-4">Secure Payments</h4>
+            <div className="flex gap-3 mb-4">
+              <SiVisa className="w-8 h-8 text-blue-600" />
+              <SiMastercard className="w-8 h-8 text-red-600" />
+              <SiAmericanexpress className="w-8 h-8 text-blue-500" />
+              <SiPaypal className="w-8 h-8 text-blue-400" />
+              <SiApple className="w-8 h-8 text-gray-300" />
+              <SiGooglepay className="w-8 h-8 text-green-500" />
+            </div>
+            <p className="text-gray-400 text-sm">
+              All transactions are secure and encrypted. Your payment information is never stored on our servers.
+            </p>
           </div>
         </div>
 
@@ -48,15 +61,12 @@ export default function Footer() {
               {t.footer.copyright}
             </p>
             <div className="flex space-x-6 mt-4 md:mt-0">
-              <a href="#" className="text-gray-400 hover:text-white text-sm transition-colors">
+              <Link to="/privacy" className="text-gray-400 hover:text-white text-sm transition-colors">
                 Privacy Policy
-              </a>
-              <a href="#" className="text-gray-400 hover:text-white text-sm transition-colors">
+              </Link>
+              <Link to="/terms" className="text-gray-400 hover:text-white text-sm transition-colors">
                 Terms of Service
-              </a>
-              <a href="#" className="text-gray-400 hover:text-white text-sm transition-colors">
-                Cookie Policy
-              </a>
+              </Link>
             </div>
           </div>
         </div>

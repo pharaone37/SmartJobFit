@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
@@ -31,13 +30,8 @@ export default function Pricing() {
   const [isYearly, setIsYearly] = useState(false);
   const [activeTab, setActiveTab] = useState("plans");
 
-  // Fetch subscription plans
-  const { data: plans, isLoading } = useQuery({
-    queryKey: ["/api/subscription/plans"],
-    retry: false,
-  });
-
-  const defaultPlans = [
+  // Use local plans data instead of API call
+  const plans = [
     {
       id: "free",
       name: "Free",
@@ -109,7 +103,7 @@ export default function Pricing() {
     }
   ];
 
-  const displayPlans = plans || defaultPlans;
+  const displayPlans = plans;
 
   const features = [
     {

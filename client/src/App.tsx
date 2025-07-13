@@ -15,6 +15,8 @@ import Analytics from "@/pages/Analytics";
 import Pricing from "@/pages/Pricing";
 import Subscribe from "@/pages/Subscribe";
 import HelpCenter from "@/pages/HelpCenter";
+import PrivacyPolicy from "@/pages/PrivacyPolicy";
+import TermsOfService from "@/pages/TermsOfService";
 import NotFound from "@/pages/not-found";
 
 // Components
@@ -44,8 +46,8 @@ function AppContent() {
   return (
     <BrowserRouter>
       <div className="min-h-screen bg-background">
-        {/* Only show main navbar for authenticated users */}
-        {isAuthenticated && <Navbar />}
+        {/* Show navbar on all pages */}
+        <Navbar />
         <main className="flex-1">
           <Routes>
             {!isAuthenticated ? (
@@ -53,6 +55,8 @@ function AppContent() {
                 <Route path="/" element={<Landing />} />
                 <Route path="/pricing" element={<Pricing />} />
                 <Route path="/help" element={<HelpCenter />} />
+                <Route path="/privacy" element={<PrivacyPolicy />} />
+                <Route path="/terms" element={<TermsOfService />} />
                 <Route path="*" element={<Navigate to="/" replace />} />
               </>
             ) : (
@@ -66,13 +70,15 @@ function AppContent() {
                 <Route path="/pricing" element={<Pricing />} />
                 <Route path="/subscribe" element={<Subscribe />} />
                 <Route path="/help" element={<HelpCenter />} />
+                <Route path="/privacy" element={<PrivacyPolicy />} />
+                <Route path="/terms" element={<TermsOfService />} />
                 <Route path="*" element={<NotFound />} />
               </>
             )}
           </Routes>
         </main>
-        {/* Only show footer for authenticated users */}
-        {isAuthenticated && <Footer />}
+        {/* Show footer on all pages */}
+        <Footer />
         <Toaster />
       </div>
     </BrowserRouter>

@@ -276,49 +276,8 @@ export default function Landing() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Landing Page Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border">
-        <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between h-16">
-            {/* Logo */}
-            <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-blue-500 rounded-lg flex items-center justify-center">
-                <Bot className="w-5 h-5 text-white" />
-              </div>
-              <span className="text-xl font-bold gradient-text">SmartJobFit</span>
-            </div>
-
-            {/* Navigation Links */}
-            <div className="hidden md:flex items-center space-x-8">
-              <a href="#features" className="text-sm font-medium transition-colors hover:text-primary text-muted-foreground">
-                Features
-              </a>
-              <a href="#dashboard" className="text-sm font-medium transition-colors hover:text-primary text-muted-foreground">
-                Dashboard
-              </a>
-              <a href="#testimonials" className="text-sm font-medium transition-colors hover:text-primary text-muted-foreground">
-                Reviews
-              </a>
-              <a href="#pricing" className="text-sm font-medium transition-colors hover:text-primary text-muted-foreground">
-                Pricing
-              </a>
-            </div>
-
-            {/* Right Side Actions */}
-            <div className="flex items-center space-x-4">
-              <Button variant="outline" size="sm">
-                <Link to="/api/login">Sign In</Link>
-              </Button>
-              <Button size="sm" className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white">
-                <Link to="/api/login">Get Started</Link>
-              </Button>
-            </div>
-          </div>
-        </div>
-      </nav>
-
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 text-white pt-16">
+      <section className="relative bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 text-white pt-8">
         <div className="absolute inset-0 bg-black/20"></div>
         <div className="relative container mx-auto px-4 py-20 text-center">
           <div className="max-w-4xl mx-auto space-y-8">
@@ -386,15 +345,15 @@ export default function Landing() {
           
           <div className="grid md:grid-cols-3 gap-8">
             {features.map((feature, index) => (
-              <Card key={index} className="border-0 shadow-lg hover:shadow-xl transition-shadow">
-                <CardHeader className="text-center">
-                  <div className={`mx-auto w-16 h-16 rounded-full bg-gradient-to-r ${feature.gradient} flex items-center justify-center mb-4`}>
-                    <feature.icon className="h-8 w-8 text-white" />
+              <Card key={index} className="group border-0 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 overflow-hidden">
+                <CardHeader className="text-center pb-4">
+                  <div className={`mx-auto w-20 h-20 rounded-full bg-gradient-to-r ${feature.gradient} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg`}>
+                    <feature.icon className="h-10 w-10 text-white" />
                   </div>
-                  <CardTitle className="text-xl">{feature.title}</CardTitle>
+                  <CardTitle className="text-xl font-bold group-hover:text-primary transition-colors">{feature.title}</CardTitle>
                 </CardHeader>
                 <CardContent className="text-center">
-                  <p className="text-muted-foreground">{feature.description}</p>
+                  <p className="text-muted-foreground leading-relaxed">{feature.description}</p>
                 </CardContent>
               </Card>
             ))}
@@ -649,55 +608,7 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12">
-        <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-3 gap-8">
-            <div>
-              <h3 className="text-xl font-semibold mb-4">SmartJobFit</h3>
-              <p className="text-gray-300 mb-4">
-                AI-powered job search platform helping professionals find their dream jobs 10x faster.
-              </p>
-              <div className="flex gap-4">
-                <a href="#privacy" className="text-gray-300 hover:text-white transition-colors">Privacy Policy</a>
-                <a href="#terms" className="text-gray-300 hover:text-white transition-colors">Terms of Service</a>
-              </div>
-            </div>
-            
-            <div>
-              <h4 className="text-lg font-semibold mb-4">Support</h4>
-              <ul className="space-y-2 text-gray-300">
-                <li><Link to="/help" className="hover:text-white transition-colors">Help Center</Link></li>
-                <li>AI Job Search</li>
-                <li>Resume Optimization</li>
-                <li>Interview Preparation</li>
-                <li>Career Analytics</li>
-                <li>Salary Negotiation</li>
-                <li>Job Alerts</li>
-              </ul>
-            </div>
-            
-            <div>
-              <h4 className="text-lg font-semibold mb-4">Secure Payments</h4>
-              <div className="flex gap-3 mb-4">
-                <SiVisa className="w-8 h-8 text-blue-600" />
-                <SiMastercard className="w-8 h-8 text-red-600" />
-                <SiAmericanexpress className="w-8 h-8 text-blue-500" />
-                <SiPaypal className="w-8 h-8 text-blue-400" />
-                <SiApple className="w-8 h-8 text-gray-300" />
-                <SiGooglepay className="w-8 h-8 text-green-500" />
-              </div>
-              <p className="text-gray-400 text-sm">
-                All transactions are secure and encrypted. Your payment information is never stored on our servers.
-              </p>
-            </div>
-          </div>
-          
-          <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-            <p>&copy; 2024 SmartJobFit. All rights reserved.</p>
-          </div>
-        </div>
-      </footer>
+
     </div>
   );
 }
