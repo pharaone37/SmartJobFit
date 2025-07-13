@@ -8,7 +8,7 @@ export function setupLinkedInAuth(app: Express) {
   passport.use(new LinkedInStrategy({
     clientID: process.env.LINKEDIN_CLIENT_ID!,
     clientSecret: process.env.LINKEDIN_CLIENT_SECRET!,
-    callbackURL: `${process.env.REPLIT_DEV_DOMAIN ? `https://${process.env.REPLIT_DEV_DOMAIN}` : 'https://smartjobfit.com'}/auth/linkedin/callback`,
+    callbackURL: `https://${process.env.REPLIT_DOMAINS?.split(',')[0] || 'smartjobfit.com'}/auth/linkedin/callback`,
     scope: ['openid', 'profile', 'email'],
     state: true
   }, async (accessToken, refreshToken, profile, done) => {
