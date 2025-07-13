@@ -193,9 +193,9 @@ export class JobService {
 
   async getJobRecommendations(userId: string, limit: number = 10): Promise<Job[]> {
     try {
-      // For now, return sample data to avoid rate limiting
-      const sampleJobs = await this.getSampleJobs();
-      return sampleJobs.slice(0, limit);
+      // Get real jobs from database for recommendations
+      const dbJobs = await storage.getJobs({ limit });
+      return dbJobs;
     } catch (error) {
       console.error('Get job recommendations error:', error);
       return [];
