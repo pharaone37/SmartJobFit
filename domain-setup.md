@@ -1,92 +1,159 @@
-# Domain Setup Guide for smartjobfit.com
+# Domain Setup Guide for SmartJobFit
 
-## ✅ App Configuration Complete
+## Current Status
+- **Domain**: smartjobfit.com (purchased from Namecheap)
+- **Current DNS**: Pointing to Namecheap parking page
+- **Target**: Connect to your hosting platform
 
-I've configured your app for the domain `smartjobfit.com`:
+## DNS Configuration Steps
 
-### Changes Made:
-- Updated OpenRouter API referer headers to use smartjobfit.com
-- Updated Content Security Policy to allow OpenRouter API calls
-- Configured all AI services to use your domain
+### For Replit Deployments
 
-## 📋 Next Steps - Namecheap DNS Configuration
+1. **Get Replit Deployment URL**
+   - Deploy your app on Replit
+   - Note the deployment URL (e.g., `yourapp.replit.app`)
 
-Since you purchased the domain from Namecheap, you need to configure DNS records to point to Replit:
+2. **Update DNS Records in Namecheap**
+   - Log into Namecheap account
+   - Go to Domain List → Manage for smartjobfit.com
+   - Go to Advanced DNS tab
+   - Add/Update these records:
 
-### 1. Log into Namecheap Dashboard
-- Go to https://www.namecheap.com/
-- Sign in to your account
-- Go to Domain List → Manage for smartjobfit.com
+   ```
+   Type: A Record
+   Host: @
+   Value: [Replit's IP - get from Replit docs]
+   TTL: 1 min
 
-### 2. DNS Configuration
-Navigate to the DNS settings and add these records:
+   Type: CNAME
+   Host: www
+   Value: your-deployment-url.replit.app
+   TTL: 1 min
+   ```
 
-**A Record:**
-- Type: `A`
-- Host: `@`
-- Value: `Your Replit IP` (Replit will provide this)
+3. **Configure Custom Domain in Replit**
+   - Go to your Replit deployment settings
+   - Add custom domain: `smartjobfit.com`
+   - Add custom domain: `www.smartjobfit.com`
+   - Replit will provide specific DNS instructions
 
-**CNAME Record:**
-- Type: `CNAME`
-- Host: `www`
-- Value: `smartjobfit.com`
+### For Vercel
 
-### 3. Replit Domain Setup
-In your Replit project:
-1. Go to the "Deployments" tab
-2. Click "Custom Domain"
-3. Enter: `smartjobfit.com`
-4. Follow Replit's instructions for DNS verification
+1. **Deploy to Vercel**
+   - Connect your GitHub repository
+   - Deploy your application
 
-### 4. Environment Variable Update
-Add this to your environment variables:
+2. **Add Custom Domain in Vercel**
+   - Go to Project Settings → Domains
+   - Add `smartjobfit.com` and `www.smartjobfit.com`
+   - Vercel will show DNS configuration
+
+3. **Update Namecheap DNS**
+   ```
+   Type: A Record
+   Host: @
+   Value: 76.76.19.19
+   TTL: 1 min
+
+   Type: CNAME
+   Host: www
+   Value: cname.vercel-dns.com
+   TTL: 1 min
+   ```
+
+### For Railway
+
+1. **Deploy to Railway**
+   - Connect your repository
+   - Deploy application
+
+2. **Add Custom Domain**
+   - Go to Railway dashboard
+   - Add custom domain in settings
+   - Get the provided CNAME value
+
+3. **Update DNS**
+   ```
+   Type: CNAME
+   Host: @
+   Value: [Railway provided CNAME]
+   TTL: 1 min
+
+   Type: CNAME
+   Host: www
+   Value: [Railway provided CNAME]
+   TTL: 1 min
+   ```
+
+## SSL Certificate Setup
+
+Most modern hosting platforms provide automatic SSL certificates:
+- **Replit**: Automatic SSL with custom domains
+- **Vercel**: Automatic SSL via Let's Encrypt
+- **Railway**: Automatic SSL included
+- **Cloudflare**: Can be added as additional layer
+
+## DNS Propagation
+
+- **Time**: 24-48 hours (usually much faster)
+- **Check Status**: Use tools like whatsmydns.net
+- **Test**: Try accessing both `smartjobfit.com` and `www.smartjobfit.com`
+
+## Verification Steps
+
+1. **DNS Check**
+   ```bash
+   nslookup smartjobfit.com
+   nslookup www.smartjobfit.com
+   ```
+
+2. **SSL Check**
+   - Visit https://smartjobfit.com
+   - Check for green lock icon
+   - Use SSL checker tools
+
+3. **Functionality Test**
+   - Test login/logout
+   - Test all major features
+   - Check mobile responsiveness
+
+## Common Issues & Solutions
+
+### Issue 1: DNS Not Propagating
+- **Solution**: Clear DNS cache, wait longer, check TTL settings
+
+### Issue 2: SSL Certificate Issues
+- **Solution**: Most platforms auto-generate SSL, contact support if needed
+
+### Issue 3: Subdomain Not Working
+- **Solution**: Ensure both @ and www records are configured
+
+### Issue 4: Mixed Content Warnings
+- **Solution**: Ensure all resources load via HTTPS
+
+## Environment Variables Update
+
+When switching hosting, update these variables:
 ```
 REPLIT_DOMAINS=smartjobfit.com,www.smartjobfit.com
 ```
 
-## 🔧 Technical Details
+## Monitoring Setup
 
-### SSL Certificate
-- Replit automatically provides SSL certificates
-- Your site will be accessible at https://smartjobfit.com
-- Certificate renewal is handled automatically
+After domain is live, set up:
+1. **Uptime Monitoring**: UptimeRobot or similar
+2. **Analytics**: Google Analytics
+3. **Error Tracking**: Sentry or similar
+4. **Performance**: Web.dev or PageSpeed Insights
 
-### Email Configuration
-Update SendGrid "From" email to use your domain:
-```
-FROM_EMAIL=noreply@smartjobfit.com
-```
+## Next Steps
 
-### Stripe Webhook URL
-Configure Stripe webhook endpoint:
-```
-https://smartjobfit.com/api/webhooks/stripe
-```
+1. Choose hosting platform
+2. Deploy application
+3. Configure custom domain
+4. Update DNS records
+5. Verify SSL certificate
+6. Test all functionality
+7. Set up monitoring
 
-## 🚀 Production Checklist
-
-### Before Going Live:
-- [ ] DNS records configured in Namecheap
-- [ ] Domain verified in Replit
-- [ ] SSL certificate active
-- [ ] Environment variables updated
-- [ ] Stripe webhook endpoint configured
-- [ ] Email templates tested
-- [ ] All AI services working with domain
-
-### After Going Live:
-- [ ] Test user registration
-- [ ] Test payment flow
-- [ ] Test AI features
-- [ ] Monitor error logs
-- [ ] Check email deliverability
-
-## 📞 Support
-
-If you need help with:
-- **DNS Configuration**: Namecheap support
-- **Domain Verification**: Replit support
-- **SSL Issues**: Automatic with Replit
-- **App Issues**: Check the logs in your Replit project
-
-Your app is now configured for smartjobfit.com! Once you complete the DNS setup, your users will be able to access your AI-powered job platform at your custom domain.
+Would you like me to help you with any specific platform setup?
