@@ -18,6 +18,8 @@ import HelpCenter from "@/pages/HelpCenter";
 import PrivacyPolicy from "@/pages/PrivacyPolicy";
 import TermsOfService from "@/pages/TermsOfService";
 import AuthPage from "@/pages/auth";
+import ProfilePage from "@/pages/profile";
+import SettingsPage from "@/pages/settings";
 import NotFound from "@/pages/not-found";
 
 // Components
@@ -62,6 +64,8 @@ function AppContent() {
                 <Route path="/resume" element={<ResumeOptimization />} />
                 <Route path="/interview-prep" element={<InterviewPrep />} />
                 <Route path="/analytics" element={<Analytics />} />
+                <Route path="/profile" element={<ProfilePage />} />
+                <Route path="/settings" element={<SettingsPage />} />
                 <Route path="/pricing" element={<Pricing />} />
                 <Route path="/subscribe" element={<Subscribe />} />
                 <Route path="/help" element={<HelpCenter />} />

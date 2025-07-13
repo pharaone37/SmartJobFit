@@ -30,7 +30,7 @@ export default function Pricing() {
   const [isYearly, setIsYearly] = useState(false);
   const [activeTab, setActiveTab] = useState("plans");
 
-  // Use local plans data instead of API call
+  // Use local plans data instead of API call - showing only two tiers to match homepage
   const plans = [
     {
       id: "free",
@@ -71,35 +71,16 @@ export default function Pricing() {
         "Custom job alerts",
         "Application tracking",
         "Cover letter generator",
-        "Salary insights"
+        "Salary insights",
+        "Advanced analytics & reporting",
+        "Salary negotiation coaching",
+        "1:1 career coaching sessions",
+        "White-glove service"
       ],
       buttonText: "Start Free Trial",
       buttonVariant: "default" as const,
       popular: true,
       icon: Star
-    },
-    {
-      id: "enterprise",
-      name: "Enterprise",
-      price: 39,
-      yearlyPrice: 31,
-      description: "For career professionals",
-      features: [
-        "Everything in Professional",
-        "Advanced analytics & reporting",
-        "Salary negotiation coaching",
-        "1:1 career coaching sessions",
-        "White-glove service",
-        "Custom integrations",
-        "API access",
-        "Dedicated account manager",
-        "Team collaboration tools",
-        "Custom branding"
-      ],
-      buttonText: "Contact Sales",
-      buttonVariant: "outline" as const,
-      popular: false,
-      icon: Crown
     }
   ];
 
@@ -110,55 +91,55 @@ export default function Pricing() {
       category: "Job Search",
       icon: Target,
       items: [
-        { name: "AI-Powered Job Matching", free: false, pro: true, enterprise: true },
-        { name: "Multi-Board Search", free: "Limited", pro: "15+ Boards", enterprise: "15+ Boards" },
-        { name: "Custom Job Alerts", free: "1", pro: "Unlimited", enterprise: "Unlimited" },
-        { name: "Application Tracking", free: "5 Apps", pro: "Unlimited", enterprise: "Unlimited" },
-        { name: "Salary Insights", free: false, pro: true, enterprise: true }
+        { name: "AI-Powered Job Matching", free: false, pro: true },
+        { name: "Multi-Board Search", free: "Limited", pro: "15+ Boards" },
+        { name: "Custom Job Alerts", free: "1", pro: "Unlimited" },
+        { name: "Application Tracking", free: "5 Apps", pro: "Unlimited" },
+        { name: "Salary Insights", free: false, pro: true }
       ]
     },
     {
       category: "Resume & Profile",
       icon: FileText,
       items: [
-        { name: "Resume Optimization", free: "Basic", pro: "Advanced", enterprise: "AI-Powered" },
-        { name: "ATS Compatibility Check", free: false, pro: true, enterprise: true },
-        { name: "Cover Letter Generator", free: false, pro: true, enterprise: true },
-        { name: "LinkedIn Optimization", free: false, pro: true, enterprise: true },
-        { name: "Custom Templates", free: "3", pro: "Unlimited", enterprise: "Unlimited" }
+        { name: "Resume Optimization", free: "Basic", pro: "Advanced" },
+        { name: "ATS Compatibility Check", free: false, pro: true },
+        { name: "Cover Letter Generator", free: false, pro: true },
+        { name: "LinkedIn Optimization", free: false, pro: true },
+        { name: "Custom Templates", free: "3", pro: "Unlimited" }
       ]
     },
     {
       category: "Interview Preparation",
       icon: Video,
       items: [
-        { name: "AI Mock Interviews", free: false, pro: true, enterprise: true },
-        { name: "Question Bank Access", free: "Limited", pro: "Full Access", enterprise: "Full Access" },
-        { name: "Performance Analytics", free: false, pro: true, enterprise: "Advanced" },
-        { name: "Industry-Specific Prep", free: false, pro: true, enterprise: true },
-        { name: "Video Analysis", free: false, pro: false, enterprise: true }
+        { name: "AI Mock Interviews", free: false, pro: true },
+        { name: "Question Bank Access", free: "Limited", pro: "Full Access" },
+        { name: "Performance Analytics", free: false, pro: true },
+        { name: "Industry-Specific Prep", free: false, pro: true },
+        { name: "Video Analysis", free: false, pro: true }
       ]
     },
     {
       category: "Analytics & Insights",
       icon: BarChart3,
       items: [
-        { name: "Application Analytics", free: "Basic", pro: "Advanced", enterprise: "Custom" },
-        { name: "Market Insights", free: false, pro: true, enterprise: true },
-        { name: "Performance Tracking", free: false, pro: true, enterprise: "Advanced" },
-        { name: "Custom Reports", free: false, pro: false, enterprise: true },
-        { name: "Data Export", free: false, pro: "CSV", enterprise: "Multiple Formats" }
+        { name: "Application Analytics", free: "Basic", pro: "Advanced" },
+        { name: "Market Insights", free: false, pro: true },
+        { name: "Performance Tracking", free: false, pro: true },
+        { name: "Custom Reports", free: false, pro: true },
+        { name: "Data Export", free: false, pro: "CSV" }
       ]
     },
     {
       category: "Support & Services",
       icon: Users,
       items: [
-        { name: "Email Support", free: true, pro: true, enterprise: true },
-        { name: "Priority Support", free: false, pro: true, enterprise: true },
-        { name: "Career Coaching", free: false, pro: false, enterprise: "1:1 Sessions" },
-        { name: "Dedicated Manager", free: false, pro: false, enterprise: true },
-        { name: "Phone Support", free: false, pro: false, enterprise: true }
+        { name: "Email Support", free: true, pro: true },
+        { name: "Priority Support", free: false, pro: true },
+        { name: "Career Coaching", free: false, pro: "1:1 Sessions" },
+        { name: "Dedicated Manager", free: false, pro: true },
+        { name: "Phone Support", free: false, pro: true }
       ]
     }
   ];
@@ -184,9 +165,9 @@ export default function Pricing() {
       name: "Emily Rodriguez",
       role: "UX Designer",
       company: "DesignStudio",
-      content: "The enterprise features and career coaching helped me negotiate 25% higher salary. Amazing ROI!",
+      content: "The professional features and career coaching helped me negotiate 25% higher salary. Amazing ROI!",
       avatar: "ER",
-      plan: "Enterprise"
+      plan: "Professional"
     }
   ];
 
@@ -259,7 +240,7 @@ export default function Pricing() {
           {/* Plans Tab */}
           <TabsContent value="plans">
             {/* Pricing Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16 max-w-4xl mx-auto">
               {displayPlans.map((plan, index) => {
                 const Icon = plan.icon;
                 const currentPrice = isYearly ? plan.yearlyPrice : plan.price;
@@ -411,7 +392,6 @@ export default function Pricing() {
                             <th className="text-left py-3 pr-6">Feature</th>
                             <th className="text-center py-3 px-4 min-w-[100px]">Free</th>
                             <th className="text-center py-3 px-4 min-w-[100px]">Professional</th>
-                            <th className="text-center py-3 px-4 min-w-[100px]">Enterprise</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -420,7 +400,6 @@ export default function Pricing() {
                               <td className="py-3 pr-6 font-medium">{item.name}</td>
                               <td className="text-center py-3 px-4">{renderFeatureValue(item.free)}</td>
                               <td className="text-center py-3 px-4">{renderFeatureValue(item.pro)}</td>
-                              <td className="text-center py-3 px-4">{renderFeatureValue(item.enterprise)}</td>
                             </tr>
                           ))}
                         </tbody>
