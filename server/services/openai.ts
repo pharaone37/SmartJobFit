@@ -2,12 +2,17 @@ import OpenAI from "openai";
 import { User, Job, Resume } from "@shared/schema";
 
 /*
-The newest OpenAI model is "gpt-4o", not "gpt-4". gpt-4o was released after your knowledge cutoff. 
-Always prefer using gpt-4o as it is the latest model.
+Using OpenRouter for better rate limits and model access.
+OpenRouter provides access to multiple AI models including GPT-4o with better pricing.
 */
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
+  baseURL: "https://openrouter.ai/api/v1",
+  defaultHeaders: {
+    "HTTP-Referer": "https://smartjobfit.ai", // Replace with your actual domain
+    "X-Title": "SmartJobFit AI",
+  },
 });
 
 export class OpenAIService {
@@ -39,7 +44,7 @@ export class OpenAIService {
       `;
 
       const response = await openai.chat.completions.create({
-        model: "gpt-4o",
+        model: "openai/gpt-4o",
         messages: [{ role: "user", content: prompt }],
         response_format: { type: "json_object" },
       });
@@ -78,7 +83,7 @@ export class OpenAIService {
       `;
 
       const response = await openai.chat.completions.create({
-        model: "gpt-4o",
+        model: "openai/gpt-4o",
         messages: [{ role: "user", content: prompt }],
       });
 
@@ -119,7 +124,7 @@ export class OpenAIService {
       `;
 
       const response = await openai.chat.completions.create({
-        model: "gpt-4o",
+        model: "openai/gpt-4o",
         messages: [{ role: "user", content: prompt }],
         response_format: { type: "json_object" },
       });
@@ -150,7 +155,7 @@ export class OpenAIService {
       `;
 
       const response = await openai.chat.completions.create({
-        model: "gpt-4o",
+        model: "openai/gpt-4o",
         messages: [{ role: "user", content: prompt }],
         response_format: { type: "json_object" },
       });
@@ -184,7 +189,7 @@ export class OpenAIService {
       `;
 
       const response = await openai.chat.completions.create({
-        model: "gpt-4o",
+        model: "openai/gpt-4o",
         messages: [{ role: "user", content: prompt }],
         response_format: { type: "json_object" },
       });
@@ -215,7 +220,7 @@ export class OpenAIService {
       `;
 
       const response = await openai.chat.completions.create({
-        model: "gpt-4o",
+        model: "openai/gpt-4o",
         messages: [{ role: "user", content: prompt }],
         response_format: { type: "json_object" },
       });
@@ -256,7 +261,7 @@ export class OpenAIService {
       `;
 
       const response = await openai.chat.completions.create({
-        model: "gpt-4o",
+        model: "openai/gpt-4o",
         messages: [{ role: "user", content: prompt }],
         response_format: { type: "json_object" },
       });
@@ -288,7 +293,7 @@ export class OpenAIService {
       `;
 
       const response = await openai.chat.completions.create({
-        model: "gpt-4o",
+        model: "openai/gpt-4o",
         messages: [{ role: "user", content: prompt }],
         response_format: { type: "json_object" },
       });

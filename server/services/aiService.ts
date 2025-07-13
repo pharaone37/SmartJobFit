@@ -1,5 +1,6 @@
 import { anthropicService } from './anthropic';
 import { openaiService } from './openai';
+import { makeOpenRouterCall, OPENROUTER_MODELS } from './openrouter';
 import type { User, Job, Resume } from "@shared/schema";
 
 export interface JobMatchResult {
@@ -34,7 +35,7 @@ export interface InterviewAnalysis {
 export class AIService {
   async matchJobToResume(jobDescription: string, resumeContent: string): Promise<JobMatchResult> {
     try {
-      // Use OpenAI for job matching analysis
+      // Use OpenRouter for job matching analysis
       const prompt = `
         Analyze the match between this job description and resume content. Provide a detailed analysis.
         
@@ -54,14 +55,16 @@ export class AIService {
         }
       `;
 
-      const response = await fetch('https://api.openai.com/v1/chat/completions', {
+      const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
           'Content-Type': 'application/json',
+          'HTTP-Referer': 'https://smartjobfit.ai',
+          'X-Title': 'SmartJobFit AI',
         },
         body: JSON.stringify({
-          model: 'gpt-4o',
+          model: 'openai/gpt-4o',
           messages: [{ role: 'user', content: prompt }],
           response_format: { type: 'json_object' },
         }),
@@ -71,13 +74,20 @@ export class AIService {
       return JSON.parse(data.choices[0].message.content);
     } catch (error) {
       console.error('Error matching job to resume:', error);
-      return {
-        matchScore: 0,
-        strengths: [],
-        gaps: [],
-        recommendations: [],
-        keywords: []
-      };
+      // Try OpenRouter as fallback
+      try {
+        const fallbackResult = await makeOpenRouterCall(prompt, OPENROUTER_MODELS.GPT_4O, { jsonMode: true });
+        return JSON.parse(fallbackResult);
+      } catch (fallbackError) {
+        console.error('OpenRouter fallback failed:', fallbackError);
+        return {
+          matchScore: 0,
+          strengths: [],
+          gaps: [],
+          recommendations: [],
+          keywords: []
+        };
+      }
     }
   }
 

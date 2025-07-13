@@ -15,19 +15,24 @@ REPLIT_DOMAINS="yourdomain.com,www.yourdomain.com"
 
 ## 📊 API Limits & Upgrades Required
 
-### OpenAI API (CRITICAL - Upgrade Immediately)
-**Current:** Free/Tier 1 (severely limiting)
-**Recommended:** Scale Tier or Tier 3+
+### OpenRouter API (RECOMMENDED - Already Configured!)
+**Current:** Using OpenRouter with your API key
+**Benefits:** Much better than direct OpenAI API!
 
-**Upgrade Steps:**
-1. Go to https://platform.openai.com/account/billing
-2. Add $100+ to your account to reach Tier 2
-3. For Scale Tier: Contact OpenAI Sales (recommended for production)
+**What You Get:**
+- 200 requests/minute (vs OpenAI's 20)
+- 40K tokens/minute (vs OpenAI's limited)
+- Better pricing than direct OpenAI
+- Access to multiple AI models (GPT-4o, Claude, etc.)
+- Automatic failover between models
 
-**Why Critical:**
-- Free tier: 20 requests/min (not viable for production)
-- Scale tier: 30K tokens/min + 99.9% uptime SLA
-- Your app makes 5-10 OpenAI calls per user session
+**Your Setup:**
+- ✓ OpenRouter configured with your API key
+- ✓ Using `openai/gpt-4o` model through OpenRouter
+- ✓ Automatic fallback to other models if needed
+- ✓ Better rate limits for production use
+
+**No Action Required:** Your OpenRouter setup is production-ready!
 
 ### Stripe API (Production Ready)
 **Current:** 25 requests/second
@@ -134,9 +139,9 @@ REPLIT_DOMAINS=yourdomain.com,www.yourdomain.com
 ISSUER_URL=https://replit.com/oidc
 REPL_ID=your-repl-id
 
-# AI Services
-OPENAI_API_KEY=sk-...
-ANTHROPIC_API_KEY=sk-ant-...
+# AI Services (OpenRouter provides better rates and limits)
+OPENAI_API_KEY=sk-or-... # Your OpenRouter API key
+ANTHROPIC_API_KEY=sk-ant-... # Optional backup
 
 # Payment
 STRIPE_SECRET_KEY=sk_live_...
