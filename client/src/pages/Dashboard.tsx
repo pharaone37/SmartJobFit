@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { useQuery } from '@tanstack/react-query';
+import { useToast } from '@/hooks/use-toast';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -37,29 +38,22 @@ import {
 
 export default function Dashboard() {
   const { user } = useAuth();
+  const { toast } = useToast();
   const [filters, setFilters] = useState<JobSearchFiltersType>({});
   const [isSearching, setIsSearching] = useState(false);
+  const [savedJobs, setSavedJobs] = useState<number[]>([]);
 
-  // Use static data for now
-  const dashboardData = null;
-  const recommendedJobs = null;
-  const userStats = null;
-  const dashboardLoading = false;
-  const jobsLoading = false;
-  const statsLoading = false;
+  // Fetch real user stats
+  const { data: userStats, isLoading: statsLoading } = useQuery({
+    queryKey: ['/api/user/stats'],
+    enabled: false, // Disable for now to prevent API calls
+  });
 
-  // Default data if API calls fail
-  const defaultData = {
-    jobSearches: 23,
-    applications: 12,
-    interviews: 3,
-    resumeScore: 85,
-    profileStrength: 92,
-    matchingJobs: 47,
-    plan: user?.subscriptionPlan || 'free'
-  };
-
-  const data = dashboardData || defaultData;
+  // Fetch recommended jobs
+  const { data: recommendedJobs, isLoading: jobsLoading } = useQuery({
+    queryKey: ['/api/jobs/recommended'],
+    enabled: false, // Disable for now to prevent API calls
+  });
 
   const recentActivity = [
     { id: 1, type: 'job_search', title: 'Software Engineer at TechCorp', time: '2 hours ago' },
@@ -69,11 +63,24 @@ export default function Dashboard() {
   ];
 
   const matchingJobs = recommendedJobs || [
-    { id: 1, title: 'Senior Software Engineer', company: 'TechCorp', match: 95, location: 'San Francisco, CA', salary: '$120k - $180k', type: 'Full-time' },
-    { id: 2, title: 'Product Manager', company: 'StartupXYZ', match: 88, location: 'New York, NY', salary: '$110k - $160k', type: 'Full-time' },
-    { id: 3, title: 'Full Stack Developer', company: 'WebCorp', match: 82, location: 'Remote', salary: '$100k - $140k', type: 'Full-time' },
-    { id: 4, title: 'Data Scientist', company: 'DataTech', match: 78, location: 'Boston, MA', salary: '$130k - $190k', type: 'Full-time' },
+    { id: 1, title: 'Senior Software Engineer', company: 'TechCorp', match: 95, location: 'San Francisco, CA', salary: '$120k - $180k', type: 'Full-time', jobUrl: 'https://techcorp.com/careers/senior-software-engineer' },
+    { id: 2, title: 'Product Manager', company: 'StartupXYZ', match: 88, location: 'New York, NY', salary: '$110k - $160k', type: 'Full-time', jobUrl: 'https://startupxyz.com/jobs/product-manager' },
+    { id: 3, title: 'Full Stack Developer', company: 'WebCorp', match: 82, location: 'Remote', salary: '$100k - $140k', type: 'Full-time', jobUrl: 'https://webcorp.com/careers/full-stack-developer' },
+    { id: 4, title: 'Data Scientist', company: 'DataTech', match: 78, location: 'Boston, MA', salary: '$130k - $190k', type: 'Full-time', jobUrl: 'https://datatech.com/jobs/data-scientist' },
   ];
+
+  // Use real data when available, fallback to realistic demo data
+  const defaultData = {
+    jobSearches: 23,
+    applications: 12,
+    interviews: 3,
+    resumeScore: 85,
+    profileStrength: 92,
+    matchingJobs: matchingJobs.length,
+    plan: user?.subscriptionPlan || 'free'
+  };
+
+  const data = userStats || defaultData;
 
   const resumes = [
     { id: 1, title: 'Senior Software Engineer Resume', score: 85, lastUpdated: '2 days ago', isActive: true },
@@ -97,6 +104,43 @@ export default function Dashboard() {
       console.error('Search failed:', error);
       setIsSearching(false);
     }
+  };
+
+  const handleSaveJob = async (jobId: number) => {
+    try {
+      const job = matchingJobs.find(j => j.id === jobId);
+      if (savedJobs.includes(jobId)) {
+        // Unsave the job
+        setSavedJobs(prev => prev.filter(id => id !== jobId));
+        toast({
+          title: "Job removed from saved",
+          description: `"${job?.title}" has been removed from your saved jobs.`,
+        });
+      } else {
+        // Save the job
+        setSavedJobs(prev => [...prev, jobId]);
+        toast({
+          title: "Job saved successfully",
+          description: `"${job?.title}" has been added to your saved jobs.`,
+        });
+      }
+    } catch (error) {
+      console.error('Failed to save/unsave job:', error);
+      toast({
+        title: "Error",
+        description: "Failed to save job. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleApplyToJob = (jobUrl: string, jobTitle: string) => {
+    console.log('Applying to job:', jobTitle, 'at', jobUrl);
+    toast({
+      title: "Opening job application",
+      description: `Redirecting to "${jobTitle}" application page...`,
+    });
+    window.open(jobUrl, '_blank');
   };
 
   const getActivityIcon = (type: string) => {
@@ -123,7 +167,7 @@ export default function Dashboard() {
     return 'bg-red-100 text-red-800';
   };
 
-  if (dashboardLoading || statsLoading) {
+  if (statsLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full"></div>
@@ -239,10 +283,21 @@ export default function Dashboard() {
                           </div>
                         </div>
                         <div className="flex items-center gap-2">
-                          <Button variant="outline" size="sm">
-                            <Bookmark className="h-4 w-4" />
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => handleSaveJob(job.id)}
+                          >
+                            {savedJobs.includes(job.id) ? (
+                              <BookmarkCheck className="h-4 w-4" />
+                            ) : (
+                              <Bookmark className="h-4 w-4" />
+                            )}
                           </Button>
-                          <Button size="sm">
+                          <Button 
+                            size="sm"
+                            onClick={() => handleApplyToJob(job.jobUrl, job.title)}
+                          >
                             <ExternalLink className="h-4 w-4 mr-2" />
                             Apply
                           </Button>
