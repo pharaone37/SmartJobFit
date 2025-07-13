@@ -36,6 +36,7 @@ export const users = pgTable("users", {
   firstName: varchar("first_name"),
   lastName: varchar("last_name"),
   profileImageUrl: varchar("profile_image_url"),
+  passwordHash: varchar("password_hash"),
   title: varchar("title"),
   summary: text("summary"),
   skills: text("skills").array(),
@@ -47,7 +48,7 @@ export const users = pgTable("users", {
   subscriptionEndsAt: timestamp("subscription_ends_at"),
   jobSearchesThisMonth: integer("job_searches_this_month").default(0),
   resumeOptimizationsThisMonth: integer("resume_optimizations_this_month").default(0),
-  provider: varchar("provider").default("replit"), // 'replit' or 'linkedin'
+  provider: varchar("provider").default("email"), // 'email', 'linkedin', 'replit'
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });

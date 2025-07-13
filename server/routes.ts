@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import Stripe from "stripe";
 import { storage } from "./storage";
-import { setupAuth0, requireAuth, getUserId } from "./auth/auth0";
+import { setupJWTAuth, requireAuth, getUserId } from "./auth/jwtAuth";
 import { jobBoardService } from "./services/jobBoards";
 import { jobService } from "./services/jobService";
 import { openaiService } from "./services/openai";
@@ -31,8 +31,8 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
 });
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Auth0 middleware
-  setupAuth0(app);
+  // JWT Auth middleware
+  setupJWTAuth(app);
 
   // Health check endpoint for deployment
   app.get('/api/health', async (req, res) => {

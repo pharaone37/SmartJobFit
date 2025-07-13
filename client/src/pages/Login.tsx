@@ -1,7 +1,7 @@
 import { useAuth } from "@/hooks/useAuth";
 import { useEffect } from "react";
 import { useLocation } from "wouter";
-import Auth0Login from "@/components/auth/Auth0Login";
+import { LoginForm } from "@/components/auth/LoginForm";
 
 export default function Login() {
   const { isAuthenticated, isLoading } = useAuth();
@@ -25,5 +25,5 @@ export default function Login() {
     return null;
   }
 
-  return <Auth0Login />;
+  return <LoginForm />;
 }

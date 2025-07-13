@@ -184,11 +184,14 @@ export default function Navbar() {
                         <span>Billing</span>
                       </Link>
                     </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
-                      <a href="/auth/logout">
-                        <LogOut className="mr-2 h-4 w-4" />
-                        <span>Log out</span>
-                      </a>
+                    <DropdownMenuItem 
+                      onClick={() => {
+                        localStorage.removeItem('authToken');
+                        window.location.href = '/login';
+                      }}
+                    >
+                      <LogOut className="mr-2 h-4 w-4" />
+                      <span>Log out</span>
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
