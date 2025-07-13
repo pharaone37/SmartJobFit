@@ -16,9 +16,9 @@ export function setupAuth0(app: Express) {
       logout: '/auth/logout',
       callback: '/auth/callback'
     },
-    session: {
-      rollingDuration: 24 * 60 * 60 * 1000, // 24 hours
-      absoluteDuration: 7 * 24 * 60 * 60 * 1000 // 7 days
+    authorizationParams: {
+      response_type: 'code',
+      scope: 'openid profile email'
     },
     afterCallback: async (req, res, session, decodedState) => {
       try {
