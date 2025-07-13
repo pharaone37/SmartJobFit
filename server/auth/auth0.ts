@@ -3,6 +3,8 @@ import { storage } from '../storage';
 import type { Express } from 'express';
 
 export function setupAuth0(app: Express) {
+  console.log('Setting up Auth0 with domain:', process.env.REPLIT_DOMAINS?.split(',')[0]);
+  
   const config: ConfigParams = {
     authRequired: false,
     auth0Logout: true,
@@ -19,6 +21,11 @@ export function setupAuth0(app: Express) {
     authorizationParams: {
       response_type: 'code',
       scope: 'openid profile email'
+    },
+    session: {
+      rolling: true,
+      rollingDuration: 24 * 60 * 60 * 1000, // 24 hours
+      absoluteDuration: 7 * 24 * 60 * 60 * 1000 // 7 days
     },
     afterCallback: async (req, res, session, decodedState) => {
       try {

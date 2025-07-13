@@ -6,6 +6,9 @@ import { setupVite, serveStatic, log } from "./vite";
 
 const app = express();
 
+// Trust proxy for secure cookies
+app.set('trust proxy', 1);
+
 // Session configuration for Auth0
 const sessionTtl = 7 * 24 * 60 * 60 * 1000; // 1 week
 const pgStore = connectPg(session);
@@ -23,10 +26,11 @@ app.use(session({
   saveUninitialized: false,
   cookie: {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
+    secure: false, // Set to false for development
     maxAge: sessionTtl,
     sameSite: 'lax'
   },
+  name: 'connect.sid'
 }));
 
 // Security headers and middleware
