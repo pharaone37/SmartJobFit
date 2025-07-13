@@ -38,7 +38,7 @@ export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const navigationItems = [
-    { name: t.nav.dashboard, href: "/dashboard", icon: BarChart3 },
+    { name: "Overview", href: "/dashboard", icon: BarChart3 },
     { name: "Job Search", href: "/jobs", icon: Search },
     { name: "Resume", href: "/resume", icon: FileText },
     { name: "Interview Prep", href: "/interview-prep", icon: Video },

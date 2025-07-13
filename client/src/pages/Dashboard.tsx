@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+
 import JobSearchFilters from '@/components/JobSearchFilters';
 import type { JobSearchFilters as JobSearchFiltersType } from '@/components/JobSearchFilters';
 import { 
@@ -37,7 +37,6 @@ import {
 
 export default function Dashboard() {
   const { user } = useAuth();
-  const [activeTab, setActiveTab] = useState('overview');
   const [filters, setFilters] = useState<JobSearchFiltersType>({});
   const [isSearching, setIsSearching] = useState(false);
 
@@ -147,18 +146,8 @@ export default function Dashboard() {
           </Button>
         </div>
 
-        <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid grid-cols-6 w-full max-w-2xl">
-            <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="search">Job Search</TabsTrigger>
-            <TabsTrigger value="applications">Applications</TabsTrigger>
-            <TabsTrigger value="resumes">Resumes</TabsTrigger>
-            <TabsTrigger value="interviews">Interviews</TabsTrigger>
-            <TabsTrigger value="analytics">Analytics</TabsTrigger>
-          </TabsList>
-
-          {/* Overview Tab */}
-          <TabsContent value="overview" className="space-y-6">
+        {/* Overview Content */}
+        <div className="space-y-6">
             {/* Stats Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               <Card className="border-0 shadow-lg">
@@ -289,171 +278,7 @@ export default function Dashboard() {
                 </CardContent>
               </Card>
             </div>
-          </TabsContent>
-
-          {/* Job Search Tab */}
-          <TabsContent value="search" className="space-y-6">
-            <JobSearchFilters
-              filters={filters}
-              onFiltersChange={setFilters}
-              onSearch={handleJobSearch}
-              isLoading={isSearching}
-            />
-            
-            {/* Search Results */}
-            <Card className="border-0 shadow-lg">
-              <CardHeader>
-                <CardTitle>Search Results</CardTitle>
-                <CardDescription>
-                  {isSearching ? 'Searching across 15+ job platforms...' : 'Use the filters above to search for jobs'}
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                {isSearching ? (
-                  <div className="flex items-center justify-center py-8">
-                    <div className="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full"></div>
-                  </div>
-                ) : (
-                  <div className="text-center py-8 text-muted-foreground">
-                    Start your search to see personalized job recommendations
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          {/* Other tabs content would go here */}
-          <TabsContent value="applications">
-            <Card className="border-0 shadow-lg">
-              <CardHeader>
-                <CardTitle>Your Applications</CardTitle>
-                <CardDescription>Track the status of your job applications</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="text-center py-8 text-muted-foreground">
-                  No applications yet. Start applying to jobs to see them here.
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="resumes">
-            <Card className="border-0 shadow-lg">
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <CardTitle>Your Resumes</CardTitle>
-                    <CardDescription>Manage and optimize your resumes</CardDescription>
-                  </div>
-                  <Button>
-                    <Plus className="mr-2 h-4 w-4" />
-                    Upload Resume
-                  </Button>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {resumes.map((resume) => (
-                    <div key={resume.id} className="flex items-center justify-between p-4 border rounded-lg">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-3 mb-2">
-                          <h3 className="font-semibold">{resume.title}</h3>
-                          {resume.isActive && <Badge>Active</Badge>}
-                        </div>
-                        <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                          <span>Score: {resume.score}%</span>
-                          <span>Updated: {resume.lastUpdated}</span>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Button variant="outline" size="sm">
-                          <Eye className="h-4 w-4" />
-                        </Button>
-                        <Button variant="outline" size="sm">
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="interviews">
-            <Card className="border-0 shadow-lg">
-              <CardHeader>
-                <CardTitle>Upcoming Interviews</CardTitle>
-                <CardDescription>Prepare for your scheduled interviews</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {interviews.map((interview) => (
-                    <div key={interview.id} className="flex items-center justify-between p-4 border rounded-lg">
-                      <div className="flex-1">
-                        <h3 className="font-semibold">{interview.position}</h3>
-                        <div className="flex items-center gap-4 text-sm text-muted-foreground mt-2">
-                          <span>{interview.company}</span>
-                          <span>{interview.date} at {interview.time}</span>
-                          <Badge variant="outline">{interview.type}</Badge>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Button variant="outline" size="sm">
-                          <BookOpen className="h-4 w-4 mr-2" />
-                          Prepare
-                        </Button>
-                        <Button size="sm">
-                          <Calendar className="h-4 w-4 mr-2" />
-                          Details
-                        </Button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="analytics">
-            <Card className="border-0 shadow-lg">
-              <CardHeader>
-                <CardTitle>Job Search Analytics</CardTitle>
-                <CardDescription>Insights and trends from your job search</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-4">
-                    <div>
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-sm font-medium">Profile Strength</span>
-                        <span className="text-sm text-muted-foreground">{data.profileStrength}%</span>
-                      </div>
-                      <Progress value={data.profileStrength} className="h-2" />
-                    </div>
-                    <div>
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-sm font-medium">Resume Score</span>
-                        <span className="text-sm text-muted-foreground">{data.resumeScore}%</span>
-                      </div>
-                      <Progress value={data.resumeScore} className="h-2" />
-                    </div>
-                  </div>
-                  <div className="space-y-4">
-                    <div className="text-center">
-                      <div className="text-2xl font-bold text-purple-600">{data.matchingJobs}</div>
-                      <div className="text-sm text-muted-foreground">Matching Jobs</div>
-                    </div>
-                    <div className="text-center">
-                      <div className="text-2xl font-bold text-blue-600">{Math.round(data.applications / data.jobSearches * 100)}%</div>
-                      <div className="text-sm text-muted-foreground">Application Rate</div>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
+        </div>
       </div>
     </div>
   );
