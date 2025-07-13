@@ -17,6 +17,7 @@ API requirements: Needs production-level API limits for OpenAI, Stripe, Anthropi
 Domain: smartjobfit.com (purchased from Namecheap)
 AI Provider: OpenRouter API configured for better rate limits
 Authentication: Custom auth page created to show SmartJobFit branding
+OAuth Configuration: Replit OAuth app needs to be updated from "CareerCatalyst" to "SmartJobFit" in settings
 UI Language: English-only interface (removed German translations)
 Hosting: Multiple options available - Replit Deployments (quickest), Vercel (recommended), Railway, DigitalOcean
 Deployment: Ready for production deployment with comprehensive guides created
