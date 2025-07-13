@@ -57,10 +57,21 @@ export function setupAuth0(app: Express) {
       const auth0User = req.oidc.user;
       const userId = `auth0_${auth0User?.sub}`;
       
-      const user = await storage.getUser(userId);
+      // Get user from database
+      let user = await storage.getUser(userId);
       
+      // If user doesn't exist, create from Auth0 profile
       if (!user) {
-        return res.status(404).json({ message: 'User not found' });
+        const userData = {
+          id: userId,
+          email: auth0User.email || '',
+          firstName: auth0User.given_name || auth0User.name?.split(' ')[0] || '',
+          lastName: auth0User.family_name || auth0User.name?.split(' ').slice(1).join(' ') || '',
+          profileImageUrl: auth0User.picture || '',
+          provider: 'auth0'
+        };
+        
+        user = await storage.upsertUser(userData);
       }
 
       res.json(user);
