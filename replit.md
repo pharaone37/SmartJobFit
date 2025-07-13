@@ -14,6 +14,8 @@ CV analytics: Support multiple languages for better user experience
 Design: Job platform logos on landing page, payment method logos in footer
 Production readiness: User planning to deploy with custom domain
 API requirements: Needs production-level API limits for OpenAI, Stripe, Anthropic
+Domain: smartjobfit.com (purchased from Namecheap)
+AI Provider: OpenRouter API configured for better rate limits
 ```
 
 ## System Architecture

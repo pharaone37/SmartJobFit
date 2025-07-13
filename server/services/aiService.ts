@@ -60,7 +60,7 @@ export class AIService {
         headers: {
           'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
           'Content-Type': 'application/json',
-          'HTTP-Referer': 'https://smartjobfit.ai',
+          'HTTP-Referer': 'https://smartjobfit.com',
           'X-Title': 'SmartJobFit AI',
         },
         body: JSON.stringify({

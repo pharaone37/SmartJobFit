@@ -10,7 +10,7 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
   baseURL: "https://openrouter.ai/api/v1",
   defaultHeaders: {
-    "HTTP-Referer": "https://smartjobfit.ai", // Replace with your actual domain
+    "HTTP-Referer": "https://smartjobfit.com",
     "X-Title": "SmartJobFit AI",
   },
 });
