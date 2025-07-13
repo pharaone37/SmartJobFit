@@ -608,12 +608,9 @@ export default function Landing() {
           <div className="max-w-3xl mx-auto space-y-8">
             <h2 className="text-4xl md:text-5xl font-bold mb-6">Ready to Find Your Dream Job?</h2>
             <p className="text-xl text-purple-100 mb-8">Join thousands of professionals who've accelerated their careers with SmartJobFit</p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="flex justify-center">
               <Button size="lg" className="bg-white text-purple-600 hover:bg-gray-100 px-8" asChild>
                 <Link to="/api/login">Get Started Free</Link>
-              </Button>
-              <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/20 hover:text-white px-8" asChild>
-                <a href="#features">Learn More</a>
               </Button>
             </div>
           </div>
