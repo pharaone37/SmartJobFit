@@ -25,10 +25,17 @@ import { Link } from "react-router-dom";
 
 // Make sure to call `loadStripe` outside of a component's render to avoid
 // recreating the `Stripe` object on every render.
-if (!import.meta.env.VITE_STRIPE_PUBLIC_KEY) {
-  throw new Error('Missing required Stripe key: VITE_STRIPE_PUBLIC_KEY');
+let stripePromise: Promise<any> | null = null;
+
+try {
+  if (!import.meta.env.VITE_STRIPE_PUBLIC_KEY) {
+    console.error('Missing required Stripe key: VITE_STRIPE_PUBLIC_KEY');
+  } else {
+    stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
+  }
+} catch (error) {
+  console.error('Failed to load Stripe.js:', error);
 }
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
 
 const SubscribeForm = ({ selectedPlan, isYearly }: { selectedPlan: any; isYearly: boolean }) => {
   const stripe = useStripe();
@@ -376,7 +383,16 @@ export default function Subscribe() {
                 </div>
 
                 {/* Payment Form */}
-                {!clientSecret ? (
+                {!stripePromise ? (
+                  <div className="flex items-center justify-center py-8">
+                    <div className="text-center">
+                      <div className="text-red-500 mb-2">Payment system unavailable</div>
+                      <p className="text-sm text-muted-foreground">
+                        Please try again later or contact support
+                      </p>
+                    </div>
+                  </div>
+                ) : !clientSecret ? (
                   <div className="flex items-center justify-center py-8">
                     <Loader2 className="w-6 h-6 animate-spin mr-2" />
                     <span>Setting up payment...</span>
