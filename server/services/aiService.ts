@@ -366,7 +366,11 @@ export class AIService {
       messages: [{ role: 'user', content: prompt }],
     });
 
-    return response.content[0].text;
+    if (response.content && response.content.length > 0 && response.content[0].type === 'text') {
+      return response.content[0].text;
+    }
+    
+    throw new Error('Failed to generate cover letter - invalid response format');
   }
 
   async generateCompanyInsights(company: string, jobTitle: string, jobDescription?: string): Promise<{
@@ -398,7 +402,10 @@ export class AIService {
     });
 
     try {
-      return JSON.parse(response.content[0].text);
+      if (response.content && response.content.length > 0 && response.content[0].type === 'text') {
+        return JSON.parse(response.content[0].text);
+      }
+      throw new Error('Invalid response format');
     } catch (error) {
       // Fallback if JSON parsing fails
       return {

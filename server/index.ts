@@ -40,7 +40,7 @@ app.use((req, res, next) => {
   const ip = req.ip || req.connection.remoteAddress;
   const now = Date.now();
   const windowMs = 15 * 60 * 1000; // 15 minutes
-  const maxRequests = 100; // Max requests per window
+  const maxRequests = 1000; // Max requests per window (increased for development)
   
   if (!requestCounts.has(ip)) {
     requestCounts.set(ip, []);

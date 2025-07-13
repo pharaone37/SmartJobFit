@@ -150,7 +150,16 @@ export default function JobSearch() {
   };
 
   // Handle external search
-  const handleExternalSearch = () => {
+  const handleAISearch = () => {
+    if (!searchQuery.trim()) {
+      toast({
+        title: "Search Required",
+        description: "Please enter keywords to search for jobs",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     externalSearchMutation.mutate({
       keywords: searchQuery,
       location: filters.location,
@@ -233,20 +242,7 @@ export default function JobSearch() {
     );
   }
 
-  const handleAISearch = () => {
-    externalSearchMutation.mutate({
-      keywords: searchQuery,
-      location: filters.location,
-      jobType: filters.jobType,
-      experienceLevel: filters.experienceLevel,
-      salaryMin: filters.salaryMin,
-      salaryMax: filters.salaryMax,
-      remote: filters.remote,
-      skills: filters.skills,
-      platforms: filters.platforms,
-      limit: 50
-    });
-  };
+
 
   const handleSaveJob = (jobId: string) => {
     // Check if job is already saved
@@ -348,6 +344,8 @@ export default function JobSearch() {
     });
     companyInsightsMutation.mutate(job);
   };
+
+
 
   const JobSkeletons = () => (
     <div className="space-y-6">

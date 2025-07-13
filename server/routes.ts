@@ -108,6 +108,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Job search routes
+  app.get('/api/jobs', async (req, res) => {
+    try {
+      const { query, location, jobType, experienceLevel, salaryMin, salaryMax, limit } = req.query;
+      
+      const filters: any = {};
+      if (location) filters.location = location;
+      if (jobType) filters.jobType = jobType;
+      if (experienceLevel) filters.experienceLevel = experienceLevel;
+      if (salaryMin) filters.salaryMin = parseInt(salaryMin as string);
+      if (salaryMax) filters.salaryMax = parseInt(salaryMax as string);
+      if (limit) filters.limit = parseInt(limit as string);
+      
+      let jobs;
+      if (query) {
+        jobs = await storage.searchJobs(query as string, filters);
+      } else {
+        jobs = await storage.getJobs(filters);
+      }
+      
+      res.json(jobs);
+    } catch (error) {
+      console.error("Error fetching jobs:", error);
+      res.status(500).json({ message: "Failed to fetch jobs" });
+    }
+  });
+
   app.post('/api/jobs/search', async (req, res) => {
     try {
       const { query, filters, page = 1, pageSize = 20 } = req.body;
@@ -684,25 +710,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post('/api/ai/cover-letter', isAuthenticated, async (req: any, res) => {
-    try {
-      const userId = req.user.claims.sub;
-      const { jobId, resumeId } = req.body;
-      
-      const user = await storage.getUser(userId);
-      const job = await storage.getJob(jobId);
-      
-      if (!user || !job) {
-        return res.status(404).json({ message: "User or job not found" });
-      }
-      
-      const coverLetter = await openaiService.generateCoverLetter(user, job);
-      res.json({ coverLetter });
-    } catch (error) {
-      console.error("Error generating cover letter:", error);
-      res.status(500).json({ message: "Failed to generate cover letter" });
-    }
-  });
+
 
   // User preferences
   app.get('/api/user/preferences', isAuthenticated, async (req: any, res) => {
