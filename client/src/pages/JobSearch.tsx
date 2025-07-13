@@ -54,39 +54,57 @@ export default function JobSearch() {
     }
   }, [isAuthenticated, isLoading, toast]);
 
-  // Sample job data (fallback)
-  const sampleJobs = [
-    { id: 1, title: 'Senior Software Engineer', company: 'TechCorp', location: 'San Francisco, CA', salary: '$120k - $180k', type: 'Full-time', match: 95 },
-    { id: 2, title: 'Product Manager', company: 'StartupXYZ', location: 'New York, NY', salary: '$110k - $160k', type: 'Full-time', match: 88 },
-    { id: 3, title: 'Full Stack Developer', company: 'WebCorp', location: 'Remote', salary: '$100k - $140k', type: 'Full-time', match: 82 },
-    { id: 4, title: 'Data Scientist', company: 'DataTech', location: 'Boston, MA', salary: '$130k - $190k', type: 'Full-time', match: 78 },
-  ];
+  // Live API job search
+  const { data: jobs, isLoading: jobsLoading, refetch: refetchJobs } = useQuery({
+    queryKey: ['/api/jobs', searchQuery, filters],
+    queryFn: async () => {
+      const params = new URLSearchParams();
+      if (searchQuery) params.append('query', searchQuery);
+      if (filters.location) params.append('location', filters.location);
+      if (filters.jobType) params.append('jobType', filters.jobType);
+      if (filters.experienceLevel) params.append('experienceLevel', filters.experienceLevel);
+      if (filters.salaryMin) params.append('salaryMin', filters.salaryMin.toString());
+      if (filters.salaryMax) params.append('salaryMax', filters.salaryMax.toString());
+      
+      const response = await apiRequest('GET', `/api/jobs?${params.toString()}`);
+      return response.json();
+    },
+    enabled: isAuthenticated,
+    retry: 1,
+    retryDelay: 1000,
+  });
 
-  // Use static data for now
-  const jobs = sampleJobs;
-  const recommendations = sampleJobs.slice(0, 3);
-  const savedJobs = sampleJobs.slice(1, 3);
-  const jobsLoading = false;
-  const recommendationsLoading = false;
-  const savedJobsLoading = false;
+  // Job recommendations
+  const { data: recommendations, isLoading: recommendationsLoading } = useQuery({
+    queryKey: ['/api/jobs/recommendations'],
+    enabled: isAuthenticated,
+    retry: 1,
+    retryDelay: 1000,
+  });
 
-  const refetchJobs = () => {
-    // Placeholder function
-  };
+  // Saved jobs
+  const { data: savedJobs, isLoading: savedJobsLoading } = useQuery({
+    queryKey: ['/api/saved-jobs'],
+    enabled: isAuthenticated,
+    retry: 1,
+    retryDelay: 1000,
+  });
 
   // External job search mutation
   const externalSearchMutation = useMutation({
-    mutationFn: async (searchData: any) => {
-      return await apiRequest("POST", "/api/jobs/search", searchData);
+    mutationFn: async (searchData: { keywords: string; location?: string; jobType?: string; experienceLevel?: string; salaryMin?: number; limit?: number }) => {
+      const response = await apiRequest('POST', '/api/jobs/search', searchData);
+      return response.json();
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       toast({
-        title: "Search Complete",
-        description: "Found new jobs from external sources!",
+        title: "External Search Complete",
+        description: `Found ${data.length} new jobs from external sources`,
       });
+      // Refetch the main jobs list to include new results
       refetchJobs();
     },
-    onError: (error: Error) => {
+    onError: (error) => {
       if (isUnauthorizedError(error)) {
         toast({
           title: "Unauthorized",
@@ -98,13 +116,31 @@ export default function JobSearch() {
         }, 500);
         return;
       }
+      console.error('External search failed:', error);
       toast({
         title: "Search Failed",
-        description: "Could not search external job boards. Please try again.",
+        description: "Failed to search external job boards. Please try again.",
         variant: "destructive",
       });
     },
   });
+
+  // Handle search form submission
+  const handleSearch = () => {
+    refetchJobs();
+  };
+
+  // Handle external search
+  const handleExternalSearch = () => {
+    externalSearchMutation.mutate({
+      keywords: searchQuery,
+      location: filters.location,
+      jobType: filters.jobType,
+      experienceLevel: filters.experienceLevel,
+      salaryMin: filters.salaryMin,
+      limit: 20
+    });
+  };
 
   // Save job mutation
   const saveJobMutation = useMutation({
@@ -145,10 +181,6 @@ export default function JobSearch() {
       </div>
     );
   }
-
-  const handleSearch = () => {
-    refetchJobs();
-  };
 
   const handleAISearch = () => {
     externalSearchMutation.mutate({

@@ -275,10 +275,11 @@ export default function JobSearchFilters({
               min={0}
               step={5}
               className="w-full"
+              defaultValue={[0, 200]}
             />
             <div className="flex justify-between text-sm text-muted-foreground mt-1">
-              <span>${filters.salaryMin || 0}k</span>
-              <span>${filters.salaryMax || 200}k</span>
+              <span>${(filters.salaryMin || 0) / 1000}k</span>
+              <span>${(filters.salaryMax || 200000) / 1000}k</span>
             </div>
           </div>
         </div>
