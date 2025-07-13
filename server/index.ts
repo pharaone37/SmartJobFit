@@ -26,7 +26,7 @@ app.use((req, res, next) => {
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
     "font-src 'self' https://fonts.gstatic.com; " +
     "img-src 'self' data: https:; " +
-    "connect-src 'self' https://api.stripe.com; " +
+    "connect-src 'self' https://api.stripe.com https://api.openai.com https://api.anthropic.com; " +
     "frame-src https://js.stripe.com; " +
     "object-src 'none';"
   );
@@ -40,7 +40,7 @@ app.use((req, res, next) => {
   const ip = req.ip || req.connection.remoteAddress;
   const now = Date.now();
   const windowMs = 15 * 60 * 1000; // 15 minutes
-  const maxRequests = 1000; // Max requests per window (increased for development)
+  const maxRequests = process.env.NODE_ENV === 'production' ? 2000 : 1000; // Higher limit for production
   
   if (!requestCounts.has(ip)) {
     requestCounts.set(ip, []);

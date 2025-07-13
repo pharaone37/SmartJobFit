@@ -12,6 +12,8 @@ Website language: English-only interface (language selector removed)
 Interview preparation: Support multiple languages for better user experience
 CV analytics: Support multiple languages for better user experience
 Design: Job platform logos on landing page, payment method logos in footer
+Production readiness: User planning to deploy with custom domain
+API requirements: Needs production-level API limits for OpenAI, Stripe, Anthropic
 ```
 
 ## System Architecture
