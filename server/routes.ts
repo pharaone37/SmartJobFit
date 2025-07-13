@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import Stripe from "stripe";
 import { storage } from "./storage";
-import { setupAuth, isAuthenticated } from "./replitAuth";
+import { setupAuth0, requireAuth, getUserId } from "./auth/auth0";
 import { jobBoardService } from "./services/jobBoards";
 import { jobService } from "./services/jobService";
 import { openaiService } from "./services/openai";
@@ -31,8 +31,8 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
 });
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Auth middleware
-  await setupAuth(app);
+  // Auth0 middleware
+  setupAuth0(app);
 
   // Health check endpoint for deployment
   app.get('/api/health', async (req, res) => {
@@ -69,22 +69,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Auth routes
-  app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
-    try {
-      const userId = req.user.claims.sub;
-      const user = await storage.getUser(userId);
-      res.json(user);
-    } catch (error) {
-      console.error("Error fetching user:", error);
-      res.status(500).json({ message: "Failed to fetch user" });
-    }
-  });
+  // Auth routes are now handled by Auth0 middleware
 
   // Dashboard routes
-  app.get('/api/dashboard', isAuthenticated, async (req: any, res) => {
+  app.get('/api/dashboard', requireAuth, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = getUserId(req);
       const user = await storage.getUser(userId);
       const applications = await storage.getJobApplications(userId);
       const interviews = await storage.getInterviews(userId);
@@ -145,7 +135,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get('/api/jobs/recommendations', isAuthenticated, async (req: any, res) => {
+  app.get('/api/jobs/recommendations', requireAuth, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       const limit = parseInt(req.query.limit as string) || 10;
@@ -171,7 +161,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // User stats route
-  app.get('/api/user/stats', isAuthenticated, async (req: any, res) => {
+  app.get('/api/user/stats', requireAuth, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       const stats = await storage.getJobApplicationStats(userId);
@@ -237,7 +227,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post('/api/subscription/create-checkout', isAuthenticated, async (req: any, res) => {
+  app.post('/api/subscription/create-checkout', requireAuth, async (req: any, res) => {
     try {
       const { planId } = req.body;
       const userId = req.user.claims.sub;
@@ -278,7 +268,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get('/api/subscription/status', isAuthenticated, async (req: any, res) => {
+  app.get('/api/subscription/status', requireAuth, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       const user = await storage.getUser(userId);
@@ -375,7 +365,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Job recommendations
-  app.get('/api/jobs/recommendations', isAuthenticated, async (req: any, res) => {
+  app.get('/api/jobs/recommendations', requireAuth, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       const recommendations = await jobService.getJobRecommendations(userId);
@@ -387,7 +377,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Resume routes
-  app.post('/api/resumes', isAuthenticated, async (req: any, res) => {
+  app.post('/api/resumes', requireAuth, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       const resumeData = insertResumeSchema.parse({ ...req.body, userId });
@@ -400,7 +390,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get('/api/resumes', isAuthenticated, async (req: any, res) => {
+  app.get('/api/resumes', requireAuth, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       const resumes = await storage.getResumes(userId);
@@ -411,7 +401,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get('/api/resumes/:id', isAuthenticated, async (req: any, res) => {
+  app.get('/api/resumes/:id', requireAuth, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       const resume = await storage.getResume(req.params.id);
@@ -427,7 +417,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put('/api/resumes/:id', isAuthenticated, async (req: any, res) => {
+  app.put('/api/resumes/:id', requireAuth, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       const resume = await storage.getResume(req.params.id);
@@ -444,7 +434,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete('/api/resumes/:id', isAuthenticated, async (req: any, res) => {
+  app.delete('/api/resumes/:id', requireAuth, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       const resume = await storage.getResume(req.params.id);
@@ -462,7 +452,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Resume optimization
-  app.post('/api/resumes/:id/optimize', isAuthenticated, async (req: any, res) => {
+  app.post('/api/resumes/:id/optimize', requireAuth, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       const resume = await storage.getResume(req.params.id);
@@ -481,7 +471,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post('/api/resumes/:id/analyze', isAuthenticated, async (req: any, res) => {
+  app.post('/api/resumes/:id/analyze', requireAuth, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       const resume = await storage.getResume(req.params.id);
@@ -506,7 +496,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Job application routes
-  app.post('/api/applications', isAuthenticated, async (req: any, res) => {
+  app.post('/api/applications', requireAuth, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       const applicationData = insertJobApplicationSchema.parse({ ...req.body, userId });
@@ -528,7 +518,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get('/api/applications', isAuthenticated, async (req: any, res) => {
+  app.get('/api/applications', requireAuth, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       const applications = await storage.getJobApplications(userId);
@@ -548,7 +538,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get('/api/applications/stats', isAuthenticated, async (req: any, res) => {
+  app.get('/api/applications/stats', requireAuth, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       const stats = await storage.getJobApplicationStats(userId);
@@ -559,7 +549,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put('/api/applications/:id', isAuthenticated, async (req: any, res) => {
+  app.put('/api/applications/:id', requireAuth, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       const application = await storage.getJobApplication(req.params.id);
@@ -577,7 +567,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Job alerts
-  app.post('/api/job-alerts', isAuthenticated, async (req: any, res) => {
+  app.post('/api/job-alerts', requireAuth, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       const alertData = insertJobAlertSchema.parse({ ...req.body, userId });
@@ -590,7 +580,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get('/api/job-alerts', isAuthenticated, async (req: any, res) => {
+  app.get('/api/job-alerts', requireAuth, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       const alerts = await storage.getJobAlerts(userId);
@@ -601,7 +591,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put('/api/job-alerts/:id', isAuthenticated, async (req: any, res) => {
+  app.put('/api/job-alerts/:id', requireAuth, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       const alert = await storage.getJobAlert(req.params.id);
@@ -618,7 +608,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete('/api/job-alerts/:id', isAuthenticated, async (req: any, res) => {
+  app.delete('/api/job-alerts/:id', requireAuth, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       const alert = await storage.getJobAlert(req.params.id);
@@ -636,7 +626,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Interview routes
-  app.post('/api/interviews', isAuthenticated, async (req: any, res) => {
+  app.post('/api/interviews', requireAuth, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       const interviewData = { ...req.body, userId };
@@ -649,7 +639,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get('/api/interviews', isAuthenticated, async (req: any, res) => {
+  app.get('/api/interviews', requireAuth, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       const interviews = await storage.getInterviews(userId);
@@ -661,7 +651,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Interview preparation
-  app.post('/api/interview-prep/questions', isAuthenticated, async (req: any, res) => {
+  app.post('/api/interview-prep/questions', requireAuth, async (req: any, res) => {
     try {
       const { jobTitle, industry, difficulty } = req.body;
       const questions = await openaiService.generateInterviewQuestions(jobTitle, industry, difficulty);
@@ -672,7 +662,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post('/api/interview-prep/practice', isAuthenticated, async (req: any, res) => {
+  app.post('/api/interview-prep/practice', requireAuth, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       const practiceData = insertInterviewPracticeSchema.parse({ ...req.body, userId });
@@ -685,7 +675,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get('/api/interview-prep/practice', isAuthenticated, async (req: any, res) => {
+  app.get('/api/interview-prep/practice', requireAuth, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       const practices = await storage.getInterviewPractice(userId);
@@ -697,7 +687,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // AI chat and analysis
-  app.post('/api/ai/job-match', isAuthenticated, async (req: any, res) => {
+  app.post('/api/ai/job-match', requireAuth, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       const { jobDescription, resumeContent } = req.body;
@@ -713,7 +703,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
 
   // User preferences
-  app.get('/api/user/preferences', isAuthenticated, async (req: any, res) => {
+  app.get('/api/user/preferences', requireAuth, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       const preferences = await storage.getUserPreferences(userId);
@@ -724,7 +714,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post('/api/user/preferences', isAuthenticated, async (req: any, res) => {
+  app.post('/api/user/preferences', requireAuth, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       const preferencesData = insertUserPreferencesSchema.parse({ ...req.body, userId });
@@ -737,7 +727,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put('/api/user/preferences', isAuthenticated, async (req: any, res) => {
+  app.put('/api/user/preferences', requireAuth, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       const preferences = await storage.updateUserPreferences(userId, req.body);
@@ -749,7 +739,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Saved jobs
-  app.post('/api/saved-jobs', isAuthenticated, async (req: any, res) => {
+  app.post('/api/saved-jobs', requireAuth, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       const savedJobData = insertSavedJobSchema.parse({ ...req.body, userId });
@@ -762,7 +752,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get('/api/saved-jobs', isAuthenticated, async (req: any, res) => {
+  app.get('/api/saved-jobs', requireAuth, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       const savedJobs = await storage.getSavedJobs(userId);
@@ -782,7 +772,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete('/api/saved-jobs/:id', isAuthenticated, async (req: any, res) => {
+  app.delete('/api/saved-jobs/:id', requireAuth, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       const savedJob = await storage.getSavedJobs(userId);
@@ -800,7 +790,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Notifications
-  app.get('/api/notifications', isAuthenticated, async (req: any, res) => {
+  app.get('/api/notifications', requireAuth, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       const notifications = await storage.getNotifications(userId);
@@ -811,7 +801,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put('/api/notifications/:id/read', isAuthenticated, async (req: any, res) => {
+  app.put('/api/notifications/:id/read', requireAuth, async (req: any, res) => {
     try {
       await storage.markNotificationAsRead(req.params.id);
       res.json({ message: "Notification marked as read" });
@@ -821,7 +811,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put('/api/notifications/read-all', isAuthenticated, async (req: any, res) => {
+  app.put('/api/notifications/read-all', requireAuth, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       await storage.markAllNotificationsAsRead(userId);
@@ -833,7 +823,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Salary negotiation
-  app.post('/api/salary-negotiation', isAuthenticated, async (req: any, res) => {
+  app.post('/api/salary-negotiation', requireAuth, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       const negotiationData = insertSalaryNegotiationSchema.parse({ ...req.body, userId });
@@ -846,7 +836,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get('/api/salary-negotiation', isAuthenticated, async (req: any, res) => {
+  app.get('/api/salary-negotiation', requireAuth, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       const negotiations = await storage.getSalaryNegotiations(userId);
@@ -857,7 +847,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post('/api/salary-negotiation/analyze', isAuthenticated, async (req: any, res) => {
+  app.post('/api/salary-negotiation/analyze', requireAuth, async (req: any, res) => {
     try {
       const { jobTitle, location, experience } = req.body;
       const analysis = await openaiService.analyzeSalaryNegotiation(jobTitle, location, experience);
@@ -879,7 +869,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post('/api/get-or-create-subscription', isAuthenticated, async (req: any, res) => {
+  app.post('/api/get-or-create-subscription', requireAuth, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       const { planId } = req.body;
@@ -910,7 +900,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // AI Features
-  app.post('/api/ai/cover-letter', isAuthenticated, async (req: any, res) => {
+  app.post('/api/ai/cover-letter', requireAuth, async (req: any, res) => {
     try {
       const { jobId, jobDescription, jobTitle, company } = req.body;
       const userId = req.user.claims.sub;
@@ -937,7 +927,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post('/api/ai/company-insights', isAuthenticated, async (req: any, res) => {
+  app.post('/api/ai/company-insights', requireAuth, async (req: any, res) => {
     try {
       const { company, jobTitle, jobDescription } = req.body;
       

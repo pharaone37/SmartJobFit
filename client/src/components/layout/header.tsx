@@ -28,7 +28,7 @@ import {
   CreditCard,
   Bell
 } from "lucide-react";
-import { removeAuthToken } from "@/lib/authUtils";
+// Auth0 logout is handled via redirect
 
 export default function Header() {
   const [location, setLocation] = useLocation();
@@ -37,9 +37,7 @@ export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const handleLogout = () => {
-    removeAuthToken();
-    setLocation("/");
-    window.location.reload();
+    window.location.href = '/auth/logout';
   };
 
   const navigationItems = [

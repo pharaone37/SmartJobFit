@@ -185,7 +185,7 @@ export default function Navbar() {
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
-                      <a href="/api/logout">
+                      <a href="/auth/logout">
                         <LogOut className="mr-2 h-4 w-4" />
                         <span>Log out</span>
                       </a>
