@@ -16,6 +16,8 @@ Production readiness: User planning to deploy with custom domain
 API requirements: Needs production-level API limits for OpenAI, Stripe, Anthropic
 Domain: smartjobfit.com (purchased from Namecheap)
 AI Provider: OpenRouter API configured for better rate limits
+Authentication: Custom auth page created to show SmartJobFit branding
+UI Language: English-only interface (removed German translations)
 ```
 
 ## System Architecture

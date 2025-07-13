@@ -17,6 +17,7 @@ import Subscribe from "@/pages/Subscribe";
 import HelpCenter from "@/pages/HelpCenter";
 import PrivacyPolicy from "@/pages/PrivacyPolicy";
 import TermsOfService from "@/pages/TermsOfService";
+import AuthPage from "@/pages/auth";
 import NotFound from "@/pages/not-found";
 
 // Components
@@ -46,6 +47,7 @@ function AppContent() {
             {!isAuthenticated ? (
               <>
                 <Route path="/" element={<Landing />} />
+                <Route path="/auth" element={<AuthPage />} />
                 <Route path="/pricing" element={<Pricing />} />
                 <Route path="/help" element={<HelpCenter />} />
                 <Route path="/privacy" element={<PrivacyPolicy />} />

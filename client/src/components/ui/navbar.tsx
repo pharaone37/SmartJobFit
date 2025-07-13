@@ -125,10 +125,10 @@ export default function Navbar() {
             {!isAuthenticated ? (
               <>
                 <Button variant="ghost" asChild>
-                  <a href="/api/login">Sign In</a>
+                  <Link to="/auth">Sign In</Link>
                 </Button>
                 <Button asChild>
-                  <a href="/api/login">Get Started</a>
+                  <Link to="/auth">Get Started</Link>
                 </Button>
               </>
             ) : (
@@ -230,10 +230,10 @@ export default function Navbar() {
                   <div className="pt-4 border-t border-gray-200 dark:border-gray-800">
                     <div className="space-y-2">
                       <Button variant="ghost" className="w-full justify-start" asChild>
-                        <a href="/api/login">Sign In</a>
+                        <Link to="/auth">Sign In</Link>
                       </Button>
                       <Button className="w-full" asChild>
-                        <a href="/api/login">Get Started</a>
+                        <Link to="/auth">Get Started</Link>
                       </Button>
                     </div>
                   </div>

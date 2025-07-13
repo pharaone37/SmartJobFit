@@ -1,0 +1,18 @@
+{
+  "name": "SmartJobFit",
+  "description": "AI-powered job search and career development platform",
+  "website": "https://smartjobfit.com",
+  "logo": "https://smartjobfit.com/logo.png",
+  "redirect_uris": [
+    "https://smartjobfit.com/api/callback",
+    "https://www.smartjobfit.com/api/callback"
+  ],
+  "scopes": [
+    "openid",
+    "email",
+    "profile",
+    "offline_access"
+  ],
+  "privacy_policy_url": "https://smartjobfit.com/privacy",
+  "terms_of_service_url": "https://smartjobfit.com/terms"
+}
