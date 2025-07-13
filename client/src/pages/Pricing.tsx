@@ -191,9 +191,25 @@ export default function Pricing() {
   ];
 
   const renderFeatureValue = (value: any) => {
-    if (value === true) return <Check className="w-4 h-4 text-green-500" />;
-    if (value === false) return <span className="text-muted-foreground">—</span>;
-    return <span className="text-sm font-medium">{value}</span>;
+    if (value === true) {
+      return (
+        <div className="flex justify-center items-center">
+          <Check className="w-5 h-5 text-green-500" />
+        </div>
+      );
+    }
+    if (value === false) {
+      return (
+        <div className="flex justify-center items-center">
+          <span className="text-muted-foreground text-lg">—</span>
+        </div>
+      );
+    }
+    return (
+      <div className="flex justify-center items-center">
+        <span className="text-sm font-medium text-center">{value}</span>
+      </div>
+    );
   };
 
   return (
@@ -353,25 +369,27 @@ export default function Pricing() {
                 const Icon = category.icon;
                 return (
                   <div key={categoryIndex}>
-                    <div className="flex items-center mb-6">
-                      <Icon className="w-6 h-6 text-purple-500 mr-3" />
-                      <h3 className="text-xl font-bold">{category.category}</h3>
+                    <div className="flex items-center mb-6 pb-3 border-b border-gray-200">
+                      <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center mr-3">
+                        <Icon className="w-5 h-5 text-white" />
+                      </div>
+                      <h3 className="text-xl font-bold text-gray-900">{category.category}</h3>
                     </div>
-                    <div className="overflow-x-auto">
+                    <div className="overflow-x-auto bg-white rounded-lg shadow-sm border border-gray-200">
                       <table className="w-full border-collapse">
                         <thead>
-                          <tr className="border-b">
-                            <th className="text-left py-3 pr-6">Feature</th>
-                            <th className="text-center py-3 px-4 min-w-[100px]">Free</th>
-                            <th className="text-center py-3 px-4 min-w-[100px]">Professional</th>
+                          <tr className="border-b-2 border-gray-200 bg-gray-50">
+                            <th className="text-left py-4 pr-6 font-semibold text-gray-900">Feature</th>
+                            <th className="text-center py-4 px-4 min-w-[120px] font-semibold text-gray-900">Free</th>
+                            <th className="text-center py-4 px-4 min-w-[120px] font-semibold text-gray-900">Professional</th>
                           </tr>
                         </thead>
                         <tbody>
                           {category.items.map((item, itemIndex) => (
-                            <tr key={itemIndex} className="border-b last:border-b-0">
-                              <td className="py-3 pr-6 font-medium">{item.name}</td>
-                              <td className="text-center py-3 px-4">{renderFeatureValue(item.free)}</td>
-                              <td className="text-center py-3 px-4">{renderFeatureValue(item.pro)}</td>
+                            <tr key={itemIndex} className="border-b border-gray-100 hover:bg-gray-50/50 transition-colors">
+                              <td className="py-4 pr-6 font-medium text-gray-900">{item.name}</td>
+                              <td className="py-4 px-4 text-center">{renderFeatureValue(item.free)}</td>
+                              <td className="py-4 px-4 text-center">{renderFeatureValue(item.pro)}</td>
                             </tr>
                           ))}
                         </tbody>
