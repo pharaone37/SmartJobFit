@@ -64,27 +64,9 @@ export default function InterviewPrep() {
     }
   }, [isAuthenticated, isLoading, toast]);
 
-  // Fetch interview practice history
-  const { data: practiceHistory, isLoading: historyLoading } = useQuery({
-    queryKey: ["/api/interview-prep/practice"],
-    retry: false,
-    enabled: isAuthenticated,
-    meta: {
-      onError: (error: Error) => {
-        if (isUnauthorizedError(error)) {
-          toast({
-            title: "Unauthorized",
-            description: "You are logged out. Logging in again...",
-            variant: "destructive",
-          });
-          setTimeout(() => {
-            window.location.href = "/api/login";
-          }, 500);
-          return;
-        }
-      }
-    }
-  });
+  // Use static data for now
+  const practiceHistory = [];
+  const historyLoading = false;
 
   // Generate questions mutation
   const generateQuestionsMutation = useMutation({

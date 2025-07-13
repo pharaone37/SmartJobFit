@@ -44,44 +44,56 @@ import {
   SiApple,
   SiGooglepay
 } from "react-icons/si";
-import dashboardScreenshot from "@assets/Screenshot 2025-07-13 at 01.32.37_1752363160764.png";
+import analyticsScreenshot from "@assets/Screenshot 2025-07-13 at 02.06.22_1752365312766.png";
+import jobSearchScreenshot from "@assets/Screenshot 2025-07-13 at 02.07.19_1752365312766.png";
+import resumeOptimizationScreenshot from "@assets/Screenshot 2025-07-13 at 02.07.32_1752365312767.png";
+import interviewPrepScreenshot from "@assets/Screenshot 2025-07-13 at 02.07.43_1752365312767.png";
+import performanceScreenshot from "@assets/Screenshot 2025-07-13 at 02.08.07_1752365312767.png";
+import interviewsScreenshot from "@assets/Screenshot 2025-07-13 at 02.08.15_1752365312767.png";
 
 // Dashboard Screenshots Data
 const dashboardScreenshots = [
   {
     id: 1,
-    title: "Overview Dashboard",
-    description: "Track your job search progress with AI-powered insights",
-    image: dashboardScreenshot,
-    features: ["Application tracking", "Interview scheduling", "Performance metrics"]
+    title: "Smart Job Analytics",
+    description: "Get AI-powered insights on your job search performance with match scores, application tracking, and personalized recommendations",
+    image: analyticsScreenshot,
+    features: ["85% Resume Match Score", "Real-time Application Tracking", "AI-Generated Job Recommendations", "Activity Timeline"]
   },
   {
     id: 2,
-    title: "Job Search Filters",
-    description: "Advanced filtering across 15+ job boards",
-    image: dashboardScreenshot,
-    features: ["Smart filters", "Salary ranges", "Remote options"]
+    title: "Advanced Job Search",
+    description: "Search across 15+ job boards with intelligent filters, salary insights, and remote work options",
+    image: jobSearchScreenshot,
+    features: ["Multi-Board Search", "Smart Filters & Benefits", "Company Size & Industry", "Global Job Platforms"]
   },
   {
     id: 3,
-    title: "Resume Analytics",
-    description: "AI-powered resume optimization and ATS scoring",
-    image: dashboardScreenshot,
-    features: ["ATS compliance", "Keyword optimization", "Industry insights"]
+    title: "Resume Optimization",
+    description: "AI-powered resume analysis and optimization to pass ATS systems and land more interviews",
+    image: resumeOptimizationScreenshot,
+    features: ["ATS Compatibility Check", "Multi-Resume Management", "Quick Template Creation", "Upload & Optimize"]
   },
   {
     id: 4,
     title: "Interview Preparation",
-    description: "Practice interviews with AI coaching",
-    image: dashboardScreenshot,
-    features: ["Mock interviews", "Voice analysis", "Multi-language support"]
+    description: "Practice with AI interviewer, access question banks, and get personalized coaching in multiple languages",
+    image: interviewPrepScreenshot,
+    features: ["AI Mock Interviews", "Question Bank Access", "Performance Analytics", "Multi-Language Support"]
   },
   {
     id: 5,
-    title: "Career Analytics",
-    description: "Comprehensive career insights and recommendations",
-    image: dashboardScreenshot,
-    features: ["Success metrics", "Trend analysis", "Career roadmaps"]
+    title: "Performance Analytics",
+    description: "Track your interview improvement with detailed analytics and personalized recommendations",
+    image: performanceScreenshot,
+    features: ["78% Overall Interview Score", "Skill Breakdown Analysis", "Improvement Recommendations", "Progress Tracking"]
+  },
+  {
+    id: 6,
+    title: "Interview Management",
+    description: "Manage upcoming interviews with practice sessions, success tracking, and performance history",
+    image: interviewsScreenshot,
+    features: ["Interview Scheduling", "75% Success Rate", "Practice Sessions", "Company-Specific Prep"]
   }
 ];
 

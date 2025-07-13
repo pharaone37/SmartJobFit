@@ -64,44 +64,11 @@ export default function Analytics() {
     }
   }, [isAuthenticated, isLoading, toast]);
 
-  // Fetch application stats
-  const { data: applicationStatsData, isLoading: statsLoading } = useQuery({
-    queryKey: ["/api/applications/stats"],
-    retry: false,
-    enabled: isAuthenticated,
-    meta: {
-      onError: (error: Error) => {
-        if (isUnauthorizedError(error)) {
-          toast({
-            title: "Unauthorized",
-            description: "You are logged out. Logging in again...",
-            variant: "destructive",
-          });
-          setTimeout(() => {
-            window.location.href = "/api/login";
-          }, 500);
-          return;
-        }
-      }
-    }
-  });
-
-  // Use sample data if API fails
-  const applicationStats = applicationStatsData || sampleApplicationStats;
-
-  // Fetch applications for trends
-  const { data: applications } = useQuery({
-    queryKey: ["/api/applications"],
-    retry: false,
-    enabled: isAuthenticated,
-  });
-
-  // Fetch interview practice data
-  const { data: interviewData } = useQuery({
-    queryKey: ["/api/interview-prep/practice"],
-    retry: false,
-    enabled: isAuthenticated,
-  });
+  // Use static data for now
+  const applicationStats = sampleApplicationStats;
+  const applications = [];
+  const interviewData = [];
+  const statsLoading = false;
 
   if (isLoading || !isAuthenticated) {
     return (

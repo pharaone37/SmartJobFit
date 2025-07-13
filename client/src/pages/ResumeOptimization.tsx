@@ -62,30 +62,9 @@ export default function ResumeOptimization() {
     }
   }, [isAuthenticated, isLoading, toast]);
 
-  // Fetch resumes
-  const { data: resumesData, isLoading: resumesLoading } = useQuery({
-    queryKey: ["/api/resumes"],
-    retry: false,
-    enabled: isAuthenticated,
-    meta: {
-      onError: (error: Error) => {
-        if (isUnauthorizedError(error)) {
-          toast({
-            title: "Unauthorized",
-            description: "You are logged out. Logging in again...",
-            variant: "destructive",
-          });
-          setTimeout(() => {
-            window.location.href = "/api/login";
-          }, 500);
-          return;
-        }
-      }
-    }
-  });
-
-  // Use sample data if API fails
-  const resumes = resumesData || sampleResumes;
+  // Use static data for now
+  const resumes = sampleResumes;
+  const resumesLoading = false;
 
   // Create resume mutation
   const createResumeMutation = useMutation({

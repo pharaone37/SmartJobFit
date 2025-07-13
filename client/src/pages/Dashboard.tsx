@@ -41,23 +41,13 @@ export default function Dashboard() {
   const [filters, setFilters] = useState<JobSearchFiltersType>({});
   const [isSearching, setIsSearching] = useState(false);
 
-  // Fetch dashboard data
-  const { data: dashboardData, isLoading: dashboardLoading } = useQuery({
-    queryKey: ['/api/dashboard'],
-    retry: false,
-  });
-
-  // Fetch job recommendations
-  const { data: recommendedJobs, isLoading: jobsLoading } = useQuery({
-    queryKey: ['/api/jobs/recommendations'],
-    retry: false,
-  });
-
-  // Fetch user stats
-  const { data: userStats, isLoading: statsLoading } = useQuery({
-    queryKey: ['/api/user/stats'],
-    retry: false,
-  });
+  // Use static data for now
+  const dashboardData = null;
+  const recommendedJobs = null;
+  const userStats = null;
+  const dashboardLoading = false;
+  const jobsLoading = false;
+  const statsLoading = false;
 
   // Default data if API calls fail
   const defaultData = {
