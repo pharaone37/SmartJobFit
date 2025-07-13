@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useTheme } from "@/components/theme-provider";
-import { useTranslation } from "@/lib/i18n";
+// import { useTranslation } from "@/lib/i18n"; // Removed - using English only
 
 import { Button } from "@/components/ui/button";
 import { 
@@ -33,7 +33,7 @@ import {
 export default function Navbar() {
   const { isAuthenticated, user } = useAuth();
   const { theme, setTheme } = useTheme();
-  const { t } = useTranslation();
+  // const { t } = useTranslation(); // Removed - using English only
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -46,9 +46,9 @@ export default function Navbar() {
   ];
 
   const publicNavigationItems = [
-    { name: t.nav.features, href: "#features" },
+    { name: "Features", href: "#features" },
     { name: "Dashboard", href: "#dashboard" },
-    { name: t.nav.pricing, href: "#pricing" },
+    { name: "Pricing", href: "#pricing" },
     { name: "Reviews", href: "#testimonials" },
   ];
 
@@ -125,10 +125,10 @@ export default function Navbar() {
             {!isAuthenticated ? (
               <>
                 <Button variant="ghost" asChild>
-                  <a href="/api/login">{t.nav.login}</a>
+                  <a href="/api/login">Sign In</a>
                 </Button>
                 <Button asChild>
-                  <a href="/api/login">{t.common.getStarted}</a>
+                  <a href="/api/login">Get Started</a>
                 </Button>
               </>
             ) : (

@@ -7,18 +7,7 @@ interface LanguageProviderProps {
 
 export function LanguageProvider({ children }: LanguageProviderProps) {
   const [language, setLanguage] = useState<Language>(() => {
-    // Get from localStorage or default to browser language
-    const saved = localStorage.getItem('language') as Language;
-    if (saved && translations[saved]) {
-      return saved;
-    }
-    
-    // Detect browser language
-    const browserLang = navigator.language.split('-')[0] as Language;
-    if (translations[browserLang]) {
-      return browserLang;
-    }
-    
+    // Always default to English - no auto-detection
     return 'en';
   });
 
