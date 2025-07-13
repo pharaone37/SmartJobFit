@@ -62,6 +62,8 @@ interface JobCardProps {
   };
   onSave?: () => void;
   onApply?: () => void;
+  onGenerateCoverLetter?: () => void;
+  onCompanyInsights?: () => void;
   isSaved?: boolean;
   showMatchScore?: boolean;
   matchScore?: number;
@@ -71,6 +73,8 @@ export default function JobCard({
   job, 
   onSave, 
   onApply, 
+  onGenerateCoverLetter,
+  onCompanyInsights,
   isSaved = false, 
   showMatchScore = false,
   matchScore 
@@ -265,11 +269,11 @@ export default function JobCard({
                 <Bookmark className={`w-4 h-4 mr-2 ${isSaved ? "fill-current" : ""}`} />
                 {isSaved ? "Saved" : "Save Job"}
               </Button>
-              <Button variant="outline" size="sm">
+              <Button variant="outline" size="sm" onClick={onGenerateCoverLetter}>
                 <Zap className="w-4 h-4 mr-2" />
                 AI Cover Letter
               </Button>
-              <Button variant="outline" size="sm">
+              <Button variant="outline" size="sm" onClick={onCompanyInsights}>
                 <Users className="w-4 h-4 mr-2" />
                 Company Insights
               </Button>

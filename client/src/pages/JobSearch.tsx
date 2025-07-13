@@ -174,6 +174,38 @@ export default function JobSearch() {
     },
   });
 
+  // Unsave job mutation
+  const unsaveJobMutation = useMutation({
+    mutationFn: async (savedJobId: string) => {
+      return await apiRequest("DELETE", `/api/saved-jobs/${savedJobId}`);
+    },
+    onSuccess: () => {
+      toast({
+        title: "Job Removed",
+        description: "Job removed from your saved list!",
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/saved-jobs"] });
+    },
+    onError: (error: Error) => {
+      if (isUnauthorizedError(error)) {
+        toast({
+          title: "Unauthorized",
+          description: "You are logged out. Logging in again...",
+          variant: "destructive",
+        });
+        setTimeout(() => {
+          window.location.href = "/api/login";
+        }, 500);
+        return;
+      }
+      toast({
+        title: "Remove Failed",
+        description: "Failed to remove job. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
   if (isLoading || !isAuthenticated) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -198,7 +230,76 @@ export default function JobSearch() {
   };
 
   const handleSaveJob = (jobId: string) => {
-    saveJobMutation.mutate(jobId);
+    // Check if job is already saved
+    const savedJob = savedJobs?.find((saved: any) => saved.jobId === jobId);
+    if (savedJob) {
+      // Unsave the job
+      unsaveJobMutation.mutate(savedJob.id);
+    } else {
+      // Save the job
+      saveJobMutation.mutate(jobId);
+    }
+  };
+
+  // AI Cover Letter mutation
+  const coverLetterMutation = useMutation({
+    mutationFn: async (job: any) => {
+      return await apiRequest("POST", "/api/ai/cover-letter", {
+        jobId: job.id,
+        jobTitle: job.title,
+        company: job.company,
+        jobDescription: job.description
+      });
+    },
+    onSuccess: (data) => {
+      toast({
+        title: "Cover Letter Generated",
+        description: "Your personalized cover letter is ready!",
+      });
+      // You can store the cover letter or open it in a modal
+      console.log("Cover Letter:", data.coverLetter);
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Generation Failed",
+        description: "Failed to generate cover letter. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Company Insights mutation
+  const companyInsightsMutation = useMutation({
+    mutationFn: async (job: any) => {
+      return await apiRequest("POST", "/api/ai/company-insights", {
+        company: job.company,
+        jobTitle: job.title,
+        jobDescription: job.description
+      });
+    },
+    onSuccess: (data) => {
+      toast({
+        title: "Company Insights Generated",
+        description: "Company insights are ready to view!",
+      });
+      // You can store the insights or open them in a modal
+      console.log("Company Insights:", data.insights);
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Generation Failed",
+        description: "Failed to generate company insights. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleGenerateCoverLetter = (job: any) => {
+    coverLetterMutation.mutate(job);
+  };
+
+  const handleCompanyInsights = (job: any) => {
+    companyInsightsMutation.mutate(job);
   };
 
   const JobSkeletons = () => (
@@ -291,6 +392,8 @@ export default function JobSearch() {
                     key={job.id}
                     job={job}
                     onSave={() => handleSaveJob(job.id)}
+                    onGenerateCoverLetter={() => handleGenerateCoverLetter(job)}
+                    onCompanyInsights={() => handleCompanyInsights(job)}
                     isSaved={savedJobs?.some((saved: any) => saved.jobId === job.id)}
                   />
                 ))}
@@ -321,6 +424,8 @@ export default function JobSearch() {
                     key={job.id}
                     job={job}
                     onSave={() => handleSaveJob(job.id)}
+                    onGenerateCoverLetter={() => handleGenerateCoverLetter(job)}
+                    onCompanyInsights={() => handleCompanyInsights(job)}
                     isSaved={savedJobs?.some((saved: any) => saved.jobId === job.id)}
                     showMatchScore={true}
                   />
@@ -351,6 +456,8 @@ export default function JobSearch() {
                     key={savedJob.id}
                     job={savedJob.job}
                     onSave={() => handleSaveJob(savedJob.job.id)}
+                    onGenerateCoverLetter={() => handleGenerateCoverLetter(savedJob.job)}
+                    onCompanyInsights={() => handleCompanyInsights(savedJob.job)}
                     isSaved={true}
                   />
                 ))}

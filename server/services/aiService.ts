@@ -337,6 +337,79 @@ export class AIService {
       };
     }
   }
+
+  async generateCoverLetter(resumeContent: string, jobDescription: string, jobTitle: string, company: string): Promise<string> {
+    const prompt = `
+    Generate a personalized cover letter for the following job application:
+    
+    Job Title: ${jobTitle}
+    Company: ${company}
+    
+    Job Description:
+    ${jobDescription}
+    
+    Resume Content:
+    ${resumeContent}
+    
+    Instructions:
+    - Create a professional, personalized cover letter
+    - Highlight relevant skills and experience from the resume
+    - Show enthusiasm for the role and company
+    - Keep it concise (3-4 paragraphs)
+    - Use professional but engaging tone
+    - Include specific examples from the resume that match job requirements
+    `;
+
+    const response = await this.anthropic.messages.create({
+      model: DEFAULT_MODEL_STR,
+      max_tokens: 1000,
+      messages: [{ role: 'user', content: prompt }],
+    });
+
+    return response.content[0].text;
+  }
+
+  async generateCompanyInsights(company: string, jobTitle: string, jobDescription?: string): Promise<{
+    overview: string;
+    culture: string;
+    opportunities: string;
+    challenges: string;
+    tips: string[];
+  }> {
+    const prompt = `
+    Provide comprehensive insights about ${company} for a job applicant applying for the position of ${jobTitle}.
+    
+    ${jobDescription ? `Job Description: ${jobDescription}` : ''}
+    
+    Please provide insights in the following areas:
+    1. Company Overview - Brief history, mission, and current market position
+    2. Company Culture - Work environment, values, and employee experience
+    3. Growth Opportunities - Career development and advancement potential
+    4. Challenges - Current industry challenges and how they might affect the role
+    5. Interview Tips - 3-5 specific tips for interviewing at this company
+    
+    Format your response as JSON with keys: overview, culture, opportunities, challenges, tips (array of strings)
+    `;
+
+    const response = await this.anthropic.messages.create({
+      model: DEFAULT_MODEL_STR,
+      max_tokens: 1500,
+      messages: [{ role: 'user', content: prompt }],
+    });
+
+    try {
+      return JSON.parse(response.content[0].text);
+    } catch (error) {
+      // Fallback if JSON parsing fails
+      return {
+        overview: "Company insights are being generated...",
+        culture: "Loading company culture information...",
+        opportunities: "Analyzing growth opportunities...",
+        challenges: "Identifying potential challenges...",
+        tips: ["Research the company thoroughly", "Prepare specific examples", "Ask thoughtful questions"]
+      };
+    }
+  }
 }
 
 export const aiService = new AIService();

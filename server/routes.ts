@@ -901,6 +901,47 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // AI Features
+  app.post('/api/ai/cover-letter', isAuthenticated, async (req: any, res) => {
+    try {
+      const { jobId, jobDescription, jobTitle, company } = req.body;
+      const userId = req.user.claims.sub;
+      
+      // Get user's latest resume
+      const resumes = await storage.getResumes(userId);
+      const latestResume = resumes.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())[0];
+      
+      if (!latestResume) {
+        return res.status(400).json({ message: "No resume found. Please upload a resume first." });
+      }
+      
+      const coverLetter = await aiService.generateCoverLetter(
+        latestResume.content,
+        jobDescription,
+        jobTitle,
+        company
+      );
+      
+      res.json({ coverLetter });
+    } catch (error) {
+      console.error("Error generating cover letter:", error);
+      res.status(500).json({ message: "Failed to generate cover letter" });
+    }
+  });
+
+  app.post('/api/ai/company-insights', isAuthenticated, async (req: any, res) => {
+    try {
+      const { company, jobTitle, jobDescription } = req.body;
+      
+      const insights = await aiService.generateCompanyInsights(company, jobTitle, jobDescription);
+      
+      res.json({ insights });
+    } catch (error) {
+      console.error("Error generating company insights:", error);
+      res.status(500).json({ message: "Failed to generate company insights" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
