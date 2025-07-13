@@ -162,6 +162,68 @@ Return as JSON with actionable recommendations.`;
       return { recommendations: [] };
     }
   }
+
+  async generateCoverLetter(resumeContent: string, jobDescription: string, jobTitle: string, company: string): Promise<string> {
+    try {
+      const prompt = `Generate a professional cover letter based on the following information:
+        
+Job Title: ${jobTitle}
+Company: ${company}
+Job Description: ${jobDescription}
+
+Resume Content: ${resumeContent}
+
+Create a compelling cover letter that:
+- Addresses the specific job requirements
+- Highlights relevant skills and experience from the resume
+- Shows enthusiasm for the company and role
+- Is professional and concise (3-4 paragraphs)
+- Includes specific examples and achievements
+
+Make it personalized and tailored to this specific job and company.`;
+
+      const message = await anthropic.messages.create({
+        max_tokens: 1500,
+        messages: [{ role: 'user', content: prompt }],
+        model: DEFAULT_MODEL_STR,
+      });
+
+      return message.content[0].text;
+    } catch (error) {
+      console.error("Failed to generate cover letter:", error);
+      throw error;
+    }
+  }
+
+  async generateCompanyInsights(company: string, jobTitle: string, jobDescription?: string): Promise<any> {
+    try {
+      const prompt = `Provide comprehensive company insights for ${company} regarding the ${jobTitle} position.
+${jobDescription ? `Job Description: ${jobDescription}` : ''}
+
+Analyze and provide:
+- Company overview and culture
+- Industry position and reputation
+- Work environment and values
+- Interview process expectations
+- Common interview questions for this role
+- Tips for standing out in the application
+- Salary range and benefits information
+- Growth opportunities
+
+Format as a JSON object with structured insights.`;
+
+      const message = await anthropic.messages.create({
+        max_tokens: 1500,
+        messages: [{ role: 'user', content: prompt }],
+        model: DEFAULT_MODEL_STR,
+      });
+
+      return JSON.parse(message.content[0].text);
+    } catch (error) {
+      console.error("Failed to generate company insights:", error);
+      throw error;
+    }
+  }
 }
 
 export const anthropicService = new AnthropicService();

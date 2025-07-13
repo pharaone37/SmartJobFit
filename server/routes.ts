@@ -916,7 +916,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       const coverLetter = await aiService.generateCoverLetter(
-        latestResume.content,
+        JSON.stringify(latestResume.content),
         jobDescription,
         jobTitle,
         company

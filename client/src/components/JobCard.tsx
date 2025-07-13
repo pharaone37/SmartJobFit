@@ -265,10 +265,6 @@ export default function JobCard({
 
             {/* Quick Actions */}
             <div className="flex flex-wrap gap-2">
-              <Button variant="outline" size="sm" onClick={handleSave}>
-                <Bookmark className={`w-4 h-4 mr-2 ${isSaved ? "fill-current" : ""}`} />
-                {isSaved ? "Saved" : "Save Job"}
-              </Button>
               <Button variant="outline" size="sm" onClick={onGenerateCoverLetter}>
                 <Zap className="w-4 h-4 mr-2" />
                 AI Cover Letter

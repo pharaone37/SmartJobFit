@@ -13,6 +13,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import JobCard from "@/components/JobCard";
 import JobSearchFilters from "@/components/JobSearchFilters";
+import CoverLetterModal from "@/components/CoverLetterModal";
+import CompanyInsightsModal from "@/components/CompanyInsightsModal";
 import type { JobSearchFilters as JobSearchFiltersType } from "@/components/JobSearchFilters";
 import { 
   Search, 
@@ -38,6 +40,23 @@ export default function JobSearch() {
   const [searchQuery, setSearchQuery] = useState("");
   const [filters, setFilters] = useState<JobSearchFiltersType>({});
   const [activeTab, setActiveTab] = useState("search");
+  
+  // Modal states
+  const [coverLetterModal, setCoverLetterModal] = useState({
+    isOpen: false,
+    coverLetter: "",
+    jobTitle: "",
+    company: "",
+    isGenerating: false,
+  });
+  
+  const [companyInsightsModal, setCompanyInsightsModal] = useState({
+    isOpen: false,
+    insights: null,
+    company: "",
+    jobTitle: "",
+    isGenerating: false,
+  });
 
   // Redirect to home if not authenticated
   useEffect(() => {
@@ -252,14 +271,21 @@ export default function JobSearch() {
       });
     },
     onSuccess: (data) => {
+      setCoverLetterModal(prev => ({
+        ...prev,
+        coverLetter: data.coverLetter,
+        isGenerating: false,
+      }));
       toast({
         title: "Cover Letter Generated",
         description: "Your personalized cover letter is ready!",
       });
-      // You can store the cover letter or open it in a modal
-      console.log("Cover Letter:", data.coverLetter);
     },
     onError: (error: Error) => {
+      setCoverLetterModal(prev => ({
+        ...prev,
+        isGenerating: false,
+      }));
       toast({
         title: "Generation Failed",
         description: "Failed to generate cover letter. Please try again.",
@@ -278,14 +304,21 @@ export default function JobSearch() {
       });
     },
     onSuccess: (data) => {
+      setCompanyInsightsModal(prev => ({
+        ...prev,
+        insights: data.insights,
+        isGenerating: false,
+      }));
       toast({
         title: "Company Insights Generated",
         description: "Company insights are ready to view!",
       });
-      // You can store the insights or open them in a modal
-      console.log("Company Insights:", data.insights);
     },
     onError: (error: Error) => {
+      setCompanyInsightsModal(prev => ({
+        ...prev,
+        isGenerating: false,
+      }));
       toast({
         title: "Generation Failed",
         description: "Failed to generate company insights. Please try again.",
@@ -295,10 +328,24 @@ export default function JobSearch() {
   });
 
   const handleGenerateCoverLetter = (job: any) => {
+    setCoverLetterModal({
+      isOpen: true,
+      coverLetter: "",
+      jobTitle: job.title,
+      company: job.company,
+      isGenerating: true,
+    });
     coverLetterMutation.mutate(job);
   };
 
   const handleCompanyInsights = (job: any) => {
+    setCompanyInsightsModal({
+      isOpen: true,
+      insights: null,
+      company: job.company,
+      jobTitle: job.title,
+      isGenerating: true,
+    });
     companyInsightsMutation.mutate(job);
   };
 
@@ -474,6 +521,25 @@ export default function JobSearch() {
           </TabsContent>
         </Tabs>
       </div>
+      
+      {/* Modals */}
+      <CoverLetterModal
+        isOpen={coverLetterModal.isOpen}
+        onClose={() => setCoverLetterModal(prev => ({ ...prev, isOpen: false }))}
+        coverLetter={coverLetterModal.coverLetter}
+        jobTitle={coverLetterModal.jobTitle}
+        company={coverLetterModal.company}
+        isGenerating={coverLetterModal.isGenerating}
+      />
+      
+      <CompanyInsightsModal
+        isOpen={companyInsightsModal.isOpen}
+        onClose={() => setCompanyInsightsModal(prev => ({ ...prev, isOpen: false }))}
+        insights={companyInsightsModal.insights}
+        company={companyInsightsModal.company}
+        jobTitle={companyInsightsModal.jobTitle}
+        isGenerating={companyInsightsModal.isGenerating}
+      />
     </div>
   );
 }
