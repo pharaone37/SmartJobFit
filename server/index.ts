@@ -23,7 +23,7 @@ app.use(session({
   secret: process.env.SESSION_SECRET!,
   store: sessionStore,
   resave: false,
-  saveUninitialized: false,
+  saveUninitialized: true, // Changed to true for Auth0
   cookie: {
     httpOnly: true,
     secure: false, // Set to false for development

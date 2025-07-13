@@ -22,11 +22,6 @@ export function setupAuth0(app: Express) {
       response_type: 'code',
       scope: 'openid profile email'
     },
-    session: {
-      rolling: true,
-      rollingDuration: 24 * 60 * 60 * 1000, // 24 hours
-      absoluteDuration: 7 * 24 * 60 * 60 * 1000 // 7 days
-    },
     afterCallback: async (req, res, session, decodedState) => {
       try {
         if (session.user) {
