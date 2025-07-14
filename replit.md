@@ -16,8 +16,12 @@ Production readiness: User planning to deploy with custom domain
 API requirements: Needs production-level API limits for OpenAI, Stripe, Anthropic
 Domain: smartjobfit.com (purchased from Namecheap)
 AI Provider: OpenRouter API configured for better rate limits
-Authentication: Custom auth page created to show SmartJobFit branding
-OAuth Configuration: Replit OAuth app needs to be updated from "CareerCatalyst" to "SmartJobFit" in settings
+Authentication: Custom JWT authentication system implemented
+- Email/password registration and login
+- Password reset functionality (logs reset tokens to console)
+- JWT tokens stored in localStorage
+- Secure password hashing with bcrypt
+- Direct navigation to dashboard after login/registration
 UI Language: English-only interface (removed German translations)
 Hosting: Multiple options available - Replit Deployments (quickest), Vercel (recommended), Railway, DigitalOcean
 Deployment: Ready for production deployment with comprehensive guides created

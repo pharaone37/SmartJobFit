@@ -7,7 +7,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff, Mail } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 export function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
@@ -18,9 +19,12 @@ export function LoginForm() {
     firstName: '', 
     lastName: '' 
   });
+  const [resetEmail, setResetEmail] = useState('');
+  const [showResetForm, setShowResetForm] = useState(false);
   
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   const loginMutation = useMutation({
     mutationFn: async (data: { email: string; password: string }) => {
@@ -41,9 +45,10 @@ export function LoginForm() {
       setAuthToken(data.token);
       queryClient.invalidateQueries({ queryKey: ['/api/auth/user'] });
       toast({
-        title: "Success",
+        title: "Welcome back!",
         description: "You have been logged in successfully!",
       });
+      navigate('/dashboard');
     },
     onError: (error: Error) => {
       toast({
@@ -73,9 +78,10 @@ export function LoginForm() {
       setAuthToken(data.token);
       queryClient.invalidateQueries({ queryKey: ['/api/auth/user'] });
       toast({
-        title: "Success",
-        description: "Account created successfully!",
+        title: "Welcome to SmartJobFit!",
+        description: "Your account has been created successfully. Let's get you started!",
       });
+      navigate('/dashboard');
     },
     onError: (error: Error) => {
       toast({
@@ -96,6 +102,43 @@ export function LoginForm() {
     registerMutation.mutate(registerData);
   };
 
+  const passwordResetMutation = useMutation({
+    mutationFn: async (email: string) => {
+      const response = await fetch('/api/auth/reset-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      });
+      
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Password reset failed');
+      }
+      
+      return response.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: "Reset link sent!",
+        description: "Check your email for password reset instructions.",
+      });
+      setShowResetForm(false);
+      setResetEmail('');
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  });
+
+  const handlePasswordReset = (e: React.FormEvent) => {
+    e.preventDefault();
+    passwordResetMutation.mutate(resetEmail);
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 p-4">
       <Card className="w-full max-w-md">
@@ -108,13 +151,50 @@ export function LoginForm() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Tabs defaultValue="login" className="w-full">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="login">Login</TabsTrigger>
-              <TabsTrigger value="register">Register</TabsTrigger>
-            </TabsList>
+          {showResetForm ? (
+            <div className="space-y-4">
+              <div className="text-center">
+                <h3 className="text-lg font-semibold">Reset Password</h3>
+                <p className="text-sm text-muted-foreground">Enter your email to receive reset instructions</p>
+              </div>
+              <form onSubmit={handlePasswordReset} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="resetEmail">Email</Label>
+                  <Input
+                    id="resetEmail"
+                    type="email"
+                    value={resetEmail}
+                    onChange={(e) => setResetEmail(e.target.value)}
+                    placeholder="Enter your email"
+                    required
+                  />
+                </div>
+                <div className="flex space-x-2">
+                  <Button 
+                    type="submit" 
+                    className="flex-1"
+                    disabled={passwordResetMutation.isPending}
+                  >
+                    {passwordResetMutation.isPending ? 'Sending...' : 'Send Reset Link'}
+                  </Button>
+                  <Button 
+                    type="button" 
+                    variant="outline"
+                    onClick={() => setShowResetForm(false)}
+                  >
+                    Cancel
+                  </Button>
+                </div>
+              </form>
+            </div>
+          ) : (
+            <Tabs defaultValue="login" className="w-full">
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="login">Login</TabsTrigger>
+                <TabsTrigger value="register">Register</TabsTrigger>
+              </TabsList>
             
-            <TabsContent value="login" className="space-y-4">
+              <TabsContent value="login" className="space-y-4">
               <form onSubmit={handleLogin} className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="email">Email</Label>
@@ -156,6 +236,15 @@ export function LoginForm() {
                 >
                   {loginMutation.isPending ? 'Logging in...' : 'Login'}
                 </Button>
+                <div className="text-center">
+                  <button
+                    type="button"
+                    onClick={() => setShowResetForm(true)}
+                    className="text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300"
+                  >
+                    Forgot your password?
+                  </button>
+                </div>
               </form>
             </TabsContent>
             
@@ -223,8 +312,9 @@ export function LoginForm() {
                   {registerMutation.isPending ? 'Creating Account...' : 'Create Account'}
                 </Button>
               </form>
-            </TabsContent>
-          </Tabs>
+              </TabsContent>
+            </Tabs>
+          )}
         </CardContent>
       </Card>
     </div>

@@ -47,15 +47,17 @@ function AppContent() {
         <Navbar />
         <main className="flex-1">
           <Routes>
+            {/* Public routes accessible to all users */}
+            <Route path="/privacy" element={<PrivacyPolicy />} />
+            <Route path="/terms" element={<TermsOfService />} />
+            <Route path="/help" element={<HelpCenter />} />
+            <Route path="/pricing" element={<Pricing />} />
+            
             {!isAuthenticated ? (
               <>
                 <Route path="/" element={<Landing />} />
                 <Route path="/auth" element={<AuthPage />} />
                 <Route path="/login" element={<Login />} />
-                <Route path="/pricing" element={<Pricing />} />
-                <Route path="/help" element={<HelpCenter />} />
-                <Route path="/privacy" element={<PrivacyPolicy />} />
-                <Route path="/terms" element={<TermsOfService />} />
                 <Route path="*" element={<Navigate to="/" replace />} />
               </>
             ) : (
@@ -68,11 +70,8 @@ function AppContent() {
                 <Route path="/analytics" element={<Analytics />} />
                 <Route path="/profile" element={<ProfilePage />} />
                 <Route path="/settings" element={<SettingsPage />} />
-                <Route path="/pricing" element={<Pricing />} />
                 <Route path="/subscribe" element={<Subscribe />} />
-                <Route path="/help" element={<HelpCenter />} />
-                <Route path="/privacy" element={<PrivacyPolicy />} />
-                <Route path="/terms" element={<TermsOfService />} />
+                <Route path="/login" element={<Navigate to="/dashboard" replace />} />
                 <Route path="*" element={<NotFound />} />
               </>
             )}

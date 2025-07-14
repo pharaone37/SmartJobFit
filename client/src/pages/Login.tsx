@@ -1,15 +1,15 @@
 import { useAuth } from "@/hooks/useAuth";
 import { useEffect } from "react";
-import { useLocation } from "wouter";
+import { useNavigate } from "react-router-dom";
 import { LoginForm } from "@/components/auth/LoginForm";
 
 export default function Login() {
   const { isAuthenticated, isLoading } = useAuth();
-  const [, navigate] = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (isAuthenticated) {
-      navigate("/");
+      navigate("/dashboard");
     }
   }, [isAuthenticated, navigate]);
 

@@ -152,6 +152,36 @@ export function setupJWTAuth(app: Express) {
     }
   });
   
+  // Password reset endpoint
+  app.post('/api/auth/reset-password', async (req: Request, res: Response) => {
+    try {
+      const { email } = req.body;
+      
+      if (!email) {
+        return res.status(400).json({ message: 'Email is required' });
+      }
+      
+      // Find user by email
+      const users = await storage.getUsers();
+      const user = users.find(u => u.email === email);
+      
+      if (!user) {
+        // Don't reveal if user exists or not for security
+        return res.json({ message: 'If an account with that email exists, we sent a reset link.' });
+      }
+      
+      // In a real app, you would send an email here
+      // For now, we'll just log the reset token
+      const resetToken = generateToken(user.id, user.email);
+      console.log(`Password reset token for ${email}: ${resetToken}`);
+      
+      res.json({ message: 'If an account with that email exists, we sent a reset link.' });
+    } catch (error) {
+      console.error('Password reset error:', error);
+      res.status(500).json({ message: 'Internal server error' });
+    }
+  });
+
   // Logout endpoint (client-side token removal)
   app.post('/api/auth/logout', (req: Request, res: Response) => {
     res.json({ message: 'Logged out successfully' });
