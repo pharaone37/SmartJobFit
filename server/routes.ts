@@ -17,6 +17,9 @@ import { hubspotService } from "./services/hubspotService";
 import { rchilliService } from "./services/rchilliService";
 import { serperService } from "./services/serperService";
 import { reziapiService } from "./services/reziapiService";
+import { sovrenService } from "./services/sovrenService";
+import { hireezService } from "./services/hireezService";
+import { skillateService } from "./services/skillateService";
 import { 
   insertJobSchema, 
   insertResumeSchema, 
@@ -363,6 +366,213 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Enhanced job search error:', error);
       res.status(500).json({ message: 'Failed to search jobs' });
+    }
+  });
+
+  // Enterprise-grade Sovren Resume Parsing and Semantic Scoring
+  app.post('/api/resume/parse-sovren', async (req, res) => {
+    try {
+      const { resumeContent, fileName } = req.body;
+      
+      if (!resumeContent) {
+        return res.status(400).json({ message: 'Resume content is required' });
+      }
+
+      const parsedResume = await sovrenService.parseResume(resumeContent, fileName);
+      
+      res.json({
+        success: true,
+        parsedResume,
+        provider: 'Sovren',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Sovren parsing error:', error);
+      res.status(500).json({ message: 'Failed to parse resume with Sovren' });
+    }
+  });
+
+  // Sovren Semantic Scoring
+  app.post('/api/resume/semantic-score', async (req, res) => {
+    try {
+      const { resumeContent, jobDescription } = req.body;
+      
+      if (!resumeContent || !jobDescription) {
+        return res.status(400).json({ message: 'Resume content and job description are required' });
+      }
+
+      const semanticScore = await sovrenService.semanticScoring(resumeContent, jobDescription);
+      
+      res.json({
+        success: true,
+        semanticScore,
+        provider: 'Sovren',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Sovren semantic scoring error:', error);
+      res.status(500).json({ message: 'Failed to generate semantic score' });
+    }
+  });
+
+  // HireEZ Talent Intelligence and Matching
+  app.post('/api/talent/parse-hireez', async (req, res) => {
+    try {
+      const { resumeContent } = req.body;
+      
+      if (!resumeContent) {
+        return res.status(400).json({ message: 'Resume content is required' });
+      }
+
+      const talentProfile = await hireezService.parseResumeWithTalentIntelligence(resumeContent);
+      
+      res.json({
+        success: true,
+        talentProfile,
+        provider: 'HireEZ',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('HireEZ talent parsing error:', error);
+      res.status(500).json({ message: 'Failed to parse talent profile with HireEZ' });
+    }
+  });
+
+  // HireEZ Talent Matching
+  app.post('/api/talent/match-hireez', async (req, res) => {
+    try {
+      const { resumeContent, jobDescription } = req.body;
+      
+      if (!resumeContent || !jobDescription) {
+        return res.status(400).json({ message: 'Resume content and job description are required' });
+      }
+
+      const matchingResult = await hireezService.matchTalentToJob(resumeContent, jobDescription);
+      
+      res.json({
+        success: true,
+        matchingResult,
+        provider: 'HireEZ',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('HireEZ talent matching error:', error);
+      res.status(500).json({ message: 'Failed to match talent with HireEZ' });
+    }
+  });
+
+  // HireEZ Talent Insights
+  app.post('/api/talent/insights', async (req, res) => {
+    try {
+      const { resumeContent } = req.body;
+      
+      if (!resumeContent) {
+        return res.status(400).json({ message: 'Resume content is required' });
+      }
+
+      const insights = await hireezService.getTalentInsights(resumeContent);
+      
+      res.json({
+        success: true,
+        insights,
+        provider: 'HireEZ',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('HireEZ talent insights error:', error);
+      res.status(500).json({ message: 'Failed to generate talent insights' });
+    }
+  });
+
+  // Skillate AI-Powered Resume Parsing with Skill Graph
+  app.post('/api/resume/parse-skillate', async (req, res) => {
+    try {
+      const { resumeContent } = req.body;
+      
+      if (!resumeContent) {
+        return res.status(400).json({ message: 'Resume content is required' });
+      }
+
+      const skillParseResult = await skillateService.parseResumeWithSkillGraph(resumeContent);
+      
+      res.json({
+        success: true,
+        skillParseResult,
+        provider: 'Skillate',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Skillate skill parsing error:', error);
+      res.status(500).json({ message: 'Failed to parse resume with Skillate' });
+    }
+  });
+
+  // Skillate AI Job Matching
+  app.post('/api/jobs/match-skillate', async (req, res) => {
+    try {
+      const { resumeContent, jobDescription } = req.body;
+      
+      if (!resumeContent || !jobDescription) {
+        return res.status(400).json({ message: 'Resume content and job description are required' });
+      }
+
+      const jobMatchResult = await skillateService.matchResumeToJobWithAI(resumeContent, jobDescription);
+      
+      res.json({
+        success: true,
+        jobMatchResult,
+        provider: 'Skillate',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Skillate job matching error:', error);
+      res.status(500).json({ message: 'Failed to match job with Skillate' });
+    }
+  });
+
+  // Skillate Skill Development Plan
+  app.post('/api/skills/development-plan', async (req, res) => {
+    try {
+      const { resumeContent, targetRole } = req.body;
+      
+      if (!resumeContent || !targetRole) {
+        return res.status(400).json({ message: 'Resume content and target role are required' });
+      }
+
+      const developmentPlan = await skillateService.generateSkillDevelopmentPlan(resumeContent, targetRole);
+      
+      res.json({
+        success: true,
+        developmentPlan,
+        provider: 'Skillate',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Skillate development plan error:', error);
+      res.status(500).json({ message: 'Failed to generate development plan' });
+    }
+  });
+
+  // Skillate Job Recommendations
+  app.post('/api/jobs/recommendations-skillate', async (req, res) => {
+    try {
+      const { resumeContent, preferences } = req.body;
+      
+      if (!resumeContent) {
+        return res.status(400).json({ message: 'Resume content is required' });
+      }
+
+      const recommendations = await skillateService.getJobRecommendations(resumeContent, preferences || {});
+      
+      res.json({
+        success: true,
+        recommendations,
+        provider: 'Skillate',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Skillate job recommendations error:', error);
+      res.status(500).json({ message: 'Failed to get job recommendations' });
     }
   });
 

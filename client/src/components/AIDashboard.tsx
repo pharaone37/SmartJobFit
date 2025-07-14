@@ -175,7 +175,7 @@ export default function AIDashboard() {
             Enterprise-Grade AI Services
           </CardTitle>
           <CardDescription>
-            Six specialized AI providers delivering production-level capabilities
+            Nine specialized AI providers delivering enterprise-level capabilities
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -233,6 +233,39 @@ export default function AIDashboard() {
                 <li>• Professional resume optimization</li>
                 <li>• Cover letter generation</li>
                 <li>• ATS-friendly formatting</li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-medium mb-3 flex items-center gap-2">
+                <CheckCircle className="w-4 h-4 text-green-500" />
+                Sovren Enterprise
+              </h4>
+              <ul className="space-y-1 text-sm text-gray-600">
+                <li>• Semantic scoring engine</li>
+                <li>• Enterprise parser</li>
+                <li>• Extremely precise matching</li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-medium mb-3 flex items-center gap-2">
+                <CheckCircle className="w-4 h-4 text-green-500" />
+                HireEZ Talent Intelligence
+              </h4>
+              <ul className="space-y-1 text-sm text-gray-600">
+                <li>• Talent intelligence engine</li>
+                <li>• B2B matching optimization</li>
+                <li>• Career trajectory analysis</li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-medium mb-3 flex items-center gap-2">
+                <CheckCircle className="w-4 h-4 text-green-500" />
+                Skillate AI Graph
+              </h4>
+              <ul className="space-y-1 text-sm text-gray-600">
+                <li>• AI-powered skill graphs</li>
+                <li>• Job matching with ML</li>
+                <li>• Skill development plans</li>
               </ul>
             </div>
             <div>
