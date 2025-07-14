@@ -5,6 +5,7 @@ import { storage } from "./storage";
 import { setupJWTAuth, requireAuth, getUserId } from "./auth/jwtAuth";
 import { jobBoardService } from "./services/jobBoards";
 import { jobService } from "./services/jobService";
+import { openRouterService } from "./services/openRouterService";
 import { openaiService } from "./services/openai";
 import { anthropicService } from "./services/anthropic";
 import { emailService } from "./services/emailService";
@@ -94,6 +95,132 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching dashboard data:", error);
       res.status(500).json({ message: "Failed to fetch dashboard data" });
+    }
+  });
+
+  // AI-powered resume analysis
+  app.post('/api/resume/analyze', requireAuth, async (req, res) => {
+    try {
+      const { resumeContent, jobDescription } = req.body;
+      const analysis = await openRouterService.analyzeResume(resumeContent, jobDescription);
+      res.json(analysis);
+    } catch (error) {
+      console.error("Error analyzing resume:", error);
+      res.status(500).json({ message: "Failed to analyze resume" });
+    }
+  });
+
+  // AI-powered resume optimization
+  app.post('/api/resume/optimize', requireAuth, async (req, res) => {
+    try {
+      const { resumeContent, jobDescription, targetRole } = req.body;
+      const optimization = await openRouterService.optimizeResume(resumeContent, jobDescription, targetRole);
+      res.json(optimization);
+    } catch (error) {
+      console.error("Error optimizing resume:", error);
+      res.status(500).json({ message: "Failed to optimize resume" });
+    }
+  });
+
+  // AI-powered resume generation
+  app.post('/api/resume/generate', requireAuth, async (req, res) => {
+    try {
+      const { userInfo, targetRole, template } = req.body;
+      const resume = await openRouterService.generateResume(userInfo, targetRole, template);
+      res.json(resume);
+    } catch (error) {
+      console.error("Error generating resume:", error);
+      res.status(500).json({ message: "Failed to generate resume" });
+    }
+  });
+
+  // AI-powered interview questions
+  app.post('/api/interview/questions', requireAuth, async (req, res) => {
+    try {
+      const { jobDescription, experienceLevel, category } = req.body;
+      const questions = await openRouterService.generateInterviewQuestions(jobDescription, experienceLevel, category);
+      res.json(questions);
+    } catch (error) {
+      console.error("Error generating interview questions:", error);
+      res.status(500).json({ message: "Failed to generate interview questions" });
+    }
+  });
+
+  // AI-powered interview performance analysis
+  app.post('/api/interview/analyze', requireAuth, async (req, res) => {
+    try {
+      const { question, userAnswer, correctAnswer } = req.body;
+      const analysis = await openRouterService.analyzeInterviewPerformance(question, userAnswer, correctAnswer);
+      res.json(analysis);
+    } catch (error) {
+      console.error("Error analyzing interview performance:", error);
+      res.status(500).json({ message: "Failed to analyze interview performance" });
+    }
+  });
+
+  // AI-powered cover letter generation
+  app.post('/api/cover-letter/generate', requireAuth, async (req, res) => {
+    try {
+      const { resumeContent, jobDescription, companyInfo } = req.body;
+      const coverLetter = await openRouterService.generateCoverLetter(resumeContent, jobDescription, companyInfo);
+      res.json(coverLetter);
+    } catch (error) {
+      console.error("Error generating cover letter:", error);
+      res.status(500).json({ message: "Failed to generate cover letter" });
+    }
+  });
+
+  // AI-powered company insights
+  app.post('/api/company/insights', requireAuth, async (req, res) => {
+    try {
+      const { companyName, jobTitle } = req.body;
+      const insights = await openRouterService.getCompanyInsights(companyName, jobTitle);
+      res.json(insights);
+    } catch (error) {
+      console.error("Error getting company insights:", error);
+      res.status(500).json({ message: "Failed to get company insights" });
+    }
+  });
+
+  // AI-powered job recommendations
+  app.get('/api/jobs/recommendations/ai', requireAuth, async (req: any, res) => {
+    try {
+      const userId = getUserId(req);
+      const userProfile = await storage.getUser(userId);
+      const preferences = await storage.getUserPreferences(userId);
+      const recommendations = await openRouterService.generateJobRecommendations(userProfile, preferences);
+      res.json(recommendations);
+    } catch (error) {
+      console.error("Error generating AI job recommendations:", error);
+      res.status(500).json({ message: "Failed to generate AI job recommendations" });
+    }
+  });
+
+  // AI-powered career tips
+  app.post('/api/career/tips', requireAuth, async (req: any, res) => {
+    try {
+      const userId = getUserId(req);
+      const userProfile = await storage.getUser(userId);
+      const { currentRole, targetRole } = req.body;
+      const tips = await openRouterService.generateCareerTips(userProfile, currentRole, targetRole);
+      res.json(tips);
+    } catch (error) {
+      console.error("Error generating career tips:", error);
+      res.status(500).json({ message: "Failed to generate career tips" });
+    }
+  });
+
+  // AI-powered job search optimization
+  app.post('/api/jobs/search/optimize', requireAuth, async (req: any, res) => {
+    try {
+      const userId = getUserId(req);
+      const userProfile = await storage.getUser(userId);
+      const { searchQuery, previousResults } = req.body;
+      const optimization = await openRouterService.optimizeJobSearch(searchQuery, userProfile, previousResults);
+      res.json(optimization);
+    } catch (error) {
+      console.error("Error optimizing job search:", error);
+      res.status(500).json({ message: "Failed to optimize job search" });
     }
   });
 

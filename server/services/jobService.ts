@@ -1,5 +1,6 @@
 import { storage } from "../storage";
 import { jobBoardService } from "./jobBoards";
+import { openRouterService } from "./openRouterService";
 import type { Job, InsertJob } from "@shared/schema";
 
 export interface JobSearchFilters {

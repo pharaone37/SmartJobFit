@@ -26,6 +26,11 @@ import NotFound from "@/pages/not-found";
 // Components
 import Navbar from "@/components/ui/navbar";
 import Footer from "@/components/ui/footer";
+import AIResumeAnalyzer from "@/components/AIResumeAnalyzer";
+import AIInterviewPrep from "@/components/AIInterviewPrep";
+import AICoverLetterGenerator from "@/components/AICoverLetterGenerator";
+import AICompanyInsights from "@/components/AICompanyInsights";
+import AIDashboard from "@/components/AIDashboard";
 
 import { queryClient } from "@/lib/queryClient";
 
@@ -66,7 +71,12 @@ function AppContent() {
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/jobs" element={<JobSearch />} />
                 <Route path="/resume" element={<ResumeOptimization />} />
+                <Route path="/resume-analyzer" element={<AIResumeAnalyzer />} />
                 <Route path="/interview-prep" element={<InterviewPrep />} />
+                <Route path="/ai-interview-prep" element={<AIInterviewPrep />} />
+                <Route path="/cover-letter" element={<AICoverLetterGenerator />} />
+                <Route path="/company-insights" element={<AICompanyInsights />} />
+                <Route path="/ai-dashboard" element={<AIDashboard />} />
                 <Route path="/analytics" element={<Analytics />} />
                 <Route path="/profile" element={<ProfilePage />} />
                 <Route path="/settings" element={<SettingsPage />} />

@@ -45,6 +45,13 @@ export default function Navbar() {
     { name: "Analytics", href: "/analytics", icon: BarChart3 },
   ];
 
+  const aiToolsItems = [
+    { name: "Resume Analyzer", href: "/resume-analyzer", icon: FileText },
+    { name: "AI Interview Prep", href: "/ai-interview-prep", icon: Video },
+    { name: "Cover Letter", href: "/cover-letter", icon: FileText },
+    { name: "Company Insights", href: "/company-insights", icon: Search },
+  ];
+
   const publicNavigationItems = [
     { name: "Features", href: "#features" },
     { name: "Dashboard", href: "#dashboard" },
