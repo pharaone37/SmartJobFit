@@ -14,6 +14,9 @@ import { aiService } from "./services/aiService";
 import { edenAiService } from "./services/edenAiService";
 import { geminiService } from "./services/geminiService";
 import { hubspotService } from "./services/hubspotService";
+import { rchilliService } from "./services/rchilliService";
+import { serperService } from "./services/serperService";
+import { reziapiService } from "./services/reziapiService";
 import { 
   insertJobSchema, 
   insertResumeSchema, 
@@ -245,6 +248,121 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Interview generation error:', error);
       res.status(500).json({ message: 'Failed to generate interview questions' });
+    }
+  });
+
+  // Enhanced Resume Parsing with Rchilli
+  app.post('/api/resume/parse-rchilli', async (req, res) => {
+    try {
+      const { resumeContent, fileName } = req.body;
+      
+      if (!resumeContent) {
+        return res.status(400).json({ message: 'Resume content is required' });
+      }
+
+      const parsedResume = await rchilliService.parseResume(resumeContent, fileName);
+      
+      res.json({
+        success: true,
+        parsedResume,
+        provider: 'Rchilli',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Rchilli resume parsing error:', error);
+      res.status(500).json({ message: 'Failed to parse resume with Rchilli' });
+    }
+  });
+
+  // Enhanced Resume Optimization with Rezi API
+  app.post('/api/resume/optimize-rezi', async (req, res) => {
+    try {
+      const { resumeContent, jobDescription } = req.body;
+      
+      if (!resumeContent || !jobDescription) {
+        return res.status(400).json({ message: 'Resume content and job description are required' });
+      }
+
+      const optimization = await reziapiService.optimizeResume(resumeContent, jobDescription);
+      
+      res.json({
+        success: true,
+        optimization,
+        provider: 'Rezi API',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Rezi optimization error:', error);
+      res.status(500).json({ message: 'Failed to optimize resume with Rezi' });
+    }
+  });
+
+  // Enhanced Cover Letter Generation with Rezi API
+  app.post('/api/cover-letter/generate-rezi', async (req, res) => {
+    try {
+      const { resumeContent, jobDescription, companyInfo } = req.body;
+      
+      if (!resumeContent || !jobDescription || !companyInfo) {
+        return res.status(400).json({ message: 'Resume content, job description, and company info are required' });
+      }
+
+      const coverLetter = await reziapiService.generateCoverLetter(resumeContent, jobDescription, companyInfo);
+      
+      res.json({
+        success: true,
+        coverLetter,
+        provider: 'Rezi API',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Rezi cover letter error:', error);
+      res.status(500).json({ message: 'Failed to generate cover letter with Rezi' });
+    }
+  });
+
+  // Enhanced Company Research with Serper
+  app.post('/api/company/research', async (req, res) => {
+    try {
+      const { companyName } = req.body;
+      
+      if (!companyName) {
+        return res.status(400).json({ message: 'Company name is required' });
+      }
+
+      const companyInfo = await serperService.getCompanyInfo(companyName);
+      
+      res.json({
+        success: true,
+        companyInfo,
+        provider: 'Serper API',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Serper company research error:', error);
+      res.status(500).json({ message: 'Failed to research company with Serper' });
+    }
+  });
+
+  // Enhanced Job Search with Serper
+  app.post('/api/jobs/search-enhanced', async (req, res) => {
+    try {
+      const { query, location, filters = {} } = req.body;
+      
+      if (!query) {
+        return res.status(400).json({ message: 'Search query is required' });
+      }
+
+      const serperResults = await serperService.searchJobs(query, location);
+      
+      res.json({
+        success: true,
+        results: serperResults,
+        provider: 'Serper API',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Enhanced job search error:', error);
+      res.status(500).json({ message: 'Failed to search jobs' });
     }
   });
 

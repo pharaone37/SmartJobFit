@@ -167,48 +167,83 @@ export default function AIDashboard() {
         </Card>
       </div>
 
-      {/* AI Technology Info */}
+      {/* Enhanced AI Services */}
       <Card className="bg-gradient-to-r from-purple-50 to-blue-50 border-purple-200">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <TrendingUp className="w-5 h-5 text-purple-600" />
-            Powered by Advanced AI Technology
+            <Sparkles className="w-5 h-5 text-purple-600" />
+            Enterprise-Grade AI Services
           </CardTitle>
+          <CardDescription>
+            Six specialized AI providers delivering production-level capabilities
+          </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <div>
-              <h4 className="font-medium mb-3">OpenRouter.ai Integration</h4>
-              <ul className="space-y-2 text-sm text-gray-600">
-                <li className="flex items-center gap-2">
-                  <CheckCircle className="w-4 h-4 text-green-500" />
-                  Access to Claude 3.5 Sonnet and GPT-4 models
-                </li>
-                <li className="flex items-center gap-2">
-                  <CheckCircle className="w-4 h-4 text-green-500" />
-                  Better rate limits and reliability
-                </li>
-                <li className="flex items-center gap-2">
-                  <CheckCircle className="w-4 h-4 text-green-500" />
-                  Advanced natural language processing
-                </li>
+              <h4 className="font-medium mb-3 flex items-center gap-2">
+                <CheckCircle className="w-4 h-4 text-green-500" />
+                OpenRouter.ai
+              </h4>
+              <ul className="space-y-1 text-sm text-gray-600">
+                <li>• Claude 3.5 Sonnet integration</li>
+                <li>• General AI features</li>
+                <li>• Better rate limits</li>
               </ul>
             </div>
             <div>
-              <h4 className="font-medium mb-3">AI-Driven Features</h4>
-              <ul className="space-y-2 text-sm text-gray-600">
-                <li className="flex items-center gap-2">
-                  <CheckCircle className="w-4 h-4 text-green-500" />
-                  Contextual resume optimization
-                </li>
-                <li className="flex items-center gap-2">
-                  <CheckCircle className="w-4 h-4 text-green-500" />
-                  Personalized interview coaching
-                </li>
-                <li className="flex items-center gap-2">
-                  <CheckCircle className="w-4 h-4 text-green-500" />
-                  Real-time performance analysis
-                </li>
+              <h4 className="font-medium mb-3 flex items-center gap-2">
+                <CheckCircle className="w-4 h-4 text-green-500" />
+                Eden AI + Affinda
+              </h4>
+              <ul className="space-y-1 text-sm text-gray-600">
+                <li>• Advanced resume parsing</li>
+                <li>• Multilingual support</li>
+                <li>• DSGVO-ready</li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-medium mb-3 flex items-center gap-2">
+                <CheckCircle className="w-4 h-4 text-green-500" />
+                Google Gemini 2.5
+              </h4>
+              <ul className="space-y-1 text-sm text-gray-600">
+                <li>• Job matching intelligence</li>
+                <li>• Cover letter generation</li>
+                <li>• Multimodal capabilities</li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-medium mb-3 flex items-center gap-2">
+                <CheckCircle className="w-4 h-4 text-green-500" />
+                Serper API
+              </h4>
+              <ul className="space-y-1 text-sm text-gray-600">
+                <li>• Enhanced job search</li>
+                <li>• Google Search integration</li>
+                <li>• Structured company data</li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-medium mb-3 flex items-center gap-2">
+                <CheckCircle className="w-4 h-4 text-green-500" />
+                Rezi API
+              </h4>
+              <ul className="space-y-1 text-sm text-gray-600">
+                <li>• Professional resume optimization</li>
+                <li>• Cover letter generation</li>
+                <li>• ATS-friendly formatting</li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-medium mb-3 flex items-center gap-2">
+                <Badge variant="outline" className="text-xs">Fallback Active</Badge>
+                Rchilli + HubSpot
+              </h4>
+              <ul className="space-y-1 text-sm text-gray-600">
+                <li>• ATS-optimized parsing</li>
+                <li>• CRM integration</li>
+                <li>• Ontology support</li>
               </ul>
             </div>
           </div>

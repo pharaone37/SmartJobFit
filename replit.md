@@ -22,12 +22,15 @@ Authentication: Custom JWT authentication system implemented
 - JWT tokens stored in localStorage
 - Secure password hashing with bcrypt
 - Direct navigation to dashboard after login/registration
-AI Integration: Multiple specialized AI services implemented
+AI Integration: Enterprise-grade specialized AI services implemented
 - OpenRouter.ai integration with Claude 3.5 Sonnet for general AI features
 - Eden AI Hub with Affinda + HireAbility for advanced resume parsing
 - Google Gemini 2.5 Flash for intelligent job matching and cover letter generation
 - HubSpot Smart CRM with custom AI layer (API key pending)
-- All services have fallback functionality and are production-ready
+- Rchilli for ATS-optimized resume parsing with ontology support
+- Serper API for enhanced job search via Google with structured data
+- Rezi API for professional resume optimization and cover letter generation
+- All services have intelligent fallback functionality and are production-ready
 UI Language: English-only interface (removed German translations)
 Hosting: Multiple options available - Replit Deployments (quickest), Vercel (recommended), Railway, DigitalOcean
 Deployment: Ready for production deployment with comprehensive guides created
@@ -52,11 +55,19 @@ Deployment: Ready for production deployment with comprehensive guides created
 - **Session Management**: JWT tokens with localStorage
 
 ### Key Technologies
-- **AI Services**: OpenAI (GPT-4o) and Anthropic (Claude Sonnet 4) for job matching and resume optimization
+- **AI Services**: Multiple specialized AI providers for enterprise-grade functionality
+  - **OpenRouter.ai**: Claude 3.5 Sonnet for general AI features
+  - **Eden AI Hub**: Affinda + HireAbility for advanced resume parsing
+  - **Google Gemini 2.5 Flash**: Intelligent job matching and cover letter generation
+  - **Rchilli**: ATS-optimized resume parsing with ontology support
+  - **Serper API**: Enhanced job search via Google with structured data
+  - **Rezi API**: Professional resume optimization and cover letter generation
+  - **HubSpot Smart CRM**: Customer relationship management with AI layer
 - **Payment Processing**: Stripe for subscription management
 - **Email Services**: SendGrid for transactional emails
 - **Job Board Integration**: Multi-platform job aggregation system
   - **Active APIs**: Jooble, USAJobs, Adzuna, Reed, Remote OK, ZipRecruiter
+  - **Enhanced Search**: Serper API for Google-powered job discovery
   - **Planned APIs**: LinkedIn, Indeed, Glassdoor, Monster, CareerBuilder, Dice
   - **Fallback System**: High-quality generated job listings from major tech companies
 
