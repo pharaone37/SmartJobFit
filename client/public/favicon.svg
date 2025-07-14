@@ -1,0 +1,17 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8B5CF6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#3B82F6;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect width="32" height="32" rx="6" fill="url(#gradient)"/>
+  <!-- Bot icon similar to Lucide Bot -->
+  <path d="M12 8h8v2h-8z" fill="white" fill-opacity="0.9"/>
+  <rect x="10" y="10" width="12" height="12" rx="2" fill="white" fill-opacity="0.9"/>
+  <circle cx="14" cy="15" r="1.5" fill="url(#gradient)"/>
+  <circle cx="18" cy="15" r="1.5" fill="url(#gradient)"/>
+  <path d="M13 18h6v1h-6z" fill="url(#gradient)"/>
+  <path d="M8 16h2v4h-2z" fill="white" fill-opacity="0.7"/>
+  <path d="M22 16h2v4h-2z" fill="white" fill-opacity="0.7"/>
+</svg>
