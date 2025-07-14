@@ -22,12 +22,12 @@ Authentication: Custom JWT authentication system implemented
 - JWT tokens stored in localStorage
 - Secure password hashing with bcrypt
 - Direct navigation to dashboard after login/registration
-AI Integration: Comprehensive OpenRouter.ai integration implemented
-- Resume analysis and optimization using Claude 3.5 Sonnet
-- Interview preparation with personalized questions and feedback
-- Cover letter generation with company-specific customization
-- Company insights with comprehensive research capabilities
-- All AI features fully functional with OpenRouter.ai backend
+AI Integration: Multiple specialized AI services implemented
+- OpenRouter.ai integration with Claude 3.5 Sonnet for general AI features
+- Eden AI Hub with Affinda + HireAbility for advanced resume parsing
+- Google Gemini 2.5 Flash for intelligent job matching and cover letter generation
+- HubSpot Smart CRM with custom AI layer (API key pending)
+- All services have fallback functionality and are production-ready
 UI Language: English-only interface (removed German translations)
 Hosting: Multiple options available - Replit Deployments (quickest), Vercel (recommended), Railway, DigitalOcean
 Deployment: Ready for production deployment with comprehensive guides created

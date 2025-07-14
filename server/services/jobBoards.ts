@@ -204,9 +204,9 @@ class JobBoardService {
       const data = await response.json();
       return data.slice(1) // First item is metadata
         .filter((job: any) => 
-          job.position && (
+          job && job.position && typeof job.position === 'string' && (
             job.position.toLowerCase().includes(query.toLowerCase()) ||
-            (job.description && job.description.toLowerCase().includes(query.toLowerCase()))
+            (job.description && typeof job.description === 'string' && job.description.toLowerCase().includes(query.toLowerCase()))
           )
         )
         .slice(0, 20)
@@ -395,6 +395,10 @@ We offer competitive compensation, comprehensive benefits, and the opportunity t
   }
 
   private generateSkills(query: string, title: string): string[] {
+    // Ensure inputs are strings
+    const safeQuery = query || 'developer';
+    const safeTitle = title || 'developer';
+    
     const allSkills = [
       'JavaScript', 'Python', 'React', 'Node.js', 'TypeScript', 'SQL', 'AWS', 'Docker', 
       'Kubernetes', 'Git', 'Java', 'C#', 'PHP', 'Ruby', 'Go', 'Swift', 'Kotlin',
@@ -404,12 +408,15 @@ We offer competitive compensation, comprehensive benefits, and the opportunity t
       'Microservices', 'System Design', 'Performance Optimization', 'Security'
     ];
 
-    const relevantSkills = allSkills.filter(skill => 
-      skill && title && (
-        skill.toLowerCase().includes(query.toLowerCase()) ||
-        title.toLowerCase().includes(skill.toLowerCase())
-      )
-    );
+    const relevantSkills = allSkills.filter(skill => {
+      if (!skill || typeof skill !== 'string') return false;
+      try {
+        return skill.toLowerCase().includes(safeQuery.toLowerCase()) ||
+               safeTitle.toLowerCase().includes(skill.toLowerCase());
+      } catch (e) {
+        return false;
+      }
+    });
 
     const additionalSkills = allSkills.filter(skill => !relevantSkills.includes(skill));
     const randomAdditional = additionalSkills
