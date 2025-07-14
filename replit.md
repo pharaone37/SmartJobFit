@@ -23,7 +23,7 @@ Authentication: Custom JWT authentication system implemented
 - JWT tokens stored in localStorage
 - Secure password hashing with bcrypt
 - Direct navigation to dashboard after login/registration
-AI Integration: Enterprise-grade specialized AI services implemented (9 providers)
+AI Integration: Enterprise-grade specialized AI services implemented (12 providers)
 - OpenRouter.ai integration with Claude 3.5 Sonnet for general AI features
 - Eden AI Hub with Affinda + HireAbility for advanced resume parsing
 - Google Gemini 2.5 Flash for intelligent job matching and cover letter generation
@@ -33,6 +33,9 @@ AI Integration: Enterprise-grade specialized AI services implemented (9 provider
 - Rchilli for ATS-optimized resume parsing with ontology support
 - Serper API for enhanced job search via Google with structured data
 - Rezi API for professional resume optimization and cover letter generation
+- Kickresume AI for intelligent CV building with GPT-powered templates
+- Teal HQ for resume tracking, analysis, and rewrite recommendations
+- Custom GPT-4o/Claude Flow for custom rewrite modules and advanced cover letters
 - HubSpot Smart CRM with custom AI layer (API key pending)
 - All services have intelligent fallback functionality and are production-ready
 UI Language: English-only interface (removed German translations)
@@ -59,7 +62,7 @@ Deployment: Ready for production deployment with comprehensive guides created
 - **Session Management**: JWT tokens with localStorage
 
 ### Key Technologies
-- **AI Services**: Nine specialized AI providers for enterprise-grade functionality
+- **AI Services**: Twelve specialized AI providers for enterprise-grade functionality
   - **OpenRouter.ai**: Claude 3.5 Sonnet for general AI features
   - **Eden AI Hub**: Affinda + HireAbility for advanced resume parsing
   - **Google Gemini 2.5 Flash**: Intelligent job matching and cover letter generation
@@ -69,6 +72,9 @@ Deployment: Ready for production deployment with comprehensive guides created
   - **Rchilli**: ATS-optimized resume parsing with ontology support
   - **Serper API**: Enhanced job search via Google with structured data
   - **Rezi API**: Professional resume optimization and cover letter generation
+  - **Kickresume AI**: Intelligent CV building with GPT-powered templates
+  - **Teal HQ**: Resume tracking, analysis, and rewrite recommendations
+  - **Custom GPT-4o/Claude Flow**: Custom rewrite modules and advanced cover letters
   - **HubSpot Smart CRM**: Customer relationship management with AI layer
 - **Payment Processing**: Stripe for subscription management
 - **Email Services**: SendGrid for transactional emails

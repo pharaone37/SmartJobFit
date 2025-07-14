@@ -175,7 +175,7 @@ export default function AIDashboard() {
             Enterprise-Grade AI Services
           </CardTitle>
           <CardDescription>
-            Nine specialized AI providers delivering enterprise-level capabilities
+            Twelve specialized AI providers delivering enterprise-level capabilities
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -266,6 +266,39 @@ export default function AIDashboard() {
                 <li>• AI-powered skill graphs</li>
                 <li>• Job matching with ML</li>
                 <li>• Skill development plans</li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-medium mb-3 flex items-center gap-2">
+                <CheckCircle className="w-4 h-4 text-green-500" />
+                Kickresume AI
+              </h4>
+              <ul className="space-y-1 text-sm text-gray-600">
+                <li>• Intelligent CV builder</li>
+                <li>• GPT-powered templates</li>
+                <li>• ATS optimization</li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-medium mb-3 flex items-center gap-2">
+                <CheckCircle className="w-4 h-4 text-green-500" />
+                Teal HQ Tracker
+              </h4>
+              <ul className="space-y-1 text-sm text-gray-600">
+                <li>• Job application tracking</li>
+                <li>• Resume performance analysis</li>
+                <li>• Career coaching insights</li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-medium mb-3 flex items-center gap-2">
+                <CheckCircle className="w-4 h-4 text-green-500" />
+                Custom GPT-4o/Claude Flow
+              </h4>
+              <ul className="space-y-1 text-sm text-gray-600">
+                <li>• Custom rewrite module</li>
+                <li>• Advanced cover letters</li>
+                <li>• Style optimization</li>
               </ul>
             </div>
             <div>

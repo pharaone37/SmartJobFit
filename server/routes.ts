@@ -20,6 +20,9 @@ import { reziapiService } from "./services/reziapiService";
 import { sovrenService } from "./services/sovrenService";
 import { hireezService } from "./services/hireezService";
 import { skillateService } from "./services/skillateService";
+import { kickresumeService } from "./services/kickresumeService";
+import { tealHqService } from "./services/tealHqService";
+import { customGptService } from "./services/customGptService";
 import { 
   insertJobSchema, 
   insertResumeSchema, 
@@ -573,6 +576,243 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Skillate job recommendations error:', error);
       res.status(500).json({ message: 'Failed to get job recommendations' });
+    }
+  });
+
+  // Resume Rewrite & Cover Letter Tools
+
+  // Kickresume AI Resume Builder
+  app.post('/api/resume/kickresume-templates', async (req, res) => {
+    try {
+      const { category } = req.body;
+      const templates = await kickresumeService.getResumeTemplates(category);
+      
+      res.json({
+        success: true,
+        templates,
+        provider: 'Kickresume AI',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Kickresume templates error:', error);
+      res.status(500).json({ message: 'Failed to fetch resume templates' });
+    }
+  });
+
+  app.post('/api/resume/create-kickresume', async (req, res) => {
+    try {
+      const { resumeContent, templateId, targetJob } = req.body;
+      
+      if (!resumeContent || !templateId) {
+        return res.status(400).json({ message: 'Resume content and template ID are required' });
+      }
+
+      const generatedResume = await kickresumeService.createResumeWithAI(resumeContent, templateId, targetJob);
+      
+      res.json({
+        success: true,
+        generatedResume,
+        provider: 'Kickresume AI',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Kickresume creation error:', error);
+      res.status(500).json({ message: 'Failed to create resume with Kickresume' });
+    }
+  });
+
+  app.post('/api/resume/kickresume-optimize', async (req, res) => {
+    try {
+      const { resumeData, jobDescription } = req.body;
+      
+      if (!resumeData || !jobDescription) {
+        return res.status(400).json({ message: 'Resume data and job description are required' });
+      }
+
+      const optimization = await kickresumeService.optimizeResumeForATS(resumeData, jobDescription);
+      
+      res.json({
+        success: true,
+        optimization,
+        provider: 'Kickresume AI',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Kickresume optimization error:', error);
+      res.status(500).json({ message: 'Failed to optimize resume' });
+    }
+  });
+
+  // Teal HQ Job Tracking and Resume Analysis
+  app.post('/api/jobs/track-application', async (req, res) => {
+    try {
+      const applicationData = req.body;
+      
+      if (!applicationData.jobTitle || !applicationData.company) {
+        return res.status(400).json({ message: 'Job title and company are required' });
+      }
+
+      const trackedApplication = await tealHqService.trackJobApplication(applicationData);
+      
+      res.json({
+        success: true,
+        trackedApplication,
+        provider: 'Teal HQ',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Teal HQ tracking error:', error);
+      res.status(500).json({ message: 'Failed to track job application' });
+    }
+  });
+
+  app.post('/api/resume/teal-analyze', async (req, res) => {
+    try {
+      const { resumeContent, targetJob } = req.body;
+      
+      if (!resumeContent) {
+        return res.status(400).json({ message: 'Resume content is required' });
+      }
+
+      const analysis = await tealHqService.analyzeResume(resumeContent, targetJob);
+      
+      res.json({
+        success: true,
+        analysis,
+        provider: 'Teal HQ',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Teal HQ analysis error:', error);
+      res.status(500).json({ message: 'Failed to analyze resume' });
+    }
+  });
+
+  app.get('/api/jobs/tracking-dashboard/:userId', async (req, res) => {
+    try {
+      const { userId } = req.params;
+      const dashboard = await tealHqService.getJobTrackingDashboard(userId);
+      
+      res.json({
+        success: true,
+        dashboard,
+        provider: 'Teal HQ',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Teal HQ dashboard error:', error);
+      res.status(500).json({ message: 'Failed to fetch tracking dashboard' });
+    }
+  });
+
+  // Custom GPT-4o/Claude Flow
+  app.post('/api/resume/custom-rewrite', async (req, res) => {
+    try {
+      const rewriteRequest = req.body;
+      
+      if (!rewriteRequest.content || !rewriteRequest.targetRole) {
+        return res.status(400).json({ message: 'Content and target role are required' });
+      }
+
+      const rewriteResult = await customGptService.rewriteResumeSection(rewriteRequest);
+      
+      res.json({
+        success: true,
+        rewriteResult,
+        provider: 'Custom GPT Flow',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Custom GPT rewrite error:', error);
+      res.status(500).json({ message: 'Failed to rewrite resume content' });
+    }
+  });
+
+  app.post('/api/cover-letter/custom-generate', async (req, res) => {
+    try {
+      const coverLetterRequest = req.body;
+      
+      if (!coverLetterRequest.resumeContent || !coverLetterRequest.jobDescription || !coverLetterRequest.companyName) {
+        return res.status(400).json({ message: 'Resume content, job description, and company name are required' });
+      }
+
+      const coverLetter = await customGptService.generateCoverLetter(coverLetterRequest);
+      
+      res.json({
+        success: true,
+        coverLetter,
+        provider: 'Custom GPT Flow',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Custom GPT cover letter error:', error);
+      res.status(500).json({ message: 'Failed to generate cover letter' });
+    }
+  });
+
+  app.post('/api/resume/ats-optimize', async (req, res) => {
+    try {
+      const { content, jobDescription } = req.body;
+      
+      if (!content || !jobDescription) {
+        return res.status(400).json({ message: 'Content and job description are required' });
+      }
+
+      const optimization = await customGptService.optimizeForATS(content, jobDescription);
+      
+      res.json({
+        success: true,
+        optimization,
+        provider: 'Custom GPT Flow',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Custom GPT ATS optimization error:', error);
+      res.status(500).json({ message: 'Failed to optimize for ATS' });
+    }
+  });
+
+  app.post('/api/resume/generate-versions', async (req, res) => {
+    try {
+      const { content, variations } = req.body;
+      
+      if (!content) {
+        return res.status(400).json({ message: 'Content is required' });
+      }
+
+      const versions = await customGptService.generateMultipleVersions(content, variations || 3);
+      
+      res.json({
+        success: true,
+        versions,
+        provider: 'Custom GPT Flow',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Custom GPT versions error:', error);
+      res.status(500).json({ message: 'Failed to generate resume versions' });
+    }
+  });
+
+  app.post('/api/resume/improve-style', async (req, res) => {
+    try {
+      const { content, targetStyle } = req.body;
+      
+      if (!content || !targetStyle) {
+        return res.status(400).json({ message: 'Content and target style are required' });
+      }
+
+      const improvement = await customGptService.improveWritingStyle(content, targetStyle);
+      
+      res.json({
+        success: true,
+        improvement,
+        provider: 'Custom GPT Flow',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Custom GPT style improvement error:', error);
+      res.status(500).json({ message: 'Failed to improve writing style' });
     }
   });
 
