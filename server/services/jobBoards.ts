@@ -204,8 +204,10 @@ class JobBoardService {
       const data = await response.json();
       return data.slice(1) // First item is metadata
         .filter((job: any) => 
-          job.position?.toLowerCase().includes(query.toLowerCase()) ||
-          job.description?.toLowerCase().includes(query.toLowerCase())
+          job.position && (
+            job.position.toLowerCase().includes(query.toLowerCase()) ||
+            (job.description && job.description.toLowerCase().includes(query.toLowerCase()))
+          )
         )
         .slice(0, 20)
         .map((job: any) => ({
@@ -403,8 +405,10 @@ We offer competitive compensation, comprehensive benefits, and the opportunity t
     ];
 
     const relevantSkills = allSkills.filter(skill => 
-      skill.toLowerCase().includes(query.toLowerCase()) ||
-      title.toLowerCase().includes(skill.toLowerCase())
+      skill && title && (
+        skill.toLowerCase().includes(query.toLowerCase()) ||
+        title.toLowerCase().includes(skill.toLowerCase())
+      )
     );
 
     const additionalSkills = allSkills.filter(skill => !relevantSkills.includes(skill));
