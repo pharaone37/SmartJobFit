@@ -766,3 +766,162 @@ export const emailIntegrationsRelations = relations(emailIntegrations, ({ one })
 export const applicationAnalyticsRelations = relations(applicationAnalytics, ({ one }) => ({
   user: one(users, { fields: [applicationAnalytics.userId], references: [users.id] }),
 }));
+
+// Salary Intelligence System Tables
+export const salaryData = pgTable("salary_data", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  jobTitle: varchar("job_title").notNull(),
+  company: varchar("company"),
+  location: varchar("location").notNull(),
+  salaryMin: integer("salary_min"),
+  salaryMax: integer("salary_max"),
+  salaryMedian: integer("salary_median"),
+  equity: varchar("equity"),
+  benefits: text("benefits"),
+  dataSource: varchar("data_source").notNull(),
+  lastUpdated: timestamp("last_updated").defaultNow(),
+  experienceLevel: varchar("experience_level"),
+  industry: varchar("industry"),
+  companySize: varchar("company_size"),
+  confidenceScore: decimal("confidence_score", { precision: 3, scale: 2 }),
+  costOfLiving: decimal("cost_of_living", { precision: 5, scale: 2 }),
+  createdAt: timestamp("created_at").defaultNow()
+});
+
+export const userNegotiations = pgTable("user_negotiations", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  userId: varchar("user_id").references(() => users.id).notNull(),
+  positionTitle: varchar("position_title").notNull(),
+  company: varchar("company").notNull(),
+  currentOffer: integer("current_offer"),
+  targetSalary: integer("target_salary"),
+  negotiationStatus: varchar("negotiation_status").default('planned'), // 'planned', 'in_progress', 'completed', 'rejected'
+  outcome: varchar("outcome"),
+  finalSalary: integer("final_salary"),
+  improvementPercent: decimal("improvement_percent", { precision: 5, scale: 2 }),
+  strategyUsed: text("strategy_used"),
+  simulationScores: jsonb("simulation_scores"),
+  coachingNotes: text("coaching_notes"),
+  negotiationTips: text("negotiation_tips").array(),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow()
+});
+
+export const companyCompensation = pgTable("company_compensation", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  companyId: varchar("company_id").notNull(),
+  companyName: varchar("company_name").notNull(),
+  avgSalary: integer("avg_salary"),
+  salaryRanges: jsonb("salary_ranges"),
+  equityPolicy: text("equity_policy"),
+  benefitsPackage: text("benefits_package"),
+  negotiationFlexibility: varchar("negotiation_flexibility"),
+  workLifeBalance: decimal("work_life_balance", { precision: 3, scale: 2 }),
+  cultureScore: decimal("culture_score", { precision: 3, scale: 2 }),
+  financialHealth: varchar("financial_health"),
+  growthStage: varchar("growth_stage"),
+  compensationPhilosophy: text("compensation_philosophy"),
+  reviewCycle: varchar("review_cycle"),
+  promotionTimeline: text("promotion_timeline"),
+  lastUpdated: timestamp("last_updated").defaultNow(),
+  createdAt: timestamp("created_at").defaultNow()
+});
+
+export const marketTrends = pgTable("market_trends", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  industry: varchar("industry").notNull(),
+  jobTitle: varchar("job_title").notNull(),
+  location: varchar("location").notNull(),
+  timePeriod: varchar("time_period").notNull(),
+  salaryTrend: varchar("salary_trend"), // 'increasing', 'decreasing', 'stable'
+  trendPercentage: decimal("trend_percentage", { precision: 5, scale: 2 }),
+  demandLevel: varchar("demand_level"), // 'low', 'medium', 'high', 'critical'
+  growthProjection: decimal("growth_projection", { precision: 5, scale: 2 }),
+  skillsPremium: jsonb("skills_premium"),
+  marketInsights: text("market_insights"),
+  competitiveFactors: text("competitive_factors").array(),
+  dataSource: varchar("data_source"),
+  confidenceLevel: varchar("confidence_level"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow()
+});
+
+export const negotiationSessions = pgTable("negotiation_sessions", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  userId: varchar("user_id").references(() => users.id).notNull(),
+  negotiationId: uuid("negotiation_id").references(() => userNegotiations.id),
+  sessionType: varchar("session_type").notNull(), // 'simulation', 'coaching', 'practice', 'strategy'
+  scenario: text("scenario"),
+  userResponses: jsonb("user_responses"),
+  aiResponses: jsonb("ai_responses"),
+  performanceScore: decimal("performance_score", { precision: 3, scale: 2 }),
+  communicationScore: decimal("communication_score", { precision: 3, scale: 2 }),
+  confidenceScore: decimal("confidence_score", { precision: 3, scale: 2 }),
+  areasImproved: text("areas_improved").array(),
+  recommendations: text("recommendations").array(),
+  sessionDuration: integer("session_duration"),
+  feedback: text("feedback"),
+  completedAt: timestamp("completed_at"),
+  createdAt: timestamp("created_at").defaultNow()
+});
+
+export const salaryBenchmarks = pgTable("salary_benchmarks", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  userId: varchar("user_id").references(() => users.id).notNull(),
+  jobTitle: varchar("job_title").notNull(),
+  industry: varchar("industry").notNull(),
+  location: varchar("location").notNull(),
+  experienceLevel: varchar("experience_level").notNull(),
+  marketMin: integer("market_min"),
+  marketMax: integer("market_max"),
+  marketMedian: integer("market_median"),
+  userTarget: integer("user_target"),
+  personalizedMin: integer("personalized_min"),
+  personalizedMax: integer("personalized_max"),
+  benchmarkFactors: jsonb("benchmark_factors"),
+  lastUpdated: timestamp("last_updated").defaultNow(),
+  createdAt: timestamp("created_at").defaultNow()
+});
+
+// Salary Intelligence System Types
+export type SalaryData = typeof salaryData.$inferSelect;
+export type UserNegotiation = typeof userNegotiations.$inferSelect;
+export type CompanyCompensation = typeof companyCompensation.$inferSelect;
+export type MarketTrend = typeof marketTrends.$inferSelect;
+export type NegotiationSession = typeof negotiationSessions.$inferSelect;
+export type SalaryBenchmark = typeof salaryBenchmarks.$inferSelect;
+
+// Salary Intelligence System Zod schemas
+export const insertSalaryDataSchema = createInsertSchema(salaryData).omit({ id: true, createdAt: true });
+export const insertUserNegotiationSchema = createInsertSchema(userNegotiations).omit({ id: true, createdAt: true, updatedAt: true });
+export const insertCompanyCompensationSchema = createInsertSchema(companyCompensation).omit({ id: true, createdAt: true, lastUpdated: true });
+export const insertMarketTrendSchema = createInsertSchema(marketTrends).omit({ id: true, createdAt: true, updatedAt: true });
+export const insertNegotiationSessionSchema = createInsertSchema(negotiationSessions).omit({ id: true, createdAt: true });
+export const insertSalaryBenchmarkSchema = createInsertSchema(salaryBenchmarks).omit({ id: true, createdAt: true, lastUpdated: true });
+
+// Salary Intelligence System Relations
+export const salaryDataRelations = relations(salaryData, ({ one, many }) => ({
+  benchmarks: many(salaryBenchmarks),
+}));
+
+export const userNegotiationsRelations = relations(userNegotiations, ({ one, many }) => ({
+  user: one(users, { fields: [userNegotiations.userId], references: [users.id] }),
+  sessions: many(negotiationSessions),
+}));
+
+export const companyCompensationRelations = relations(companyCompensation, ({ one, many }) => ({
+  negotiations: many(userNegotiations),
+}));
+
+export const marketTrendsRelations = relations(marketTrends, ({ one, many }) => ({
+  benchmarks: many(salaryBenchmarks),
+}));
+
+export const negotiationSessionsRelations = relations(negotiationSessions, ({ one }) => ({
+  user: one(users, { fields: [negotiationSessions.userId], references: [users.id] }),
+  negotiation: one(userNegotiations, { fields: [negotiationSessions.negotiationId], references: [userNegotiations.id] }),
+}));
+
+export const salaryBenchmarksRelations = relations(salaryBenchmarks, ({ one }) => ({
+  user: one(users, { fields: [salaryBenchmarks.userId], references: [users.id] }),
+}));

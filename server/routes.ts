@@ -42,6 +42,7 @@ import { ragSearchService } from "./services/ragSearchService";
 import { jobSearchEngine } from "./jobSearchEngine";
 import { resumeOptimizer } from "./resumeOptimizer";
 import { applicationTracker } from "./applicationTracker";
+import { salaryIntelligence } from "./salaryIntelligence";
 import multer from "multer";
 import { 
   insertJobSchema, 
@@ -69,7 +70,13 @@ import {
   insertFollowUpSchema,
   insertOutcomePredictionSchema,
   insertEmailIntegrationSchema,
-  insertApplicationAnalyticsSchema
+  insertApplicationAnalyticsSchema,
+  insertSalaryDataSchema,
+  insertUserNegotiationSchema,
+  insertCompanyCompensationSchema,
+  insertMarketTrendSchema,
+  insertNegotiationSessionSchema,
+  insertSalaryBenchmarkSchema
 } from "@shared/schema";
 import { z } from "zod";
 
@@ -3066,6 +3073,275 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
 
+
+  // Salary Intelligence API Routes
+  app.post('/api/salary/market-data', requireAuth, async (req, res) => {
+    try {
+      const { jobTitle, location, experienceLevel, industry, companySize, skills } = req.body;
+      
+      if (!jobTitle || !location || !experienceLevel) {
+        return res.status(400).json({ message: 'Job title, location, and experience level are required' });
+      }
+
+      const marketData = await salaryIntelligence.getMarketData({
+        jobTitle,
+        location,
+        experienceLevel,
+        industry,
+        companySize,
+        skills
+      });
+      
+      res.json({
+        success: true,
+        marketData,
+        provider: 'Salary Intelligence',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Salary market data error:', error);
+      res.status(500).json({ message: 'Failed to get salary market data' });
+    }
+  });
+
+  app.post('/api/salary/personalized-range', requireAuth, async (req, res) => {
+    try {
+      const userId = getUserId(req);
+      const user = await storage.getUser(userId);
+      const { jobTitle, location, experienceLevel, industry, companySize, skills } = req.body;
+      
+      if (!jobTitle || !location || !experienceLevel) {
+        return res.status(400).json({ message: 'Job title, location, and experience level are required' });
+      }
+
+      const personalizedRange = await salaryIntelligence.getPersonalizedRange({
+        jobTitle,
+        location,
+        experienceLevel,
+        industry,
+        companySize,
+        skills,
+        userProfile: user
+      });
+      
+      res.json({
+        success: true,
+        personalizedRange,
+        provider: 'Salary Intelligence',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Personalized salary range error:', error);
+      res.status(500).json({ message: 'Failed to get personalized salary range' });
+    }
+  });
+
+  app.post('/api/salary/company-insights', requireAuth, async (req, res) => {
+    try {
+      const { companyName, industry, location } = req.body;
+      
+      if (!companyName) {
+        return res.status(400).json({ message: 'Company name is required' });
+      }
+
+      const companyInsights = await salaryIntelligence.getCompanyInsights({
+        companyName,
+        industry,
+        location
+      });
+      
+      res.json({
+        success: true,
+        companyInsights,
+        provider: 'Salary Intelligence',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Company insights error:', error);
+      res.status(500).json({ message: 'Failed to get company insights' });
+    }
+  });
+
+  app.post('/api/salary/negotiation-strategy', requireAuth, async (req, res) => {
+    try {
+      const userId = getUserId(req);
+      const user = await storage.getUser(userId);
+      const { jobOffer, marketData, negotiationGoals } = req.body;
+      
+      if (!jobOffer || !marketData || !negotiationGoals) {
+        return res.status(400).json({ message: 'Job offer, market data, and negotiation goals are required' });
+      }
+
+      const negotiationStrategy = await salaryIntelligence.generateNegotiationStrategy({
+        userProfile: user,
+        jobOffer,
+        marketData,
+        negotiationGoals
+      });
+      
+      res.json({
+        success: true,
+        negotiationStrategy,
+        provider: 'Salary Intelligence',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Negotiation strategy error:', error);
+      res.status(500).json({ message: 'Failed to generate negotiation strategy' });
+    }
+  });
+
+  app.post('/api/salary/negotiation-simulation', requireAuth, async (req, res) => {
+    try {
+      const userId = getUserId(req);
+      const user = await storage.getUser(userId);
+      const { scenario, difficulty } = req.body;
+      
+      if (!scenario || !difficulty) {
+        return res.status(400).json({ message: 'Scenario and difficulty are required' });
+      }
+
+      const simulation = await salaryIntelligence.runNegotiationSimulation({
+        userId,
+        scenario,
+        userProfile: user,
+        difficulty
+      });
+      
+      res.json({
+        success: true,
+        simulation,
+        provider: 'Salary Intelligence',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Negotiation simulation error:', error);
+      res.status(500).json({ message: 'Failed to run negotiation simulation' });
+    }
+  });
+
+  app.post('/api/salary/benchmarks', requireAuth, async (req, res) => {
+    try {
+      const { industry, location, timeRange, jobTitle } = req.body;
+      
+      if (!industry || !location || !timeRange) {
+        return res.status(400).json({ message: 'Industry, location, and time range are required' });
+      }
+
+      const benchmarks = await salaryIntelligence.getBenchmarks({
+        industry,
+        location,
+        timeRange,
+        jobTitle
+      });
+      
+      res.json({
+        success: true,
+        benchmarks,
+        provider: 'Salary Intelligence',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Salary benchmarks error:', error);
+      res.status(500).json({ message: 'Failed to get salary benchmarks' });
+    }
+  });
+
+  app.post('/api/salary/analyze-offer', requireAuth, async (req, res) => {
+    try {
+      const userId = getUserId(req);
+      const { offerData } = req.body;
+      
+      if (!offerData) {
+        return res.status(400).json({ message: 'Offer data is required' });
+      }
+
+      const offerAnalysis = await salaryIntelligence.analyzeOffer(userId, offerData);
+      
+      res.json({
+        success: true,
+        offerAnalysis,
+        provider: 'Salary Intelligence',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Offer analysis error:', error);
+      res.status(500).json({ message: 'Failed to analyze offer' });
+    }
+  });
+
+  // Get user salary benchmarks
+  app.get('/api/salary/benchmarks/user', requireAuth, async (req, res) => {
+    try {
+      const userId = getUserId(req);
+      const benchmarks = await storage.getSalaryBenchmarks(userId);
+      
+      res.json({
+        success: true,
+        benchmarks,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Get user benchmarks error:', error);
+      res.status(500).json({ message: 'Failed to get user benchmarks' });
+    }
+  });
+
+  // Get user negotiations
+  app.get('/api/salary/negotiations/user', requireAuth, async (req, res) => {
+    try {
+      const userId = getUserId(req);
+      const negotiations = await storage.getUserNegotiations(userId);
+      
+      res.json({
+        success: true,
+        negotiations,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Get user negotiations error:', error);
+      res.status(500).json({ message: 'Failed to get user negotiations' });
+    }
+  });
+
+  // Get negotiation sessions
+  app.get('/api/salary/sessions/user', requireAuth, async (req, res) => {
+    try {
+      const userId = getUserId(req);
+      const sessions = await storage.getNegotiationSessions(userId);
+      
+      res.json({
+        success: true,
+        sessions,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Get negotiation sessions error:', error);
+      res.status(500).json({ message: 'Failed to get negotiation sessions' });
+    }
+  });
+
+  // Get market trends
+  app.get('/api/salary/market-trends', requireAuth, async (req, res) => {
+    try {
+      const { industry, location, jobTitle } = req.query;
+      
+      const trends = await storage.getMarketTrends({ 
+        industry: industry as string, 
+        location: location as string, 
+        jobTitle: jobTitle as string 
+      });
+      
+      res.json({
+        success: true,
+        trends,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Get market trends error:', error);
+      res.status(500).json({ message: 'Failed to get market trends' });
+    }
+  });
 
   // JWT Auth middleware
   setupJWTAuth(app);

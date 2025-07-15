@@ -6,9 +6,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 import JobSearchFilters from '@/components/JobSearchFilters';
 import type { JobSearchFilters as JobSearchFiltersType } from '@/components/JobSearchFilters';
+import ApplicationTracker from '@/pages/ApplicationTracker';
 import { 
   Search, 
   FileText, 

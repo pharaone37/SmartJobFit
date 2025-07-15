@@ -1,0 +1,132 @@
+Create a comprehensive salary intelligence and negotiation coaching system for SmartJobFit with the following specifications:
+
+CORE FUNCTIONALITY:
+1. Real-time market salary analytics with granular compensation breakdowns
+2. Personalized negotiation strategy development with AI coaching
+3. Company-specific compensation intelligence and negotiation insights
+4. Interactive negotiation simulation with realistic scenarios
+5. Comprehensive market intelligence with cost-of-living adjustments
+
+REQUIRED APIs & TOOLS:
+- Salary Data: Glassdoor API, PayScale API, Salary.com API for comprehensive market data
+- Market Intelligence: Bureau of Labor Statistics API for official salary statistics
+- Cost of Living: Numbeo API for location-based salary adjustments
+- AI Coaching: Google Gemini 2.5 Flash for personalized negotiation strategies
+- Company Data: Clearbit API and Crunchbase API for company financial insights
+- Economic Data: Federal Reserve Economic Data (FRED) API for market trends
+- Communication Training: Custom integration with negotiation simulation engines
+
+TECHNICAL IMPLEMENTATION:
+1. Create Flask backend with endpoints:
+   - GET /api/salary/market-data (comprehensive salary research)
+   - POST /api/salary/personalized-range (customized salary recommendations)
+   - GET /api/salary/company-insights (company-specific compensation data)
+   - POST /api/salary/negotiation-strategy (AI-generated negotiation plan)
+   - POST /api/salary/simulation (interactive negotiation practice)
+   - GET /api/salary/benchmarks (industry and role benchmarking)
+   - POST /api/salary/offer-analysis (job offer evaluation and optimization)
+
+2. Database Schema:
+   - salary_data table: id, job_title, company, location, salary_min, salary_max, equity, benefits, data_source, last_updated
+   - user_negotiations table: user_id, position, current_offer, target_salary, negotiation_status, outcome
+   - company_compensation table: company_id, avg_salary, equity_policy, benefits_package, negotiation_flexibility
+   - market_trends table: industry, location, time_period, salary_trend, demand_level, growth_projection
+   - negotiation_sessions table: user_id, session_type, performance_score, areas_improved, recommendations
+
+3. AI-Powered Intelligence:
+   - Implement Gemini API for personalized negotiation strategy development
+   - Create market analysis engine with real-time data aggregation
+   - Build company financial health assessment for negotiation context
+   - Develop personalized coaching based on user profile and market position
+   - Implement predictive modeling for negotiation success probability
+
+4. Frontend Components:
+   - Interactive salary research dashboard with multiple data visualization options
+   - Personalized negotiation strategy generator with step-by-step guidance
+   - Company compensation intelligence viewer with insider insights
+   - Negotiation simulation interface with realistic scenarios
+   - Market trends analyzer with predictive insights
+   - Offer evaluation tool with optimization recommendations
+
+5. Advanced Features:
+   - Real-time salary alerts for market changes in user's field
+   - Equity valuation calculator for startup offers
+   - Benefits package comparison and optimization
+   - Geographic salary arbitrage analysis for remote work
+   - Career progression salary planning with timeline projections
+
+SPECIFIC IMPLEMENTATION STEPS:
+1. Set up Flask app with comprehensive API integration for salary data sources
+2. Implement real-time data aggregation from multiple salary databases
+3. Create AI-powered personalization engine using Gemini API
+4. Build company intelligence system with financial health assessment
+5. Develop interactive negotiation simulation with realistic scenarios
+6. Implement cost-of-living adjustments and geographic salary analysis
+7. Create comprehensive market trend analysis with predictive modeling
+8. Build personalized coaching system with strategy development
+9. Add offer evaluation and optimization tools
+10. Set up automated testing and data validation for accuracy
+
+PERFORMANCE REQUIREMENTS:
+- Salary accuracy: 95% accuracy within $5,000 for roles under $150,000
+- Negotiation success: 73% of coached users achieve salary increases
+- Data freshness: Real-time updates from 50+ sources every 24 hours
+- Market coverage: Comprehensive data for 10,000+ job titles across 500+ cities
+- User satisfaction: 92% report increased confidence in salary negotiations
+
+INTEGRATION POINTS:
+- Import job data from search engine for salary research context
+- Export negotiation outcomes to application tracking system
+- Share compensation insights with career coaching for strategic planning
+- Coordinate with company intelligence for negotiation context
+- Provide salary data to interview preparation for negotiation coaching
+
+DATA COORDINATION:
+- Maintain shared user profile with salary history and negotiation outcomes
+- Track negotiation success metrics for platform-wide optimization
+- Export market intelligence data for dashboard integration
+- Share company compensation data across features
+- Coordinate with other features for comprehensive career planning
+
+ADVANCED FEATURES:
+1. Intelligent Market Analysis:
+   - Real-time salary trend detection and alerts
+   - Predictive modeling for future salary growth
+   - Industry disruption impact analysis on compensation
+   - Skills premium analysis for in-demand capabilities
+
+2. Personalized Negotiation Coaching:
+   - Communication style adaptation based on company culture
+   - Timing optimization for negotiation conversations
+   - Alternative compensation strategy development
+   - Confidence building exercises and practice scenarios
+
+3. Company Intelligence Integration:
+   - Financial health assessment for negotiation leverage
+   - Compensation philosophy analysis and strategy adaptation
+   - Insider insights from successful negotiations at target companies
+   - Equity valuation and long-term compensation planning
+
+4. Advanced Simulation Engine:
+   - Multiple negotiation scenario practice with different personality types
+   - Real-time feedback on negotiation performance and strategy
+   - Cultural adaptation for international negotiation styles
+   - Group negotiation and complex compensation package scenarios
+
+SPECIAL CONSIDERATIONS:
+1. Data Privacy and Security:
+   - Implement comprehensive encryption for sensitive salary data
+   - Provide granular privacy controls for user compensation information
+   - Ensure compliance with employment law and data protection regulations
+
+2. Market Intelligence Accuracy:
+   - Implement data validation and cross-referencing across multiple sources
+   - Create confidence scoring for salary data based on source reliability
+   - Provide transparency about data sources and collection methods
+
+3. Ethical Negotiation Coaching:
+   - Ensure coaching promotes fair and ethical negotiation practices
+   - Provide guidance on legal considerations and employment rights
+   - Promote transparency and honesty in negotiation strategies
+
+Create a production-ready system with robust data security, comprehensive market coverage, and scalable architecture for real-time salary intelligence processing.

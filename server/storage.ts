@@ -86,6 +86,24 @@ import {
   type InsertEmailIntegration,
   type ApplicationAnalytics,
   type InsertApplicationAnalytics,
+  salaryData,
+  userNegotiations,
+  companyCompensation,
+  marketTrends,
+  negotiationSessions,
+  salaryBenchmarks,
+  type SalaryData,
+  type UserNegotiation,
+  type CompanyCompensation,
+  type MarketTrend,
+  type NegotiationSession,
+  type SalaryBenchmark,
+  type insertSalaryDataSchema,
+  type insertUserNegotiationSchema,
+  type insertCompanyCompensationSchema,
+  type insertMarketTrendSchema,
+  type insertNegotiationSessionSchema,
+  type insertSalaryBenchmarkSchema,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, or, desc, asc, ilike, gte, lte, inArray, isNull } from "drizzle-orm";
@@ -305,6 +323,47 @@ export interface IStorage {
   
   // Application tracking utility operations
   getApplicationsWithTimeline(userId: string): Promise<any[]>;
+  
+  // Salary intelligence operations
+  createSalaryData(salaryData: any): Promise<SalaryData>;
+  getSalaryData(filters?: any): Promise<SalaryData[]>;
+  updateSalaryData(id: string, updates: Partial<SalaryData>): Promise<SalaryData | undefined>;
+  deleteSalaryData(id: string): Promise<void>;
+  
+  // User negotiation operations
+  createUserNegotiation(negotiation: any): Promise<UserNegotiation>;
+  getUserNegotiation(id: string): Promise<UserNegotiation | undefined>;
+  getUserNegotiations(userId: string): Promise<UserNegotiation[]>;
+  updateUserNegotiation(id: string, updates: Partial<UserNegotiation>): Promise<UserNegotiation | undefined>;
+  deleteUserNegotiation(id: string): Promise<void>;
+  
+  // Company compensation operations
+  createCompanyCompensation(compensation: any): Promise<CompanyCompensation>;
+  getCompanyCompensation(companyId: string): Promise<CompanyCompensation | undefined>;
+  getCompanyCompensations(filters?: any): Promise<CompanyCompensation[]>;
+  updateCompanyCompensation(id: string, updates: Partial<CompanyCompensation>): Promise<CompanyCompensation | undefined>;
+  deleteCompanyCompensation(id: string): Promise<void>;
+  
+  // Market trend operations
+  createMarketTrend(trend: any): Promise<MarketTrend>;
+  getMarketTrend(id: string): Promise<MarketTrend | undefined>;
+  getMarketTrends(filters?: any): Promise<MarketTrend[]>;
+  updateMarketTrend(id: string, updates: Partial<MarketTrend>): Promise<MarketTrend | undefined>;
+  deleteMarketTrend(id: string): Promise<void>;
+  
+  // Negotiation session operations
+  createNegotiationSession(session: any): Promise<NegotiationSession>;
+  getNegotiationSession(id: string): Promise<NegotiationSession | undefined>;
+  getNegotiationSessions(userId: string): Promise<NegotiationSession[]>;
+  updateNegotiationSession(id: string, updates: Partial<NegotiationSession>): Promise<NegotiationSession | undefined>;
+  deleteNegotiationSession(id: string): Promise<void>;
+  
+  // Salary benchmark operations
+  createSalaryBenchmark(benchmark: any): Promise<SalaryBenchmark>;
+  getSalaryBenchmark(id: string): Promise<SalaryBenchmark | undefined>;
+  getSalaryBenchmarks(userId: string): Promise<SalaryBenchmark[]>;
+  updateSalaryBenchmark(id: string, updates: Partial<SalaryBenchmark>): Promise<SalaryBenchmark | undefined>;
+  deleteSalaryBenchmark(id: string): Promise<void>;
   getApplicationsWithCommunications(userId: string): Promise<any[]>;
   getApplicationPortfolioStats(userId: string): Promise<any>;
   syncEmailForApplications(userId: string, emailData: any[]): Promise<void>;
@@ -1411,6 +1470,207 @@ export class DatabaseStorage implements IStorage {
         });
       }
     }
+  }
+
+  // Salary intelligence operations
+  async createSalaryData(salaryDataInput: any): Promise<SalaryData> {
+    const [created] = await db.insert(salaryData).values(salaryDataInput).returning();
+    return created;
+  }
+
+  async getSalaryData(filters?: any): Promise<SalaryData[]> {
+    let query = db.select().from(salaryData);
+    
+    if (filters?.jobTitle) {
+      query = query.where(ilike(salaryData.jobTitle, `%${filters.jobTitle}%`));
+    }
+    
+    if (filters?.location) {
+      query = query.where(ilike(salaryData.location, `%${filters.location}%`));
+    }
+    
+    if (filters?.industry) {
+      query = query.where(eq(salaryData.industry, filters.industry));
+    }
+    
+    return await query.orderBy(desc(salaryData.lastUpdated));
+  }
+
+  async updateSalaryData(id: string, updates: Partial<SalaryData>): Promise<SalaryData | undefined> {
+    const [updated] = await db
+      .update(salaryData)
+      .set({ ...updates, lastUpdated: new Date() })
+      .where(eq(salaryData.id, id))
+      .returning();
+    return updated;
+  }
+
+  async deleteSalaryData(id: string): Promise<void> {
+    await db.delete(salaryData).where(eq(salaryData.id, id));
+  }
+
+  // User negotiation operations
+  async createUserNegotiation(negotiationInput: any): Promise<UserNegotiation> {
+    const [created] = await db.insert(userNegotiations).values(negotiationInput).returning();
+    return created;
+  }
+
+  async getUserNegotiation(id: string): Promise<UserNegotiation | undefined> {
+    const [negotiation] = await db.select().from(userNegotiations).where(eq(userNegotiations.id, id));
+    return negotiation;
+  }
+
+  async getUserNegotiations(userId: string): Promise<UserNegotiation[]> {
+    return await db.select().from(userNegotiations).where(eq(userNegotiations.userId, userId)).orderBy(desc(userNegotiations.createdAt));
+  }
+
+  async updateUserNegotiation(id: string, updates: Partial<UserNegotiation>): Promise<UserNegotiation | undefined> {
+    const [updated] = await db
+      .update(userNegotiations)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(userNegotiations.id, id))
+      .returning();
+    return updated;
+  }
+
+  async deleteUserNegotiation(id: string): Promise<void> {
+    await db.delete(userNegotiations).where(eq(userNegotiations.id, id));
+  }
+
+  // Company compensation operations
+  async createCompanyCompensation(compensationInput: any): Promise<CompanyCompensation> {
+    const [created] = await db.insert(companyCompensation).values(compensationInput).returning();
+    return created;
+  }
+
+  async getCompanyCompensation(companyId: string): Promise<CompanyCompensation | undefined> {
+    const [compensation] = await db.select().from(companyCompensation).where(eq(companyCompensation.companyId, companyId));
+    return compensation;
+  }
+
+  async getCompanyCompensations(filters?: any): Promise<CompanyCompensation[]> {
+    let query = db.select().from(companyCompensation);
+    
+    if (filters?.companyName) {
+      query = query.where(ilike(companyCompensation.companyName, `%${filters.companyName}%`));
+    }
+    
+    if (filters?.growthStage) {
+      query = query.where(eq(companyCompensation.growthStage, filters.growthStage));
+    }
+    
+    return await query.orderBy(desc(companyCompensation.lastUpdated));
+  }
+
+  async updateCompanyCompensation(id: string, updates: Partial<CompanyCompensation>): Promise<CompanyCompensation | undefined> {
+    const [updated] = await db
+      .update(companyCompensation)
+      .set({ ...updates, lastUpdated: new Date() })
+      .where(eq(companyCompensation.id, id))
+      .returning();
+    return updated;
+  }
+
+  async deleteCompanyCompensation(id: string): Promise<void> {
+    await db.delete(companyCompensation).where(eq(companyCompensation.id, id));
+  }
+
+  // Market trend operations
+  async createMarketTrend(trendInput: any): Promise<MarketTrend> {
+    const [created] = await db.insert(marketTrends).values(trendInput).returning();
+    return created;
+  }
+
+  async getMarketTrend(id: string): Promise<MarketTrend | undefined> {
+    const [trend] = await db.select().from(marketTrends).where(eq(marketTrends.id, id));
+    return trend;
+  }
+
+  async getMarketTrends(filters?: any): Promise<MarketTrend[]> {
+    let query = db.select().from(marketTrends);
+    
+    if (filters?.industry) {
+      query = query.where(eq(marketTrends.industry, filters.industry));
+    }
+    
+    if (filters?.location) {
+      query = query.where(ilike(marketTrends.location, `%${filters.location}%`));
+    }
+    
+    if (filters?.jobTitle) {
+      query = query.where(ilike(marketTrends.jobTitle, `%${filters.jobTitle}%`));
+    }
+    
+    return await query.orderBy(desc(marketTrends.updatedAt));
+  }
+
+  async updateMarketTrend(id: string, updates: Partial<MarketTrend>): Promise<MarketTrend | undefined> {
+    const [updated] = await db
+      .update(marketTrends)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(marketTrends.id, id))
+      .returning();
+    return updated;
+  }
+
+  async deleteMarketTrend(id: string): Promise<void> {
+    await db.delete(marketTrends).where(eq(marketTrends.id, id));
+  }
+
+  // Negotiation session operations
+  async createNegotiationSession(sessionInput: any): Promise<NegotiationSession> {
+    const [created] = await db.insert(negotiationSessions).values(sessionInput).returning();
+    return created;
+  }
+
+  async getNegotiationSession(id: string): Promise<NegotiationSession | undefined> {
+    const [session] = await db.select().from(negotiationSessions).where(eq(negotiationSessions.id, id));
+    return session;
+  }
+
+  async getNegotiationSessions(userId: string): Promise<NegotiationSession[]> {
+    return await db.select().from(negotiationSessions).where(eq(negotiationSessions.userId, userId)).orderBy(desc(negotiationSessions.createdAt));
+  }
+
+  async updateNegotiationSession(id: string, updates: Partial<NegotiationSession>): Promise<NegotiationSession | undefined> {
+    const [updated] = await db
+      .update(negotiationSessions)
+      .set(updates)
+      .where(eq(negotiationSessions.id, id))
+      .returning();
+    return updated;
+  }
+
+  async deleteNegotiationSession(id: string): Promise<void> {
+    await db.delete(negotiationSessions).where(eq(negotiationSessions.id, id));
+  }
+
+  // Salary benchmark operations
+  async createSalaryBenchmark(benchmarkInput: any): Promise<SalaryBenchmark> {
+    const [created] = await db.insert(salaryBenchmarks).values(benchmarkInput).returning();
+    return created;
+  }
+
+  async getSalaryBenchmark(id: string): Promise<SalaryBenchmark | undefined> {
+    const [benchmark] = await db.select().from(salaryBenchmarks).where(eq(salaryBenchmarks.id, id));
+    return benchmark;
+  }
+
+  async getSalaryBenchmarks(userId: string): Promise<SalaryBenchmark[]> {
+    return await db.select().from(salaryBenchmarks).where(eq(salaryBenchmarks.userId, userId)).orderBy(desc(salaryBenchmarks.lastUpdated));
+  }
+
+  async updateSalaryBenchmark(id: string, updates: Partial<SalaryBenchmark>): Promise<SalaryBenchmark | undefined> {
+    const [updated] = await db
+      .update(salaryBenchmarks)
+      .set({ ...updates, lastUpdated: new Date() })
+      .where(eq(salaryBenchmarks.id, id))
+      .returning();
+    return updated;
+  }
+
+  async deleteSalaryBenchmark(id: string): Promise<void> {
+    await db.delete(salaryBenchmarks).where(eq(salaryBenchmarks.id, id));
   }
 }
 
