@@ -560,3 +560,209 @@ export const insertInterviewResponseSchema = createInsertSchema(interviewRespons
 export const insertInterviewFeedbackSchema = createInsertSchema(interviewFeedback).omit({ id: true, createdAt: true });
 export const insertCompanyInterviewInsightsSchema = createInsertSchema(companyInterviewInsights).omit({ id: true, createdAt: true, updatedAt: true });
 export const insertUserInterviewProgressSchema = createInsertSchema(userInterviewProgress).omit({ id: true, createdAt: true, updatedAt: true });
+
+// Application Tracking and Management System
+export const applications = pgTable("applications", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  userId: varchar("user_id").references(() => users.id, { onDelete: "cascade" }).notNull(),
+  jobId: uuid("job_id").references(() => jobs.id, { onDelete: "set null" }),
+  companyId: varchar("company_id"),
+  positionTitle: varchar("position_title").notNull(),
+  companyName: varchar("company_name").notNull(),
+  applicationDate: timestamp("application_date").notNull(),
+  status: varchar("status").notNull().default("applied"), // applied, screening, interview, offer, rejected, withdrawn
+  source: varchar("source").notNull(), // manual, job_board, email, referral
+  priorityScore: integer("priority_score").default(50), // 0-100
+  applicationUrl: varchar("application_url"),
+  jobDescription: text("job_description"),
+  requirements: text("requirements"),
+  salary: varchar("salary"),
+  location: varchar("location"),
+  workType: varchar("work_type"), // remote, hybrid, onsite
+  contactPerson: varchar("contact_person"),
+  contactEmail: varchar("contact_email"),
+  contactPhone: varchar("contact_phone"),
+  notes: text("notes"),
+  emailThreadId: varchar("email_thread_id"),
+  lastInteractionDate: timestamp("last_interaction_date"),
+  nextFollowUpDate: timestamp("next_follow_up_date"),
+  expectedResponseDate: timestamp("expected_response_date"),
+  isArchived: boolean("is_archived").default(false),
+  metadata: jsonb("metadata"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const applicationTimeline = pgTable("application_timeline", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  applicationId: uuid("application_id").references(() => applications.id, { onDelete: "cascade" }).notNull(),
+  eventType: varchar("event_type").notNull(), // status_change, email_sent, email_received, interview_scheduled, follow_up
+  eventDate: timestamp("event_date").notNull(),
+  description: text("description").notNull(),
+  source: varchar("source").notNull(), // manual, email, calendar, system
+  confidenceScore: integer("confidence_score").default(100), // 0-100
+  metadata: jsonb("metadata"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const communications = pgTable("communications", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  applicationId: uuid("application_id").references(() => applications.id, { onDelete: "cascade" }).notNull(),
+  communicationType: varchar("communication_type").notNull(), // email, phone, linkedin, text
+  direction: varchar("direction").notNull(), // inbound, outbound
+  subject: varchar("subject"),
+  content: text("content"),
+  fromAddress: varchar("from_address"),
+  toAddress: varchar("to_address"),
+  ccAddress: varchar("cc_address"),
+  timestamp: timestamp("timestamp").notNull(),
+  sentimentScore: decimal("sentiment_score", { precision: 3, scale: 2 }), // -1.00 to 1.00
+  priorityLevel: varchar("priority_level").default("medium"), // low, medium, high, urgent
+  requiresAction: boolean("requires_action").default(false),
+  actionTaken: boolean("action_taken").default(false),
+  emailId: varchar("email_id"),
+  threadId: varchar("thread_id"),
+  messageId: varchar("message_id"),
+  attachments: jsonb("attachments"),
+  metadata: jsonb("metadata"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const followUps = pgTable("follow_ups", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  applicationId: uuid("application_id").references(() => applications.id, { onDelete: "cascade" }).notNull(),
+  followUpType: varchar("follow_up_type").notNull(), // application_status, interview_follow_up, thank_you, networking
+  scheduledDate: timestamp("scheduled_date").notNull(),
+  actualSentDate: timestamp("actual_sent_date"),
+  messageTemplate: text("message_template"),
+  personalizedMessage: text("personalized_message"),
+  subject: varchar("subject"),
+  sentStatus: varchar("sent_status").default("pending"), // pending, sent, failed, cancelled
+  responseReceived: boolean("response_received").default(false),
+  responseDate: timestamp("response_date"),
+  responseContent: text("response_content"),
+  effectiveness: varchar("effectiveness"), // positive, neutral, negative
+  automationLevel: varchar("automation_level").default("manual"), // manual, semi_auto, fully_auto
+  metadata: jsonb("metadata"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const outcomePredictions = pgTable("outcome_predictions", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  applicationId: uuid("application_id").references(() => applications.id, { onDelete: "cascade" }).notNull(),
+  predictionScore: decimal("prediction_score", { precision: 3, scale: 2 }).notNull(), // 0.00 to 1.00
+  predictedOutcome: varchar("predicted_outcome").notNull(), // success, rejection, no_response
+  factors: jsonb("factors").notNull(), // JSON array of prediction factors
+  confidenceLevel: varchar("confidence_level").notNull(), // low, medium, high
+  modelVersion: varchar("model_version").notNull(),
+  timeToHirePrediction: integer("time_to_hire_prediction"), // days
+  probabilityDetails: jsonb("probability_details"), // breakdown by outcome
+  lastUpdated: timestamp("last_updated").defaultNow(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const emailIntegrations = pgTable("email_integrations", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  userId: varchar("user_id").references(() => users.id, { onDelete: "cascade" }).notNull(),
+  provider: varchar("provider").notNull(), // gmail, outlook
+  email: varchar("email").notNull(),
+  accessToken: text("access_token"),
+  refreshToken: text("refresh_token"),
+  tokenExpiry: timestamp("token_expiry"),
+  isActive: boolean("is_active").default(true),
+  lastSyncDate: timestamp("last_sync_date"),
+  syncStatus: varchar("sync_status").default("pending"), // pending, syncing, completed, error
+  errorMessage: text("error_message"),
+  scopes: text("scopes").array(),
+  metadata: jsonb("metadata"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const applicationAnalytics = pgTable("application_analytics", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  userId: varchar("user_id").references(() => users.id, { onDelete: "cascade" }).notNull(),
+  periodType: varchar("period_type").notNull(), // daily, weekly, monthly, yearly
+  periodStart: timestamp("period_start").notNull(),
+  periodEnd: timestamp("period_end").notNull(),
+  totalApplications: integer("total_applications").default(0),
+  responsesReceived: integer("responses_received").default(0),
+  interviewsScheduled: integer("interviews_scheduled").default(0),
+  offersReceived: integer("offers_received").default(0),
+  rejections: integer("rejections").default(0),
+  responseRate: decimal("response_rate", { precision: 5, scale: 2 }).default("0.00"),
+  interviewRate: decimal("interview_rate", { precision: 5, scale: 2 }).default("0.00"),
+  offerRate: decimal("offer_rate", { precision: 5, scale: 2 }).default("0.00"),
+  averageResponseTime: decimal("average_response_time", { precision: 5, scale: 2 }), // days
+  topPerformingCompanies: jsonb("top_performing_companies"),
+  topPerformingRoles: jsonb("top_performing_roles"),
+  optimizationSuggestions: jsonb("optimization_suggestions"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Type exports for Application Tracking System
+export type InsertApplication = typeof applications.$inferInsert;
+export type Application = typeof applications.$inferSelect;
+
+export type InsertApplicationTimeline = typeof applicationTimeline.$inferInsert;
+export type ApplicationTimeline = typeof applicationTimeline.$inferSelect;
+
+export type InsertCommunication = typeof communications.$inferInsert;
+export type Communication = typeof communications.$inferSelect;
+
+export type InsertFollowUp = typeof followUps.$inferInsert;
+export type FollowUp = typeof followUps.$inferSelect;
+
+export type InsertOutcomePrediction = typeof outcomePredictions.$inferInsert;
+export type OutcomePrediction = typeof outcomePredictions.$inferSelect;
+
+export type InsertEmailIntegration = typeof emailIntegrations.$inferInsert;
+export type EmailIntegration = typeof emailIntegrations.$inferSelect;
+
+export type InsertApplicationAnalytics = typeof applicationAnalytics.$inferInsert;
+export type ApplicationAnalytics = typeof applicationAnalytics.$inferSelect;
+
+// Application Tracking System Zod schemas
+export const insertApplicationSchema = createInsertSchema(applications).omit({ id: true, createdAt: true, updatedAt: true });
+export const insertApplicationTimelineSchema = createInsertSchema(applicationTimeline).omit({ id: true, createdAt: true });
+export const insertCommunicationSchema = createInsertSchema(communications).omit({ id: true, createdAt: true });
+export const insertFollowUpSchema = createInsertSchema(followUps).omit({ id: true, createdAt: true, updatedAt: true });
+export const insertOutcomePredictionSchema = createInsertSchema(outcomePredictions).omit({ id: true, createdAt: true });
+export const insertEmailIntegrationSchema = createInsertSchema(emailIntegrations).omit({ id: true, createdAt: true, updatedAt: true });
+export const insertApplicationAnalyticsSchema = createInsertSchema(applicationAnalytics).omit({ id: true, createdAt: true, updatedAt: true });
+
+// Application Tracking System Relations
+export const applicationsRelations = relations(applications, ({ one, many }) => ({
+  user: one(users, { fields: [applications.userId], references: [users.id] }),
+  job: one(jobs, { fields: [applications.jobId], references: [jobs.id] }),
+  timeline: many(applicationTimeline),
+  communications: many(communications),
+  followUps: many(followUps),
+  outcomePredictions: many(outcomePredictions),
+}));
+
+export const applicationTimelineRelations = relations(applicationTimeline, ({ one }) => ({
+  application: one(applications, { fields: [applicationTimeline.applicationId], references: [applications.id] }),
+}));
+
+export const communicationsRelations = relations(communications, ({ one }) => ({
+  application: one(applications, { fields: [communications.applicationId], references: [applications.id] }),
+}));
+
+export const followUpsRelations = relations(followUps, ({ one }) => ({
+  application: one(applications, { fields: [followUps.applicationId], references: [applications.id] }),
+}));
+
+export const outcomePredictionsRelations = relations(outcomePredictions, ({ one }) => ({
+  application: one(applications, { fields: [outcomePredictions.applicationId], references: [applications.id] }),
+}));
+
+export const emailIntegrationsRelations = relations(emailIntegrations, ({ one }) => ({
+  user: one(users, { fields: [emailIntegrations.userId], references: [users.id] }),
+}));
+
+export const applicationAnalyticsRelations = relations(applicationAnalytics, ({ one }) => ({
+  user: one(users, { fields: [applicationAnalytics.userId], references: [users.id] }),
+}));

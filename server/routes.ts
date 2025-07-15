@@ -41,6 +41,7 @@ import { automationService } from "./services/automationService";
 import { ragSearchService } from "./services/ragSearchService";
 import { jobSearchEngine } from "./jobSearchEngine";
 import { resumeOptimizer } from "./resumeOptimizer";
+import { applicationTracker } from "./applicationTracker";
 import multer from "multer";
 import { 
   insertJobSchema, 
@@ -61,7 +62,14 @@ import {
   insertInterviewResponseSchema,
   insertInterviewFeedbackSchema,
   insertCompanyInterviewInsightsSchema,
-  insertUserInterviewProgressSchema
+  insertUserInterviewProgressSchema,
+  insertApplicationSchema,
+  insertApplicationTimelineSchema,
+  insertCommunicationSchema,
+  insertFollowUpSchema,
+  insertOutcomePredictionSchema,
+  insertEmailIntegrationSchema,
+  insertApplicationAnalyticsSchema
 } from "@shared/schema";
 import { z } from "zod";
 
@@ -4924,6 +4932,417 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Update user interview progress error:', error);
       res.status(500).json({ message: 'Failed to update user interview progress' });
+    }
+  });
+
+  // Application Tracking and Management System Routes
+  
+  // Get application dashboard
+  app.get('/api/applications/dashboard', requireAuth, async (req, res) => {
+    try {
+      const userId = getUserId(req);
+      const dashboard = await applicationTracker.getApplicationDashboard(userId);
+      
+      res.json({
+        success: true,
+        dashboard,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Get application dashboard error:', error);
+      res.status(500).json({ message: 'Failed to get application dashboard' });
+    }
+  });
+
+  // Create new application
+  app.post('/api/applications', requireAuth, async (req, res) => {
+    try {
+      const userId = getUserId(req);
+      const validatedData = insertApplicationSchema.parse(req.body);
+      
+      const application = await applicationTracker.createApplication(userId, validatedData);
+      
+      res.json({
+        success: true,
+        application,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Create application error:', error);
+      res.status(500).json({ message: 'Failed to create application' });
+    }
+  });
+
+  // Get applications with filters
+  app.get('/api/applications', requireAuth, async (req, res) => {
+    try {
+      const userId = getUserId(req);
+      const filters = req.query;
+      
+      const applications = await storage.getApplications(userId, filters);
+      
+      res.json({
+        success: true,
+        applications,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Get applications error:', error);
+      res.status(500).json({ message: 'Failed to get applications' });
+    }
+  });
+
+  // Get specific application
+  app.get('/api/applications/:id', requireAuth, async (req, res) => {
+    try {
+      const { id } = req.params;
+      const application = await storage.getApplication(id);
+      
+      if (!application) {
+        return res.status(404).json({ message: 'Application not found' });
+      }
+      
+      res.json({
+        success: true,
+        application,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Get application error:', error);
+      res.status(500).json({ message: 'Failed to get application' });
+    }
+  });
+
+  // Update application
+  app.put('/api/applications/:id', requireAuth, async (req, res) => {
+    try {
+      const { id } = req.params;
+      const updates = req.body;
+      
+      const application = await storage.updateApplication(id, updates);
+      
+      if (!application) {
+        return res.status(404).json({ message: 'Application not found' });
+      }
+      
+      res.json({
+        success: true,
+        application,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Update application error:', error);
+      res.status(500).json({ message: 'Failed to update application' });
+    }
+  });
+
+  // Update application status
+  app.put('/api/applications/:id/status', requireAuth, async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { status, notes } = req.body;
+      
+      const application = await applicationTracker.updateApplicationStatus(id, status, notes);
+      
+      res.json({
+        success: true,
+        application,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Update application status error:', error);
+      res.status(500).json({ message: 'Failed to update application status' });
+    }
+  });
+
+  // Delete application
+  app.delete('/api/applications/:id', requireAuth, async (req, res) => {
+    try {
+      const { id } = req.params;
+      await storage.deleteApplication(id);
+      
+      res.json({
+        success: true,
+        message: 'Application deleted successfully',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Delete application error:', error);
+      res.status(500).json({ message: 'Failed to delete application' });
+    }
+  });
+
+  // Get application timeline
+  app.get('/api/applications/:id/timeline', requireAuth, async (req, res) => {
+    try {
+      const { id } = req.params;
+      const timeline = await storage.getApplicationTimeline(id);
+      
+      res.json({
+        success: true,
+        timeline,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Get application timeline error:', error);
+      res.status(500).json({ message: 'Failed to get application timeline' });
+    }
+  });
+
+  // Get application communications
+  app.get('/api/applications/:id/communications', requireAuth, async (req, res) => {
+    try {
+      const { id } = req.params;
+      const communications = await storage.getCommunications(id);
+      
+      res.json({
+        success: true,
+        communications,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Get application communications error:', error);
+      res.status(500).json({ message: 'Failed to get application communications' });
+    }
+  });
+
+  // Create communication
+  app.post('/api/applications/:id/communications', requireAuth, async (req, res) => {
+    try {
+      const { id } = req.params;
+      const validatedData = insertCommunicationSchema.parse({
+        ...req.body,
+        applicationId: id
+      });
+      
+      const communication = await storage.createCommunication(validatedData);
+      
+      res.json({
+        success: true,
+        communication,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Create communication error:', error);
+      res.status(500).json({ message: 'Failed to create communication' });
+    }
+  });
+
+  // Get follow-ups for application
+  app.get('/api/applications/:id/follow-ups', requireAuth, async (req, res) => {
+    try {
+      const { id } = req.params;
+      const followUps = await storage.getFollowUps(id);
+      
+      res.json({
+        success: true,
+        followUps,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Get follow-ups error:', error);
+      res.status(500).json({ message: 'Failed to get follow-ups' });
+    }
+  });
+
+  // Create follow-up
+  app.post('/api/applications/:id/follow-ups', requireAuth, async (req, res) => {
+    try {
+      const { id } = req.params;
+      const followUpData = {
+        ...req.body,
+        applicationId: id
+      };
+      
+      const followUp = await applicationTracker.createFollowUp(id, followUpData);
+      
+      res.json({
+        success: true,
+        followUp,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Create follow-up error:', error);
+      res.status(500).json({ message: 'Failed to create follow-up' });
+    }
+  });
+
+  // Get upcoming follow-ups
+  app.get('/api/applications/follow-ups/upcoming', requireAuth, async (req, res) => {
+    try {
+      const userId = getUserId(req);
+      const upcomingFollowUps = await storage.getUpcomingFollowUps(userId);
+      
+      res.json({
+        success: true,
+        upcomingFollowUps,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Get upcoming follow-ups error:', error);
+      res.status(500).json({ message: 'Failed to get upcoming follow-ups' });
+    }
+  });
+
+  // Generate follow-up message
+  app.post('/api/applications/:id/follow-ups/generate', requireAuth, async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { followUpType, context } = req.body;
+      
+      const followUpMessage = await applicationTracker.generateFollowUpMessage(id, followUpType, context);
+      
+      res.json({
+        success: true,
+        followUpMessage,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Generate follow-up message error:', error);
+      res.status(500).json({ message: 'Failed to generate follow-up message' });
+    }
+  });
+
+  // Get outcome prediction
+  app.get('/api/applications/:id/prediction', requireAuth, async (req, res) => {
+    try {
+      const { id } = req.params;
+      const prediction = await storage.getOutcomePrediction(id);
+      
+      res.json({
+        success: true,
+        prediction,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Get outcome prediction error:', error);
+      res.status(500).json({ message: 'Failed to get outcome prediction' });
+    }
+  });
+
+  // Generate outcome prediction
+  app.post('/api/applications/:id/prediction', requireAuth, async (req, res) => {
+    try {
+      const { id } = req.params;
+      const prediction = await applicationTracker.generateOutcomePrediction(id);
+      
+      res.json({
+        success: true,
+        prediction,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Generate outcome prediction error:', error);
+      res.status(500).json({ message: 'Failed to generate outcome prediction' });
+    }
+  });
+
+  // Get portfolio analytics
+  app.get('/api/applications/analytics', requireAuth, async (req, res) => {
+    try {
+      const userId = getUserId(req);
+      const analytics = await applicationTracker.generatePortfolioAnalytics(userId);
+      
+      res.json({
+        success: true,
+        analytics,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Get portfolio analytics error:', error);
+      res.status(500).json({ message: 'Failed to get portfolio analytics' });
+    }
+  });
+
+  // Get email integrations
+  app.get('/api/applications/email-integrations', requireAuth, async (req, res) => {
+    try {
+      const userId = getUserId(req);
+      const integrations = await storage.getEmailIntegrations(userId);
+      
+      res.json({
+        success: true,
+        integrations,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Get email integrations error:', error);
+      res.status(500).json({ message: 'Failed to get email integrations' });
+    }
+  });
+
+  // Setup email integration
+  app.post('/api/applications/email-integrations', requireAuth, async (req, res) => {
+    try {
+      const userId = getUserId(req);
+      const { provider, credentials } = req.body;
+      
+      const integration = await applicationTracker.setupEmailIntegration(userId, provider, credentials);
+      
+      res.json({
+        success: true,
+        integration,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Setup email integration error:', error);
+      res.status(500).json({ message: 'Failed to setup email integration' });
+    }
+  });
+
+  // Sync emails
+  app.post('/api/applications/email-sync', requireAuth, async (req, res) => {
+    try {
+      const userId = getUserId(req);
+      const { emailData } = req.body;
+      
+      await storage.syncEmailForApplications(userId, emailData);
+      
+      res.json({
+        success: true,
+        message: 'Email sync completed',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Email sync error:', error);
+      res.status(500).json({ message: 'Failed to sync emails' });
+    }
+  });
+
+  // Process email communication
+  app.post('/api/applications/:id/email-communication', requireAuth, async (req, res) => {
+    try {
+      const { id } = req.params;
+      const emailData = req.body;
+      
+      const communication = await applicationTracker.processEmailCommunication(id, emailData);
+      
+      res.json({
+        success: true,
+        communication,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Process email communication error:', error);
+      res.status(500).json({ message: 'Failed to process email communication' });
+    }
+  });
+
+  // Analyze email content
+  app.post('/api/applications/email-analysis', requireAuth, async (req, res) => {
+    try {
+      const { emailContent, context } = req.body;
+      
+      const analysis = await applicationTracker.analyzeEmailContent(emailContent, context);
+      
+      res.json({
+        success: true,
+        analysis,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Analyze email content error:', error);
+      res.status(500).json({ message: 'Failed to analyze email content' });
     }
   });
 

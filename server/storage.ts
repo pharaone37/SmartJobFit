@@ -21,6 +21,13 @@ import {
   interviewFeedback,
   companyInterviewInsights,
   userInterviewProgress,
+  applications,
+  applicationTimeline,
+  communications,
+  followUps,
+  outcomePredictions,
+  emailIntegrations,
+  applicationAnalytics,
   type User,
   type UpsertUser,
   type Job,
@@ -65,6 +72,20 @@ import {
   type InsertCompanyInterviewInsights,
   type UserInterviewProgress,
   type InsertUserInterviewProgress,
+  type Application,
+  type InsertApplication,
+  type ApplicationTimeline,
+  type InsertApplicationTimeline,
+  type Communication,
+  type InsertCommunication,
+  type FollowUp,
+  type InsertFollowUp,
+  type OutcomePrediction,
+  type InsertOutcomePrediction,
+  type EmailIntegration,
+  type InsertEmailIntegration,
+  type ApplicationAnalytics,
+  type InsertApplicationAnalytics,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, or, desc, asc, ilike, gte, lte, inArray, isNull } from "drizzle-orm";
@@ -236,6 +257,57 @@ export interface IStorage {
   getUserInterviewProgress(userId: string): Promise<UserInterviewProgress | undefined>;
   updateUserInterviewProgress(userId: string, updates: Partial<UserInterviewProgress>): Promise<UserInterviewProgress | undefined>;
   deleteUserInterviewProgress(userId: string): Promise<void>;
+
+  // Application tracking operations
+  createApplication(application: InsertApplication): Promise<Application>;
+  getApplication(id: string): Promise<Application | undefined>;
+  getApplications(userId: string, filters?: any): Promise<Application[]>;
+  updateApplication(id: string, updates: Partial<Application>): Promise<Application | undefined>;
+  deleteApplication(id: string): Promise<void>;
+  
+  // Application timeline operations
+  createApplicationTimeline(timeline: InsertApplicationTimeline): Promise<ApplicationTimeline>;
+  getApplicationTimeline(applicationId: string): Promise<ApplicationTimeline[]>;
+  deleteApplicationTimeline(id: string): Promise<void>;
+  
+  // Communication operations
+  createCommunication(communication: InsertCommunication): Promise<Communication>;
+  getCommunications(applicationId: string): Promise<Communication[]>;
+  updateCommunication(id: string, updates: Partial<Communication>): Promise<Communication | undefined>;
+  deleteCommunication(id: string): Promise<void>;
+  
+  // Follow-up operations
+  createFollowUp(followUp: InsertFollowUp): Promise<FollowUp>;
+  getFollowUps(applicationId: string): Promise<FollowUp[]>;
+  getUpcomingFollowUps(userId: string): Promise<FollowUp[]>;
+  updateFollowUp(id: string, updates: Partial<FollowUp>): Promise<FollowUp | undefined>;
+  deleteFollowUp(id: string): Promise<void>;
+  
+  // Outcome prediction operations
+  createOutcomePrediction(prediction: InsertOutcomePrediction): Promise<OutcomePrediction>;
+  getOutcomePrediction(applicationId: string): Promise<OutcomePrediction | undefined>;
+  updateOutcomePrediction(id: string, updates: Partial<OutcomePrediction>): Promise<OutcomePrediction | undefined>;
+  deleteOutcomePrediction(id: string): Promise<void>;
+  
+  // Email integration operations
+  createEmailIntegration(integration: InsertEmailIntegration): Promise<EmailIntegration>;
+  getEmailIntegration(userId: string, provider: string): Promise<EmailIntegration | undefined>;
+  getEmailIntegrations(userId: string): Promise<EmailIntegration[]>;
+  updateEmailIntegration(id: string, updates: Partial<EmailIntegration>): Promise<EmailIntegration | undefined>;
+  deleteEmailIntegration(id: string): Promise<void>;
+  
+  // Application analytics operations
+  createApplicationAnalytics(analytics: InsertApplicationAnalytics): Promise<ApplicationAnalytics>;
+  getApplicationAnalytics(userId: string, periodType: string): Promise<ApplicationAnalytics | undefined>;
+  getApplicationAnalyticsHistory(userId: string): Promise<ApplicationAnalytics[]>;
+  updateApplicationAnalytics(id: string, updates: Partial<ApplicationAnalytics>): Promise<ApplicationAnalytics | undefined>;
+  deleteApplicationAnalytics(id: string): Promise<void>;
+  
+  // Application tracking utility operations
+  getApplicationsWithTimeline(userId: string): Promise<any[]>;
+  getApplicationsWithCommunications(userId: string): Promise<any[]>;
+  getApplicationPortfolioStats(userId: string): Promise<any>;
+  syncEmailForApplications(userId: string, emailData: any[]): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -1002,6 +1074,343 @@ export class DatabaseStorage implements IStorage {
 
   async deleteUserInterviewProgress(userId: string): Promise<void> {
     await db.delete(userInterviewProgress).where(eq(userInterviewProgress.userId, userId));
+  }
+
+  // Application tracking operations
+  async createApplication(application: InsertApplication): Promise<Application> {
+    const [created] = await db.insert(applications).values(application).returning();
+    return created;
+  }
+
+  async getApplication(id: string): Promise<Application | undefined> {
+    const [application] = await db.select().from(applications).where(eq(applications.id, id));
+    return application;
+  }
+
+  async getApplications(userId: string, filters?: any): Promise<Application[]> {
+    let query = db.select().from(applications).where(eq(applications.userId, userId));
+    
+    if (filters) {
+      if (filters.status) {
+        query = query.where(eq(applications.status, filters.status));
+      }
+      if (filters.source) {
+        query = query.where(eq(applications.source, filters.source));
+      }
+      if (filters.isArchived !== undefined) {
+        query = query.where(eq(applications.isArchived, filters.isArchived));
+      }
+    }
+    
+    return await query.orderBy(desc(applications.createdAt));
+  }
+
+  async updateApplication(id: string, updates: Partial<Application>): Promise<Application | undefined> {
+    const [updated] = await db
+      .update(applications)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(applications.id, id))
+      .returning();
+    return updated;
+  }
+
+  async deleteApplication(id: string): Promise<void> {
+    await db.delete(applications).where(eq(applications.id, id));
+  }
+
+  // Application timeline operations
+  async createApplicationTimeline(timeline: InsertApplicationTimeline): Promise<ApplicationTimeline> {
+    const [created] = await db.insert(applicationTimeline).values(timeline).returning();
+    return created;
+  }
+
+  async getApplicationTimeline(applicationId: string): Promise<ApplicationTimeline[]> {
+    return await db.select().from(applicationTimeline)
+      .where(eq(applicationTimeline.applicationId, applicationId))
+      .orderBy(desc(applicationTimeline.eventDate));
+  }
+
+  async deleteApplicationTimeline(id: string): Promise<void> {
+    await db.delete(applicationTimeline).where(eq(applicationTimeline.id, id));
+  }
+
+  // Communication operations
+  async createCommunication(communication: InsertCommunication): Promise<Communication> {
+    const [created] = await db.insert(communications).values(communication).returning();
+    return created;
+  }
+
+  async getCommunications(applicationId: string): Promise<Communication[]> {
+    return await db.select().from(communications)
+      .where(eq(communications.applicationId, applicationId))
+      .orderBy(desc(communications.timestamp));
+  }
+
+  async updateCommunication(id: string, updates: Partial<Communication>): Promise<Communication | undefined> {
+    const [updated] = await db
+      .update(communications)
+      .set(updates)
+      .where(eq(communications.id, id))
+      .returning();
+    return updated;
+  }
+
+  async deleteCommunication(id: string): Promise<void> {
+    await db.delete(communications).where(eq(communications.id, id));
+  }
+
+  // Follow-up operations
+  async createFollowUp(followUp: InsertFollowUp): Promise<FollowUp> {
+    const [created] = await db.insert(followUps).values(followUp).returning();
+    return created;
+  }
+
+  async getFollowUps(applicationId: string): Promise<FollowUp[]> {
+    return await db.select().from(followUps)
+      .where(eq(followUps.applicationId, applicationId))
+      .orderBy(desc(followUps.scheduledDate));
+  }
+
+  async getUpcomingFollowUps(userId: string): Promise<FollowUp[]> {
+    return await db.select({
+      id: followUps.id,
+      applicationId: followUps.applicationId,
+      followUpType: followUps.followUpType,
+      scheduledDate: followUps.scheduledDate,
+      messageTemplate: followUps.messageTemplate,
+      sentStatus: followUps.sentStatus,
+      positionTitle: applications.positionTitle,
+      companyName: applications.companyName,
+    })
+    .from(followUps)
+    .leftJoin(applications, eq(followUps.applicationId, applications.id))
+    .where(and(
+      eq(applications.userId, userId),
+      eq(followUps.sentStatus, 'pending'),
+      gte(followUps.scheduledDate, new Date())
+    ))
+    .orderBy(asc(followUps.scheduledDate));
+  }
+
+  async updateFollowUp(id: string, updates: Partial<FollowUp>): Promise<FollowUp | undefined> {
+    const [updated] = await db
+      .update(followUps)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(followUps.id, id))
+      .returning();
+    return updated;
+  }
+
+  async deleteFollowUp(id: string): Promise<void> {
+    await db.delete(followUps).where(eq(followUps.id, id));
+  }
+
+  // Outcome prediction operations
+  async createOutcomePrediction(prediction: InsertOutcomePrediction): Promise<OutcomePrediction> {
+    const [created] = await db.insert(outcomePredictions).values(prediction).returning();
+    return created;
+  }
+
+  async getOutcomePrediction(applicationId: string): Promise<OutcomePrediction | undefined> {
+    const [prediction] = await db.select().from(outcomePredictions)
+      .where(eq(outcomePredictions.applicationId, applicationId))
+      .orderBy(desc(outcomePredictions.lastUpdated));
+    return prediction;
+  }
+
+  async updateOutcomePrediction(id: string, updates: Partial<OutcomePrediction>): Promise<OutcomePrediction | undefined> {
+    const [updated] = await db
+      .update(outcomePredictions)
+      .set({ ...updates, lastUpdated: new Date() })
+      .where(eq(outcomePredictions.id, id))
+      .returning();
+    return updated;
+  }
+
+  async deleteOutcomePrediction(id: string): Promise<void> {
+    await db.delete(outcomePredictions).where(eq(outcomePredictions.id, id));
+  }
+
+  // Email integration operations
+  async createEmailIntegration(integration: InsertEmailIntegration): Promise<EmailIntegration> {
+    const [created] = await db.insert(emailIntegrations).values(integration).returning();
+    return created;
+  }
+
+  async getEmailIntegration(userId: string, provider: string): Promise<EmailIntegration | undefined> {
+    const [integration] = await db.select().from(emailIntegrations)
+      .where(and(
+        eq(emailIntegrations.userId, userId),
+        eq(emailIntegrations.provider, provider)
+      ));
+    return integration;
+  }
+
+  async getEmailIntegrations(userId: string): Promise<EmailIntegration[]> {
+    return await db.select().from(emailIntegrations)
+      .where(eq(emailIntegrations.userId, userId))
+      .orderBy(desc(emailIntegrations.createdAt));
+  }
+
+  async updateEmailIntegration(id: string, updates: Partial<EmailIntegration>): Promise<EmailIntegration | undefined> {
+    const [updated] = await db
+      .update(emailIntegrations)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(emailIntegrations.id, id))
+      .returning();
+    return updated;
+  }
+
+  async deleteEmailIntegration(id: string): Promise<void> {
+    await db.delete(emailIntegrations).where(eq(emailIntegrations.id, id));
+  }
+
+  // Application analytics operations
+  async createApplicationAnalytics(analytics: InsertApplicationAnalytics): Promise<ApplicationAnalytics> {
+    const [created] = await db.insert(applicationAnalytics).values(analytics).returning();
+    return created;
+  }
+
+  async getApplicationAnalytics(userId: string, periodType: string): Promise<ApplicationAnalytics | undefined> {
+    const [analytics] = await db.select().from(applicationAnalytics)
+      .where(and(
+        eq(applicationAnalytics.userId, userId),
+        eq(applicationAnalytics.periodType, periodType)
+      ))
+      .orderBy(desc(applicationAnalytics.createdAt));
+    return analytics;
+  }
+
+  async getApplicationAnalyticsHistory(userId: string): Promise<ApplicationAnalytics[]> {
+    return await db.select().from(applicationAnalytics)
+      .where(eq(applicationAnalytics.userId, userId))
+      .orderBy(desc(applicationAnalytics.createdAt));
+  }
+
+  async updateApplicationAnalytics(id: string, updates: Partial<ApplicationAnalytics>): Promise<ApplicationAnalytics | undefined> {
+    const [updated] = await db
+      .update(applicationAnalytics)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(applicationAnalytics.id, id))
+      .returning();
+    return updated;
+  }
+
+  async deleteApplicationAnalytics(id: string): Promise<void> {
+    await db.delete(applicationAnalytics).where(eq(applicationAnalytics.id, id));
+  }
+
+  // Application tracking utility operations
+  async getApplicationsWithTimeline(userId: string): Promise<any[]> {
+    const userApplications = await db.select().from(applications)
+      .where(eq(applications.userId, userId))
+      .orderBy(desc(applications.createdAt));
+
+    const applicationsWithTimeline = await Promise.all(
+      userApplications.map(async (app) => {
+        const timeline = await this.getApplicationTimeline(app.id);
+        return {
+          ...app,
+          timeline
+        };
+      })
+    );
+
+    return applicationsWithTimeline;
+  }
+
+  async getApplicationsWithCommunications(userId: string): Promise<any[]> {
+    const userApplications = await db.select().from(applications)
+      .where(eq(applications.userId, userId))
+      .orderBy(desc(applications.createdAt));
+
+    const applicationsWithCommunications = await Promise.all(
+      userApplications.map(async (app) => {
+        const communications = await this.getCommunications(app.id);
+        return {
+          ...app,
+          communications
+        };
+      })
+    );
+
+    return applicationsWithCommunications;
+  }
+
+  async getApplicationPortfolioStats(userId: string): Promise<any> {
+    const userApplications = await this.getApplications(userId);
+    
+    const stats = {
+      totalApplications: userApplications.length,
+      byStatus: {} as Record<string, number>,
+      bySource: {} as Record<string, number>,
+      responseRate: 0,
+      interviewRate: 0,
+      offerRate: 0,
+      averageResponseTime: 0,
+      recentActivity: [] as any[],
+    };
+
+    // Calculate status and source distribution
+    userApplications.forEach(app => {
+      stats.byStatus[app.status] = (stats.byStatus[app.status] || 0) + 1;
+      stats.bySource[app.source] = (stats.bySource[app.source] || 0) + 1;
+    });
+
+    // Calculate rates
+    const responses = userApplications.filter(app => 
+      ['screening', 'interview', 'offer', 'rejected'].includes(app.status)
+    ).length;
+    const interviews = userApplications.filter(app => 
+      ['interview', 'offer'].includes(app.status)
+    ).length;
+    const offers = userApplications.filter(app => app.status === 'offer').length;
+
+    stats.responseRate = userApplications.length > 0 ? (responses / userApplications.length) * 100 : 0;
+    stats.interviewRate = userApplications.length > 0 ? (interviews / userApplications.length) * 100 : 0;
+    stats.offerRate = userApplications.length > 0 ? (offers / userApplications.length) * 100 : 0;
+
+    // Get recent activity (last 10 timeline events)
+    const recentApplications = userApplications.slice(0, 10);
+    for (const app of recentApplications) {
+      const timeline = await this.getApplicationTimeline(app.id);
+      stats.recentActivity.push(...timeline.slice(0, 2).map(event => ({
+        ...event,
+        applicationId: app.id,
+        positionTitle: app.positionTitle,
+        companyName: app.companyName
+      })));
+    }
+
+    stats.recentActivity.sort((a, b) => 
+      new Date(b.eventDate).getTime() - new Date(a.eventDate).getTime()
+    );
+    stats.recentActivity = stats.recentActivity.slice(0, 10);
+
+    return stats;
+  }
+
+  async syncEmailForApplications(userId: string, emailData: any[]): Promise<void> {
+    // This would integrate with email APIs to sync application-related emails
+    // For now, we'll create timeline entries for the email sync
+    for (const email of emailData) {
+      if (email.applicationId) {
+        await this.createApplicationTimeline({
+          applicationId: email.applicationId,
+          eventType: email.type === 'sent' ? 'email_sent' : 'email_received',
+          eventDate: new Date(email.timestamp),
+          description: email.subject || 'Email communication',
+          source: 'email',
+          confidenceScore: email.confidenceScore || 90,
+          metadata: {
+            emailId: email.id,
+            subject: email.subject,
+            sender: email.sender,
+            recipient: email.recipient
+          }
+        });
+      }
+    }
   }
 }
 
