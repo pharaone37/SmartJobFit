@@ -55,7 +55,13 @@ import {
   insertMoodBoardSchema,
   insertSkillTrackingSchema,
   insertInterviewSessionSchema,
-  insertNetworkConnectionSchema
+  insertNetworkConnectionSchema,
+  insertInterviewCoachingSessionSchema,
+  insertInterviewQuestionSchema,
+  insertInterviewResponseSchema,
+  insertInterviewFeedbackSchema,
+  insertCompanyInterviewInsightsSchema,
+  insertUserInterviewProgressSchema
 } from "@shared/schema";
 import { z } from "zod";
 
@@ -4633,6 +4639,291 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Resume tracking error:', error);
       res.status(500).json({ message: 'Failed to track resume event' });
+    }
+  });
+
+  // Interview Coaching System Routes
+  // Create interview coaching session
+  app.post('/api/interview-coaching/sessions', requireAuth, async (req, res) => {
+    try {
+      const userId = getUserId(req);
+      const validatedSession = insertInterviewCoachingSessionSchema.parse({
+        ...req.body,
+        userId
+      });
+      
+      const session = await storage.createInterviewCoachingSession(validatedSession);
+      
+      res.json({
+        success: true,
+        session,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Create interview coaching session error:', error);
+      res.status(500).json({ message: 'Failed to create interview coaching session' });
+    }
+  });
+
+  // Get interview coaching sessions
+  app.get('/api/interview-coaching/sessions', requireAuth, async (req, res) => {
+    try {
+      const userId = getUserId(req);
+      const sessions = await storage.getInterviewCoachingSessions(userId);
+      
+      res.json({
+        success: true,
+        sessions,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Get interview coaching sessions error:', error);
+      res.status(500).json({ message: 'Failed to get interview coaching sessions' });
+    }
+  });
+
+  // Get single interview coaching session
+  app.get('/api/interview-coaching/sessions/:sessionId', requireAuth, async (req, res) => {
+    try {
+      const { sessionId } = req.params;
+      const session = await storage.getInterviewCoachingSession(sessionId);
+      
+      if (!session) {
+        return res.status(404).json({ message: 'Session not found' });
+      }
+      
+      res.json({
+        success: true,
+        session,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Get interview coaching session error:', error);
+      res.status(500).json({ message: 'Failed to get interview coaching session' });
+    }
+  });
+
+  // Update interview coaching session
+  app.put('/api/interview-coaching/sessions/:sessionId', requireAuth, async (req, res) => {
+    try {
+      const { sessionId } = req.params;
+      const updates = req.body;
+      
+      const session = await storage.updateInterviewCoachingSession(sessionId, updates);
+      
+      if (!session) {
+        return res.status(404).json({ message: 'Session not found' });
+      }
+      
+      res.json({
+        success: true,
+        session,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Update interview coaching session error:', error);
+      res.status(500).json({ message: 'Failed to update interview coaching session' });
+    }
+  });
+
+  // Delete interview coaching session
+  app.delete('/api/interview-coaching/sessions/:sessionId', requireAuth, async (req, res) => {
+    try {
+      const { sessionId } = req.params;
+      await storage.deleteInterviewCoachingSession(sessionId);
+      
+      res.json({
+        success: true,
+        message: 'Session deleted successfully',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Delete interview coaching session error:', error);
+      res.status(500).json({ message: 'Failed to delete interview coaching session' });
+    }
+  });
+
+  // Create interview question
+  app.post('/api/interview-coaching/questions', requireAuth, async (req, res) => {
+    try {
+      const validatedQuestion = insertInterviewQuestionSchema.parse(req.body);
+      
+      const question = await storage.createInterviewQuestion(validatedQuestion);
+      
+      res.json({
+        success: true,
+        question,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Create interview question error:', error);
+      res.status(500).json({ message: 'Failed to create interview question' });
+    }
+  });
+
+  // Get interview questions
+  app.get('/api/interview-coaching/questions', requireAuth, async (req, res) => {
+    try {
+      const { category, difficulty, industry, companySpecific } = req.query;
+      
+      const filters = {
+        ...(category && { category: category as string }),
+        ...(difficulty && { difficulty: difficulty as string }),
+        ...(industry && { industry: industry as string }),
+        ...(companySpecific !== undefined && { companySpecific: companySpecific === 'true' })
+      };
+      
+      const questions = await storage.getInterviewQuestions(filters);
+      
+      res.json({
+        success: true,
+        questions,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Get interview questions error:', error);
+      res.status(500).json({ message: 'Failed to get interview questions' });
+    }
+  });
+
+  // Create interview response
+  app.post('/api/interview-coaching/responses', requireAuth, async (req, res) => {
+    try {
+      const validatedResponse = insertInterviewResponseSchema.parse(req.body);
+      
+      const response = await storage.createInterviewResponse(validatedResponse);
+      
+      res.json({
+        success: true,
+        response,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Create interview response error:', error);
+      res.status(500).json({ message: 'Failed to create interview response' });
+    }
+  });
+
+  // Get interview responses for a session
+  app.get('/api/interview-coaching/responses/:sessionId', requireAuth, async (req, res) => {
+    try {
+      const { sessionId } = req.params;
+      const responses = await storage.getInterviewResponses(sessionId);
+      
+      res.json({
+        success: true,
+        responses,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Get interview responses error:', error);
+      res.status(500).json({ message: 'Failed to get interview responses' });
+    }
+  });
+
+  // Create interview feedback
+  app.post('/api/interview-coaching/feedback', requireAuth, async (req, res) => {
+    try {
+      const validatedFeedback = insertInterviewFeedbackSchema.parse(req.body);
+      
+      const feedback = await storage.createInterviewFeedback(validatedFeedback);
+      
+      res.json({
+        success: true,
+        feedback,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Create interview feedback error:', error);
+      res.status(500).json({ message: 'Failed to create interview feedback' });
+    }
+  });
+
+  // Get interview feedback for a response
+  app.get('/api/interview-coaching/feedback/:responseId', requireAuth, async (req, res) => {
+    try {
+      const { responseId } = req.params;
+      const feedback = await storage.getInterviewFeedback(responseId);
+      
+      res.json({
+        success: true,
+        feedback,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Get interview feedback error:', error);
+      res.status(500).json({ message: 'Failed to get interview feedback' });
+    }
+  });
+
+  // Create company interview insights
+  app.post('/api/interview-coaching/company-insights', requireAuth, async (req, res) => {
+    try {
+      const validatedInsights = insertCompanyInterviewInsightsSchema.parse(req.body);
+      
+      const insights = await storage.createCompanyInterviewInsights(validatedInsights);
+      
+      res.json({
+        success: true,
+        insights,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Create company insights error:', error);
+      res.status(500).json({ message: 'Failed to create company insights' });
+    }
+  });
+
+  // Get company interview insights
+  app.get('/api/interview-coaching/company-insights/:companyId', requireAuth, async (req, res) => {
+    try {
+      const { companyId } = req.params;
+      const insights = await storage.getCompanyInterviewInsights(companyId);
+      
+      res.json({
+        success: true,
+        insights,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Get company insights error:', error);
+      res.status(500).json({ message: 'Failed to get company insights' });
+    }
+  });
+
+  // Get user interview progress
+  app.get('/api/interview-coaching/progress', requireAuth, async (req, res) => {
+    try {
+      const userId = getUserId(req);
+      const progress = await storage.getUserInterviewProgress(userId);
+      
+      res.json({
+        success: true,
+        progress,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Get user interview progress error:', error);
+      res.status(500).json({ message: 'Failed to get user interview progress' });
+    }
+  });
+
+  // Update user interview progress
+  app.put('/api/interview-coaching/progress', requireAuth, async (req, res) => {
+    try {
+      const userId = getUserId(req);
+      const updates = req.body;
+      
+      const progress = await storage.updateUserInterviewProgress(userId, updates);
+      
+      res.json({
+        success: true,
+        progress,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Update user interview progress error:', error);
+      res.status(500).json({ message: 'Failed to update user interview progress' });
     }
   });
 

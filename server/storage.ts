@@ -15,6 +15,12 @@ import {
   skillTracking,
   interviewSessions,
   networkConnections,
+  interviewCoachingSessions,
+  interviewQuestions,
+  interviewResponses,
+  interviewFeedback,
+  companyInterviewInsights,
+  userInterviewProgress,
   type User,
   type UpsertUser,
   type Job,
@@ -47,6 +53,18 @@ import {
   type InsertInterviewSession,
   type NetworkConnection,
   type InsertNetworkConnection,
+  type InterviewCoachingSession,
+  type InsertInterviewCoachingSession,
+  type InterviewQuestion,
+  type InsertInterviewQuestion,
+  type InterviewResponse,
+  type InsertInterviewResponse,
+  type InterviewFeedback,
+  type InsertInterviewFeedback,
+  type CompanyInterviewInsights,
+  type InsertCompanyInterviewInsights,
+  type UserInterviewProgress,
+  type InsertUserInterviewProgress,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, or, desc, asc, ilike, gte, lte, inArray, isNull } from "drizzle-orm";
@@ -179,6 +197,45 @@ export interface IStorage {
   storeOptimizationResults(resumeId: string, suggestions: any[]): Promise<void>;
   getResumeAnalytics(resumeId: string): Promise<any>;
   trackResumeEvent(resumeId: string, event: string, data: any): Promise<void>;
+  
+  // Interview coaching operations
+  createInterviewCoachingSession(session: InsertInterviewCoachingSession): Promise<InterviewCoachingSession>;
+  getInterviewCoachingSession(id: string): Promise<InterviewCoachingSession | undefined>;
+  getInterviewCoachingSessions(userId: string): Promise<InterviewCoachingSession[]>;
+  updateInterviewCoachingSession(id: string, updates: Partial<InterviewCoachingSession>): Promise<InterviewCoachingSession | undefined>;
+  deleteInterviewCoachingSession(id: string): Promise<void>;
+  
+  // Interview question operations
+  createInterviewQuestion(question: InsertInterviewQuestion): Promise<InterviewQuestion>;
+  getInterviewQuestion(id: string): Promise<InterviewQuestion | undefined>;
+  getInterviewQuestions(filters?: Partial<InterviewQuestion>): Promise<InterviewQuestion[]>;
+  updateInterviewQuestion(id: string, updates: Partial<InterviewQuestion>): Promise<InterviewQuestion | undefined>;
+  deleteInterviewQuestion(id: string): Promise<void>;
+  
+  // Interview response operations
+  createInterviewResponse(response: InsertInterviewResponse): Promise<InterviewResponse>;
+  getInterviewResponse(id: string): Promise<InterviewResponse | undefined>;
+  getInterviewResponses(sessionId: string): Promise<InterviewResponse[]>;
+  updateInterviewResponse(id: string, updates: Partial<InterviewResponse>): Promise<InterviewResponse | undefined>;
+  deleteInterviewResponse(id: string): Promise<void>;
+  
+  // Interview feedback operations
+  createInterviewFeedback(feedback: InsertInterviewFeedback): Promise<InterviewFeedback>;
+  getInterviewFeedback(responseId: string): Promise<InterviewFeedback | undefined>;
+  updateInterviewFeedback(id: string, updates: Partial<InterviewFeedback>): Promise<InterviewFeedback | undefined>;
+  deleteInterviewFeedback(id: string): Promise<void>;
+  
+  // Company interview insights operations
+  createCompanyInterviewInsights(insights: InsertCompanyInterviewInsights): Promise<CompanyInterviewInsights>;
+  getCompanyInterviewInsights(companyId: string): Promise<CompanyInterviewInsights | undefined>;
+  updateCompanyInterviewInsights(id: string, updates: Partial<CompanyInterviewInsights>): Promise<CompanyInterviewInsights | undefined>;
+  deleteCompanyInterviewInsights(id: string): Promise<void>;
+  
+  // User interview progress operations
+  createUserInterviewProgress(progress: InsertUserInterviewProgress): Promise<UserInterviewProgress>;
+  getUserInterviewProgress(userId: string): Promise<UserInterviewProgress | undefined>;
+  updateUserInterviewProgress(userId: string, updates: Partial<UserInterviewProgress>): Promise<UserInterviewProgress | undefined>;
+  deleteUserInterviewProgress(userId: string): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -774,6 +831,177 @@ export class DatabaseStorage implements IStorage {
         updatedAt: new Date()
       })
       .where(eq(resumes.id, resumeId));
+  }
+
+  // Interview coaching operations
+  async createInterviewCoachingSession(session: InsertInterviewCoachingSession): Promise<InterviewCoachingSession> {
+    const [created] = await db.insert(interviewCoachingSessions).values(session).returning();
+    return created;
+  }
+
+  async getInterviewCoachingSession(id: string): Promise<InterviewCoachingSession | undefined> {
+    const [session] = await db.select().from(interviewCoachingSessions).where(eq(interviewCoachingSessions.id, id));
+    return session;
+  }
+
+  async getInterviewCoachingSessions(userId: string): Promise<InterviewCoachingSession[]> {
+    return await db.select().from(interviewCoachingSessions).where(eq(interviewCoachingSessions.userId, userId)).orderBy(desc(interviewCoachingSessions.createdAt));
+  }
+
+  async updateInterviewCoachingSession(id: string, updates: Partial<InterviewCoachingSession>): Promise<InterviewCoachingSession | undefined> {
+    const [updated] = await db
+      .update(interviewCoachingSessions)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(interviewCoachingSessions.id, id))
+      .returning();
+    return updated;
+  }
+
+  async deleteInterviewCoachingSession(id: string): Promise<void> {
+    await db.delete(interviewCoachingSessions).where(eq(interviewCoachingSessions.id, id));
+  }
+
+  // Interview question operations
+  async createInterviewQuestion(question: InsertInterviewQuestion): Promise<InterviewQuestion> {
+    const [created] = await db.insert(interviewQuestions).values(question).returning();
+    return created;
+  }
+
+  async getInterviewQuestion(id: string): Promise<InterviewQuestion | undefined> {
+    const [question] = await db.select().from(interviewQuestions).where(eq(interviewQuestions.id, id));
+    return question;
+  }
+
+  async getInterviewQuestions(filters?: Partial<InterviewQuestion>): Promise<InterviewQuestion[]> {
+    let query = db.select().from(interviewQuestions);
+    
+    if (filters?.category) {
+      query = query.where(eq(interviewQuestions.category, filters.category));
+    }
+    if (filters?.difficulty) {
+      query = query.where(eq(interviewQuestions.difficulty, filters.difficulty));
+    }
+    if (filters?.industry) {
+      query = query.where(eq(interviewQuestions.industry, filters.industry));
+    }
+    if (filters?.companySpecific !== undefined) {
+      query = query.where(eq(interviewQuestions.companySpecific, filters.companySpecific));
+    }
+    
+    return await query.orderBy(desc(interviewQuestions.createdAt));
+  }
+
+  async updateInterviewQuestion(id: string, updates: Partial<InterviewQuestion>): Promise<InterviewQuestion | undefined> {
+    const [updated] = await db
+      .update(interviewQuestions)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(interviewQuestions.id, id))
+      .returning();
+    return updated;
+  }
+
+  async deleteInterviewQuestion(id: string): Promise<void> {
+    await db.delete(interviewQuestions).where(eq(interviewQuestions.id, id));
+  }
+
+  // Interview response operations
+  async createInterviewResponse(response: InsertInterviewResponse): Promise<InterviewResponse> {
+    const [created] = await db.insert(interviewResponses).values(response).returning();
+    return created;
+  }
+
+  async getInterviewResponse(id: string): Promise<InterviewResponse | undefined> {
+    const [response] = await db.select().from(interviewResponses).where(eq(interviewResponses.id, id));
+    return response;
+  }
+
+  async getInterviewResponses(sessionId: string): Promise<InterviewResponse[]> {
+    return await db.select().from(interviewResponses).where(eq(interviewResponses.sessionId, sessionId)).orderBy(desc(interviewResponses.createdAt));
+  }
+
+  async updateInterviewResponse(id: string, updates: Partial<InterviewResponse>): Promise<InterviewResponse | undefined> {
+    const [updated] = await db
+      .update(interviewResponses)
+      .set(updates)
+      .where(eq(interviewResponses.id, id))
+      .returning();
+    return updated;
+  }
+
+  async deleteInterviewResponse(id: string): Promise<void> {
+    await db.delete(interviewResponses).where(eq(interviewResponses.id, id));
+  }
+
+  // Interview feedback operations
+  async createInterviewFeedback(feedback: InsertInterviewFeedback): Promise<InterviewFeedback> {
+    const [created] = await db.insert(interviewFeedback).values(feedback).returning();
+    return created;
+  }
+
+  async getInterviewFeedback(responseId: string): Promise<InterviewFeedback | undefined> {
+    const [feedback] = await db.select().from(interviewFeedback).where(eq(interviewFeedback.responseId, responseId));
+    return feedback;
+  }
+
+  async updateInterviewFeedback(id: string, updates: Partial<InterviewFeedback>): Promise<InterviewFeedback | undefined> {
+    const [updated] = await db
+      .update(interviewFeedback)
+      .set(updates)
+      .where(eq(interviewFeedback.id, id))
+      .returning();
+    return updated;
+  }
+
+  async deleteInterviewFeedback(id: string): Promise<void> {
+    await db.delete(interviewFeedback).where(eq(interviewFeedback.id, id));
+  }
+
+  // Company interview insights operations
+  async createCompanyInterviewInsights(insights: InsertCompanyInterviewInsights): Promise<CompanyInterviewInsights> {
+    const [created] = await db.insert(companyInterviewInsights).values(insights).returning();
+    return created;
+  }
+
+  async getCompanyInterviewInsights(companyId: string): Promise<CompanyInterviewInsights | undefined> {
+    const [insights] = await db.select().from(companyInterviewInsights).where(eq(companyInterviewInsights.companyId, companyId));
+    return insights;
+  }
+
+  async updateCompanyInterviewInsights(id: string, updates: Partial<CompanyInterviewInsights>): Promise<CompanyInterviewInsights | undefined> {
+    const [updated] = await db
+      .update(companyInterviewInsights)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(companyInterviewInsights.id, id))
+      .returning();
+    return updated;
+  }
+
+  async deleteCompanyInterviewInsights(id: string): Promise<void> {
+    await db.delete(companyInterviewInsights).where(eq(companyInterviewInsights.id, id));
+  }
+
+  // User interview progress operations
+  async createUserInterviewProgress(progress: InsertUserInterviewProgress): Promise<UserInterviewProgress> {
+    const [created] = await db.insert(userInterviewProgress).values(progress).returning();
+    return created;
+  }
+
+  async getUserInterviewProgress(userId: string): Promise<UserInterviewProgress | undefined> {
+    const [progress] = await db.select().from(userInterviewProgress).where(eq(userInterviewProgress.userId, userId));
+    return progress;
+  }
+
+  async updateUserInterviewProgress(userId: string, updates: Partial<UserInterviewProgress>): Promise<UserInterviewProgress | undefined> {
+    const [updated] = await db
+      .update(userInterviewProgress)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(userInterviewProgress.userId, userId))
+      .returning();
+    return updated;
+  }
+
+  async deleteUserInterviewProgress(userId: string): Promise<void> {
+    await db.delete(userInterviewProgress).where(eq(userInterviewProgress.userId, userId));
   }
 }
 

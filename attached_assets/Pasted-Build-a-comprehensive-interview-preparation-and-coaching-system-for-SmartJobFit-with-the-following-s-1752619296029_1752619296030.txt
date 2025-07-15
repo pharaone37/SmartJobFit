@@ -1,0 +1,108 @@
+Build a comprehensive interview preparation and coaching system for SmartJobFit with the following specifications:
+
+CORE FUNCTIONALITY:
+1. AI interview coach with emotional intelligence and real-time feedback
+2. Comprehensive question database with 50,000+ interview questions
+3. Multi-language support (English, Spanish, French, German, Portuguese, Italian)
+4. Company-specific interview preparation with insider insights
+5. Real-time performance analytics and improvement tracking
+
+REQUIRED APIs & TOOLS:
+- Primary AI: Google Gemini 2.5 Flash for intelligent coaching and feedback
+- Speech Analysis: Yoodli AI API for advanced speech coaching (premium integration)
+- Video Processing: Agora.io SDK for real-time video interview simulation
+- Question Database: Custom integration with Glassdoor API for company-specific questions
+- Language Processing: Google Cloud Translation API for multi-language support
+- Sentiment Analysis: IBM Watson Tone Analyzer for emotional intelligence feedback
+- Company Data: Clearbit API for company culture and interview insights
+
+TECHNICAL IMPLEMENTATION:
+1. Create Flask backend with endpoints:
+   - POST /api/interview/start-session (begin practice session)
+   - POST /api/interview/submit-answer (process and analyze responses)
+   - GET /api/interview/questions (fetch relevant questions)
+   - POST /api/interview/feedback (AI-powered feedback generation)
+   - GET /api/interview/analytics (performance tracking)
+   - POST /api/interview/company-prep (company-specific preparation)
+   - GET /api/interview/progress (improvement tracking)
+
+2. Database Schema:
+   - interview_sessions table: id, user_id, session_type, company_id, duration, overall_score, created_date
+   - questions table: id, question_text, category, difficulty, industry, company_specific
+   - responses table: session_id, question_id, response_text, response_audio, confidence_score, clarity_score
+   - feedback table: response_id, feedback_text, improvement_suggestions, strengths, areas_to_improve
+   - company_insights table: company_id, interview_process, common_questions, culture_notes, success_tips
+
+3. AI-Powered Coaching Features:
+   - Implement Gemini API for intelligent question generation and feedback
+   - Integrate Yoodli AI for advanced speech analysis and coaching
+   - Create emotional intelligence assessment using tone analysis
+   - Build personalized coaching plans based on user weaknesses
+   - Develop real-time feedback system with actionable suggestions
+
+4. Frontend Components:
+   - Interactive video interview simulator with webcam integration
+   - Real-time feedback display during practice sessions
+   - Question bank browser with filtering and search
+   - Performance analytics dashboard with progress tracking
+   - Company-specific preparation modules
+   - Multi-language interface with cultural adaptation
+   - Mobile-responsive design for practice on any device
+
+5. Advanced Features:
+   - AI-powered mock interviewer with different personality types
+   - Group interview and panel interview simulations
+   - Technical interview practice with coding challenges
+   - Behavioral interview coaching with STAR method training
+   - Salary negotiation practice with market data integration
+
+SPECIFIC IMPLEMENTATION STEPS:
+1. Set up Flask app with WebRTC support for real-time video/audio
+2. Integrate Google Gemini API for intelligent coaching and question generation
+3. Implement Yoodli AI API for advanced speech analysis and feedback
+4. Create comprehensive question database with categorization and tagging
+5. Build real-time feedback system with multiple analysis dimensions
+6. Develop company-specific preparation modules with insider insights
+7. Implement multi-language support with cultural adaptation
+8. Create performance analytics with detailed progress tracking
+9. Add mobile-responsive interface for practice flexibility
+10. Set up automated testing and quality assurance for coaching accuracy
+
+PERFORMANCE REQUIREMENTS:
+- Interview success rate: 78% of users receive job offers after coaching
+- Feedback accuracy: 92% correlation between practice scores and actual outcomes
+- Response time: Real-time feedback within 3 seconds of answer completion
+- Multi-language support: Native-level coaching in 6 languages
+- Question relevance: 97% of questions rated as relevant for target roles
+
+INTEGRATION POINTS:
+- Import job requirements from search engine for targeted question selection
+- Export interview performance data to application tracking system
+- Share company insights with company intelligence feature
+- Coordinate with salary intelligence for negotiation coaching
+- Provide skill assessment data to career coaching feature
+
+DATA COORDINATION:
+- Maintain shared user profile with interview performance history
+- Track coaching effectiveness metrics for platform optimization
+- Export interview readiness scores to dashboard
+- Share company-specific insights across features
+- Coordinate with resume optimization for interview preparation alignment
+
+SPECIAL FEATURES:
+1. Cultural Adaptation Engine:
+   - Adjust coaching style based on cultural background
+   - Provide region-specific interview etiquette guidance
+   - Adapt communication style recommendations for different cultures
+
+2. Emotional Intelligence Coaching:
+   - Analyze vocal patterns and emotional states during practice
+   - Provide stress management and confidence building exercises
+   - Offer personalized anxiety reduction techniques
+
+3. Company Intelligence Integration:
+   - Research interviewer backgrounds and communication styles
+   - Provide company culture insights and value alignment coaching
+   - Offer specific preparation strategies for different company types
+
+Create a production-ready system with comprehensive privacy protection for video/audio data, scalable architecture for real-time processing, and detailed analytics for continuous improvement.

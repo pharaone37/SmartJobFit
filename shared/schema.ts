@@ -300,6 +300,97 @@ export const salaryNegotiations = pgTable("salary_negotiations", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+// Interview Coaching System Tables
+export const interviewCoachingSessions = pgTable("interview_coaching_sessions", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  userId: varchar("user_id").references(() => users.id).notNull(),
+  sessionType: varchar("session_type").notNull(), // behavioral, technical, company-specific, panel, group
+  companyId: varchar("company_id"),
+  targetRole: varchar("target_role"),
+  difficulty: varchar("difficulty").default("medium"), // easy, medium, hard
+  language: varchar("language").default("en"),
+  coachingPersonality: jsonb("coaching_personality"),
+  duration: integer("duration"), // in minutes
+  overallScore: integer("overall_score"),
+  status: varchar("status").default("active"), // active, completed, paused
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const interviewQuestions = pgTable("interview_questions", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  questionText: text("question_text").notNull(),
+  category: varchar("category").notNull(), // behavioral, technical, situational, company-culture
+  difficulty: varchar("difficulty").notNull(), // easy, medium, hard
+  industry: varchar("industry").notNull(),
+  companySpecific: boolean("company_specific").default(false),
+  expectedDuration: integer("expected_duration"), // in seconds
+  followUpQuestions: text("follow_up_questions").array(),
+  keywords: text("keywords").array(),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const interviewResponses = pgTable("interview_responses", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  sessionId: uuid("session_id").references(() => interviewCoachingSessions.id).notNull(),
+  questionId: uuid("question_id").references(() => interviewQuestions.id).notNull(),
+  responseText: text("response_text"),
+  responseAudio: text("response_audio"), // base64 or file path
+  responseVideo: text("response_video"), // base64 or file path
+  confidenceScore: integer("confidence_score"),
+  clarityScore: integer("clarity_score"),
+  contentScore: integer("content_score"),
+  timeToThink: integer("time_to_think"), // in seconds
+  responseTime: integer("response_time"), // in seconds
+  facialExpressions: jsonb("facial_expressions"),
+  bodyLanguage: jsonb("body_language"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const interviewFeedback = pgTable("interview_feedback", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  responseId: uuid("response_id").references(() => interviewResponses.id).notNull(),
+  feedbackText: text("feedback_text"),
+  improvementSuggestions: text("improvement_suggestions").array(),
+  strengths: text("strengths").array(),
+  areasToImprove: text("areas_to_improve").array(),
+  emotionalIntelligence: jsonb("emotional_intelligence"),
+  communicationScores: jsonb("communication_scores"),
+  speechAnalysis: jsonb("speech_analysis"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const companyInterviewInsights = pgTable("company_interview_insights", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  companyId: varchar("company_id").notNull(),
+  companyName: varchar("company_name").notNull(),
+  interviewProcess: text("interview_process"),
+  commonQuestions: text("common_questions").array(),
+  cultureNotes: text("culture_notes"),
+  successTips: text("success_tips").array(),
+  interviewerProfiles: jsonb("interviewer_profiles"),
+  salaryNegotiationTips: text("salary_negotiation_tips").array(),
+  averageInterviewDuration: integer("average_interview_duration"),
+  difficultyLevel: varchar("difficulty_level"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const userInterviewProgress = pgTable("user_interview_progress", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  userId: varchar("user_id").references(() => users.id).notNull(),
+  totalSessions: integer("total_sessions").default(0),
+  hoursSpent: decimal("hours_spent").default("0"),
+  improvementRate: integer("improvement_rate").default(0),
+  skillProgress: jsonb("skill_progress"),
+  achievements: jsonb("achievements"),
+  nextGoals: text("next_goals").array(),
+  lastSessionAt: timestamp("last_session_at"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
 
 
 // Relations
@@ -313,6 +404,8 @@ export const usersRelations = relations(users, ({ many }) => ({
   savedJobs: many(savedJobs),
   interviewPractice: many(interviewPractice),
   salaryNegotiations: many(salaryNegotiations),
+  interviewCoachingSessions: many(interviewCoachingSessions),
+  userInterviewProgress: many(userInterviewProgress),
 }));
 
 export const jobsRelations = relations(jobs, ({ many }) => ({
@@ -370,6 +463,30 @@ export const salaryNegotiationsRelations = relations(salaryNegotiations, ({ one 
   application: one(jobApplications, { fields: [salaryNegotiations.applicationId], references: [jobApplications.id] }),
 }));
 
+// Interview Coaching System Relations
+export const interviewCoachingSessionsRelations = relations(interviewCoachingSessions, ({ one, many }) => ({
+  user: one(users, { fields: [interviewCoachingSessions.userId], references: [users.id] }),
+  responses: many(interviewResponses),
+}));
+
+export const interviewQuestionsRelations = relations(interviewQuestions, ({ many }) => ({
+  responses: many(interviewResponses),
+}));
+
+export const interviewResponsesRelations = relations(interviewResponses, ({ one, many }) => ({
+  session: one(interviewCoachingSessions, { fields: [interviewResponses.sessionId], references: [interviewCoachingSessions.id] }),
+  question: one(interviewQuestions, { fields: [interviewResponses.questionId], references: [interviewQuestions.id] }),
+  feedback: many(interviewFeedback),
+}));
+
+export const interviewFeedbackRelations = relations(interviewFeedback, ({ one }) => ({
+  response: one(interviewResponses, { fields: [interviewFeedback.responseId], references: [interviewResponses.id] }),
+}));
+
+export const userInterviewProgressRelations = relations(userInterviewProgress, ({ one }) => ({
+  user: one(users, { fields: [userInterviewProgress.userId], references: [users.id] }),
+}));
+
 // Schema exports
 export type UpsertUser = typeof users.$inferInsert;
 export type User = typeof users.$inferSelect;
@@ -404,6 +521,25 @@ export type InterviewPractice = typeof interviewPractice.$inferSelect;
 export type InsertSalaryNegotiation = typeof salaryNegotiations.$inferInsert;
 export type SalaryNegotiation = typeof salaryNegotiations.$inferSelect;
 
+// Interview Coaching System Types
+export type InsertInterviewCoachingSession = typeof interviewCoachingSessions.$inferInsert;
+export type InterviewCoachingSession = typeof interviewCoachingSessions.$inferSelect;
+
+export type InsertInterviewQuestion = typeof interviewQuestions.$inferInsert;
+export type InterviewQuestion = typeof interviewQuestions.$inferSelect;
+
+export type InsertInterviewResponse = typeof interviewResponses.$inferInsert;
+export type InterviewResponse = typeof interviewResponses.$inferSelect;
+
+export type InsertInterviewFeedback = typeof interviewFeedback.$inferInsert;
+export type InterviewFeedback = typeof interviewFeedback.$inferSelect;
+
+export type InsertCompanyInterviewInsights = typeof companyInterviewInsights.$inferInsert;
+export type CompanyInterviewInsights = typeof companyInterviewInsights.$inferSelect;
+
+export type InsertUserInterviewProgress = typeof userInterviewProgress.$inferInsert;
+export type UserInterviewProgress = typeof userInterviewProgress.$inferSelect;
+
 // Zod schemas
 export const insertUserSchema = createInsertSchema(users).omit({ id: true, createdAt: true, updatedAt: true });
 export const insertJobSchema = createInsertSchema(jobs).omit({ id: true, createdAt: true, updatedAt: true });
@@ -416,3 +552,11 @@ export const insertUserPreferencesSchema = createInsertSchema(userPreferences).o
 export const insertSavedJobSchema = createInsertSchema(savedJobs).omit({ id: true, createdAt: true });
 export const insertInterviewPracticeSchema = createInsertSchema(interviewPractice).omit({ id: true, createdAt: true, completedAt: true });
 export const insertSalaryNegotiationSchema = createInsertSchema(salaryNegotiations).omit({ id: true, createdAt: true, updatedAt: true });
+
+// Interview Coaching System Zod schemas
+export const insertInterviewCoachingSessionSchema = createInsertSchema(interviewCoachingSessions).omit({ id: true, createdAt: true, updatedAt: true });
+export const insertInterviewQuestionSchema = createInsertSchema(interviewQuestions).omit({ id: true, createdAt: true, updatedAt: true });
+export const insertInterviewResponseSchema = createInsertSchema(interviewResponses).omit({ id: true, createdAt: true });
+export const insertInterviewFeedbackSchema = createInsertSchema(interviewFeedback).omit({ id: true, createdAt: true });
+export const insertCompanyInterviewInsightsSchema = createInsertSchema(companyInterviewInsights).omit({ id: true, createdAt: true, updatedAt: true });
+export const insertUserInterviewProgressSchema = createInsertSchema(userInterviewProgress).omit({ id: true, createdAt: true, updatedAt: true });

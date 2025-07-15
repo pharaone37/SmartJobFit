@@ -50,6 +50,7 @@ export default function Navbar() {
     { name: "Resume Optimizer", href: "/resume-optimizer", icon: FileText },
     { name: "Resume Analyzer", href: "/resume-analyzer", icon: FileText },
     { name: "AI Interview Prep", href: "/ai-interview-prep", icon: Video },
+    { name: "Interview Coach", href: "/interview-coach", icon: Video },
     { name: "Cover Letter", href: "/cover-letter", icon: FileText },
     { name: "Company Insights", href: "/company-insights", icon: Search },
   ];

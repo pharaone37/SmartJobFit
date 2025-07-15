@@ -42,6 +42,7 @@ import NetworkSync from "@/components/NetworkSync";
 // New AI Systems
 import { JobSearchEngine } from "@/pages/JobSearchEngine";
 import { ResumeOptimizer } from "@/pages/ResumeOptimizer";
+import InterviewCoach from "@/pages/InterviewCoach";
 
 import { queryClient } from "@/lib/queryClient";
 
@@ -93,6 +94,7 @@ function AppContent() {
                 {/* New AI Systems */}
                 <Route path="/job-search-engine" element={<JobSearchEngine />} />
                 <Route path="/resume-optimizer" element={<ResumeOptimizer />} />
+                <Route path="/interview-coach" element={<InterviewCoach />} />
                 
                 {/* New Interactive Features */}
                 <Route path="/resume-preview" element={<ResumePreview />} />
