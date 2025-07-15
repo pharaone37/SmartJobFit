@@ -1,0 +1,76 @@
+comprehensive AI-powered job search engine for SmartJobFit with the following specifications:
+
+CORE FUNCTIONALITY:
+1. Multi-platform job aggregation from 15+ sources (LinkedIn, Indeed, Glassdoor, ZipRecruiter, Monster, etc.)
+2. Natural language query processing using Google Gemini 2.5 Flash API
+3. Intelligent job matching with 94% accuracy prediction
+4. Real-time search results under 2 seconds
+5. Personalized recommendations based on user profile
+
+REQUIRED APIs & TOOLS:
+- Primary AI: Google Gemini 2.5 Flash API (cost-effective, high performance)
+- Job Aggregation: RapidAPI Job Search APIs, Adzuna API, JSearch API
+- Resume Parsing: Eden AI Hub (Affinda + HireAbility integration)
+- Vector Database: Pinecone for semantic job matching
+- Search Enhancement: Algolia for instant search capabilities
+
+TECHNICAL IMPLEMENTATION:
+1. Create Flask backend with endpoints:
+   - POST /api/search/jobs (natural language search)
+   - GET /api/search/suggestions (autocomplete)
+   - POST /api/search/filters (advanced filtering)
+   - GET /api/jobs/{job_id} (detailed job view)
+   - POST /api/jobs/save (save job to profile)
+
+2. Database Schema (SQLite for development):
+   - jobs table: id, title, company, description, salary_min, salary_max, location, remote, posted_date, source, requirements, benefits
+   - user_searches table: user_id, query, filters, timestamp, results_count
+   - saved_jobs table: user_id, job_id, saved_date, notes
+   - job_matches table: user_id, job_id, match_score, reasons
+
+3. AI Integration:
+   - Implement Gemini API for query understanding and job description analysis
+   - Create semantic matching using Pinecone vector embeddings
+   - Build personalization engine that learns from user behavior
+   - Implement real-time job scoring based on user profile
+
+4. Frontend Components:
+   - Smart search bar with autocomplete and natural language processing
+   - Advanced filter panel (location, salary, remote, company size, industry)
+   - Job results grid with match scores and quick actions
+   - Job detail modal with company insights and application tracking
+   - Saved jobs management interface
+
+5. Data Coordination Setup:
+   - Create shared user profile schema for cross-feature integration
+   - Implement event tracking for user interactions
+   - Set up data export functions for other features
+   - Create API endpoints for feature coordination
+
+SPECIFIC IMPLEMENTATION STEPS:
+1. Set up Flask app with CORS enabled for frontend integration
+2. Configure Google Gemini API with rate limiting and error handling
+3. Implement job aggregation pipeline with data normalization
+4. Create Pinecone vector database for semantic search
+5. Build intelligent matching algorithm with explainable AI
+6. Develop responsive frontend with React components
+7. Implement real-time search with debouncing and caching
+8. Add user authentication and profile management
+9. Create comprehensive logging and analytics
+10. Set up automated testing and performance monitoring
+
+PERFORMANCE REQUIREMENTS:
+- Search response time: <2 seconds for complex queries
+- Job aggregation: Update every 15 minutes
+- Match accuracy: >94% relevance for top 10 results
+- Concurrent users: Support 1000+ simultaneous searches
+- Data freshness: 99.7% of jobs captured within 24 hours
+
+INTEGRATION POINTS:
+- Export user search behavior to resume optimization feature
+- Share job requirements with interview preparation system
+- Provide company data to company intelligence feature
+- Send application data to tracking system
+- Coordinate with salary intelligence for compensation insights
+
+Create a production-ready implementation with comprehensive error handling, logging, and scalability considerations. Include detailed API documentation and setup instructions.
