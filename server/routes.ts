@@ -35,6 +35,10 @@ import { reziService } from "./services/reziService";
 import { kickresumeService } from "./services/kickresumeService";
 import { tealHqService } from "./services/tealHqService";
 import { customGptService } from "./services/customGptService";
+import { whisperService } from "./services/whisperService";
+import { pdfExtractionService } from "./services/pdfExtractionService";
+import { automationService } from "./services/automationService";
+import { ragSearchService } from "./services/ragSearchService";
 import { 
   insertJobSchema, 
   insertResumeSchema, 
@@ -2390,6 +2394,636 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Custom GPT bullet points error:', error);
       res.status(500).json({ message: 'Failed to generate bullet points with AI' });
+    }
+  });
+
+  // Whisper Service - Speech-to-Text für Interviewanalyse
+  app.post('/api/whisper/transcribe', async (req, res) => {
+    try {
+      const { audioFile, language, prompt, responseFormat, temperature, includeTimestamps, includeWordLevelTimestamps } = req.body;
+      
+      if (!audioFile) {
+        return res.status(400).json({ message: 'Audio file is required' });
+      }
+
+      const transcription = await whisperService.transcribeAudio({
+        audioFile,
+        language,
+        prompt,
+        responseFormat,
+        temperature,
+        includeTimestamps,
+        includeWordLevelTimestamps
+      });
+      
+      res.json({
+        success: true,
+        transcription,
+        provider: 'OpenAI Whisper',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Whisper transcription error:', error);
+      res.status(500).json({ message: 'Failed to transcribe audio' });
+    }
+  });
+
+  app.post('/api/whisper/analyze-interview', async (req, res) => {
+    try {
+      const { audioFile, jobRole, interviewType, language, analysisDepth } = req.body;
+      
+      if (!audioFile || !jobRole || !interviewType) {
+        return res.status(400).json({ message: 'Audio file, job role, and interview type are required' });
+      }
+
+      const analysis = await whisperService.analyzeInterviewSpeech({
+        audioFile,
+        jobRole,
+        interviewType,
+        language,
+        analysisDepth: analysisDepth || 'comprehensive'
+      });
+      
+      res.json({
+        success: true,
+        analysis,
+        provider: 'OpenAI Whisper',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Whisper interview analysis error:', error);
+      res.status(500).json({ message: 'Failed to analyze interview speech' });
+    }
+  });
+
+  app.post('/api/whisper/analyze-meeting', async (req, res) => {
+    try {
+      const { audioFile, meetingType, expectedParticipants, language } = req.body;
+      
+      if (!audioFile || !meetingType) {
+        return res.status(400).json({ message: 'Audio file and meeting type are required' });
+      }
+
+      const analysis = await whisperService.analyzeMeetingDiscussion({
+        audioFile,
+        meetingType,
+        expectedParticipants,
+        language
+      });
+      
+      res.json({
+        success: true,
+        analysis,
+        provider: 'OpenAI Whisper',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Whisper meeting analysis error:', error);
+      res.status(500).json({ message: 'Failed to analyze meeting discussion' });
+    }
+  });
+
+  app.post('/api/whisper/batch-process', async (req, res) => {
+    try {
+      const { audioFiles, processingType, options } = req.body;
+      
+      if (!audioFiles || !processingType) {
+        return res.status(400).json({ message: 'Audio files and processing type are required' });
+      }
+
+      const batchResult = await whisperService.processBatchAudio({
+        audioFiles,
+        processingType,
+        options
+      });
+      
+      res.json({
+        success: true,
+        batchResult,
+        provider: 'OpenAI Whisper',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Whisper batch processing error:', error);
+      res.status(500).json({ message: 'Failed to process batch audio' });
+    }
+  });
+
+  app.post('/api/whisper/speech-feedback', async (req, res) => {
+    try {
+      const { transcription, targetRole, focusAreas, language } = req.body;
+      
+      if (!transcription || !targetRole || !focusAreas) {
+        return res.status(400).json({ message: 'Transcription, target role, and focus areas are required' });
+      }
+
+      const feedback = await whisperService.generateSpeechFeedback({
+        transcription,
+        targetRole,
+        focusAreas,
+        language
+      });
+      
+      res.json({
+        success: true,
+        feedback,
+        provider: 'OpenAI Whisper',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Whisper speech feedback error:', error);
+      res.status(500).json({ message: 'Failed to generate speech feedback' });
+    }
+  });
+
+  // PDF Extraction Service - CVs aus PDFs extrahieren
+  app.post('/api/pdf/extract-text', async (req, res) => {
+    try {
+      const { pdfFile, service, extractionType, ocrEnabled, language } = req.body;
+      
+      if (!pdfFile) {
+        return res.status(400).json({ message: 'PDF file is required' });
+      }
+
+      const extractedData = await pdfExtractionService.extractTextFromPDF({
+        pdfFile,
+        service: service || 'unstructured',
+        extractionType: extractionType || 'text',
+        ocrEnabled,
+        language
+      });
+      
+      res.json({
+        success: true,
+        extractedData,
+        provider: service || 'Unstructured.io',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('PDF text extraction error:', error);
+      res.status(500).json({ message: 'Failed to extract text from PDF' });
+    }
+  });
+
+  app.post('/api/pdf/extract-resume', async (req, res) => {
+    try {
+      const { pdfFile, service, enhanceWithAI } = req.body;
+      
+      if (!pdfFile) {
+        return res.status(400).json({ message: 'PDF file is required' });
+      }
+
+      const resumeData = await pdfExtractionService.extractResumeFromPDF({
+        pdfFile,
+        service,
+        enhanceWithAI: enhanceWithAI || false
+      });
+      
+      res.json({
+        success: true,
+        resumeData,
+        provider: service || 'Unstructured.io',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('PDF resume extraction error:', error);
+      res.status(500).json({ message: 'Failed to extract resume from PDF' });
+    }
+  });
+
+  app.post('/api/pdf/extract-job-description', async (req, res) => {
+    try {
+      const { pdfFile, service, enhanceWithAI } = req.body;
+      
+      if (!pdfFile) {
+        return res.status(400).json({ message: 'PDF file is required' });
+      }
+
+      const jobData = await pdfExtractionService.extractJobDescriptionFromPDF({
+        pdfFile,
+        service,
+        enhanceWithAI: enhanceWithAI || false
+      });
+      
+      res.json({
+        success: true,
+        jobData,
+        provider: service || 'Unstructured.io',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('PDF job description extraction error:', error);
+      res.status(500).json({ message: 'Failed to extract job description from PDF' });
+    }
+  });
+
+  app.post('/api/pdf/batch-process', async (req, res) => {
+    try {
+      const { files, service, enhanceWithAI } = req.body;
+      
+      if (!files || !Array.isArray(files)) {
+        return res.status(400).json({ message: 'Files array is required' });
+      }
+
+      const batchResult = await pdfExtractionService.batchProcessDocuments({
+        files,
+        service,
+        enhanceWithAI: enhanceWithAI || false
+      });
+      
+      res.json({
+        success: true,
+        batchResult,
+        provider: service || 'Unstructured.io',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('PDF batch processing error:', error);
+      res.status(500).json({ message: 'Failed to process PDF batch' });
+    }
+  });
+
+  // Automation Service - Bewerbungen automatisch einreichen
+  app.post('/api/automation/zapier-webhook', async (req, res) => {
+    try {
+      const { webhookUrl, data, workflowType } = req.body;
+      
+      if (!webhookUrl || !data || !workflowType) {
+        return res.status(400).json({ message: 'Webhook URL, data, and workflow type are required' });
+      }
+
+      const result = await automationService.triggerZapierWebhook({
+        webhookUrl,
+        data,
+        workflowType
+      });
+      
+      res.json({
+        success: true,
+        result,
+        provider: 'Zapier',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Zapier webhook error:', error);
+      res.status(500).json({ message: 'Failed to trigger Zapier webhook' });
+    }
+  });
+
+  app.post('/api/automation/job-application', async (req, res) => {
+    try {
+      const { jobApplicationData, automationPlatform, webhookUrl, workflowId } = req.body;
+      
+      if (!jobApplicationData || !automationPlatform) {
+        return res.status(400).json({ message: 'Job application data and automation platform are required' });
+      }
+
+      const result = await automationService.automateJobApplication({
+        jobApplicationData,
+        automationPlatform,
+        webhookUrl,
+        workflowId
+      });
+      
+      res.json({
+        success: true,
+        result,
+        provider: automationPlatform,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Job application automation error:', error);
+      res.status(500).json({ message: 'Failed to automate job application' });
+    }
+  });
+
+  app.post('/api/automation/schedule-followup', async (req, res) => {
+    try {
+      const { jobApplicationId, followUpType, delayDays, message, recipientInfo, automationPlatform } = req.body;
+      
+      if (!jobApplicationId || !followUpType || !delayDays || !message || !recipientInfo || !automationPlatform) {
+        return res.status(400).json({ message: 'All follow-up parameters are required' });
+      }
+
+      const result = await automationService.scheduleFollowUp({
+        jobApplicationId,
+        followUpType,
+        delayDays,
+        message,
+        recipientInfo,
+        automationPlatform
+      });
+      
+      res.json({
+        success: true,
+        result,
+        provider: automationPlatform,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Follow-up scheduling error:', error);
+      res.status(500).json({ message: 'Failed to schedule follow-up' });
+    }
+  });
+
+  app.post('/api/automation/create-workflow', async (req, res) => {
+    try {
+      const { name, description, workflowType, triggers, actions, platform } = req.body;
+      
+      if (!name || !description || !workflowType || !triggers || !actions || !platform) {
+        return res.status(400).json({ message: 'All workflow parameters are required' });
+      }
+
+      const result = await automationService.createAutomationWorkflow({
+        name,
+        description,
+        workflowType,
+        triggers,
+        actions,
+        platform
+      });
+      
+      res.json({
+        success: true,
+        result,
+        provider: platform,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Workflow creation error:', error);
+      res.status(500).json({ message: 'Failed to create automation workflow' });
+    }
+  });
+
+  app.get('/api/automation/status/:jobId', async (req, res) => {
+    try {
+      const { jobId } = req.params;
+      const { platform } = req.query;
+      
+      if (!jobId || !platform) {
+        return res.status(400).json({ message: 'Job ID and platform are required' });
+      }
+
+      const status = await automationService.getAutomationStatus({
+        jobId,
+        platform: platform as 'zapier' | 'make'
+      });
+      
+      res.json({
+        success: true,
+        status,
+        provider: platform,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Automation status error:', error);
+      res.status(500).json({ message: 'Failed to get automation status' });
+    }
+  });
+
+  app.post('/api/automation/batch-applications', async (req, res) => {
+    try {
+      const { applications, platform, delayBetweenApplications, maxConcurrent } = req.body;
+      
+      if (!applications || !platform) {
+        return res.status(400).json({ message: 'Applications and platform are required' });
+      }
+
+      const result = await automationService.batchProcessApplications({
+        applications,
+        platform,
+        delayBetweenApplications,
+        maxConcurrent
+      });
+      
+      res.json({
+        success: true,
+        result,
+        provider: platform,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Batch applications error:', error);
+      res.status(500).json({ message: 'Failed to process batch applications' });
+    }
+  });
+
+  app.post('/api/automation/validate-application', async (req, res) => {
+    try {
+      const { jobApplicationData } = req.body;
+      
+      if (!jobApplicationData) {
+        return res.status(400).json({ message: 'Job application data is required' });
+      }
+
+      const validation = await automationService.validateJobApplicationData(jobApplicationData);
+      
+      res.json({
+        success: true,
+        validation,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Application validation error:', error);
+      res.status(500).json({ message: 'Failed to validate application data' });
+    }
+  });
+
+  app.get('/api/automation/report', async (req, res) => {
+    try {
+      const { startDate, endDate, platform } = req.query;
+      
+      if (!startDate || !endDate) {
+        return res.status(400).json({ message: 'Start date and end date are required' });
+      }
+
+      const report = await automationService.generateApplicationReport({
+        dateRange: { start: startDate as string, end: endDate as string },
+        platform: platform as 'zapier' | 'make'
+      });
+      
+      res.json({
+        success: true,
+        report,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Application report error:', error);
+      res.status(500).json({ message: 'Failed to generate application report' });
+    }
+  });
+
+  // RAG Search Service - RAG für Recherchen zu Firmen, Trends, Fragen
+  app.post('/api/rag/search-tavily', async (req, res) => {
+    try {
+      const { query, searchType, maxResults, includeImages, includeDomains, excludeDomains } = req.body;
+      
+      if (!query || !searchType) {
+        return res.status(400).json({ message: 'Query and search type are required' });
+      }
+
+      const searchResult = await ragSearchService.searchWithTavily({
+        query,
+        searchType,
+        maxResults,
+        includeImages,
+        includeDomains,
+        excludeDomains
+      });
+      
+      res.json({
+        success: true,
+        searchResult,
+        provider: 'Tavily',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Tavily search error:', error);
+      res.status(500).json({ message: 'Failed to search with Tavily' });
+    }
+  });
+
+  app.post('/api/rag/search-perplexity', async (req, res) => {
+    try {
+      const { query, model, maxTokens, temperature, searchDomainFilter, searchRecencyFilter, returnImages, returnRelatedQuestions } = req.body;
+      
+      if (!query) {
+        return res.status(400).json({ message: 'Query is required' });
+      }
+
+      const searchResult = await ragSearchService.searchWithPerplexity({
+        query,
+        model,
+        maxTokens,
+        temperature,
+        searchDomainFilter,
+        searchRecencyFilter,
+        returnImages,
+        returnRelatedQuestions
+      });
+      
+      res.json({
+        success: true,
+        searchResult,
+        provider: 'Perplexity',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Perplexity search error:', error);
+      res.status(500).json({ message: 'Failed to search with Perplexity' });
+    }
+  });
+
+  app.post('/api/rag/research-company', async (req, res) => {
+    try {
+      const { companyName, searchDepth, focusAreas, includeFinancials, includeInterviewInsights } = req.body;
+      
+      if (!companyName) {
+        return res.status(400).json({ message: 'Company name is required' });
+      }
+
+      const companyResearch = await ragSearchService.researchCompany({
+        companyName,
+        searchDepth: searchDepth || 'basic',
+        focusAreas,
+        includeFinancials,
+        includeInterviewInsights
+      });
+      
+      res.json({
+        success: true,
+        companyResearch,
+        provider: 'RAG Search',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Company research error:', error);
+      res.status(500).json({ message: 'Failed to research company' });
+    }
+  });
+
+  app.post('/api/rag/analyze-trends', async (req, res) => {
+    try {
+      const { topic, timeframe, industry, region, trendType } = req.body;
+      
+      if (!topic || !timeframe || !trendType) {
+        return res.status(400).json({ message: 'Topic, timeframe, and trend type are required' });
+      }
+
+      const trendAnalysis = await ragSearchService.analyzeTrends({
+        topic,
+        timeframe,
+        industry,
+        region,
+        trendType
+      });
+      
+      res.json({
+        success: true,
+        trendAnalysis,
+        provider: 'RAG Search',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Trend analysis error:', error);
+      res.status(500).json({ message: 'Failed to analyze trends' });
+    }
+  });
+
+  app.post('/api/rag/generate-interview-questions', async (req, res) => {
+    try {
+      const { companyName, position, level, questionTypes, includeCompanySpecific } = req.body;
+      
+      if (!companyName || !position || !level || !questionTypes) {
+        return res.status(400).json({ message: 'Company name, position, level, and question types are required' });
+      }
+
+      const interviewQuestions = await ragSearchService.generateInterviewQuestions({
+        companyName,
+        position,
+        level,
+        questionTypes,
+        includeCompanySpecific
+      });
+      
+      res.json({
+        success: true,
+        interviewQuestions,
+        provider: 'RAG Search',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Interview questions generation error:', error);
+      res.status(500).json({ message: 'Failed to generate interview questions' });
+    }
+  });
+
+  app.post('/api/rag/job-market-insights', async (req, res) => {
+    try {
+      const { role, location, experience, skills, salaryRange, remoteWork } = req.body;
+      
+      if (!role) {
+        return res.status(400).json({ message: 'Role is required' });
+      }
+
+      const jobMarketInsights = await ragSearchService.searchJobMarketInsights({
+        role,
+        location,
+        experience,
+        skills,
+        salaryRange,
+        remoteWork
+      });
+      
+      res.json({
+        success: true,
+        jobMarketInsights,
+        provider: 'RAG Search',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Job market insights error:', error);
+      res.status(500).json({ message: 'Failed to get job market insights' });
     }
   });
 
