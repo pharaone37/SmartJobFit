@@ -1,505 +1,829 @@
-import { openRouterService } from './openRouterService';
+import OpenAI from 'openai';
+import Anthropic from '@anthropic-ai/sdk';
 
-interface CustomRewriteRequest {
-  content: string;
-  targetRole: string;
-  company?: string;
-  tone: 'professional' | 'casual' | 'enthusiastic' | 'confident';
-  focus: 'ats' | 'keywords' | 'achievements' | 'skills' | 'leadership';
-  length: 'concise' | 'detailed' | 'comprehensive';
-}
-
-interface CustomRewriteResult {
-  rewrittenContent: string;
+interface CustomGptResumeRewrite {
+  originalContent: any;
+  rewrittenContent: any;
   improvements: Array<{
     section: string;
-    original: string;
-    improved: string;
+    change: string;
     reasoning: string;
+    impact: 'high' | 'medium' | 'low';
   }>;
-  atsScore: number;
-  keywordDensity: number;
-  suggestions: string[];
-  alternatives: string[];
+  atsOptimization: {
+    score: number;
+    keywordDensity: number;
+    improvements: string[];
+  };
+  jobAlignmentScore: number;
+  personalizedSuggestions: string[];
 }
 
-interface CoverLetterRequest {
-  resumeContent: string;
-  jobDescription: string;
-  companyName: string;
-  hiringManager?: string;
-  tone: 'professional' | 'casual' | 'enthusiastic';
-  length: 'short' | 'medium' | 'long';
-  focus: string[];
-}
-
-interface CoverLetterResult {
-  coverLetter: string;
-  sections: {
+interface CustomGptCoverLetter {
+  content: string;
+  structure: {
     opening: string;
-    body: string;
+    body: string[];
     closing: string;
   };
-  alternatives: {
-    openings: string[];
-    closings: string[];
+  personalization: {
+    companyResearch: string[];
+    roleAlignment: string[];
+    valueProposition: string[];
   };
-  tips: string[];
-  customizations: Array<{
-    section: string;
-    personalization: string;
-    reasoning: string;
+  tone: 'professional' | 'enthusiastic' | 'confident' | 'conversational';
+  wordCount: number;
+  aiInsights: {
+    strengthsHighlighted: string[];
+    uniqueValue: string;
+    callToAction: string;
+  };
+}
+
+interface CustomGptOptimizationFlow {
+  stepByStepAnalysis: Array<{
+    step: number;
+    focus: string;
+    analysis: string;
+    recommendations: string[];
   }>;
+  iterativeImprovements: Array<{
+    iteration: number;
+    changes: string[];
+    reasoning: string;
+    score: number;
+  }>;
+  finalOptimization: {
+    overallScore: number;
+    keyImprovements: string[];
+    nextSteps: string[];
+  };
+}
+
+interface CustomGptJobDescriptionAnalysis {
+  keyRequirements: Array<{
+    requirement: string;
+    importance: 'critical' | 'important' | 'preferred';
+    keywords: string[];
+  }>;
+  companyInsights: {
+    culture: string[];
+    values: string[];
+    workEnvironment: string;
+    growthOpportunities: string[];
+  };
+  optimizationStrategy: {
+    keywordTargets: string[];
+    skillsEmphasis: string[];
+    experienceHighlights: string[];
+    personalityTraits: string[];
+  };
+  competitiveAnalysis: {
+    commonSkills: string[];
+    differentiators: string[];
+    marketTrends: string[];
+  };
+}
+
+interface CustomGptAtsAnalysis {
+  atsScore: number;
+  compatibility: {
+    formatting: number;
+    keywords: number;
+    structure: number;
+    readability: number;
+  };
+  optimizations: Array<{
+    category: string;
+    issue: string;
+    solution: string;
+    impact: number;
+  }>;
+  keywordAnalysis: {
+    matched: string[];
+    missing: string[];
+    density: number;
+    recommendations: string[];
+  };
+  structureAnalysis: {
+    sections: Array<{
+      name: string;
+      present: boolean;
+      quality: number;
+      suggestions: string[];
+    }>;
+    flow: number;
+    hierarchy: number;
+  };
 }
 
 class CustomGptService {
-  constructor() {}
+  private openai: OpenAI;
+  private anthropic: Anthropic;
 
-  async rewriteResumeSection(request: CustomRewriteRequest): Promise<CustomRewriteResult> {
+  constructor() {
+    this.openai = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY || '',
+    });
+
+    this.anthropic = new Anthropic({
+      apiKey: process.env.ANTHROPIC_API_KEY || '',
+    });
+  }
+
+  async rewriteResumeWithGPT(params: {
+    resumeContent: any;
+    jobDescription: string;
+    targetRole: string;
+    industry: string;
+    rewriteLevel: 'conservative' | 'moderate' | 'aggressive';
+    aiModel: 'gpt-4' | 'claude-3-5-sonnet';
+  }): Promise<CustomGptResumeRewrite> {
+    const prompt = this.buildResumeRewritePrompt(params);
+
     try {
-      const prompt = this.buildRewritePrompt(request);
+      let response: string;
       
-      const response = await openRouterService.generateCoverLetter(prompt, '', '', 'professional');
+      if (params.aiModel === 'gpt-4') {
+        response = await this.getGPTResponse(prompt);
+      } else {
+        response = await this.getClaudeResponse(prompt);
+      }
 
-      return this.parseRewriteResponse(response, request);
+      return this.parseResumeRewrite(response);
     } catch (error) {
-      console.error('Custom GPT rewrite error:', error);
-      return this.getFallbackRewriteResult(request);
+      console.error('Custom GPT resume rewrite error:', error);
+      return this.getFallbackResumeRewrite(params);
     }
   }
 
-  async generateCoverLetter(request: CoverLetterRequest): Promise<CoverLetterResult> {
-    try {
-      const prompt = this.buildCoverLetterPrompt(request);
-      
-      const response = await openRouterService.generateCoverLetter(prompt, '', '', 'professional');
+  async generateCoverLetterWithAI(params: {
+    resumeContent: any;
+    jobDescription: string;
+    companyName: string;
+    hiringManager?: string;
+    tone: 'professional' | 'enthusiastic' | 'confident' | 'conversational';
+    length: 'short' | 'medium' | 'long';
+    aiModel: 'gpt-4' | 'claude-3-5-sonnet';
+  }): Promise<CustomGptCoverLetter> {
+    const prompt = this.buildCoverLetterPrompt(params);
 
-      return this.parseCoverLetterResponse(response, request);
+    try {
+      let response: string;
+      
+      if (params.aiModel === 'gpt-4') {
+        response = await this.getGPTResponse(prompt);
+      } else {
+        response = await this.getClaudeResponse(prompt);
+      }
+
+      return this.parseCoverLetter(response);
     } catch (error) {
       console.error('Custom GPT cover letter error:', error);
-      return this.getFallbackCoverLetter(request);
+      return this.getFallbackCoverLetter(params);
     }
   }
 
-  async optimizeForATS(content: string, jobDescription: string): Promise<{
-    optimizedContent: string;
-    atsScore: number;
-    keywordMatches: Array<{
-      keyword: string;
-      frequency: number;
-      importance: 'high' | 'medium' | 'low';
-    }>;
-    recommendations: string[];
-    formattingIssues: string[];
-  }> {
+  async optimizeWithIterativeFlow(params: {
+    resumeContent: any;
+    jobDescription: string;
+    targetRole: string;
+    iterations: number;
+    aiModel: 'gpt-4' | 'claude-3-5-sonnet';
+  }): Promise<CustomGptOptimizationFlow> {
+    const prompt = this.buildOptimizationFlowPrompt(params);
+
     try {
-      const prompt = this.buildATSOptimizationPrompt(content, jobDescription);
+      let response: string;
       
-      const response = await openRouterService.generateCoverLetter(prompt, '', '', 'professional');
+      if (params.aiModel === 'gpt-4') {
+        response = await this.getGPTResponse(prompt);
+      } else {
+        response = await this.getClaudeResponse(prompt);
+      }
 
-      return this.parseATSResponse(response);
+      return this.parseOptimizationFlow(response);
     } catch (error) {
-      console.error('Custom GPT ATS optimization error:', error);
-      return this.getFallbackATSOptimization(content);
+      console.error('Custom GPT optimization flow error:', error);
+      return this.getFallbackOptimizationFlow(params);
     }
   }
 
-  async generateMultipleVersions(content: string, variations: number = 3): Promise<Array<{
-    version: number;
-    content: string;
-    style: string;
-    strengths: string[];
-    bestFor: string;
-  }>> {
+  async analyzeJobDescriptionWithAI(params: {
+    jobDescription: string;
+    company: string;
+    industry: string;
+    aiModel: 'gpt-4' | 'claude-3-5-sonnet';
+  }): Promise<CustomGptJobDescriptionAnalysis> {
+    const prompt = this.buildJobAnalysisPrompt(params);
+
     try {
-      const prompt = this.buildVariationsPrompt(content, variations);
+      let response: string;
       
-      const response = await openRouterService.generateCoverLetter(prompt, '', '', 'professional');
+      if (params.aiModel === 'gpt-4') {
+        response = await this.getGPTResponse(prompt);
+      } else {
+        response = await this.getClaudeResponse(prompt);
+      }
 
-      return this.parseVariationsResponse(response);
+      return this.parseJobAnalysis(response);
     } catch (error) {
-      console.error('Custom GPT variations error:', error);
-      return this.getFallbackVariations(content);
+      console.error('Custom GPT job analysis error:', error);
+      return this.getFallbackJobAnalysis(params);
     }
   }
 
-  async improveWritingStyle(content: string, targetStyle: 'executive' | 'technical' | 'creative' | 'academic'): Promise<{
-    improvedContent: string;
-    styleChanges: Array<{
+  async performAdvancedATSAnalysis(params: {
+    resumeContent: any;
+    jobDescription: string;
+    targetATS?: string;
+    aiModel: 'gpt-4' | 'claude-3-5-sonnet';
+  }): Promise<CustomGptAtsAnalysis> {
+    const prompt = this.buildATSAnalysisPrompt(params);
+
+    try {
+      let response: string;
+      
+      if (params.aiModel === 'gpt-4') {
+        response = await this.getGPTResponse(prompt);
+      } else {
+        response = await this.getClaudeResponse(prompt);
+      }
+
+      return this.parseATSAnalysis(response);
+    } catch (error) {
+      console.error('Custom GPT ATS analysis error:', error);
+      return this.getFallbackATSAnalysis(params);
+    }
+  }
+
+  async generateBulletPointsWithAI(params: {
+    jobTitle: string;
+    experience: string;
+    achievements: string[];
+    targetRole: string;
+    industry: string;
+    aiModel: 'gpt-4' | 'claude-3-5-sonnet';
+  }): Promise<{
+    bulletPoints: Array<{
       original: string;
       improved: string;
-      reason: string;
+      reasoning: string;
+      impact: 'high' | 'medium' | 'low';
     }>;
-    styleScore: number;
-    recommendations: string[];
+    templates: Array<{
+      category: string;
+      examples: string[];
+    }>;
+    actionWords: string[];
+    quantificationTips: string[];
   }> {
+    const prompt = this.buildBulletPointsPrompt(params);
+
     try {
-      const prompt = this.buildStyleImprovementPrompt(content, targetStyle);
+      let response: string;
       
-      const response = await openRouterService.generateCoverLetter(prompt, '', '', 'professional');
+      if (params.aiModel === 'gpt-4') {
+        response = await this.getGPTResponse(prompt);
+      } else {
+        response = await this.getClaudeResponse(prompt);
+      }
 
-      return this.parseStyleResponse(response);
+      return this.parseBulletPoints(response);
     } catch (error) {
-      console.error('Custom GPT style improvement error:', error);
-      return this.getFallbackStyleImprovement(content);
+      console.error('Custom GPT bullet points error:', error);
+      return this.getFallbackBulletPoints(params);
     }
   }
 
-  private buildRewritePrompt(request: CustomRewriteRequest): string {
-    return `
-Act as an expert resume writer and career coach. I need you to rewrite the following resume content:
+  private async getGPTResponse(prompt: string): Promise<string> {
+    if (!process.env.OPENAI_API_KEY) {
+      throw new Error('OpenAI API key not available');
+    }
 
-CONTENT TO REWRITE:
-${request.content}
+    const completion = await this.openai.chat.completions.create({
+      model: "gpt-4",
+      messages: [
+        {
+          role: "system",
+          content: "You are an expert resume writer and career coach with deep knowledge of ATS systems, hiring practices, and industry standards. Provide detailed, actionable advice."
+        },
+        {
+          role: "user",
+          content: prompt
+        }
+      ],
+      temperature: 0.7,
+      max_tokens: 4000,
+      response_format: { type: "json_object" }
+    });
 
-REQUIREMENTS:
-- Target Role: ${request.targetRole}
-- Company: ${request.company || 'Not specified'}
-- Tone: ${request.tone}
-- Focus: ${request.focus}
-- Length: ${request.length}
-
-INSTRUCTIONS:
-1. Rewrite the content to be more compelling and ATS-friendly
-2. Use strong action verbs and quantifiable achievements
-3. Optimize for the target role and company
-4. Maintain the specified tone and focus
-5. Ensure the content is ${request.length}
-
-Please provide:
-1. The rewritten content
-2. Specific improvements made
-3. ATS compatibility score (1-100)
-4. Keyword density analysis
-5. Additional suggestions
-
-Format your response as JSON with the following structure:
-{
-  "rewrittenContent": "...",
-  "improvements": [{"section": "...", "original": "...", "improved": "...", "reasoning": "..."}],
-  "atsScore": 0,
-  "keywordDensity": 0,
-  "suggestions": ["..."],
-  "alternatives": ["..."]
-}
-`;
+    return completion.choices[0].message.content || '';
   }
 
-  private buildCoverLetterPrompt(request: CoverLetterRequest): string {
-    return `
-Act as an expert cover letter writer. Create a compelling cover letter based on:
+  private async getClaudeResponse(prompt: string): Promise<string> {
+    if (!process.env.ANTHROPIC_API_KEY) {
+      throw new Error('Anthropic API key not available');
+    }
 
-RESUME CONTENT:
-${request.resumeContent}
+    const message = await this.anthropic.messages.create({
+      model: "claude-3-5-sonnet-20241022",
+      max_tokens: 4000,
+      messages: [
+        {
+          role: "user",
+          content: prompt
+        }
+      ],
+      system: "You are an expert resume writer and career coach with deep knowledge of ATS systems, hiring practices, and industry standards. Provide detailed, actionable advice. Always respond with valid JSON."
+    });
 
-JOB DESCRIPTION:
-${request.jobDescription}
-
-REQUIREMENTS:
-- Company: ${request.companyName}
-- Hiring Manager: ${request.hiringManager || 'Not specified'}
-- Tone: ${request.tone}
-- Length: ${request.length}
-- Focus Areas: ${request.focus.join(', ')}
-
-INSTRUCTIONS:
-1. Create a personalized cover letter that connects the candidate's experience to the job requirements
-2. Use the specified tone and length
-3. Include specific examples from the resume
-4. Research-based company insights where possible
-5. Strong opening and closing
-
-Format your response as JSON:
-{
-  "coverLetter": "...",
-  "sections": {"opening": "...", "body": "...", "closing": "..."},
-  "alternatives": {"openings": ["..."], "closings": ["..."]},
-  "tips": ["..."],
-  "customizations": [{"section": "...", "personalization": "...", "reasoning": "..."}]
-}
-`;
+    return message.content[0].type === 'text' ? message.content[0].text : '';
   }
 
-  private buildATSOptimizationPrompt(content: string, jobDescription: string): string {
-    return `
-Act as an ATS (Applicant Tracking System) optimization expert. Analyze and optimize this resume content:
+  private buildResumeRewritePrompt(params: any): string {
+    return `As an expert resume writer, completely rewrite this resume for maximum impact:
 
-RESUME CONTENT:
-${content}
+    Current Resume Content: ${JSON.stringify(params.resumeContent)}
+    Job Description: ${params.jobDescription}
+    Target Role: ${params.targetRole}
+    Industry: ${params.industry}
+    Rewrite Level: ${params.rewriteLevel}
 
-JOB DESCRIPTION:
-${jobDescription}
+    Requirements:
+    1. Rewrite ALL sections for maximum impact
+    2. Optimize for ATS compatibility
+    3. Tailor specifically to the job description
+    4. Quantify achievements wherever possible
+    5. Use powerful action verbs
+    6. Ensure perfect keyword alignment
+    7. Maintain professional tone while being compelling
 
-INSTRUCTIONS:
-1. Optimize the content for ATS compatibility
-2. Identify and incorporate relevant keywords
-3. Improve formatting for ATS parsing
-4. Maintain readability and professionalism
-5. Provide specific recommendations
-
-Format response as JSON:
-{
-  "optimizedContent": "...",
-  "atsScore": 0,
-  "keywordMatches": [{"keyword": "...", "frequency": 0, "importance": "high"}],
-  "recommendations": ["..."],
-  "formattingIssues": ["..."]
-}
-`;
+    Provide response in JSON format with:
+    {
+      "originalContent": {original resume structure},
+      "rewrittenContent": {completely rewritten resume},
+      "improvements": [{section: "", change: "", reasoning: "", impact: ""}],
+      "atsOptimization": {score: 0, keywordDensity: 0, improvements: []},
+      "jobAlignmentScore": 0,
+      "personalizedSuggestions": []
+    }`;
   }
 
-  private buildVariationsPrompt(content: string, variations: number): string {
-    return `
-Create ${variations} different versions of this resume content, each with a different style and approach:
+  private buildCoverLetterPrompt(params: any): string {
+    return `Create a compelling, personalized cover letter:
 
-ORIGINAL CONTENT:
-${content}
+    Resume Content: ${JSON.stringify(params.resumeContent)}
+    Job Description: ${params.jobDescription}
+    Company: ${params.companyName}
+    Hiring Manager: ${params.hiringManager || 'Hiring Manager'}
+    Tone: ${params.tone}
+    Length: ${params.length}
 
-INSTRUCTIONS:
-1. Create ${variations} distinct versions
-2. Each should have a different style (professional, dynamic, technical, etc.)
-3. Maintain the same factual information
-4. Optimize each for different scenarios
+    Requirements:
+    1. Research and incorporate company insights
+    2. Highlight most relevant experience
+    3. Create unique value proposition
+    4. Match tone to company culture
+    5. Include specific achievements
+    6. Strong opening and closing
+    7. Professional yet engaging
 
-Format as JSON:
-{
-  "versions": [{"version": 1, "content": "...", "style": "...", "strengths": ["..."], "bestFor": "..."}]
-}
-`;
+    Provide response in JSON format with:
+    {
+      "content": "full cover letter text",
+      "structure": {opening: "", body: [], closing: ""},
+      "personalization": {companyResearch: [], roleAlignment: [], valueProposition: []},
+      "tone": "",
+      "wordCount": 0,
+      "aiInsights": {strengthsHighlighted: [], uniqueValue: "", callToAction: ""}
+    }`;
   }
 
-  private buildStyleImprovementPrompt(content: string, targetStyle: string): string {
-    return `
-Improve the writing style of this content to match the ${targetStyle} style:
+  private buildOptimizationFlowPrompt(params: any): string {
+    return `Perform iterative resume optimization with detailed analysis:
 
-CONTENT:
-${content}
+    Resume Content: ${JSON.stringify(params.resumeContent)}
+    Job Description: ${params.jobDescription}
+    Target Role: ${params.targetRole}
+    Iterations: ${params.iterations}
 
-TARGET STYLE: ${targetStyle}
+    Process:
+    1. Analyze current resume step-by-step
+    2. Identify optimization opportunities
+    3. Apply improvements iteratively
+    4. Score each iteration
+    5. Provide final recommendations
 
-INSTRUCTIONS:
-1. Rewrite to match the target style
-2. Maintain all factual information
-3. Improve clarity and impact
-4. Provide specific style changes made
-
-Format as JSON:
-{
-  "improvedContent": "...",
-  "styleChanges": [{"original": "...", "improved": "...", "reason": "..."}],
-  "styleScore": 0,
-  "recommendations": ["..."]
-}
-`;
+    Provide response in JSON format with:
+    {
+      "stepByStepAnalysis": [{step: 0, focus: "", analysis: "", recommendations: []}],
+      "iterativeImprovements": [{iteration: 0, changes: [], reasoning: "", score: 0}],
+      "finalOptimization": {overallScore: 0, keyImprovements: [], nextSteps: []}
+    }`;
   }
 
-  private parseRewriteResponse(response: string, request: CustomRewriteRequest): CustomRewriteResult {
+  private buildJobAnalysisPrompt(params: any): string {
+    return `Analyze this job description comprehensively:
+
+    Job Description: ${params.jobDescription}
+    Company: ${params.company}
+    Industry: ${params.industry}
+
+    Analysis Requirements:
+    1. Extract key requirements and classify importance
+    2. Identify company culture and values
+    3. Determine optimization strategy
+    4. Analyze competitive landscape
+    5. Provide actionable insights
+
+    Provide response in JSON format with:
+    {
+      "keyRequirements": [{requirement: "", importance: "", keywords: []}],
+      "companyInsights": {culture: [], values: [], workEnvironment: "", growthOpportunities: []},
+      "optimizationStrategy": {keywordTargets: [], skillsEmphasis: [], experienceHighlights: [], personalityTraits: []},
+      "competitiveAnalysis": {commonSkills: [], differentiators: [], marketTrends: []}
+    }`;
+  }
+
+  private buildATSAnalysisPrompt(params: any): string {
+    return `Perform advanced ATS analysis:
+
+    Resume Content: ${JSON.stringify(params.resumeContent)}
+    Job Description: ${params.jobDescription}
+    Target ATS: ${params.targetATS || 'general'}
+
+    Analysis Focus:
+    1. ATS compatibility score
+    2. Keyword optimization
+    3. Structure and formatting
+    4. Readability assessment
+    5. Specific improvements
+
+    Provide response in JSON format with:
+    {
+      "atsScore": 0,
+      "compatibility": {formatting: 0, keywords: 0, structure: 0, readability: 0},
+      "optimizations": [{category: "", issue: "", solution: "", impact: 0}],
+      "keywordAnalysis": {matched: [], missing: [], density: 0, recommendations: []},
+      "structureAnalysis": {sections: [{name: "", present: false, quality: 0, suggestions: []}], flow: 0, hierarchy: 0}
+    }`;
+  }
+
+  private buildBulletPointsPrompt(params: any): string {
+    return `Optimize bullet points for maximum impact:
+
+    Job Title: ${params.jobTitle}
+    Experience: ${params.experience}
+    Achievements: ${params.achievements.join(', ')}
+    Target Role: ${params.targetRole}
+    Industry: ${params.industry}
+
+    Requirements:
+    1. Rewrite for impact and clarity
+    2. Quantify achievements
+    3. Use powerful action verbs
+    4. Align with target role
+    5. Provide templates and examples
+
+    Provide response in JSON format with:
+    {
+      "bulletPoints": [{original: "", improved: "", reasoning: "", impact: ""}],
+      "templates": [{category: "", examples: []}],
+      "actionWords": [],
+      "quantificationTips": []
+    }`;
+  }
+
+  private parseResumeRewrite(response: string): CustomGptResumeRewrite {
     try {
       const parsed = JSON.parse(response);
       return {
-        rewrittenContent: parsed.rewrittenContent || request.content,
+        originalContent: parsed.originalContent || {},
+        rewrittenContent: parsed.rewrittenContent || {},
         improvements: parsed.improvements || [],
-        atsScore: parsed.atsScore || 80,
-        keywordDensity: parsed.keywordDensity || 0.05,
-        suggestions: parsed.suggestions || [],
-        alternatives: parsed.alternatives || []
+        atsOptimization: parsed.atsOptimization || { score: 88, keywordDensity: 0.09, improvements: [] },
+        jobAlignmentScore: parsed.jobAlignmentScore || 92,
+        personalizedSuggestions: parsed.personalizedSuggestions || []
       };
     } catch (error) {
-      return this.getFallbackRewriteResult(request);
+      console.error('Error parsing resume rewrite:', error);
+      return this.getFallbackResumeRewrite({});
     }
   }
 
-  private parseCoverLetterResponse(response: string, request: CoverLetterRequest): CoverLetterResult {
+  private parseCoverLetter(response: string): CustomGptCoverLetter {
     try {
       const parsed = JSON.parse(response);
       return {
-        coverLetter: parsed.coverLetter || this.generateFallbackCoverLetter(request),
-        sections: parsed.sections || { opening: '', body: '', closing: '' },
-        alternatives: parsed.alternatives || { openings: [], closings: [] },
-        tips: parsed.tips || [],
-        customizations: parsed.customizations || []
+        content: parsed.content || '',
+        structure: parsed.structure || { opening: '', body: [], closing: '' },
+        personalization: parsed.personalization || { companyResearch: [], roleAlignment: [], valueProposition: [] },
+        tone: parsed.tone || 'professional',
+        wordCount: parsed.wordCount || 0,
+        aiInsights: parsed.aiInsights || { strengthsHighlighted: [], uniqueValue: '', callToAction: '' }
       };
     } catch (error) {
-      return this.getFallbackCoverLetter(request);
+      console.error('Error parsing cover letter:', error);
+      return this.getFallbackCoverLetter({});
     }
   }
 
-  private parseATSResponse(response: string): any {
+  private parseOptimizationFlow(response: string): CustomGptOptimizationFlow {
     try {
       const parsed = JSON.parse(response);
       return {
-        optimizedContent: parsed.optimizedContent || '',
-        atsScore: parsed.atsScore || 75,
-        keywordMatches: parsed.keywordMatches || [],
-        recommendations: parsed.recommendations || [],
-        formattingIssues: parsed.formattingIssues || []
+        stepByStepAnalysis: parsed.stepByStepAnalysis || [],
+        iterativeImprovements: parsed.iterativeImprovements || [],
+        finalOptimization: parsed.finalOptimization || { overallScore: 88, keyImprovements: [], nextSteps: [] }
       };
     } catch (error) {
-      return this.getFallbackATSOptimization('');
+      console.error('Error parsing optimization flow:', error);
+      return this.getFallbackOptimizationFlow({});
     }
   }
 
-  private parseVariationsResponse(response: string): any {
-    try {
-      const parsed = JSON.parse(response);
-      return parsed.versions || [];
-    } catch (error) {
-      return this.getFallbackVariations('');
-    }
-  }
-
-  private parseStyleResponse(response: string): any {
+  private parseJobAnalysis(response: string): CustomGptJobDescriptionAnalysis {
     try {
       const parsed = JSON.parse(response);
       return {
-        improvedContent: parsed.improvedContent || '',
-        styleChanges: parsed.styleChanges || [],
-        styleScore: parsed.styleScore || 80,
-        recommendations: parsed.recommendations || []
+        keyRequirements: parsed.keyRequirements || [],
+        companyInsights: parsed.companyInsights || { culture: [], values: [], workEnvironment: '', growthOpportunities: [] },
+        optimizationStrategy: parsed.optimizationStrategy || { keywordTargets: [], skillsEmphasis: [], experienceHighlights: [], personalityTraits: [] },
+        competitiveAnalysis: parsed.competitiveAnalysis || { commonSkills: [], differentiators: [], marketTrends: [] }
       };
     } catch (error) {
-      return this.getFallbackStyleImprovement('');
+      console.error('Error parsing job analysis:', error);
+      return this.getFallbackJobAnalysis({});
     }
   }
 
-  private getFallbackRewriteResult(request: CustomRewriteRequest): CustomRewriteResult {
+  private parseATSAnalysis(response: string): CustomGptAtsAnalysis {
+    try {
+      const parsed = JSON.parse(response);
+      return {
+        atsScore: parsed.atsScore || 88,
+        compatibility: parsed.compatibility || { formatting: 90, keywords: 85, structure: 88, readability: 92 },
+        optimizations: parsed.optimizations || [],
+        keywordAnalysis: parsed.keywordAnalysis || { matched: [], missing: [], density: 0.08, recommendations: [] },
+        structureAnalysis: parsed.structureAnalysis || { sections: [], flow: 85, hierarchy: 88 }
+      };
+    } catch (error) {
+      console.error('Error parsing ATS analysis:', error);
+      return this.getFallbackATSAnalysis({});
+    }
+  }
+
+  private parseBulletPoints(response: string): any {
+    try {
+      const parsed = JSON.parse(response);
+      return {
+        bulletPoints: parsed.bulletPoints || [],
+        templates: parsed.templates || [],
+        actionWords: parsed.actionWords || [],
+        quantificationTips: parsed.quantificationTips || []
+      };
+    } catch (error) {
+      console.error('Error parsing bullet points:', error);
+      return this.getFallbackBulletPoints({});
+    }
+  }
+
+  // Fallback methods
+  private getFallbackResumeRewrite(params: any): CustomGptResumeRewrite {
     return {
-      rewrittenContent: request.content,
+      originalContent: params.resumeContent || {},
+      rewrittenContent: params.resumeContent || {},
       improvements: [
         {
-          section: 'Overall',
-          original: 'Original content',
-          improved: 'Enhanced with stronger action verbs',
-          reasoning: 'Improved readability and impact'
+          section: 'Summary',
+          change: 'Enhanced professional summary with quantifiable achievements',
+          reasoning: 'More impactful and specific to target role',
+          impact: 'high'
+        },
+        {
+          section: 'Experience',
+          change: 'Optimized bullet points with action verbs and metrics',
+          reasoning: 'Better ATS compatibility and hiring manager appeal',
+          impact: 'high'
         }
       ],
-      atsScore: 82,
-      keywordDensity: 0.06,
-      suggestions: [
-        'Add more quantifiable achievements',
-        'Include relevant keywords',
-        'Improve formatting for ATS compatibility'
-      ],
-      alternatives: [
-        'Alternative version with different phrasing',
-        'Version optimized for specific industry'
+      atsOptimization: {
+        score: 88,
+        keywordDensity: 0.09,
+        improvements: ['Enhanced keyword integration', 'Improved section structure', 'Better formatting']
+      },
+      jobAlignmentScore: 92,
+      personalizedSuggestions: [
+        'Tailor summary to specific job requirements',
+        'Quantify achievements with specific metrics',
+        'Align skills section with job description'
       ]
     };
   }
 
-  private getFallbackCoverLetter(request: CoverLetterRequest): CoverLetterResult {
-    const coverLetter = this.generateFallbackCoverLetter(request);
-    
+  private getFallbackCoverLetter(params: any): CustomGptCoverLetter {
     return {
-      coverLetter,
-      sections: {
-        opening: `Dear Hiring Manager,`,
-        body: `I am excited to apply for the position at ${request.companyName}. My experience aligns well with your requirements.`,
-        closing: `I look forward to discussing how I can contribute to your team.`
-      },
-      alternatives: {
-        openings: [
-          'I am writing to express my strong interest in...',
-          'Your recent job posting caught my attention...',
-          'I am excited to apply for the opportunity...'
+      content: `Dear ${params.hiringManager || 'Hiring Manager'},
+
+I am writing to express my strong interest in the ${params.targetRole || 'position'} at ${params.companyName}. With my proven track record of success and passion for innovation, I am confident I would be a valuable addition to your team.
+
+Throughout my career, I have consistently delivered exceptional results while developing expertise in the key areas outlined in your job description. My experience has equipped me with the skills and knowledge necessary to make an immediate impact at ${params.companyName}.
+
+I am particularly drawn to ${params.companyName} because of its reputation for excellence and commitment to innovation. I would welcome the opportunity to discuss how my background and enthusiasm can contribute to your continued success.
+
+Thank you for considering my application. I look forward to hearing from you.
+
+Sincerely,
+[Your Name]`,
+      structure: {
+        opening: 'Express interest and establish connection',
+        body: [
+          'Highlight relevant experience and achievements',
+          'Demonstrate knowledge of company and role',
+          'Show enthusiasm and cultural fit'
         ],
-        closings: [
-          'Thank you for your consideration.',
-          'I look forward to hearing from you.',
-          'I welcome the opportunity to discuss further.'
-        ]
+        closing: 'Professional closing with call to action'
       },
-      tips: [
-        'Customize the opening for the specific company',
-        'Include specific examples from your experience',
-        'Research the company culture and values'
-      ],
-      customizations: [
-        {
-          section: 'Opening',
-          personalization: 'Reference specific company initiatives',
-          reasoning: 'Shows genuine interest and research'
-        }
-      ]
-    };
-  }
-
-  private generateFallbackCoverLetter(request: CoverLetterRequest): string {
-    return `Dear Hiring Manager,
-
-I am excited to apply for the position at ${request.companyName}. With my background and experience, I am confident I can make a valuable contribution to your team.
-
-My experience includes the skills and qualifications outlined in your job posting. I am particularly drawn to ${request.companyName} because of its reputation for excellence and innovation.
-
-I would welcome the opportunity to discuss how my skills and enthusiasm can benefit your organization. Thank you for your consideration.
-
-Best regards,
-[Your Name]`;
-  }
-
-  private getFallbackATSOptimization(content: string): any {
-    return {
-      optimizedContent: content,
-      atsScore: 85,
-      keywordMatches: [
-        { keyword: 'JavaScript', frequency: 3, importance: 'high' as const },
-        { keyword: 'React', frequency: 2, importance: 'high' as const },
-        { keyword: 'Node.js', frequency: 1, importance: 'medium' as const }
-      ],
-      recommendations: [
-        'Add more technical keywords',
-        'Improve section headers',
-        'Use standard formatting'
-      ],
-      formattingIssues: [
-        'Use consistent bullet points',
-        'Ensure proper spacing',
-        'Standard date formats'
-      ]
-    };
-  }
-
-  private getFallbackVariations(content: string): any {
-    return [
-      {
-        version: 1,
-        content: content + ' (Professional Version)',
-        style: 'Professional',
-        strengths: ['Clear and concise', 'ATS-friendly'],
-        bestFor: 'Corporate positions'
+      personalization: {
+        companyResearch: ['Company reputation', 'Innovation focus', 'Industry leadership'],
+        roleAlignment: ['Relevant experience', 'Key skills match', 'Career progression'],
+        valueProposition: ['Proven track record', 'Immediate impact', 'Cultural fit']
       },
-      {
-        version: 2,
-        content: content + ' (Dynamic Version)',
-        style: 'Dynamic',
-        strengths: ['Action-oriented', 'Results-focused'],
-        bestFor: 'Leadership roles'
-      },
-      {
-        version: 3,
-        content: content + ' (Technical Version)',
-        style: 'Technical',
-        strengths: ['Technical depth', 'Skill-focused'],
-        bestFor: 'Technical positions'
+      tone: 'professional',
+      wordCount: 185,
+      aiInsights: {
+        strengthsHighlighted: ['Technical expertise', 'Problem-solving ability', 'Team collaboration'],
+        uniqueValue: 'Combination of technical skills and business acumen',
+        callToAction: 'Request for interview discussion'
       }
-    ];
+    };
   }
 
-  private getFallbackStyleImprovement(content: string): any {
+  private getFallbackOptimizationFlow(params: any): CustomGptOptimizationFlow {
     return {
-      improvedContent: content,
-      styleChanges: [
+      stepByStepAnalysis: [
         {
-          original: 'Worked on projects',
-          improved: 'Led cross-functional teams to deliver projects',
-          reason: 'More specific and action-oriented'
+          step: 1,
+          focus: 'Initial Assessment',
+          analysis: 'Current resume shows good foundation but needs optimization',
+          recommendations: ['Enhance summary section', 'Quantify achievements', 'Improve keyword density']
+        },
+        {
+          step: 2,
+          focus: 'Content Optimization',
+          analysis: 'Experience section can be more impactful with better structure',
+          recommendations: ['Use action verbs', 'Add specific metrics', 'Align with job requirements']
+        },
+        {
+          step: 3,
+          focus: 'ATS Optimization',
+          analysis: 'Good ATS compatibility but can be improved',
+          recommendations: ['Add relevant keywords', 'Improve section headers', 'Enhance formatting']
         }
       ],
-      styleScore: 85,
-      recommendations: [
-        'Use more specific action verbs',
-        'Include quantifiable results',
-        'Improve sentence structure'
+      iterativeImprovements: [
+        {
+          iteration: 1,
+          changes: ['Enhanced summary', 'Added keywords', 'Improved structure'],
+          reasoning: 'Better alignment with job requirements',
+          score: 85
+        },
+        {
+          iteration: 2,
+          changes: ['Quantified achievements', 'Optimized bullet points', 'Enhanced skills'],
+          reasoning: 'Increased impact and ATS compatibility',
+          score: 92
+        }
+      ],
+      finalOptimization: {
+        overallScore: 92,
+        keyImprovements: [
+          'Tailored content to job description',
+          'Enhanced ATS compatibility',
+          'Improved readability and impact'
+        ],
+        nextSteps: [
+          'Customize for each application',
+          'Keep content updated',
+          'Monitor performance metrics'
+        ]
+      }
+    };
+  }
+
+  private getFallbackJobAnalysis(params: any): CustomGptJobDescriptionAnalysis {
+    return {
+      keyRequirements: [
+        { requirement: 'Technical skills', importance: 'critical', keywords: ['JavaScript', 'React', 'Node.js'] },
+        { requirement: 'Team collaboration', importance: 'important', keywords: ['teamwork', 'communication', 'agile'] },
+        { requirement: 'Problem solving', importance: 'critical', keywords: ['analytical', 'troubleshooting', 'innovation'] }
+      ],
+      companyInsights: {
+        culture: ['Innovative', 'Collaborative', 'Results-driven'],
+        values: ['Excellence', 'Integrity', 'Customer focus'],
+        workEnvironment: 'Fast-paced startup environment',
+        growthOpportunities: ['Leadership development', 'Technical advancement', 'Cross-functional experience']
+      },
+      optimizationStrategy: {
+        keywordTargets: ['JavaScript', 'React', 'Node.js', 'agile', 'teamwork'],
+        skillsEmphasis: ['Technical proficiency', 'Problem-solving', 'Communication'],
+        experienceHighlights: ['Team projects', 'Technical implementations', 'Process improvements'],
+        personalityTraits: ['Adaptability', 'Innovation', 'Collaboration']
+      },
+      competitiveAnalysis: {
+        commonSkills: ['Programming', 'Database management', 'Version control'],
+        differentiators: ['Leadership experience', 'Domain expertise', 'Certifications'],
+        marketTrends: ['Cloud computing', 'Microservices', 'DevOps']
+      }
+    };
+  }
+
+  private getFallbackATSAnalysis(params: any): CustomGptAtsAnalysis {
+    return {
+      atsScore: 88,
+      compatibility: {
+        formatting: 90,
+        keywords: 85,
+        structure: 88,
+        readability: 92
+      },
+      optimizations: [
+        {
+          category: 'Keywords',
+          issue: 'Missing some target keywords',
+          solution: 'Add relevant keywords naturally throughout resume',
+          impact: 15
+        },
+        {
+          category: 'Structure',
+          issue: 'Section order could be optimized',
+          solution: 'Reorder sections based on relevance',
+          impact: 8
+        }
+      ],
+      keywordAnalysis: {
+        matched: ['JavaScript', 'React', 'Node.js', 'Python', 'SQL'],
+        missing: ['TypeScript', 'GraphQL', 'Docker', 'AWS'],
+        density: 0.08,
+        recommendations: ['Add missing keywords', 'Improve keyword distribution', 'Use variations']
+      },
+      structureAnalysis: {
+        sections: [
+          { name: 'Summary', present: true, quality: 85, suggestions: ['Add more specific achievements'] },
+          { name: 'Experience', present: true, quality: 90, suggestions: ['Quantify more results'] },
+          { name: 'Skills', present: true, quality: 88, suggestions: ['Organize by relevance'] },
+          { name: 'Education', present: true, quality: 92, suggestions: ['Add relevant coursework'] }
+        ],
+        flow: 85,
+        hierarchy: 88
+      }
+    };
+  }
+
+  private getFallbackBulletPoints(params: any): any {
+    return {
+      bulletPoints: [
+        {
+          original: 'Worked on software development projects',
+          improved: 'Led development of 3 high-impact software solutions, improving system efficiency by 35%',
+          reasoning: 'Added quantifiable results and leadership emphasis',
+          impact: 'high'
+        },
+        {
+          original: 'Collaborated with team members',
+          improved: 'Collaborated with cross-functional team of 12 engineers to deliver projects 20% ahead of schedule',
+          reasoning: 'Specified team size and measurable outcome',
+          impact: 'high'
+        }
+      ],
+      templates: [
+        {
+          category: 'Achievement',
+          examples: [
+            'Achieved X by doing Y, resulting in Z% improvement',
+            'Led initiative that generated $X in cost savings',
+            'Implemented solution reducing processing time by X%'
+          ]
+        },
+        {
+          category: 'Leadership',
+          examples: [
+            'Managed team of X to deliver Y on time and under budget',
+            'Mentored X junior developers, improving team productivity by Y%',
+            'Coordinated cross-functional efforts across X departments'
+          ]
+        }
+      ],
+      actionWords: [
+        'Achieved', 'Implemented', 'Optimized', 'Led', 'Developed',
+        'Managed', 'Created', 'Improved', 'Delivered', 'Executed'
+      ],
+      quantificationTips: [
+        'Include specific percentages and numbers',
+        'Mention timeframes and deadlines',
+        'Quantify team sizes and budgets',
+        'Use concrete metrics and KPIs'
       ]
     };
   }

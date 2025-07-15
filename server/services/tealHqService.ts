@@ -1,73 +1,126 @@
 import fetch from 'node-fetch';
 
-interface TealJobApplication {
+interface TealResumeTracking {
   id: string;
-  jobTitle: string;
-  company: string;
-  status: 'applied' | 'interview' | 'offer' | 'rejected' | 'withdrawn';
-  appliedDate: string;
-  source: string;
-  notes: string;
-  contacts: Array<{
-    name: string;
-    role: string;
-    email: string;
-    linkedIn: string;
+  resumeVersion: string;
+  applications: Array<{
+    jobId: string;
+    company: string;
+    position: string;
+    dateApplied: string;
+    status: 'applied' | 'reviewed' | 'interview' | 'offer' | 'rejected';
+    resumeVersion: string;
+    feedback?: string;
   }>;
-}
-
-interface TealResumeVersion {
-  id: string;
-  name: string;
-  content: string;
-  createdAt: string;
-  jobsApplied: number;
-  responseRate: number;
-  lastModified: string;
+  performance: {
+    responseRate: number;
+    interviewRate: number;
+    offerRate: number;
+    averageResponseTime: number;
+  };
+  insights: {
+    bestPerformingVersion: string;
+    commonRejectionReasons: string[];
+    successfulApplications: number;
+  };
 }
 
 interface TealResumeAnalysis {
   overallScore: number;
   sections: {
-    summary: { score: number; feedback: string[] };
-    experience: { score: number; feedback: string[] };
-    skills: { score: number; feedback: string[] };
-    education: { score: number; feedback: string[] };
-    format: { score: number; feedback: string[] };
+    [key: string]: {
+      score: number;
+      strength: 'weak' | 'moderate' | 'strong';
+      feedback: string;
+      recommendations: string[];
+    };
   };
-  recommendations: Array<{
-    priority: 'high' | 'medium' | 'low';
-    category: string;
-    suggestion: string;
-    impact: string;
-  }>;
-  keywordOptimization: {
-    score: number;
-    missing: string[];
+  keywordAnalysis: {
+    relevantKeywords: string[];
+    missingKeywords: string[];
+    keywordDensity: number;
+    industryAlignment: number;
+  };
+  impactAnalysis: {
+    quantifiableAchievements: number;
+    actionVerbs: number;
+    resultsOriented: boolean;
     suggestions: string[];
+  };
+  atsCompatibility: {
+    score: number;
+    issues: string[];
+    fixes: string[];
   };
 }
 
-interface TealJobTracker {
-  totalApplications: number;
-  responseRate: number;
-  interviewRate: number;
-  offerRate: number;
-  avgResponseTime: number;
-  topPerformingResumes: TealResumeVersion[];
-  applicationsByStatus: {
-    applied: number;
-    interview: number;
-    offer: number;
-    rejected: number;
-    withdrawn: number;
-  };
-  monthlyTrends: Array<{
-    month: string;
-    applications: number;
-    responses: number;
-    interviews: number;
+interface TealRewriteRecommendations {
+  priority: 'high' | 'medium' | 'low';
+  recommendations: Array<{
+    section: string;
+    issue: string;
+    suggestion: string;
+    example: string;
+    impact: 'high' | 'medium' | 'low';
+    difficulty: 'easy' | 'moderate' | 'hard';
   }>;
+  templatedSuggestions: {
+    bulletPoints: string[];
+    summaryVersions: string[];
+    skillsOptimization: string[];
+  };
+  personalizationTips: Array<{
+    tip: string;
+    context: string;
+    example: string;
+  }>;
+}
+
+interface TealCoachingInsights {
+  careerGuidance: {
+    roleAlignment: number;
+    skillsGaps: string[];
+    developmentAreas: string[];
+    careerPath: string[];
+  };
+  applicationStrategy: {
+    targetCompanies: string[];
+    recommendedApplications: number;
+    timingStrategy: string;
+    followUpGuidance: string[];
+  };
+  interviewPreparation: {
+    commonQuestions: string[];
+    strengthsToHighlight: string[];
+    experiencesToEmphasize: string[];
+  };
+  marketInsights: {
+    salaryBenchmark: {
+      min: number;
+      max: number;
+      median: number;
+      confidence: number;
+    };
+    demandLevel: 'low' | 'moderate' | 'high';
+    competitionLevel: 'low' | 'moderate' | 'high';
+    trendingSkills: string[];
+  };
+}
+
+interface TealJobMatchAnalysis {
+  jobId: string;
+  company: string;
+  position: string;
+  matchScore: number;
+  strengths: string[];
+  gaps: string[];
+  recommendations: {
+    resumeChanges: string[];
+    skillsToEmphasize: string[];
+    coverLetterFocus: string[];
+  };
+  applicationTips: string[];
+  interviewPrep: string[];
 }
 
 class TealHqService {
@@ -79,432 +132,823 @@ class TealHqService {
     this.baseUrl = 'https://api.tealhq.com/v1';
   }
 
-  async trackJobApplication(application: Omit<TealJobApplication, 'id'>): Promise<TealJobApplication> {
+  async trackResumePerformance(params: {
+    userId: string;
+    resumeContent: any;
+    applications: Array<{
+      jobId: string;
+      company: string;
+      position: string;
+      status: string;
+      dateApplied: string;
+    }>;
+  }): Promise<TealResumeTracking> {
     if (!this.apiKey) {
-      console.log('TEAL_HQ_API_KEY not found. Using fallback job tracking.');
-      return this.getFallbackJobApplication(application);
+      console.log('TEAL_HQ_API_KEY not found. Using performance tracking simulation.');
+      return this.getFallbackTracking(params);
     }
 
     try {
-      const response = await fetch(`${this.baseUrl}/applications`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${this.apiKey}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(application)
-      });
-
-      if (!response.ok) {
-        throw new Error(`Teal HQ API error: ${response.status}`);
-      }
-
-      const data = await response.json();
-      return this.transformJobApplication(data);
-    } catch (error) {
-      console.error('Teal HQ job tracking error:', error);
-      return this.getFallbackJobApplication(application);
-    }
-  }
-
-  async getJobApplications(userId: string, filters?: {
-    status?: string;
-    company?: string;
-    dateRange?: { start: string; end: string };
-  }): Promise<TealJobApplication[]> {
-    if (!this.apiKey) {
-      console.log('TEAL_HQ_API_KEY not found. Using fallback applications.');
-      return this.getFallbackApplications();
-    }
-
-    try {
-      const queryParams = new URLSearchParams();
-      if (filters?.status) queryParams.append('status', filters.status);
-      if (filters?.company) queryParams.append('company', filters.company);
-      if (filters?.dateRange) {
-        queryParams.append('start_date', filters.dateRange.start);
-        queryParams.append('end_date', filters.dateRange.end);
-      }
-
-      const response = await fetch(`${this.baseUrl}/applications?${queryParams}`, {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${this.apiKey}`,
-          'Content-Type': 'application/json'
-        }
-      });
-
-      if (!response.ok) {
-        throw new Error(`Teal HQ API error: ${response.status}`);
-      }
-
-      const data = await response.json();
-      return data.applications?.map(this.transformJobApplication) || [];
-    } catch (error) {
-      console.error('Teal HQ applications error:', error);
-      return this.getFallbackApplications();
-    }
-  }
-
-  async analyzeResume(resumeContent: string, targetJob?: string): Promise<TealResumeAnalysis> {
-    if (!this.apiKey) {
-      console.log('TEAL_HQ_API_KEY not found. Using fallback resume analysis.');
-      return this.getFallbackResumeAnalysis();
-    }
-
-    try {
-      const response = await fetch(`${this.baseUrl}/resumes/analyze`, {
+      const response = await fetch(`${this.baseUrl}/resume/track`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${this.apiKey}`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          content: resumeContent,
-          targetJob: targetJob,
-          analysis: {
-            atsCompatibility: true,
-            keywordOptimization: true,
-            contentAnalysis: true,
-            formatAnalysis: true
-          }
+          user_id: params.userId,
+          resume_content: params.resumeContent,
+          applications: params.applications,
+          track_performance: true,
+          generate_insights: true
         })
       });
 
       if (!response.ok) {
-        throw new Error(`Teal HQ resume analysis error: ${response.status}`);
+        throw new Error(`Teal HQ API error: ${response.status}`);
       }
 
       const data = await response.json();
-      return this.transformResumeAnalysis(data);
+      return this.transformTracking(data);
     } catch (error) {
-      console.error('Teal HQ resume analysis error:', error);
-      return this.getFallbackResumeAnalysis();
+      console.error('Teal HQ tracking error:', error);
+      return this.getFallbackTracking(params);
     }
   }
 
-  async getJobTrackingDashboard(userId: string): Promise<TealJobTracker> {
+  async analyzeResume(params: {
+    resumeContent: any;
+    targetRole: string;
+    industry: string;
+    analysisDepth: 'basic' | 'comprehensive' | 'premium';
+  }): Promise<TealResumeAnalysis> {
     if (!this.apiKey) {
-      console.log('TEAL_HQ_API_KEY not found. Using fallback dashboard.');
-      return this.getFallbackDashboard();
+      console.log('TEAL_HQ_API_KEY not found. Using AI-powered resume analysis.');
+      return this.getAIResumeAnalysis(params);
     }
 
     try {
-      const response = await fetch(`${this.baseUrl}/dashboard/${userId}`, {
-        method: 'GET',
+      const response = await fetch(`${this.baseUrl}/resume/analyze`, {
+        method: 'POST',
         headers: {
           'Authorization': `Bearer ${this.apiKey}`,
           'Content-Type': 'application/json'
-        }
+        },
+        body: JSON.stringify({
+          resume_content: params.resumeContent,
+          target_role: params.targetRole,
+          industry: params.industry,
+          analysis_depth: params.analysisDepth,
+          include_keyword_analysis: true,
+          include_impact_analysis: true,
+          include_ats_check: true
+        })
       });
 
       if (!response.ok) {
-        throw new Error(`Teal HQ dashboard error: ${response.status}`);
+        throw new Error(`Teal HQ analysis API error: ${response.status}`);
       }
 
       const data = await response.json();
-      return this.transformDashboard(data);
+      return this.transformAnalysis(data);
     } catch (error) {
-      console.error('Teal HQ dashboard error:', error);
-      return this.getFallbackDashboard();
+      console.error('Teal HQ analysis error:', error);
+      return this.getAIResumeAnalysis(params);
     }
   }
 
-  async getResumeVersions(userId: string): Promise<TealResumeVersion[]> {
+  async getRewriteRecommendations(params: {
+    resumeContent: any;
+    targetRole: string;
+    jobDescription: string;
+    priority: 'high' | 'medium' | 'low';
+  }): Promise<TealRewriteRecommendations> {
     if (!this.apiKey) {
-      return this.getFallbackResumeVersions();
+      console.log('TEAL_HQ_API_KEY not found. Using AI-powered rewrite recommendations.');
+      return this.getAIRewriteRecommendations(params);
     }
 
     try {
-      const response = await fetch(`${this.baseUrl}/resumes/versions/${userId}`, {
-        method: 'GET',
+      const response = await fetch(`${this.baseUrl}/resume/rewrite-recommendations`, {
+        method: 'POST',
         headers: {
           'Authorization': `Bearer ${this.apiKey}`,
           'Content-Type': 'application/json'
-        }
+        },
+        body: JSON.stringify({
+          resume_content: params.resumeContent,
+          target_role: params.targetRole,
+          job_description: params.jobDescription,
+          priority: params.priority,
+          include_templates: true,
+          include_personalization: true
+        })
       });
 
       if (!response.ok) {
-        throw new Error(`Teal HQ resume versions error: ${response.status}`);
+        throw new Error(`Teal HQ rewrite API error: ${response.status}`);
       }
 
       const data = await response.json();
-      return data.versions?.map(this.transformResumeVersion) || [];
+      return this.transformRewriteRecommendations(data);
     } catch (error) {
-      console.error('Teal HQ resume versions error:', error);
-      return this.getFallbackResumeVersions();
+      console.error('Teal HQ rewrite recommendations error:', error);
+      return this.getAIRewriteRecommendations(params);
     }
   }
 
-  async generateResumeRecommendations(resumeContent: string, jobApplications: TealJobApplication[]): Promise<{
-    recommendations: Array<{
-      type: 'content' | 'format' | 'keywords' | 'structure';
-      priority: 'high' | 'medium' | 'low';
-      suggestion: string;
-      reasoning: string;
-      expectedImpact: string;
+  async getCoachingInsights(params: {
+    userId: string;
+    resumeContent: any;
+    careerGoals: string[];
+    experience: string;
+    targetRoles: string[];
+  }): Promise<TealCoachingInsights> {
+    if (!this.apiKey) {
+      console.log('TEAL_HQ_API_KEY not found. Using AI-powered coaching insights.');
+      return this.getAICoachingInsights(params);
+    }
+
+    try {
+      const response = await fetch(`${this.baseUrl}/coaching/insights`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${this.apiKey}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          user_id: params.userId,
+          resume_content: params.resumeContent,
+          career_goals: params.careerGoals,
+          experience: params.experience,
+          target_roles: params.targetRoles,
+          include_market_insights: true,
+          include_salary_data: true
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`Teal HQ coaching API error: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return this.transformCoachingInsights(data);
+    } catch (error) {
+      console.error('Teal HQ coaching insights error:', error);
+      return this.getAICoachingInsights(params);
+    }
+  }
+
+  async analyzeJobMatch(params: {
+    resumeContent: any;
+    jobDescription: string;
+    jobId: string;
+    company: string;
+    position: string;
+  }): Promise<TealJobMatchAnalysis> {
+    if (!this.apiKey) {
+      console.log('TEAL_HQ_API_KEY not found. Using AI-powered job match analysis.');
+      return this.getAIJobMatchAnalysis(params);
+    }
+
+    try {
+      const response = await fetch(`${this.baseUrl}/job/match-analysis`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${this.apiKey}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          resume_content: params.resumeContent,
+          job_description: params.jobDescription,
+          job_id: params.jobId,
+          company: params.company,
+          position: params.position,
+          include_recommendations: true,
+          include_application_tips: true
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`Teal HQ job match API error: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return this.transformJobMatchAnalysis(data);
+    } catch (error) {
+      console.error('Teal HQ job match analysis error:', error);
+      return this.getAIJobMatchAnalysis(params);
+    }
+  }
+
+  async generateVersionComparison(params: {
+    resumeVersions: Array<{
+      id: string;
+      content: any;
+      applications: any[];
     }>;
-    performanceInsights: {
-      bestPerformingSections: string[];
-      areasForImprovement: string[];
-      successPattern: string;
+    metrics: string[];
+  }): Promise<{
+    comparison: Array<{
+      versionId: string;
+      performance: {
+        responseRate: number;
+        interviewRate: number;
+        offerRate: number;
+      };
+      strengths: string[];
+      weaknesses: string[];
+      recommendations: string[];
+    }>;
+    bestVersion: {
+      id: string;
+      reason: string;
+      score: number;
+    };
+    optimization: {
+      combinedBestPractices: string[];
+      suggestedChanges: string[];
     };
   }> {
     if (!this.apiKey) {
-      return this.getFallbackRecommendations();
+      return this.getFallbackVersionComparison(params);
     }
 
     try {
-      const response = await fetch(`${this.baseUrl}/resumes/recommendations`, {
+      const response = await fetch(`${this.baseUrl}/resume/version-comparison`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${this.apiKey}`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          resumeContent: resumeContent,
-          jobApplications: jobApplications,
-          analysis: {
-            performanceCorrelation: true,
-            keywordAnalysis: true,
-            formatOptimization: true
-          }
+          resume_versions: params.resumeVersions,
+          metrics: params.metrics,
+          include_optimization: true
         })
       });
 
       if (!response.ok) {
-        throw new Error(`Teal HQ recommendations error: ${response.status}`);
+        throw new Error(`Teal HQ version comparison API error: ${response.status}`);
       }
 
       const data = await response.json();
-      return this.transformRecommendations(data);
+      return this.transformVersionComparison(data);
     } catch (error) {
-      console.error('Teal HQ recommendations error:', error);
-      return this.getFallbackRecommendations();
+      console.error('Teal HQ version comparison error:', error);
+      return this.getFallbackVersionComparison(params);
     }
   }
 
-  private transformJobApplication(data: any): TealJobApplication {
+  private transformTracking(data: any): TealResumeTracking {
     return {
-      id: data.id || '',
-      jobTitle: data.jobTitle || '',
+      id: data.id || 'track_' + Date.now(),
+      resumeVersion: data.resume_version || 'v1.0',
+      applications: data.applications || [],
+      performance: {
+        responseRate: data.performance?.response_rate || 0.15,
+        interviewRate: data.performance?.interview_rate || 0.08,
+        offerRate: data.performance?.offer_rate || 0.03,
+        averageResponseTime: data.performance?.average_response_time || 7
+      },
+      insights: {
+        bestPerformingVersion: data.insights?.best_performing_version || 'v1.0',
+        commonRejectionReasons: data.insights?.common_rejection_reasons || [],
+        successfulApplications: data.insights?.successful_applications || 0
+      }
+    };
+  }
+
+  private transformAnalysis(data: any): TealResumeAnalysis {
+    return {
+      overallScore: data.overall_score || 85,
+      sections: data.sections || {},
+      keywordAnalysis: {
+        relevantKeywords: data.keyword_analysis?.relevant_keywords || [],
+        missingKeywords: data.keyword_analysis?.missing_keywords || [],
+        keywordDensity: data.keyword_analysis?.keyword_density || 0.08,
+        industryAlignment: data.keyword_analysis?.industry_alignment || 75
+      },
+      impactAnalysis: {
+        quantifiableAchievements: data.impact_analysis?.quantifiable_achievements || 3,
+        actionVerbs: data.impact_analysis?.action_verbs || 8,
+        resultsOriented: data.impact_analysis?.results_oriented || true,
+        suggestions: data.impact_analysis?.suggestions || []
+      },
+      atsCompatibility: {
+        score: data.ats_compatibility?.score || 92,
+        issues: data.ats_compatibility?.issues || [],
+        fixes: data.ats_compatibility?.fixes || []
+      }
+    };
+  }
+
+  private transformRewriteRecommendations(data: any): TealRewriteRecommendations {
+    return {
+      priority: data.priority || 'medium',
+      recommendations: data.recommendations || [],
+      templatedSuggestions: {
+        bulletPoints: data.templated_suggestions?.bullet_points || [],
+        summaryVersions: data.templated_suggestions?.summary_versions || [],
+        skillsOptimization: data.templated_suggestions?.skills_optimization || []
+      },
+      personalizationTips: data.personalization_tips || []
+    };
+  }
+
+  private transformCoachingInsights(data: any): TealCoachingInsights {
+    return {
+      careerGuidance: {
+        roleAlignment: data.career_guidance?.role_alignment || 85,
+        skillsGaps: data.career_guidance?.skills_gaps || [],
+        developmentAreas: data.career_guidance?.development_areas || [],
+        careerPath: data.career_guidance?.career_path || []
+      },
+      applicationStrategy: {
+        targetCompanies: data.application_strategy?.target_companies || [],
+        recommendedApplications: data.application_strategy?.recommended_applications || 20,
+        timingStrategy: data.application_strategy?.timing_strategy || 'Apply early in the week',
+        followUpGuidance: data.application_strategy?.follow_up_guidance || []
+      },
+      interviewPreparation: {
+        commonQuestions: data.interview_preparation?.common_questions || [],
+        strengthsToHighlight: data.interview_preparation?.strengths_to_highlight || [],
+        experiencesToEmphasize: data.interview_preparation?.experiences_to_emphasize || []
+      },
+      marketInsights: {
+        salaryBenchmark: {
+          min: data.market_insights?.salary_benchmark?.min || 70000,
+          max: data.market_insights?.salary_benchmark?.max || 120000,
+          median: data.market_insights?.salary_benchmark?.median || 95000,
+          confidence: data.market_insights?.salary_benchmark?.confidence || 85
+        },
+        demandLevel: data.market_insights?.demand_level || 'moderate',
+        competitionLevel: data.market_insights?.competition_level || 'moderate',
+        trendingSkills: data.market_insights?.trending_skills || []
+      }
+    };
+  }
+
+  private transformJobMatchAnalysis(data: any): TealJobMatchAnalysis {
+    return {
+      jobId: data.job_id || '',
       company: data.company || '',
-      status: data.status || 'applied',
-      appliedDate: data.appliedDate || new Date().toISOString(),
-      source: data.source || '',
-      notes: data.notes || '',
-      contacts: data.contacts || []
-    };
-  }
-
-  private transformResumeAnalysis(data: any): TealResumeAnalysis {
-    return {
-      overallScore: data.overallScore || 0,
-      sections: data.sections || {
-        summary: { score: 0, feedback: [] },
-        experience: { score: 0, feedback: [] },
-        skills: { score: 0, feedback: [] },
-        education: { score: 0, feedback: [] },
-        format: { score: 0, feedback: [] }
+      position: data.position || '',
+      matchScore: data.match_score || 85,
+      strengths: data.strengths || [],
+      gaps: data.gaps || [],
+      recommendations: {
+        resumeChanges: data.recommendations?.resume_changes || [],
+        skillsToEmphasize: data.recommendations?.skills_to_emphasize || [],
+        coverLetterFocus: data.recommendations?.cover_letter_focus || []
       },
-      recommendations: data.recommendations || [],
-      keywordOptimization: data.keywordOptimization || {
-        score: 0,
-        missing: [],
-        suggestions: []
-      }
+      applicationTips: data.application_tips || [],
+      interviewPrep: data.interview_prep || []
     };
   }
 
-  private transformDashboard(data: any): TealJobTracker {
+  private transformVersionComparison(data: any): any {
     return {
-      totalApplications: data.totalApplications || 0,
-      responseRate: data.responseRate || 0,
-      interviewRate: data.interviewRate || 0,
-      offerRate: data.offerRate || 0,
-      avgResponseTime: data.avgResponseTime || 0,
-      topPerformingResumes: data.topPerformingResumes || [],
-      applicationsByStatus: data.applicationsByStatus || {
-        applied: 0,
-        interview: 0,
-        offer: 0,
-        rejected: 0,
-        withdrawn: 0
-      },
-      monthlyTrends: data.monthlyTrends || []
+      comparison: data.comparison || [],
+      bestVersion: data.best_version || {},
+      optimization: data.optimization || {}
     };
   }
 
-  private transformResumeVersion(data: any): TealResumeVersion {
-    return {
-      id: data.id || '',
-      name: data.name || '',
-      content: data.content || '',
-      createdAt: data.createdAt || new Date().toISOString(),
-      jobsApplied: data.jobsApplied || 0,
-      responseRate: data.responseRate || 0,
-      lastModified: data.lastModified || new Date().toISOString()
-    };
+  // AI-powered fallback methods
+  private async getAIResumeAnalysis(params: any): Promise<TealResumeAnalysis> {
+    const { openRouterService } = await import('./openRouterService');
+    
+    const prompt = `Analyze this resume comprehensively for career coaching purposes:
+    
+    Resume Content: ${JSON.stringify(params.resumeContent)}
+    Target Role: ${params.targetRole}
+    Industry: ${params.industry}
+    
+    Provide:
+    1. Overall score and section analysis
+    2. Keyword optimization
+    3. Impact analysis
+    4. ATS compatibility
+    5. Coaching recommendations
+    
+    Format as structured JSON.`;
+
+    try {
+      const aiResponse = await openRouterService.generateResponse(prompt, 'claude-3-5-sonnet-20241022');
+      return this.parseAIAnalysis(aiResponse);
+    } catch (error) {
+      console.error('AI resume analysis error:', error);
+      return this.getFallbackAnalysis(params);
+    }
   }
 
-  private transformRecommendations(data: any): any {
-    return {
-      recommendations: data.recommendations || [],
-      performanceInsights: data.performanceInsights || {
-        bestPerformingSections: [],
-        areasForImprovement: [],
-        successPattern: ''
-      }
-    };
+  private async getAIRewriteRecommendations(params: any): Promise<TealRewriteRecommendations> {
+    const { openRouterService } = await import('./openRouterService');
+    
+    const prompt = `Provide detailed rewrite recommendations for this resume:
+    
+    Resume Content: ${JSON.stringify(params.resumeContent)}
+    Target Role: ${params.targetRole}
+    Job Description: ${params.jobDescription}
+    Priority: ${params.priority}
+    
+    Include:
+    1. Prioritized recommendations
+    2. Templated suggestions
+    3. Personalization tips
+    4. Specific examples
+    
+    Format as structured JSON.`;
+
+    try {
+      const aiResponse = await openRouterService.generateResponse(prompt, 'claude-3-5-sonnet-20241022');
+      return this.parseAIRewriteRecommendations(aiResponse);
+    } catch (error) {
+      console.error('AI rewrite recommendations error:', error);
+      return this.getFallbackRewriteRecommendations(params);
+    }
   }
 
-  private getFallbackJobApplication(application: Omit<TealJobApplication, 'id'>): TealJobApplication {
-    return {
-      id: 'fallback-' + Date.now(),
-      ...application
-    };
+  private async getAICoachingInsights(params: any): Promise<TealCoachingInsights> {
+    const { openRouterService } = await import('./openRouterService');
+    
+    const prompt = `Provide comprehensive career coaching insights:
+    
+    Resume Content: ${JSON.stringify(params.resumeContent)}
+    Career Goals: ${params.careerGoals.join(', ')}
+    Experience: ${params.experience}
+    Target Roles: ${params.targetRoles.join(', ')}
+    
+    Include:
+    1. Career guidance
+    2. Application strategy
+    3. Interview preparation
+    4. Market insights
+    
+    Format as structured JSON.`;
+
+    try {
+      const aiResponse = await openRouterService.generateResponse(prompt, 'claude-3-5-sonnet-20241022');
+      return this.parseAICoachingInsights(aiResponse);
+    } catch (error) {
+      console.error('AI coaching insights error:', error);
+      return this.getFallbackCoachingInsights(params);
+    }
   }
 
-  private getFallbackApplications(): TealJobApplication[] {
-    return [
-      {
-        id: 'app-1',
-        jobTitle: 'Software Engineer',
-        company: 'Tech Corp',
-        status: 'applied',
-        appliedDate: '2024-01-15',
-        source: 'LinkedIn',
-        notes: 'Applied through company website',
-        contacts: []
-      },
-      {
-        id: 'app-2',
-        jobTitle: 'Frontend Developer',
-        company: 'Startup Inc',
-        status: 'interview',
-        appliedDate: '2024-01-10',
-        source: 'Indeed',
-        notes: 'First round interview scheduled',
-        contacts: []
-      }
-    ];
+  private async getAIJobMatchAnalysis(params: any): Promise<TealJobMatchAnalysis> {
+    const { openRouterService } = await import('./openRouterService');
+    
+    const prompt = `Analyze job match between resume and job description:
+    
+    Resume Content: ${JSON.stringify(params.resumeContent)}
+    Job Description: ${params.jobDescription}
+    Company: ${params.company}
+    Position: ${params.position}
+    
+    Provide:
+    1. Match score analysis
+    2. Strengths and gaps
+    3. Recommendations
+    4. Application tips
+    5. Interview preparation
+    
+    Format as structured JSON.`;
+
+    try {
+      const aiResponse = await openRouterService.generateResponse(prompt, 'claude-3-5-sonnet-20241022');
+      return this.parseAIJobMatchAnalysis(aiResponse);
+    } catch (error) {
+      console.error('AI job match analysis error:', error);
+      return this.getFallbackJobMatchAnalysis(params);
+    }
   }
 
-  private getFallbackResumeAnalysis(): TealResumeAnalysis {
-    return {
-      overallScore: 82,
-      sections: {
-        summary: {
-          score: 85,
-          feedback: ['Strong professional summary', 'Consider adding more specific achievements']
+  private parseAIAnalysis(response: string): TealResumeAnalysis {
+    try {
+      const parsed = JSON.parse(response);
+      return {
+        overallScore: parsed.overallScore || 85,
+        sections: parsed.sections || {},
+        keywordAnalysis: parsed.keywordAnalysis || {
+          relevantKeywords: [],
+          missingKeywords: [],
+          keywordDensity: 0.08,
+          industryAlignment: 75
         },
-        experience: {
-          score: 88,
-          feedback: ['Good use of action verbs', 'Add more quantifiable results']
+        impactAnalysis: parsed.impactAnalysis || {
+          quantifiableAchievements: 3,
+          actionVerbs: 8,
+          resultsOriented: true,
+          suggestions: []
         },
-        skills: {
-          score: 75,
-          feedback: ['Relevant skills listed', 'Organize by proficiency level']
-        },
-        education: {
-          score: 90,
-          feedback: ['Well formatted education section']
-        },
-        format: {
-          score: 80,
-          feedback: ['Clean layout', 'Ensure ATS compatibility']
+        atsCompatibility: parsed.atsCompatibility || {
+          score: 92,
+          issues: [],
+          fixes: []
         }
+      };
+    } catch (error) {
+      return this.getFallbackAnalysis({});
+    }
+  }
+
+  private parseAIRewriteRecommendations(response: string): TealRewriteRecommendations {
+    try {
+      const parsed = JSON.parse(response);
+      return {
+        priority: parsed.priority || 'medium',
+        recommendations: parsed.recommendations || [],
+        templatedSuggestions: parsed.templatedSuggestions || {
+          bulletPoints: [],
+          summaryVersions: [],
+          skillsOptimization: []
+        },
+        personalizationTips: parsed.personalizationTips || []
+      };
+    } catch (error) {
+      return this.getFallbackRewriteRecommendations({});
+    }
+  }
+
+  private parseAICoachingInsights(response: string): TealCoachingInsights {
+    try {
+      const parsed = JSON.parse(response);
+      return {
+        careerGuidance: parsed.careerGuidance || {
+          roleAlignment: 85,
+          skillsGaps: [],
+          developmentAreas: [],
+          careerPath: []
+        },
+        applicationStrategy: parsed.applicationStrategy || {
+          targetCompanies: [],
+          recommendedApplications: 20,
+          timingStrategy: 'Apply early in the week',
+          followUpGuidance: []
+        },
+        interviewPreparation: parsed.interviewPreparation || {
+          commonQuestions: [],
+          strengthsToHighlight: [],
+          experiencesToEmphasize: []
+        },
+        marketInsights: parsed.marketInsights || {
+          salaryBenchmark: { min: 70000, max: 120000, median: 95000, confidence: 85 },
+          demandLevel: 'moderate',
+          competitionLevel: 'moderate',
+          trendingSkills: []
+        }
+      };
+    } catch (error) {
+      return this.getFallbackCoachingInsights({});
+    }
+  }
+
+  private parseAIJobMatchAnalysis(response: string): TealJobMatchAnalysis {
+    try {
+      const parsed = JSON.parse(response);
+      return {
+        jobId: parsed.jobId || '',
+        company: parsed.company || '',
+        position: parsed.position || '',
+        matchScore: parsed.matchScore || 85,
+        strengths: parsed.strengths || [],
+        gaps: parsed.gaps || [],
+        recommendations: parsed.recommendations || {
+          resumeChanges: [],
+          skillsToEmphasize: [],
+          coverLetterFocus: []
+        },
+        applicationTips: parsed.applicationTips || [],
+        interviewPrep: parsed.interviewPrep || []
+      };
+    } catch (error) {
+      return this.getFallbackJobMatchAnalysis({});
+    }
+  }
+
+  private getFallbackTracking(params: any): TealResumeTracking {
+    return {
+      id: 'track_' + Date.now(),
+      resumeVersion: 'v1.0',
+      applications: params.applications || [],
+      performance: {
+        responseRate: 0.15,
+        interviewRate: 0.08,
+        offerRate: 0.03,
+        averageResponseTime: 7
       },
+      insights: {
+        bestPerformingVersion: 'v1.0',
+        commonRejectionReasons: ['Experience mismatch', 'Skill gaps', 'Location requirements'],
+        successfulApplications: 2
+      }
+    };
+  }
+
+  private getFallbackAnalysis(params: any): TealResumeAnalysis {
+    return {
+      overallScore: 85,
+      sections: {
+        summary: { score: 88, strength: 'strong', feedback: 'Compelling professional summary', recommendations: ['Add more specific achievements'] },
+        experience: { score: 82, strength: 'strong', feedback: 'Good experience section', recommendations: ['Quantify more achievements'] },
+        skills: { score: 90, strength: 'strong', feedback: 'Comprehensive skills list', recommendations: ['Prioritize by relevance'] },
+        education: { score: 85, strength: 'strong', feedback: 'Solid educational background', recommendations: ['Add relevant coursework'] }
+      },
+      keywordAnalysis: {
+        relevantKeywords: ['JavaScript', 'React', 'Node.js', 'Python', 'SQL'],
+        missingKeywords: ['TypeScript', 'Docker', 'AWS', 'GraphQL'],
+        keywordDensity: 0.08,
+        industryAlignment: 75
+      },
+      impactAnalysis: {
+        quantifiableAchievements: 3,
+        actionVerbs: 8,
+        resultsOriented: true,
+        suggestions: ['Add more specific metrics', 'Include percentage improvements', 'Quantify team sizes']
+      },
+      atsCompatibility: {
+        score: 92,
+        issues: [],
+        fixes: []
+      }
+    };
+  }
+
+  private getFallbackRewriteRecommendations(params: any): TealRewriteRecommendations {
+    return {
+      priority: 'medium',
       recommendations: [
         {
-          priority: 'high',
-          category: 'Content',
-          suggestion: 'Add more quantifiable achievements',
-          impact: 'Increase interview callbacks by 25%'
+          section: 'Summary',
+          issue: 'Generic summary statement',
+          suggestion: 'Tailor summary to specific role',
+          example: 'Results-driven software engineer with 5+ years of experience...',
+          impact: 'high',
+          difficulty: 'moderate'
         },
         {
-          priority: 'medium',
-          category: 'Keywords',
-          suggestion: 'Include more industry-specific keywords',
-          impact: 'Improve ATS passage rate'
+          section: 'Experience',
+          issue: 'Missing quantifiable achievements',
+          suggestion: 'Add specific metrics and results',
+          example: 'Improved system performance by 40%',
+          impact: 'high',
+          difficulty: 'easy'
         }
       ],
-      keywordOptimization: {
-        score: 78,
-        missing: ['React', 'Node.js', 'AWS'],
-        suggestions: ['Add technical skills section', 'Include relevant frameworks']
-      }
-    };
-  }
-
-  private getFallbackDashboard(): TealJobTracker {
-    return {
-      totalApplications: 25,
-      responseRate: 0.32,
-      interviewRate: 0.16,
-      offerRate: 0.08,
-      avgResponseTime: 7.5,
-      topPerformingResumes: this.getFallbackResumeVersions(),
-      applicationsByStatus: {
-        applied: 12,
-        interview: 4,
-        offer: 2,
-        rejected: 6,
-        withdrawn: 1
+      templatedSuggestions: {
+        bulletPoints: [
+          'Led team of X to achieve Y, resulting in Z% improvement',
+          'Implemented solution that reduced costs by $X',
+          'Optimized process improving efficiency by X%'
+        ],
+        summaryVersions: [
+          'Results-driven professional with expertise in...',
+          'Experienced specialist focused on...',
+          'Innovative leader with proven track record...'
+        ],
+        skillsOptimization: [
+          'Group related skills together',
+          'Prioritize by job relevance',
+          'Include proficiency levels'
+        ]
       },
-      monthlyTrends: [
-        { month: 'Jan', applications: 8, responses: 3, interviews: 1 },
-        { month: 'Feb', applications: 10, responses: 4, interviews: 2 },
-        { month: 'Mar', applications: 7, responses: 2, interviews: 1 }
+      personalizationTips: [
+        {
+          tip: 'Match your summary to the job description',
+          context: 'Each application should have tailored content',
+          example: 'For a senior role, emphasize leadership experience'
+        },
+        {
+          tip: 'Use industry-specific terminology',
+          context: 'Show familiarity with the field',
+          example: 'Use "agile methodology" instead of "flexible approach"'
+        }
       ]
     };
   }
 
-  private getFallbackResumeVersions(): TealResumeVersion[] {
-    return [
-      {
-        id: 'resume-1',
-        name: 'Software Engineer Resume',
-        content: 'Resume content...',
-        createdAt: '2024-01-01',
-        jobsApplied: 15,
-        responseRate: 0.27,
-        lastModified: '2024-01-15'
+  private getFallbackCoachingInsights(params: any): TealCoachingInsights {
+    return {
+      careerGuidance: {
+        roleAlignment: 85,
+        skillsGaps: ['Cloud architecture', 'Machine learning', 'DevOps'],
+        developmentAreas: ['Leadership', 'System design', 'Team management'],
+        careerPath: ['Senior Engineer', 'Tech Lead', 'Engineering Manager', 'VP Engineering']
       },
-      {
-        id: 'resume-2',
-        name: 'Frontend Developer Resume',
-        content: 'Resume content...',
-        createdAt: '2024-01-10',
-        jobsApplied: 10,
-        responseRate: 0.40,
-        lastModified: '2024-01-20'
+      applicationStrategy: {
+        targetCompanies: ['Google', 'Microsoft', 'Amazon', 'Netflix', 'Uber'],
+        recommendedApplications: 20,
+        timingStrategy: 'Apply early in the week, Tuesday-Thursday optimal',
+        followUpGuidance: ['Follow up after 1 week', 'Send thank you notes', 'Connect on LinkedIn']
+      },
+      interviewPreparation: {
+        commonQuestions: [
+          'Tell me about yourself',
+          'Describe a challenging project',
+          'How do you handle conflicts?',
+          'Where do you see yourself in 5 years?'
+        ],
+        strengthsToHighlight: ['Technical expertise', 'Problem-solving', 'Team collaboration'],
+        experiencesToEmphasize: ['Leadership roles', 'Complex projects', 'Cross-functional work']
+      },
+      marketInsights: {
+        salaryBenchmark: {
+          min: 90000,
+          max: 150000,
+          median: 120000,
+          confidence: 85
+        },
+        demandLevel: 'high',
+        competitionLevel: 'moderate',
+        trendingSkills: ['React', 'TypeScript', 'GraphQL', 'Docker', 'Kubernetes', 'AWS']
       }
-    ];
+    };
   }
 
-  private getFallbackRecommendations(): any {
+  private getFallbackJobMatchAnalysis(params: any): TealJobMatchAnalysis {
     return {
-      recommendations: [
+      jobId: params.jobId || '',
+      company: params.company || '',
+      position: params.position || '',
+      matchScore: 85,
+      strengths: [
+        'Strong technical background',
+        'Relevant experience',
+        'Good cultural fit'
+      ],
+      gaps: [
+        'Limited experience with specific technology',
+        'Could use more leadership examples',
+        'Industry experience gap'
+      ],
+      recommendations: {
+        resumeChanges: [
+          'Emphasize relevant project experience',
+          'Highlight transferable skills',
+          'Add industry-specific keywords'
+        ],
+        skillsToEmphasize: [
+          'Technical problem-solving',
+          'Cross-functional collaboration',
+          'Adaptability'
+        ],
+        coverLetterFocus: [
+          'Passion for the industry',
+          'Specific interest in the company',
+          'How your experience adds value'
+        ]
+      },
+      applicationTips: [
+        'Apply within 24-48 hours of posting',
+        'Tailor resume to job description',
+        'Research company culture',
+        'Prepare for technical assessment'
+      ],
+      interviewPrep: [
+        'Review your technical projects',
+        'Prepare STAR method examples',
+        'Research the interviewing team',
+        'Practice system design questions'
+      ]
+    };
+  }
+
+  private getFallbackVersionComparison(params: any): any {
+    return {
+      comparison: [
         {
-          type: 'content',
-          priority: 'high',
-          suggestion: 'Add more quantifiable achievements to your experience section',
-          reasoning: 'Resumes with quantified results get 40% more callbacks',
-          expectedImpact: 'Increase interview rate by 25%'
+          versionId: 'v1.0',
+          performance: { responseRate: 0.15, interviewRate: 0.08, offerRate: 0.03 },
+          strengths: ['Clear structure', 'Good keyword usage'],
+          weaknesses: ['Limited quantifiable results', 'Generic summary'],
+          recommendations: ['Add more metrics', 'Personalize summary']
         },
         {
-          type: 'keywords',
-          priority: 'medium',
-          suggestion: 'Include more technical keywords relevant to your target roles',
-          reasoning: 'Analysis shows missing keywords in 60% of applications',
-          expectedImpact: 'Better ATS compatibility'
+          versionId: 'v2.0',
+          performance: { responseRate: 0.22, interviewRate: 0.12, offerRate: 0.05 },
+          strengths: ['Better achievements', 'Tailored content'],
+          weaknesses: ['Could improve skills section'],
+          recommendations: ['Reorganize skills', 'Add certifications']
         }
       ],
-      performanceInsights: {
-        bestPerformingSections: ['Experience', 'Skills'],
-        areasForImprovement: ['Summary', 'Projects'],
-        successPattern: 'Resumes with quantified achievements perform 35% better'
+      bestVersion: {
+        id: 'v2.0',
+        reason: 'Higher response and interview rates',
+        score: 92
+      },
+      optimization: {
+        combinedBestPractices: [
+          'Use quantifiable achievements',
+          'Tailor content to job descriptions',
+          'Prioritize relevant skills'
+        ],
+        suggestedChanges: [
+          'Combine best elements from all versions',
+          'Add industry-specific keywords',
+          'Improve section organization'
+        ]
       }
     };
   }

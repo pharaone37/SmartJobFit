@@ -88,6 +88,16 @@ Deployment: Ready for production deployment with comprehensive guides created
   - **Levels.fyi**: Tech salary benchmarking and compensation analysis
   - **Gehalt.de**: GDPR-compliant German salary data and market insights
   - **Job Market Intelligence Service**: Multi-source analysis and recommendations
+- **Interview-Coaching & Fragen**: Four specialized AI interview coaching services
+  - **Yoodli AI**: Real-time speech/video feedback with performance tracking
+  - **Interview Warmup (Google)**: Quick Q&A simulation with curated questions
+  - **Vervoe/HireVue**: AI Interviewer with skills testing and B2B optimization
+  - **PromptLoop**: Custom LLM interview agents with personalized coaching
+- **Resume Rewrite & Cover Letter Tools**: Four LLM-powered resume optimization services
+  - **Rezi API**: ATS-optimized CVs and cover letters with precise, user-guided optimization
+  - **Kickresume AI**: Intelligent CV builder with GPT support, good UX, and fast results
+  - **Teal HQ**: Resume tracker with rewrite recommendations, better for applicant coaching
+  - **Custom GPT-4/Claude Flow**: Custom rewrite module with best quality adaptation to JD & ATS
 
 ## Key Components
 
@@ -108,6 +118,26 @@ Deployment: Ready for production deployment with comprehensive guides created
 - **Features**: Custom question generation, performance analysis, real-time feedback, progress tracking
 - **Components**: Interview simulator, question generator with difficulty levels, AI-powered feedback system
 - **Status**: Fully functional with personalized question generation and performance analysis
+
+### 3a. Interview-Coaching & Fragen ✅ IMPLEMENTED
+- **Purpose**: Comprehensive interview coaching with four specialized AI services
+- **Features**: Real-time speech/video analysis, Q&A simulation, AI interviewer, custom LLM coaching
+- **Components**: 
+  - **Yoodli AI**: Real-time interview feedback with speech & video analysis
+  - **Interview Warmup (Google)**: Quick Q&A simulation with curated questions
+  - **Vervoe/HireVue**: AI Interviewer with skills testing and B2B focus
+  - **PromptLoop**: Custom LLM interview agents with personalized coaching
+- **Status**: Fully functional with enterprise-grade AI coaching capabilities
+
+### 3b. Resume Rewrite & Cover Letter Tools ✅ IMPLEMENTED
+- **Purpose**: LLM-powered resume optimization and cover letter generation
+- **Features**: ATS optimization, intelligent rewriting, GPT-powered templates, performance tracking
+- **Components**: 
+  - **Rezi API**: ATS-optimized CVs and cover letters with precise, user-guided optimization
+  - **Kickresume AI**: Intelligent CV builder with GPT support, good UX, and fast results
+  - **Teal HQ**: Resume tracker with rewrite recommendations, better for applicant coaching
+  - **Custom GPT-4/Claude Flow**: Custom rewrite module with best quality adaptation to JD & ATS
+- **Status**: Fully functional with comprehensive fallback systems and AI-powered alternatives
 
 ### 4. Cover Letter Generation ✅ IMPLEMENTED
 - **Purpose**: AI-powered personalized cover letter creation

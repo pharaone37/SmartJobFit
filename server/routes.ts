@@ -27,6 +27,14 @@ import { jobspikrService } from "./services/jobspikrService";
 import { levelsService } from "./services/levelsService";
 import { gehaltService } from "./services/gehaltService";
 import { jobMarketIntelligence } from "./services/jobMarketIntelligence";
+import { yoodliService } from "./services/yoodliService";
+import { interviewWarmupService } from "./services/interviewWarmupService";
+import { vervoeService } from "./services/vervoeService";
+import { promptLoopService } from "./services/promptLoopService";
+import { reziService } from "./services/reziService";
+import { kickresumeService } from "./services/kickresumeService";
+import { tealHqService } from "./services/tealHqService";
+import { customGptService } from "./services/customGptService";
 import { 
   insertJobSchema, 
   insertResumeSchema, 
@@ -1186,6 +1194,1202 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Market insights error:', error);
       res.status(500).json({ message: 'Failed to get real-time market insights' });
+    }
+  });
+
+  // Interview-Coaching & Fragen - AI-powered interview preparation
+
+  // Yoodli - Real-time interview feedback with speech & video analysis
+  app.post('/api/interview/yoodli-analyze', async (req, res) => {
+    try {
+      const { videoUrl, audioUrl, transcript, question, jobRole, sessionId } = req.body;
+      
+      if (!question || !jobRole) {
+        return res.status(400).json({ message: 'Question and job role are required' });
+      }
+
+      const analysisResult = await yoodliService.analyzeInterviewResponse({
+        videoUrl,
+        audioUrl,
+        transcript,
+        question,
+        jobRole,
+        sessionId
+      });
+      
+      res.json({
+        success: true,
+        analysisResult,
+        provider: 'Yoodli AI',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Yoodli analysis error:', error);
+      res.status(500).json({ message: 'Failed to analyze interview response' });
+    }
+  });
+
+  app.post('/api/interview/yoodli-session', async (req, res) => {
+    try {
+      const { userId, jobRole, interviewType, difficulty, duration } = req.body;
+      
+      if (!userId || !jobRole || !interviewType || !difficulty) {
+        return res.status(400).json({ message: 'User ID, job role, interview type, and difficulty are required' });
+      }
+
+      const sessionResult = await yoodliService.startInterviewSession({
+        userId,
+        jobRole,
+        interviewType,
+        difficulty,
+        duration: duration || 60
+      });
+      
+      res.json({
+        success: true,
+        sessionResult,
+        provider: 'Yoodli AI',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Yoodli session error:', error);
+      res.status(500).json({ message: 'Failed to start interview session' });
+    }
+  });
+
+  app.get('/api/interview/yoodli-realtime/:sessionId', async (req, res) => {
+    try {
+      const { sessionId } = req.params;
+      
+      const realtimeFeedback = await yoodliService.getRealtimeFeedback(sessionId);
+      
+      res.json({
+        success: true,
+        realtimeFeedback,
+        provider: 'Yoodli AI',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Yoodli realtime feedback error:', error);
+      res.status(500).json({ message: 'Failed to get realtime feedback' });
+    }
+  });
+
+  app.get('/api/interview/yoodli-progress/:userId', async (req, res) => {
+    try {
+      const { userId } = req.params;
+      
+      const progressData = await yoodliService.getProgressTracking(userId);
+      
+      res.json({
+        success: true,
+        progressData,
+        provider: 'Yoodli AI',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Yoodli progress tracking error:', error);
+      res.status(500).json({ message: 'Failed to get progress tracking' });
+    }
+  });
+
+  app.post('/api/interview/yoodli-coaching', async (req, res) => {
+    try {
+      const { userId, weakAreas, targetRole, timeframe } = req.body;
+      
+      if (!userId || !targetRole) {
+        return res.status(400).json({ message: 'User ID and target role are required' });
+      }
+
+      const coachingPlan = await yoodliService.generatePersonalizedCoaching({
+        userId,
+        weakAreas: weakAreas || [],
+        targetRole,
+        timeframe: timeframe || '4 weeks'
+      });
+      
+      res.json({
+        success: true,
+        coachingPlan,
+        provider: 'Yoodli AI',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Yoodli coaching error:', error);
+      res.status(500).json({ message: 'Failed to generate coaching plan' });
+    }
+  });
+
+  // Interview Warmup (Google) - Quick Q&A simulation
+  app.post('/api/interview/warmup-questions', async (req, res) => {
+    try {
+      const { jobRole, industry, difficulty, questionCount, categories } = req.body;
+      
+      if (!jobRole || !industry || !difficulty) {
+        return res.status(400).json({ message: 'Job role, industry, and difficulty are required' });
+      }
+
+      const questions = await interviewWarmupService.generateQuestions({
+        jobRole,
+        industry,
+        difficulty,
+        questionCount: questionCount || 5,
+        categories
+      });
+      
+      res.json({
+        success: true,
+        questions,
+        provider: 'Interview Warmup (Google)',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Interview Warmup questions error:', error);
+      res.status(500).json({ message: 'Failed to generate questions' });
+    }
+  });
+
+  app.post('/api/interview/warmup-session', async (req, res) => {
+    try {
+      const { userId, jobRole, industry, difficulty, timeLimit, categories } = req.body;
+      
+      if (!userId || !jobRole || !industry || !difficulty) {
+        return res.status(400).json({ message: 'User ID, job role, industry, and difficulty are required' });
+      }
+
+      const session = await interviewWarmupService.createSession({
+        userId,
+        jobRole,
+        industry,
+        difficulty,
+        timeLimit,
+        categories
+      });
+      
+      res.json({
+        success: true,
+        session,
+        provider: 'Interview Warmup (Google)',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Interview Warmup session error:', error);
+      res.status(500).json({ message: 'Failed to create session' });
+    }
+  });
+
+  app.post('/api/interview/warmup-analyze', async (req, res) => {
+    try {
+      const { sessionId, questionId, userAnswer, responseTime } = req.body;
+      
+      if (!sessionId || !questionId || !userAnswer) {
+        return res.status(400).json({ message: 'Session ID, question ID, and user answer are required' });
+      }
+
+      const analysis = await interviewWarmupService.analyzeResponse({
+        sessionId,
+        questionId,
+        userAnswer,
+        responseTime: responseTime || 120
+      });
+      
+      res.json({
+        success: true,
+        analysis,
+        provider: 'Interview Warmup (Google)',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Interview Warmup analysis error:', error);
+      res.status(500).json({ message: 'Failed to analyze response' });
+    }
+  });
+
+  app.get('/api/interview/warmup-category/:category', async (req, res) => {
+    try {
+      const { category } = req.params;
+      const { difficulty } = req.query;
+      
+      const questions = await interviewWarmupService.getQuestionsByCategory(category, difficulty?.toString() || 'intermediate');
+      
+      res.json({
+        success: true,
+        questions,
+        provider: 'Interview Warmup (Google)',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Interview Warmup category error:', error);
+      res.status(500).json({ message: 'Failed to get questions by category' });
+    }
+  });
+
+  app.post('/api/interview/warmup-tips', async (req, res) => {
+    try {
+      const { weakAreas, jobRole, interviewType } = req.body;
+      
+      if (!jobRole || !interviewType) {
+        return res.status(400).json({ message: 'Job role and interview type are required' });
+      }
+
+      const tips = await interviewWarmupService.getPracticeTips({
+        weakAreas: weakAreas || [],
+        jobRole,
+        interviewType
+      });
+      
+      res.json({
+        success: true,
+        tips,
+        provider: 'Interview Warmup (Google)',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Interview Warmup tips error:', error);
+      res.status(500).json({ message: 'Failed to get practice tips' });
+    }
+  });
+
+  // Vervoe - AI Interviewer & Skills Testing
+  app.post('/api/interview/vervoe-assessment', async (req, res) => {
+    try {
+      const { jobRole, skills, assessmentType, difficulty, duration } = req.body;
+      
+      if (!jobRole || !skills || !assessmentType || !difficulty) {
+        return res.status(400).json({ message: 'Job role, skills, assessment type, and difficulty are required' });
+      }
+
+      const assessment = await vervoeService.createAssessment({
+        jobRole,
+        skills,
+        assessmentType,
+        difficulty,
+        duration: duration || 60
+      });
+      
+      res.json({
+        success: true,
+        assessment,
+        provider: 'Vervoe',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Vervoe assessment error:', error);
+      res.status(500).json({ message: 'Failed to create assessment' });
+    }
+  });
+
+  app.get('/api/interview/vervoe-assessment/:assessmentId', async (req, res) => {
+    try {
+      const { assessmentId } = req.params;
+      
+      const assessment = await vervoeService.getAssessmentById(assessmentId);
+      
+      res.json({
+        success: true,
+        assessment,
+        provider: 'Vervoe',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Vervoe assessment retrieval error:', error);
+      res.status(500).json({ message: 'Failed to retrieve assessment' });
+    }
+  });
+
+  app.post('/api/interview/vervoe-response', async (req, res) => {
+    try {
+      const { assessmentId, questionId, response, userId } = req.body;
+      
+      if (!assessmentId || !questionId || !response || !userId) {
+        return res.status(400).json({ message: 'Assessment ID, question ID, response, and user ID are required' });
+      }
+
+      const submissionResult = await vervoeService.submitResponse({
+        assessmentId,
+        questionId,
+        response,
+        userId
+      });
+      
+      res.json({
+        success: true,
+        submissionResult,
+        provider: 'Vervoe',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Vervoe response submission error:', error);
+      res.status(500).json({ message: 'Failed to submit response' });
+    }
+  });
+
+  app.get('/api/interview/vervoe-results/:assessmentId/:userId', async (req, res) => {
+    try {
+      const { assessmentId, userId } = req.params;
+      
+      const results = await vervoeService.getAssessmentResults({
+        assessmentId,
+        userId
+      });
+      
+      res.json({
+        success: true,
+        results,
+        provider: 'Vervoe',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Vervoe results error:', error);
+      res.status(500).json({ message: 'Failed to get assessment results' });
+    }
+  });
+
+  app.post('/api/interview/vervoe-benchmark', async (req, res) => {
+    try {
+      const { jobRole, industry, skills } = req.body;
+      
+      if (!jobRole || !industry || !skills) {
+        return res.status(400).json({ message: 'Job role, industry, and skills are required' });
+      }
+
+      const benchmarkData = await vervoeService.getBenchmarkData({
+        jobRole,
+        industry,
+        skills
+      });
+      
+      res.json({
+        success: true,
+        benchmarkData,
+        provider: 'Vervoe',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Vervoe benchmark error:', error);
+      res.status(500).json({ message: 'Failed to get benchmark data' });
+    }
+  });
+
+  app.post('/api/interview/vervoe-skills-test', async (req, res) => {
+    try {
+      const { skills, difficulty, testType } = req.body;
+      
+      if (!skills || !difficulty || !testType) {
+        return res.status(400).json({ message: 'Skills, difficulty, and test type are required' });
+      }
+
+      const skillsTest = await vervoeService.getSkillsTest({
+        skills,
+        difficulty,
+        testType
+      });
+      
+      res.json({
+        success: true,
+        skillsTest,
+        provider: 'Vervoe',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Vervoe skills test error:', error);
+      res.status(500).json({ message: 'Failed to get skills test' });
+    }
+  });
+
+  // PromptLoop - Custom LLM Interview Agents
+  app.post('/api/interview/promptloop-questions', async (req, res) => {
+    try {
+      const { jobRole, industry, experienceLevel, questionTypes, count, difficulty, focusAreas } = req.body;
+      
+      if (!jobRole || !industry || !experienceLevel || !questionTypes || !count || !difficulty) {
+        return res.status(400).json({ message: 'Job role, industry, experience level, question types, count, and difficulty are required' });
+      }
+
+      const questions = await promptLoopService.generateCustomQuestions({
+        jobRole,
+        industry,
+        experienceLevel,
+        questionTypes,
+        count,
+        difficulty,
+        focusAreas
+      });
+      
+      res.json({
+        success: true,
+        questions,
+        provider: 'PromptLoop',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('PromptLoop questions error:', error);
+      res.status(500).json({ message: 'Failed to generate custom questions' });
+    }
+  });
+
+  app.post('/api/interview/promptloop-session', async (req, res) => {
+    try {
+      const { userId, jobRole, industry, experienceLevel, goals, sessionType } = req.body;
+      
+      if (!userId || !jobRole || !industry || !experienceLevel || !goals || !sessionType) {
+        return res.status(400).json({ message: 'User ID, job role, industry, experience level, goals, and session type are required' });
+      }
+
+      const session = await promptLoopService.createCoachingSession({
+        userId,
+        jobRole,
+        industry,
+        experienceLevel,
+        goals,
+        sessionType
+      });
+      
+      res.json({
+        success: true,
+        session,
+        provider: 'PromptLoop',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('PromptLoop session error:', error);
+      res.status(500).json({ message: 'Failed to create coaching session' });
+    }
+  });
+
+  app.post('/api/interview/promptloop-coaching', async (req, res) => {
+    try {
+      const { questionId, userAnswer, jobRole, personalization } = req.body;
+      
+      if (!questionId || !userAnswer || !jobRole) {
+        return res.status(400).json({ message: 'Question ID, user answer, and job role are required' });
+      }
+
+      const coaching = await promptLoopService.provideCoaching({
+        questionId,
+        userAnswer,
+        jobRole,
+        personalization
+      });
+      
+      res.json({
+        success: true,
+        coaching,
+        provider: 'PromptLoop',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('PromptLoop coaching error:', error);
+      res.status(500).json({ message: 'Failed to provide coaching' });
+    }
+  });
+
+  app.post('/api/interview/promptloop-adaptive', async (req, res) => {
+    try {
+      const { userId, previousResponses, targetRole, nextFocusAreas } = req.body;
+      
+      if (!userId || !previousResponses || !targetRole || !nextFocusAreas) {
+        return res.status(400).json({ message: 'User ID, previous responses, target role, and next focus areas are required' });
+      }
+
+      const adaptiveQuestions = await promptLoopService.generateAdaptiveQuestions({
+        userId,
+        previousResponses,
+        targetRole,
+        nextFocusAreas
+      });
+      
+      res.json({
+        success: true,
+        adaptiveQuestions,
+        provider: 'PromptLoop',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('PromptLoop adaptive questions error:', error);
+      res.status(500).json({ message: 'Failed to generate adaptive questions' });
+    }
+  });
+
+  app.post('/api/interview/promptloop-personalized-coach', async (req, res) => {
+    try {
+      const { userId, goals, weakAreas, strongAreas, preferredStyle, targetRole } = req.body;
+      
+      if (!userId || !goals || !targetRole) {
+        return res.status(400).json({ message: 'User ID, goals, and target role are required' });
+      }
+
+      const personalizedCoach = await promptLoopService.createPersonalizedCoach({
+        userId,
+        goals,
+        weakAreas: weakAreas || [],
+        strongAreas: strongAreas || [],
+        preferredStyle: preferredStyle || 'detailed',
+        targetRole
+      });
+      
+      res.json({
+        success: true,
+        personalizedCoach,
+        provider: 'PromptLoop',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('PromptLoop personalized coach error:', error);
+      res.status(500).json({ message: 'Failed to create personalized coach' });
+    }
+  });
+
+  app.post('/api/interview/promptloop-scenarios', async (req, res) => {
+    try {
+      const { jobRole, industry, scenarioType, complexity, duration } = req.body;
+      
+      if (!jobRole || !industry || !scenarioType || !complexity) {
+        return res.status(400).json({ message: 'Job role, industry, scenario type, and complexity are required' });
+      }
+
+      const scenarios = await promptLoopService.generatePracticeScenarios({
+        jobRole,
+        industry,
+        scenarioType,
+        complexity,
+        duration: duration || 30
+      });
+      
+      res.json({
+        success: true,
+        scenarios,
+        provider: 'PromptLoop',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('PromptLoop scenarios error:', error);
+      res.status(500).json({ message: 'Failed to generate practice scenarios' });
+    }
+  });
+
+  // Resume Rewrite & Cover Letter Tools - LLM-powered optimization
+
+  // Rezi API - ATS-optimized CVs and cover letters
+  app.post('/api/resume/rezi-optimize', async (req, res) => {
+    try {
+      const { resumeContent, jobDescription, targetRole, industry, optimizationLevel } = req.body;
+      
+      if (!resumeContent || !jobDescription || !targetRole || !industry) {
+        return res.status(400).json({ message: 'Resume content, job description, target role, and industry are required' });
+      }
+
+      const optimizedResume = await reziService.optimizeResume({
+        resumeContent,
+        jobDescription,
+        targetRole,
+        industry,
+        optimizationLevel: optimizationLevel || 'advanced'
+      });
+      
+      res.json({
+        success: true,
+        optimizedResume,
+        provider: 'Rezi API',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Rezi resume optimization error:', error);
+      res.status(500).json({ message: 'Failed to optimize resume' });
+    }
+  });
+
+  app.post('/api/resume/rezi-cover-letter', async (req, res) => {
+    try {
+      const { resumeContent, jobDescription, companyName, hiringManager, tone, length } = req.body;
+      
+      if (!resumeContent || !jobDescription || !companyName) {
+        return res.status(400).json({ message: 'Resume content, job description, and company name are required' });
+      }
+
+      const coverLetter = await reziService.generateCoverLetter({
+        resumeContent,
+        jobDescription,
+        companyName,
+        hiringManager,
+        tone: tone || 'professional',
+        length: length || 'medium'
+      });
+      
+      res.json({
+        success: true,
+        coverLetter,
+        provider: 'Rezi API',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Rezi cover letter generation error:', error);
+      res.status(500).json({ message: 'Failed to generate cover letter' });
+    }
+  });
+
+  app.post('/api/resume/rezi-ats-analysis', async (req, res) => {
+    try {
+      const { resumeContent, jobDescription, targetATS } = req.body;
+      
+      if (!resumeContent || !jobDescription) {
+        return res.status(400).json({ message: 'Resume content and job description are required' });
+      }
+
+      const atsAnalysis = await reziService.analyzeATSCompatibility({
+        resumeContent,
+        jobDescription,
+        targetATS
+      });
+      
+      res.json({
+        success: true,
+        atsAnalysis,
+        provider: 'Rezi API',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Rezi ATS analysis error:', error);
+      res.status(500).json({ message: 'Failed to analyze ATS compatibility' });
+    }
+  });
+
+  app.get('/api/resume/rezi-templates', async (req, res) => {
+    try {
+      const { industry, experience, style } = req.query;
+      
+      const templates = await reziService.getResumeTemplates({
+        industry: industry?.toString() || 'technology',
+        experience: (experience?.toString() as any) || 'mid',
+        style: (style?.toString() as any) || 'modern'
+      });
+      
+      res.json({
+        success: true,
+        templates,
+        provider: 'Rezi API',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Rezi templates error:', error);
+      res.status(500).json({ message: 'Failed to get resume templates' });
+    }
+  });
+
+  app.post('/api/resume/rezi-bullet-points', async (req, res) => {
+    try {
+      const { role, industry, experience, achievements } = req.body;
+      
+      if (!role || !industry || !experience || !achievements) {
+        return res.status(400).json({ message: 'Role, industry, experience, and achievements are required' });
+      }
+
+      const bulletPoints = await reziService.getBulletPointSuggestions({
+        role,
+        industry,
+        experience,
+        achievements
+      });
+      
+      res.json({
+        success: true,
+        bulletPoints,
+        provider: 'Rezi API',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Rezi bullet points error:', error);
+      res.status(500).json({ message: 'Failed to get bullet point suggestions' });
+    }
+  });
+
+  // Kickresume AI - Intelligent CV builder with GPT support
+  app.get('/api/resume/kickresume-templates', async (req, res) => {
+    try {
+      const { category, style, industry, experience } = req.query;
+      
+      const templates = await kickresumeService.getTemplates({
+        category: category?.toString(),
+        style: style?.toString(),
+        industry: industry?.toString(),
+        experience: experience?.toString()
+      });
+      
+      res.json({
+        success: true,
+        templates,
+        provider: 'Kickresume AI',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Kickresume templates error:', error);
+      res.status(500).json({ message: 'Failed to get templates' });
+    }
+  });
+
+  app.post('/api/resume/kickresume-build', async (req, res) => {
+    try {
+      const { templateId, content, aiOptimization, targetRole, industry } = req.body;
+      
+      if (!templateId || !content) {
+        return res.status(400).json({ message: 'Template ID and content are required' });
+      }
+
+      const builtResume = await kickresumeService.buildResume({
+        templateId,
+        content,
+        aiOptimization: aiOptimization || true,
+        targetRole,
+        industry
+      });
+      
+      res.json({
+        success: true,
+        builtResume,
+        provider: 'Kickresume AI',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Kickresume build error:', error);
+      res.status(500).json({ message: 'Failed to build resume' });
+    }
+  });
+
+  app.post('/api/resume/kickresume-gpt-optimize', async (req, res) => {
+    try {
+      const { resumeContent, jobDescription, targetRole, optimizationLevel } = req.body;
+      
+      if (!resumeContent || !jobDescription || !targetRole) {
+        return res.status(400).json({ message: 'Resume content, job description, and target role are required' });
+      }
+
+      const gptOptimization = await kickresumeService.optimizeWithGPT({
+        resumeContent,
+        jobDescription,
+        targetRole,
+        optimizationLevel: optimizationLevel || 'advanced'
+      });
+      
+      res.json({
+        success: true,
+        gptOptimization,
+        provider: 'Kickresume AI',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Kickresume GPT optimization error:', error);
+      res.status(500).json({ message: 'Failed to optimize with GPT' });
+    }
+  });
+
+  app.post('/api/resume/kickresume-generate-content', async (req, res) => {
+    try {
+      const { section, userInput, targetRole, industry, tone } = req.body;
+      
+      if (!section || !userInput || !targetRole || !industry) {
+        return res.status(400).json({ message: 'Section, user input, target role, and industry are required' });
+      }
+
+      const generatedContent = await kickresumeService.generateContent({
+        section,
+        userInput,
+        targetRole,
+        industry,
+        tone: tone || 'professional'
+      });
+      
+      res.json({
+        success: true,
+        generatedContent,
+        provider: 'Kickresume AI',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Kickresume content generation error:', error);
+      res.status(500).json({ message: 'Failed to generate content' });
+    }
+  });
+
+  app.post('/api/resume/kickresume-export', async (req, res) => {
+    try {
+      const { resumeId, options } = req.body;
+      
+      if (!resumeId || !options) {
+        return res.status(400).json({ message: 'Resume ID and export options are required' });
+      }
+
+      const exportResult = await kickresumeService.exportResume({
+        resumeId,
+        options
+      });
+      
+      res.json({
+        success: true,
+        exportResult,
+        provider: 'Kickresume AI',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Kickresume export error:', error);
+      res.status(500).json({ message: 'Failed to export resume' });
+    }
+  });
+
+  app.post('/api/resume/kickresume-analyze', async (req, res) => {
+    try {
+      const { resumeContent, analysisType } = req.body;
+      
+      if (!resumeContent || !analysisType) {
+        return res.status(400).json({ message: 'Resume content and analysis type are required' });
+      }
+
+      const analysis = await kickresumeService.analyzeResume({
+        resumeContent,
+        analysisType
+      });
+      
+      res.json({
+        success: true,
+        analysis,
+        provider: 'Kickresume AI',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Kickresume analysis error:', error);
+      res.status(500).json({ message: 'Failed to analyze resume' });
+    }
+  });
+
+  // Teal HQ - Resume tracker + rewrite recommendations
+  app.post('/api/resume/teal-track', async (req, res) => {
+    try {
+      const { userId, resumeContent, applications } = req.body;
+      
+      if (!userId || !resumeContent || !applications) {
+        return res.status(400).json({ message: 'User ID, resume content, and applications are required' });
+      }
+
+      const tracking = await tealHqService.trackResumePerformance({
+        userId,
+        resumeContent,
+        applications
+      });
+      
+      res.json({
+        success: true,
+        tracking,
+        provider: 'Teal HQ',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Teal HQ tracking error:', error);
+      res.status(500).json({ message: 'Failed to track resume performance' });
+    }
+  });
+
+  app.post('/api/resume/teal-analyze', async (req, res) => {
+    try {
+      const { resumeContent, targetRole, industry, analysisDepth } = req.body;
+      
+      if (!resumeContent || !targetRole || !industry) {
+        return res.status(400).json({ message: 'Resume content, target role, and industry are required' });
+      }
+
+      const analysis = await tealHqService.analyzeResume({
+        resumeContent,
+        targetRole,
+        industry,
+        analysisDepth: analysisDepth || 'comprehensive'
+      });
+      
+      res.json({
+        success: true,
+        analysis,
+        provider: 'Teal HQ',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Teal HQ analysis error:', error);
+      res.status(500).json({ message: 'Failed to analyze resume' });
+    }
+  });
+
+  app.post('/api/resume/teal-rewrite-recommendations', async (req, res) => {
+    try {
+      const { resumeContent, targetRole, jobDescription, priority } = req.body;
+      
+      if (!resumeContent || !targetRole || !jobDescription) {
+        return res.status(400).json({ message: 'Resume content, target role, and job description are required' });
+      }
+
+      const recommendations = await tealHqService.getRewriteRecommendations({
+        resumeContent,
+        targetRole,
+        jobDescription,
+        priority: priority || 'medium'
+      });
+      
+      res.json({
+        success: true,
+        recommendations,
+        provider: 'Teal HQ',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Teal HQ rewrite recommendations error:', error);
+      res.status(500).json({ message: 'Failed to get rewrite recommendations' });
+    }
+  });
+
+  app.post('/api/resume/teal-coaching', async (req, res) => {
+    try {
+      const { userId, resumeContent, careerGoals, experience, targetRoles } = req.body;
+      
+      if (!userId || !resumeContent || !careerGoals || !experience || !targetRoles) {
+        return res.status(400).json({ message: 'User ID, resume content, career goals, experience, and target roles are required' });
+      }
+
+      const coaching = await tealHqService.getCoachingInsights({
+        userId,
+        resumeContent,
+        careerGoals,
+        experience,
+        targetRoles
+      });
+      
+      res.json({
+        success: true,
+        coaching,
+        provider: 'Teal HQ',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Teal HQ coaching error:', error);
+      res.status(500).json({ message: 'Failed to get coaching insights' });
+    }
+  });
+
+  app.post('/api/resume/teal-job-match', async (req, res) => {
+    try {
+      const { resumeContent, jobDescription, jobId, company, position } = req.body;
+      
+      if (!resumeContent || !jobDescription || !jobId || !company || !position) {
+        return res.status(400).json({ message: 'Resume content, job description, job ID, company, and position are required' });
+      }
+
+      const jobMatch = await tealHqService.analyzeJobMatch({
+        resumeContent,
+        jobDescription,
+        jobId,
+        company,
+        position
+      });
+      
+      res.json({
+        success: true,
+        jobMatch,
+        provider: 'Teal HQ',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Teal HQ job match error:', error);
+      res.status(500).json({ message: 'Failed to analyze job match' });
+    }
+  });
+
+  app.post('/api/resume/teal-version-comparison', async (req, res) => {
+    try {
+      const { resumeVersions, metrics } = req.body;
+      
+      if (!resumeVersions || !metrics) {
+        return res.status(400).json({ message: 'Resume versions and metrics are required' });
+      }
+
+      const comparison = await tealHqService.generateVersionComparison({
+        resumeVersions,
+        metrics
+      });
+      
+      res.json({
+        success: true,
+        comparison,
+        provider: 'Teal HQ',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Teal HQ version comparison error:', error);
+      res.status(500).json({ message: 'Failed to generate version comparison' });
+    }
+  });
+
+  // Custom GPT-4/Claude Flow - Custom rewrite module
+  app.post('/api/resume/custom-gpt-rewrite', async (req, res) => {
+    try {
+      const { resumeContent, jobDescription, targetRole, industry, rewriteLevel, aiModel } = req.body;
+      
+      if (!resumeContent || !jobDescription || !targetRole || !industry) {
+        return res.status(400).json({ message: 'Resume content, job description, target role, and industry are required' });
+      }
+
+      const rewriteResult = await customGptService.rewriteResumeWithGPT({
+        resumeContent,
+        jobDescription,
+        targetRole,
+        industry,
+        rewriteLevel: rewriteLevel || 'moderate',
+        aiModel: aiModel || 'gpt-4'
+      });
+      
+      res.json({
+        success: true,
+        rewriteResult,
+        provider: 'Custom GPT-4/Claude Flow',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Custom GPT rewrite error:', error);
+      res.status(500).json({ message: 'Failed to rewrite resume with GPT' });
+    }
+  });
+
+  app.post('/api/resume/custom-gpt-cover-letter', async (req, res) => {
+    try {
+      const { resumeContent, jobDescription, companyName, hiringManager, tone, length, aiModel } = req.body;
+      
+      if (!resumeContent || !jobDescription || !companyName) {
+        return res.status(400).json({ message: 'Resume content, job description, and company name are required' });
+      }
+
+      const coverLetter = await customGptService.generateCoverLetterWithAI({
+        resumeContent,
+        jobDescription,
+        companyName,
+        hiringManager,
+        tone: tone || 'professional',
+        length: length || 'medium',
+        aiModel: aiModel || 'gpt-4'
+      });
+      
+      res.json({
+        success: true,
+        coverLetter,
+        provider: 'Custom GPT-4/Claude Flow',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Custom GPT cover letter error:', error);
+      res.status(500).json({ message: 'Failed to generate cover letter with AI' });
+    }
+  });
+
+  app.post('/api/resume/custom-gpt-optimization-flow', async (req, res) => {
+    try {
+      const { resumeContent, jobDescription, targetRole, iterations, aiModel } = req.body;
+      
+      if (!resumeContent || !jobDescription || !targetRole) {
+        return res.status(400).json({ message: 'Resume content, job description, and target role are required' });
+      }
+
+      const optimizationFlow = await customGptService.optimizeWithIterativeFlow({
+        resumeContent,
+        jobDescription,
+        targetRole,
+        iterations: iterations || 3,
+        aiModel: aiModel || 'gpt-4'
+      });
+      
+      res.json({
+        success: true,
+        optimizationFlow,
+        provider: 'Custom GPT-4/Claude Flow',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Custom GPT optimization flow error:', error);
+      res.status(500).json({ message: 'Failed to optimize with iterative flow' });
+    }
+  });
+
+  app.post('/api/resume/custom-gpt-job-analysis', async (req, res) => {
+    try {
+      const { jobDescription, company, industry, aiModel } = req.body;
+      
+      if (!jobDescription || !company || !industry) {
+        return res.status(400).json({ message: 'Job description, company, and industry are required' });
+      }
+
+      const jobAnalysis = await customGptService.analyzeJobDescriptionWithAI({
+        jobDescription,
+        company,
+        industry,
+        aiModel: aiModel || 'gpt-4'
+      });
+      
+      res.json({
+        success: true,
+        jobAnalysis,
+        provider: 'Custom GPT-4/Claude Flow',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Custom GPT job analysis error:', error);
+      res.status(500).json({ message: 'Failed to analyze job description' });
+    }
+  });
+
+  app.post('/api/resume/custom-gpt-ats-analysis', async (req, res) => {
+    try {
+      const { resumeContent, jobDescription, targetATS, aiModel } = req.body;
+      
+      if (!resumeContent || !jobDescription) {
+        return res.status(400).json({ message: 'Resume content and job description are required' });
+      }
+
+      const atsAnalysis = await customGptService.performAdvancedATSAnalysis({
+        resumeContent,
+        jobDescription,
+        targetATS,
+        aiModel: aiModel || 'gpt-4'
+      });
+      
+      res.json({
+        success: true,
+        atsAnalysis,
+        provider: 'Custom GPT-4/Claude Flow',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Custom GPT ATS analysis error:', error);
+      res.status(500).json({ message: 'Failed to perform ATS analysis' });
+    }
+  });
+
+  app.post('/api/resume/custom-gpt-bullet-points', async (req, res) => {
+    try {
+      const { jobTitle, experience, achievements, targetRole, industry, aiModel } = req.body;
+      
+      if (!jobTitle || !experience || !achievements || !targetRole || !industry) {
+        return res.status(400).json({ message: 'Job title, experience, achievements, target role, and industry are required' });
+      }
+
+      const bulletPoints = await customGptService.generateBulletPointsWithAI({
+        jobTitle,
+        experience,
+        achievements,
+        targetRole,
+        industry,
+        aiModel: aiModel || 'gpt-4'
+      });
+      
+      res.json({
+        success: true,
+        bulletPoints,
+        provider: 'Custom GPT-4/Claude Flow',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Custom GPT bullet points error:', error);
+      res.status(500).json({ message: 'Failed to generate bullet points with AI' });
     }
   });
 
