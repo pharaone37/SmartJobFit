@@ -23,6 +23,10 @@ import { skillateService } from "./services/skillateService";
 import { kickresumeService } from "./services/kickresumeService";
 import { tealHqService } from "./services/tealHqService";
 import { customGptService } from "./services/customGptService";
+import { jobspikrService } from "./services/jobspikrService";
+import { levelsService } from "./services/levelsService";
+import { gehaltService } from "./services/gehaltService";
+import { jobMarketIntelligence } from "./services/jobMarketIntelligence";
 import { 
   insertJobSchema, 
   insertResumeSchema, 
@@ -813,6 +817,375 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Custom GPT style improvement error:', error);
       res.status(500).json({ message: 'Failed to improve writing style' });
+    }
+  });
+
+  // Job Search APIs & Market Data
+
+  // Jobspikr - AI-powered job aggregator
+  app.post('/api/jobs/jobspikr-search', async (req, res) => {
+    try {
+      const { keywords, location, salary, experience, jobType, page, limit } = req.body;
+      
+      if (!keywords) {
+        return res.status(400).json({ message: 'Keywords are required' });
+      }
+
+      const searchResults = await jobspikrService.searchJobs({
+        keywords,
+        location,
+        salary,
+        experience,
+        jobType,
+        page,
+        limit
+      });
+      
+      res.json({
+        success: true,
+        searchResults,
+        provider: 'Jobspikr',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Jobspikr search error:', error);
+      res.status(500).json({ message: 'Failed to search jobs with Jobspikr' });
+    }
+  });
+
+  app.post('/api/jobs/jobspikr-market', async (req, res) => {
+    try {
+      const { jobTitle, location } = req.body;
+      
+      if (!jobTitle) {
+        return res.status(400).json({ message: 'Job title is required' });
+      }
+
+      const marketData = await jobspikrService.getMarketData(jobTitle, location);
+      
+      res.json({
+        success: true,
+        marketData,
+        provider: 'Jobspikr',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Jobspikr market data error:', error);
+      res.status(500).json({ message: 'Failed to get market data' });
+    }
+  });
+
+  app.get('/api/jobs/jobspikr-trending', async (req, res) => {
+    try {
+      const { location } = req.query;
+      const trendingJobs = await jobspikrService.getTrendingJobs(location?.toString());
+      
+      res.json({
+        success: true,
+        trendingJobs,
+        provider: 'Jobspikr',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Jobspikr trending error:', error);
+      res.status(500).json({ message: 'Failed to get trending jobs' });
+    }
+  });
+
+  app.post('/api/companies/jobspikr-insights', async (req, res) => {
+    try {
+      const { companyName } = req.body;
+      
+      if (!companyName) {
+        return res.status(400).json({ message: 'Company name is required' });
+      }
+
+      const insights = await jobspikrService.getCompanyInsights(companyName);
+      
+      res.json({
+        success: true,
+        insights,
+        provider: 'Jobspikr',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Jobspikr company insights error:', error);
+      res.status(500).json({ message: 'Failed to get company insights' });
+    }
+  });
+
+  // Levels.fyi - Tech salary benchmarking
+  app.post('/api/salary/levels-data', async (req, res) => {
+    try {
+      const { company, title, level, location, limit } = req.body;
+      
+      const salaryData = await levelsService.getSalaryData({
+        company,
+        title,
+        level,
+        location,
+        limit
+      });
+      
+      res.json({
+        success: true,
+        salaryData,
+        provider: 'Levels.fyi',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Levels.fyi salary data error:', error);
+      res.status(500).json({ message: 'Failed to get salary data' });
+    }
+  });
+
+  app.post('/api/salary/levels-company', async (req, res) => {
+    try {
+      const { company } = req.body;
+      
+      if (!company) {
+        return res.status(400).json({ message: 'Company name is required' });
+      }
+
+      const companyData = await levelsService.getCompanyData(company);
+      
+      res.json({
+        success: true,
+        companyData,
+        provider: 'Levels.fyi',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Levels.fyi company data error:', error);
+      res.status(500).json({ message: 'Failed to get company data' });
+    }
+  });
+
+  app.post('/api/salary/levels-benchmark', async (req, res) => {
+    try {
+      const { title, company, location } = req.body;
+      
+      if (!title) {
+        return res.status(400).json({ message: 'Job title is required' });
+      }
+
+      const benchmarkData = await levelsService.getBenchmarkData(title, company, location);
+      
+      res.json({
+        success: true,
+        benchmarkData,
+        provider: 'Levels.fyi',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Levels.fyi benchmark error:', error);
+      res.status(500).json({ message: 'Failed to get benchmark data' });
+    }
+  });
+
+  app.post('/api/salary/levels-negotiation', async (req, res) => {
+    try {
+      const { currentSalary, targetRole, targetCompany, experience, location } = req.body;
+      
+      if (!currentSalary || !targetRole || !experience || !location) {
+        return res.status(400).json({ message: 'Current salary, target role, experience, and location are required' });
+      }
+
+      const negotiationInsights = await levelsService.getNegotiationInsights({
+        currentSalary,
+        targetRole,
+        targetCompany,
+        experience,
+        location
+      });
+      
+      res.json({
+        success: true,
+        negotiationInsights,
+        provider: 'Levels.fyi',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Levels.fyi negotiation insights error:', error);
+      res.status(500).json({ message: 'Failed to get negotiation insights' });
+    }
+  });
+
+  // Gehalt.de - German salary data (GDPR-compliant)
+  app.post('/api/salary/gehalt-data', async (req, res) => {
+    try {
+      const { position, location, experience, education, industry, companySize } = req.body;
+      
+      if (!position) {
+        return res.status(400).json({ message: 'Position is required' });
+      }
+
+      const salaryData = await gehaltService.getSalaryData({
+        position,
+        location,
+        experience,
+        education,
+        industry,
+        companySize
+      });
+      
+      res.json({
+        success: true,
+        salaryData,
+        provider: 'Gehalt.de',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Gehalt.de salary data error:', error);
+      res.status(500).json({ message: 'Failed to get salary data' });
+    }
+  });
+
+  app.post('/api/salary/gehalt-benchmark', async (req, res) => {
+    try {
+      const { position, location } = req.body;
+      
+      if (!position) {
+        return res.status(400).json({ message: 'Position is required' });
+      }
+
+      const benchmarkData = await gehaltService.getBenchmarkData(position, location);
+      
+      res.json({
+        success: true,
+        benchmarkData,
+        provider: 'Gehalt.de',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Gehalt.de benchmark error:', error);
+      res.status(500).json({ message: 'Failed to get benchmark data' });
+    }
+  });
+
+  app.post('/api/salary/gehalt-market', async (req, res) => {
+    try {
+      const { position } = req.body;
+      
+      if (!position) {
+        return res.status(400).json({ message: 'Position is required' });
+      }
+
+      const marketData = await gehaltService.getJobMarketData(position);
+      
+      res.json({
+        success: true,
+        marketData,
+        provider: 'Gehalt.de',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Gehalt.de market data error:', error);
+      res.status(500).json({ message: 'Failed to get job market data' });
+    }
+  });
+
+  app.post('/api/salary/gehalt-negotiation', async (req, res) => {
+    try {
+      const { currentSalary, targetPosition, experience, location, education, industry } = req.body;
+      
+      if (!currentSalary || !targetPosition || !experience || !location) {
+        return res.status(400).json({ message: 'Current salary, target position, experience, and location are required' });
+      }
+
+      const negotiationAdvice = await gehaltService.getNegotiationAdvice({
+        currentSalary,
+        targetPosition,
+        experience,
+        location,
+        education,
+        industry
+      });
+      
+      res.json({
+        success: true,
+        negotiationAdvice,
+        provider: 'Gehalt.de',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Gehalt.de negotiation advice error:', error);
+      res.status(500).json({ message: 'Failed to get negotiation advice' });
+    }
+  });
+
+  // Job Market Intelligence - Comprehensive analysis
+  app.post('/api/market/comprehensive-analysis', async (req, res) => {
+    try {
+      const { jobTitle, location, experience, skills, salary } = req.body;
+      
+      if (!jobTitle) {
+        return res.status(400).json({ message: 'Job title is required' });
+      }
+
+      const marketData = await jobMarketIntelligence.getComprehensiveMarketData({
+        jobTitle,
+        location,
+        experience,
+        skills,
+        salary
+      });
+      
+      res.json({
+        success: true,
+        marketData,
+        provider: 'Job Market Intelligence',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Job market intelligence error:', error);
+      res.status(500).json({ message: 'Failed to get comprehensive market analysis' });
+    }
+  });
+
+  app.post('/api/market/recommendations', async (req, res) => {
+    try {
+      const { jobTitle, currentSalary, experience, location, skills } = req.body;
+      
+      if (!jobTitle || !experience || !location || !skills) {
+        return res.status(400).json({ message: 'Job title, experience, location, and skills are required' });
+      }
+
+      const recommendations = await jobMarketIntelligence.generateMarketRecommendations({
+        jobTitle,
+        currentSalary,
+        experience,
+        location,
+        skills
+      });
+      
+      res.json({
+        success: true,
+        recommendations,
+        provider: 'Job Market Intelligence',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Market recommendations error:', error);
+      res.status(500).json({ message: 'Failed to generate market recommendations' });
+    }
+  });
+
+  app.get('/api/market/insights/:jobTitle', async (req, res) => {
+    try {
+      const { jobTitle } = req.params;
+      
+      const insights = await jobMarketIntelligence.getRealtimeMarketInsights(jobTitle);
+      
+      res.json({
+        success: true,
+        insights,
+        provider: 'Job Market Intelligence',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Market insights error:', error);
+      res.status(500).json({ message: 'Failed to get real-time market insights' });
     }
   });
 
