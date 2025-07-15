@@ -168,6 +168,17 @@ export interface IStorage {
   updateNetworkConnection(id: string, updates: Partial<NetworkConnection>): Promise<NetworkConnection | undefined>;
   deleteNetworkConnection(id: string): Promise<void>;
   syncNetworkConnections(userId: string, platform: string): Promise<NetworkConnection[]>;
+  
+  // Job search engine operations
+  storeSearchHistory(userId: string, searchData: any): Promise<void>;
+  getJobDetails(jobId: string): Promise<any>;
+  saveJobForUser(userId: string, jobId: string, notes?: string): Promise<any>;
+  
+  // Resume optimizer operations  
+  getUserResumeVersions(userId: string): Promise<any[]>;
+  storeOptimizationResults(resumeId: string, suggestions: any[]): Promise<void>;
+  getResumeAnalytics(resumeId: string): Promise<any>;
+  trackResumeEvent(resumeId: string, event: string, data: any): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -675,6 +686,94 @@ export class DatabaseStorage implements IStorage {
         eq(networkConnections.platform, platform)
       )
     );
+  }
+
+  // Job search engine operations
+  async storeSearchHistory(userId: string, searchData: any): Promise<void> {
+    const notification = {
+      id: crypto.randomUUID(),
+      userId,
+      type: 'search_history',
+      title: 'Search Performed',
+      message: `Search query: "${searchData.query}" - ${searchData.resultsCount} results`,
+      data: searchData,
+      isRead: false,
+      createdAt: new Date()
+    };
+    
+    await db.insert(notifications).values(notification);
+  }
+
+  async getJobDetails(jobId: string): Promise<any> {
+    const [job] = await db.select().from(jobs).where(eq(jobs.id, jobId));
+    return job;
+  }
+
+  async saveJobForUser(userId: string, jobId: string, notes?: string): Promise<any> {
+    const savedJob = {
+      id: crypto.randomUUID(),
+      userId,
+      jobId,
+      notes: notes || '',
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+    
+    const [created] = await db.insert(savedJobs).values(savedJob).returning();
+    return created;
+  }
+
+  // Resume optimizer operations  
+  async getUserResumeVersions(userId: string): Promise<any[]> {
+    const userResumes = await db.select().from(resumes).where(eq(resumes.userId, userId)).orderBy(desc(resumes.createdAt));
+    return userResumes;
+  }
+
+  async storeOptimizationResults(resumeId: string, suggestions: any[]): Promise<void> {
+    const optimizationData = {
+      optimizationSuggestions: suggestions,
+      lastOptimized: new Date(),
+      updatedAt: new Date()
+    };
+    
+    await db
+      .update(resumes)
+      .set(optimizationData)
+      .where(eq(resumes.id, resumeId));
+  }
+
+  async getResumeAnalytics(resumeId: string): Promise<any> {
+    const [resume] = await db.select().from(resumes).where(eq(resumes.id, resumeId));
+    if (!resume) return null;
+    
+    return {
+      resumeId,
+      fileName: resume.fileName,
+      createdAt: resume.createdAt,
+      lastModified: resume.updatedAt,
+      version: resume.version,
+      optimizationSuggestions: resume.optimizationSuggestions,
+      atsScore: resume.atsScore,
+      keywords: resume.keywords
+    };
+  }
+
+  async trackResumeEvent(resumeId: string, event: string, data: any): Promise<void> {
+    const eventData = {
+      resumeId,
+      event,
+      data,
+      timestamp: new Date()
+    };
+    
+    // Store in resume activity tracking
+    await db
+      .update(resumes)
+      .set({ 
+        lastModified: new Date(),
+        updatedAt: new Date()
+      })
+      .where(eq(resumes.id, resumeId));
   }
 }
 

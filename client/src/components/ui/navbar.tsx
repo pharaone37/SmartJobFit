@@ -46,6 +46,8 @@ export default function Navbar() {
   ];
 
   const aiToolsItems = [
+    { name: "Job Search Engine", href: "/job-search-engine", icon: Search },
+    { name: "Resume Optimizer", href: "/resume-optimizer", icon: FileText },
     { name: "Resume Analyzer", href: "/resume-analyzer", icon: FileText },
     { name: "AI Interview Prep", href: "/ai-interview-prep", icon: Video },
     { name: "Cover Letter", href: "/cover-letter", icon: FileText },

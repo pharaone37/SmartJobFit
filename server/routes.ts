@@ -39,6 +39,9 @@ import { whisperService } from "./services/whisperService";
 import { pdfExtractionService } from "./services/pdfExtractionService";
 import { automationService } from "./services/automationService";
 import { ragSearchService } from "./services/ragSearchService";
+import { jobSearchEngine } from "./jobSearchEngine";
+import { resumeOptimizer } from "./resumeOptimizer";
+import multer from "multer";
 import { 
   insertJobSchema, 
   insertResumeSchema, 
@@ -62,6 +65,22 @@ if (!process.env.STRIPE_SECRET_KEY) {
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
   apiVersion: "2025-06-30.basil",
+});
+
+// Configure multer for file uploads
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 10 * 1024 * 1024, // 10MB limit
+  },
+  fileFilter: (req, file, cb) => {
+    const allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+    if (allowedTypes.includes(file.mimetype)) {
+      cb(null, true);
+    } else {
+      cb(new Error('Invalid file type. Only PDF and Word documents are allowed.'));
+    }
+  }
 });
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -4283,6 +4302,337 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error processing interview chatbot:", error);
       res.status(500).json({ message: "Failed to process interview chatbot" });
+    }
+  });
+
+  // COMPREHENSIVE JOB SEARCH ENGINE API ENDPOINTS
+  
+  // Natural language job search with AI processing
+  app.post('/api/search/jobs', async (req, res) => {
+    try {
+      const { query, location, salaryMin, salaryMax, remote, jobType, experienceLevel, company, industry, skills, radius, datePosted, limit, offset } = req.body;
+      
+      if (!query) {
+        return res.status(400).json({ message: 'Search query is required' });
+      }
+
+      const searchParams = {
+        query,
+        location,
+        salaryMin,
+        salaryMax,
+        remote,
+        jobType,
+        experienceLevel,
+        company,
+        industry,
+        skills,
+        radius,
+        datePosted,
+        limit: limit || 20,
+        offset: offset || 0
+      };
+
+      const userId = req.user?.claims?.sub;
+      const searchResults = await jobSearchEngine.search(searchParams, userId);
+      
+      res.json({
+        success: true,
+        ...searchResults,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Job search error:', error);
+      res.status(500).json({ message: 'Failed to search jobs' });
+    }
+  });
+
+  // Get search suggestions and autocomplete
+  app.get('/api/search/suggestions', async (req, res) => {
+    try {
+      const { query } = req.query;
+      
+      if (!query) {
+        return res.status(400).json({ message: 'Query parameter is required' });
+      }
+
+      const suggestions = await jobSearchEngine.getSearchSuggestions(query as string);
+      
+      res.json({
+        success: true,
+        suggestions,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Search suggestions error:', error);
+      res.status(500).json({ message: 'Failed to get search suggestions' });
+    }
+  });
+
+  // Advanced job filtering
+  app.post('/api/search/filters', async (req, res) => {
+    try {
+      const { baseQuery, filters } = req.body;
+      
+      if (!baseQuery) {
+        return res.status(400).json({ message: 'Base query is required' });
+      }
+
+      const userId = req.user?.claims?.sub;
+      const searchResults = await jobSearchEngine.search({ 
+        query: baseQuery,
+        ...filters 
+      }, userId);
+      
+      res.json({
+        success: true,
+        ...searchResults,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Advanced filter error:', error);
+      res.status(500).json({ message: 'Failed to apply filters' });
+    }
+  });
+
+  // Get detailed job view
+  app.get('/api/jobs/:jobId', async (req, res) => {
+    try {
+      const { jobId } = req.params;
+      
+      if (!jobId) {
+        return res.status(400).json({ message: 'Job ID is required' });
+      }
+
+      // Get job details from storage or external APIs
+      const jobDetails = await storage.getJobDetails(jobId);
+      
+      if (!jobDetails) {
+        return res.status(404).json({ message: 'Job not found' });
+      }
+
+      res.json({
+        success: true,
+        job: jobDetails,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Job details error:', error);
+      res.status(500).json({ message: 'Failed to get job details' });
+    }
+  });
+
+  // Save job to user profile
+  app.post('/api/jobs/save', requireAuth, async (req, res) => {
+    try {
+      const { jobId, notes } = req.body;
+      const userId = req.user.claims.sub;
+      
+      if (!jobId) {
+        return res.status(400).json({ message: 'Job ID is required' });
+      }
+
+      const savedJob = await storage.saveJobForUser(userId, jobId, notes);
+      
+      res.json({
+        success: true,
+        savedJob,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Save job error:', error);
+      res.status(500).json({ message: 'Failed to save job' });
+    }
+  });
+
+  // COMPREHENSIVE RESUME OPTIMIZATION API ENDPOINTS
+  
+  // Upload and parse resume
+  app.post('/api/resume/upload', requireAuth, upload.single('resume'), async (req, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const file = req.file;
+      
+      if (!file) {
+        return res.status(400).json({ message: 'Resume file is required' });
+      }
+
+      const parsedResume = await resumeOptimizer.parseResume(file, userId);
+      
+      res.json({
+        success: true,
+        resume: parsedResume,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Resume upload error:', error);
+      res.status(500).json({ message: 'Failed to upload and parse resume' });
+    }
+  });
+
+  // AI-powered resume optimization
+  app.post('/api/resume/optimize', requireAuth, async (req, res) => {
+    try {
+      const { resumeId, targetRole, targetCompany, jobDescription, industry, experienceLevel } = req.body;
+      
+      if (!resumeId) {
+        return res.status(400).json({ message: 'Resume ID is required' });
+      }
+
+      const optimizationOptions = {
+        targetRole,
+        targetCompany,
+        jobDescription,
+        industry,
+        experienceLevel
+      };
+
+      const suggestions = await resumeOptimizer.optimizeResume(resumeId, optimizationOptions);
+      
+      res.json({
+        success: true,
+        suggestions,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Resume optimization error:', error);
+      res.status(500).json({ message: 'Failed to optimize resume' });
+    }
+  });
+
+  // Get ATS compatibility score
+  app.get('/api/resume/ats-score/:resumeId', requireAuth, async (req, res) => {
+    try {
+      const { resumeId } = req.params;
+      
+      if (!resumeId) {
+        return res.status(400).json({ message: 'Resume ID is required' });
+      }
+
+      const resume = await storage.getResume(resumeId);
+      if (!resume) {
+        return res.status(404).json({ message: 'Resume not found' });
+      }
+
+      const atsAnalysis = await resumeOptimizer.performATSAnalysis(resume);
+      
+      res.json({
+        success: true,
+        atsAnalysis,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('ATS score error:', error);
+      res.status(500).json({ message: 'Failed to get ATS score' });
+    }
+  });
+
+  // Keyword optimization
+  app.post('/api/resume/keywords', requireAuth, async (req, res) => {
+    try {
+      const { resumeId, jobDescription, targetKeywords } = req.body;
+      
+      if (!resumeId) {
+        return res.status(400).json({ message: 'Resume ID is required' });
+      }
+
+      const keywordSuggestions = await resumeOptimizer.getJobSpecificOptimization(resumeId, jobDescription);
+      
+      res.json({
+        success: true,
+        keywordSuggestions,
+        targetKeywords,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Keyword optimization error:', error);
+      res.status(500).json({ message: 'Failed to optimize keywords' });
+    }
+  });
+
+  // Multi-version resume management
+  app.get('/api/resume/versions/:userId', requireAuth, async (req, res) => {
+    try {
+      const { userId } = req.params;
+      
+      if (req.user.claims.sub !== userId) {
+        return res.status(403).json({ message: 'Unauthorized access' });
+      }
+
+      const resumeVersions = await storage.getUserResumeVersions(userId);
+      
+      res.json({
+        success: true,
+        versions: resumeVersions,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Resume versions error:', error);
+      res.status(500).json({ message: 'Failed to get resume versions' });
+    }
+  });
+
+  // Generate professional resume PDF
+  app.post('/api/resume/generate-pdf', requireAuth, async (req, res) => {
+    try {
+      const { resumeId, templateName } = req.body;
+      
+      if (!resumeId) {
+        return res.status(400).json({ message: 'Resume ID is required' });
+      }
+
+      const pdfBuffer = await resumeOptimizer.generateResumePDF(resumeId, templateName);
+      
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader('Content-Disposition', 'attachment; filename="resume.pdf"');
+      res.send(pdfBuffer);
+    } catch (error) {
+      console.error('PDF generation error:', error);
+      res.status(500).json({ message: 'Failed to generate PDF' });
+    }
+  });
+
+  // Resume performance analytics
+  app.get('/api/resume/analytics/:resumeId', requireAuth, async (req, res) => {
+    try {
+      const { resumeId } = req.params;
+      
+      if (!resumeId) {
+        return res.status(400).json({ message: 'Resume ID is required' });
+      }
+
+      const analytics = await resumeOptimizer.getResumeAnalytics(resumeId);
+      
+      res.json({
+        success: true,
+        analytics,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Resume analytics error:', error);
+      res.status(500).json({ message: 'Failed to get resume analytics' });
+    }
+  });
+
+  // Track resume performance events
+  app.post('/api/resume/track', requireAuth, async (req, res) => {
+    try {
+      const { resumeId, event, data } = req.body;
+      
+      if (!resumeId || !event) {
+        return res.status(400).json({ message: 'Resume ID and event are required' });
+      }
+
+      await resumeOptimizer.trackResumePerformance(resumeId, event, data);
+      
+      res.json({
+        success: true,
+        message: 'Event tracked successfully',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Resume tracking error:', error);
+      res.status(500).json({ message: 'Failed to track resume event' });
     }
   });
 

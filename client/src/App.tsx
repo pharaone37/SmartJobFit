@@ -39,6 +39,10 @@ import SkillTracker from "@/components/SkillTracker";
 import InterviewChatbot from "@/components/InterviewChatbot";
 import NetworkSync from "@/components/NetworkSync";
 
+// New AI Systems
+import { JobSearchEngine } from "@/pages/JobSearchEngine";
+import { ResumeOptimizer } from "@/pages/ResumeOptimizer";
+
 import { queryClient } from "@/lib/queryClient";
 
 function AppContent() {
@@ -85,6 +89,10 @@ function AppContent() {
                 <Route path="/company-insights" element={<AICompanyInsights />} />
                 <Route path="/ai-dashboard" element={<AIDashboard />} />
                 <Route path="/analytics" element={<Analytics />} />
+                
+                {/* New AI Systems */}
+                <Route path="/job-search-engine" element={<JobSearchEngine />} />
+                <Route path="/resume-optimizer" element={<ResumeOptimizer />} />
                 
                 {/* New Interactive Features */}
                 <Route path="/resume-preview" element={<ResumePreview />} />
