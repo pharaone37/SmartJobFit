@@ -47,7 +47,12 @@ import {
   insertUserPreferencesSchema,
   insertSavedJobSchema,
   insertInterviewPracticeSchema,
-  insertSalaryNegotiationSchema
+  insertSalaryNegotiationSchema,
+  insertResumeTemplateSchema,
+  insertMoodBoardSchema,
+  insertSkillTrackingSchema,
+  insertInterviewSessionSchema,
+  insertNetworkConnectionSchema
 } from "@shared/schema";
 import { z } from "zod";
 
@@ -4064,7 +4069,222 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // NEW FEATURES API ROUTES
 
+  // Resume Template routes
+  app.post('/api/resume-templates', requireAuth, async (req: any, res) => {
+    try {
+      const userId = getUserId(req);
+      const templateData = insertResumeTemplateSchema.parse({ ...req.body, userId });
+      const template = await storage.createResumeTemplate(templateData);
+      res.json(template);
+    } catch (error) {
+      console.error("Error creating resume template:", error);
+      res.status(500).json({ message: "Failed to create resume template" });
+    }
+  });
+
+  app.get('/api/resume-templates', requireAuth, async (req: any, res) => {
+    try {
+      const userId = getUserId(req);
+      const templates = await storage.getResumeTemplates(userId);
+      res.json(templates);
+    } catch (error) {
+      console.error("Error fetching resume templates:", error);
+      res.status(500).json({ message: "Failed to fetch resume templates" });
+    }
+  });
+
+  app.put('/api/resume-templates/:id', requireAuth, async (req: any, res) => {
+    try {
+      const { id } = req.params;
+      const updates = req.body;
+      const template = await storage.updateResumeTemplate(id, updates);
+      res.json(template);
+    } catch (error) {
+      console.error("Error updating resume template:", error);
+      res.status(500).json({ message: "Failed to update resume template" });
+    }
+  });
+
+  app.delete('/api/resume-templates/:id', requireAuth, async (req: any, res) => {
+    try {
+      const { id } = req.params;
+      await storage.deleteResumeTemplate(id);
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting resume template:", error);
+      res.status(500).json({ message: "Failed to delete resume template" });
+    }
+  });
+
+  // Mood Board routes
+  app.post('/api/mood-boards', requireAuth, async (req: any, res) => {
+    try {
+      const userId = getUserId(req);
+      const moodBoardData = insertMoodBoardSchema.parse({ ...req.body, userId });
+      const moodBoard = await storage.createMoodBoard(moodBoardData);
+      res.json(moodBoard);
+    } catch (error) {
+      console.error("Error creating mood board:", error);
+      res.status(500).json({ message: "Failed to create mood board" });
+    }
+  });
+
+  app.get('/api/mood-boards', requireAuth, async (req: any, res) => {
+    try {
+      const userId = getUserId(req);
+      const moodBoards = await storage.getMoodBoards(userId);
+      res.json(moodBoards);
+    } catch (error) {
+      console.error("Error fetching mood boards:", error);
+      res.status(500).json({ message: "Failed to fetch mood boards" });
+    }
+  });
+
+  app.put('/api/mood-boards/:id', requireAuth, async (req: any, res) => {
+    try {
+      const { id } = req.params;
+      const updates = req.body;
+      const moodBoard = await storage.updateMoodBoard(id, updates);
+      res.json(moodBoard);
+    } catch (error) {
+      console.error("Error updating mood board:", error);
+      res.status(500).json({ message: "Failed to update mood board" });
+    }
+  });
+
+  // Skill Tracking routes
+  app.post('/api/skill-tracking', requireAuth, async (req: any, res) => {
+    try {
+      const userId = getUserId(req);
+      const skillData = insertSkillTrackingSchema.parse({ ...req.body, userId });
+      const skill = await storage.createSkillTracking(skillData);
+      res.json(skill);
+    } catch (error) {
+      console.error("Error creating skill tracking:", error);
+      res.status(500).json({ message: "Failed to create skill tracking" });
+    }
+  });
+
+  app.get('/api/skill-tracking', requireAuth, async (req: any, res) => {
+    try {
+      const userId = getUserId(req);
+      const skills = await storage.getSkillTrackings(userId);
+      res.json(skills);
+    } catch (error) {
+      console.error("Error fetching skill tracking:", error);
+      res.status(500).json({ message: "Failed to fetch skill tracking" });
+    }
+  });
+
+  app.put('/api/skill-tracking/:id', requireAuth, async (req: any, res) => {
+    try {
+      const { id } = req.params;
+      const updates = req.body;
+      const skill = await storage.updateSkillTracking(id, updates);
+      res.json(skill);
+    } catch (error) {
+      console.error("Error updating skill tracking:", error);
+      res.status(500).json({ message: "Failed to update skill tracking" });
+    }
+  });
+
+  // Interview Session routes
+  app.post('/api/interview-sessions', requireAuth, async (req: any, res) => {
+    try {
+      const userId = getUserId(req);
+      const sessionData = insertInterviewSessionSchema.parse({ ...req.body, userId });
+      const session = await storage.createInterviewSession(sessionData);
+      res.json(session);
+    } catch (error) {
+      console.error("Error creating interview session:", error);
+      res.status(500).json({ message: "Failed to create interview session" });
+    }
+  });
+
+  app.get('/api/interview-sessions', requireAuth, async (req: any, res) => {
+    try {
+      const userId = getUserId(req);
+      const sessions = await storage.getInterviewSessions(userId);
+      res.json(sessions);
+    } catch (error) {
+      console.error("Error fetching interview sessions:", error);
+      res.status(500).json({ message: "Failed to fetch interview sessions" });
+    }
+  });
+
+  app.put('/api/interview-sessions/:id', requireAuth, async (req: any, res) => {
+    try {
+      const { id } = req.params;
+      const updates = req.body;
+      const session = await storage.updateInterviewSession(id, updates);
+      res.json(session);
+    } catch (error) {
+      console.error("Error updating interview session:", error);
+      res.status(500).json({ message: "Failed to update interview session" });
+    }
+  });
+
+  // Network Connection routes
+  app.post('/api/network-connections', requireAuth, async (req: any, res) => {
+    try {
+      const userId = getUserId(req);
+      const connectionData = insertNetworkConnectionSchema.parse({ ...req.body, userId });
+      const connection = await storage.createNetworkConnection(connectionData);
+      res.json(connection);
+    } catch (error) {
+      console.error("Error creating network connection:", error);
+      res.status(500).json({ message: "Failed to create network connection" });
+    }
+  });
+
+  app.get('/api/network-connections', requireAuth, async (req: any, res) => {
+    try {
+      const userId = getUserId(req);
+      const connections = await storage.getNetworkConnections(userId);
+      res.json(connections);
+    } catch (error) {
+      console.error("Error fetching network connections:", error);
+      res.status(500).json({ message: "Failed to fetch network connections" });
+    }
+  });
+
+  app.post('/api/network-connections/sync/:platform', requireAuth, async (req: any, res) => {
+    try {
+      const userId = getUserId(req);
+      const { platform } = req.params;
+      const connections = await storage.syncNetworkConnections(userId, platform);
+      res.json(connections);
+    } catch (error) {
+      console.error("Error syncing network connections:", error);
+      res.status(500).json({ message: "Failed to sync network connections" });
+    }
+  });
+
+  // AI-powered chatbot for interview prep
+  app.post('/api/interview-chatbot', requireAuth, async (req: any, res) => {
+    try {
+      const { message, jobRole, company, sessionId } = req.body;
+      const userId = getUserId(req);
+      
+      // Generate AI response for interview preparation
+      const response = await openRouterService.generateResponse(
+        `You are an AI interview coach. Help the user prepare for a ${jobRole} position at ${company}. 
+        User message: ${message}
+        Provide helpful, encouraging feedback and ask follow-up questions.`,
+        {
+          maxTokens: 500,
+          temperature: 0.7
+        }
+      );
+      
+      res.json({ response, sessionId });
+    } catch (error) {
+      console.error("Error processing interview chatbot:", error);
+      res.status(500).json({ message: "Failed to process interview chatbot" });
+    }
+  });
 
   const httpServer = createServer(app);
   return httpServer;

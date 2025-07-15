@@ -32,6 +32,13 @@ import AICoverLetterGenerator from "@/components/AICoverLetterGenerator";
 import AICompanyInsights from "@/components/AICompanyInsights";
 import AIDashboard from "@/components/AIDashboard";
 
+// New Interactive Features
+import ResumePreview from "@/components/ResumePreview";
+import CareerMoodBoard from "@/components/CareerMoodBoard";
+import SkillTracker from "@/components/SkillTracker";
+import InterviewChatbot from "@/components/InterviewChatbot";
+import NetworkSync from "@/components/NetworkSync";
+
 import { queryClient } from "@/lib/queryClient";
 
 function AppContent() {
@@ -78,6 +85,14 @@ function AppContent() {
                 <Route path="/company-insights" element={<AICompanyInsights />} />
                 <Route path="/ai-dashboard" element={<AIDashboard />} />
                 <Route path="/analytics" element={<Analytics />} />
+                
+                {/* New Interactive Features */}
+                <Route path="/resume-preview" element={<ResumePreview />} />
+                <Route path="/career-mood-board" element={<CareerMoodBoard />} />
+                <Route path="/skill-tracker" element={<SkillTracker />} />
+                <Route path="/interview-chatbot" element={<InterviewChatbot />} />
+                <Route path="/network-sync" element={<NetworkSync />} />
+                
                 <Route path="/profile" element={<ProfilePage />} />
                 <Route path="/settings" element={<SettingsPage />} />
                 <Route path="/subscribe" element={<Subscribe />} />

@@ -10,6 +10,11 @@ import {
   savedJobs,
   interviewPractice,
   salaryNegotiations,
+  resumeTemplates,
+  moodBoards,
+  skillTracking,
+  interviewSessions,
+  networkConnections,
   type User,
   type UpsertUser,
   type Job,
@@ -32,6 +37,16 @@ import {
   type InsertInterviewPractice,
   type SalaryNegotiation,
   type InsertSalaryNegotiation,
+  type ResumeTemplate,
+  type InsertResumeTemplate,
+  type MoodBoard,
+  type InsertMoodBoard,
+  type SkillTracking,
+  type InsertSkillTracking,
+  type InterviewSession,
+  type InsertInterviewSession,
+  type NetworkConnection,
+  type InsertNetworkConnection,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, or, desc, asc, ilike, gte, lte, inArray, isNull } from "drizzle-orm";
@@ -117,6 +132,42 @@ export interface IStorage {
   createSalaryNegotiation(negotiation: InsertSalaryNegotiation): Promise<SalaryNegotiation>;
   getSalaryNegotiations(userId: string): Promise<SalaryNegotiation[]>;
   updateSalaryNegotiation(id: string, updates: Partial<SalaryNegotiation>): Promise<SalaryNegotiation | undefined>;
+  
+  // Resume template operations
+  createResumeTemplate(template: InsertResumeTemplate): Promise<ResumeTemplate>;
+  getResumeTemplate(id: string): Promise<ResumeTemplate | undefined>;
+  getResumeTemplates(userId: string): Promise<ResumeTemplate[]>;
+  updateResumeTemplate(id: string, updates: Partial<ResumeTemplate>): Promise<ResumeTemplate | undefined>;
+  deleteResumeTemplate(id: string): Promise<void>;
+  
+  // Mood board operations
+  createMoodBoard(moodBoard: InsertMoodBoard): Promise<MoodBoard>;
+  getMoodBoard(id: string): Promise<MoodBoard | undefined>;
+  getMoodBoards(userId: string): Promise<MoodBoard[]>;
+  updateMoodBoard(id: string, updates: Partial<MoodBoard>): Promise<MoodBoard | undefined>;
+  deleteMoodBoard(id: string): Promise<void>;
+  
+  // Skill tracking operations
+  createSkillTracking(skill: InsertSkillTracking): Promise<SkillTracking>;
+  getSkillTracking(id: string): Promise<SkillTracking | undefined>;
+  getSkillTrackings(userId: string): Promise<SkillTracking[]>;
+  updateSkillTracking(id: string, updates: Partial<SkillTracking>): Promise<SkillTracking | undefined>;
+  deleteSkillTracking(id: string): Promise<void>;
+  
+  // Interview session operations
+  createInterviewSession(session: InsertInterviewSession): Promise<InterviewSession>;
+  getInterviewSession(id: string): Promise<InterviewSession | undefined>;
+  getInterviewSessions(userId: string): Promise<InterviewSession[]>;
+  updateInterviewSession(id: string, updates: Partial<InterviewSession>): Promise<InterviewSession | undefined>;
+  deleteInterviewSession(id: string): Promise<void>;
+  
+  // Network connection operations
+  createNetworkConnection(connection: InsertNetworkConnection): Promise<NetworkConnection>;
+  getNetworkConnection(id: string): Promise<NetworkConnection | undefined>;
+  getNetworkConnections(userId: string): Promise<NetworkConnection[]>;
+  updateNetworkConnection(id: string, updates: Partial<NetworkConnection>): Promise<NetworkConnection | undefined>;
+  deleteNetworkConnection(id: string): Promise<void>;
+  syncNetworkConnections(userId: string, platform: string): Promise<NetworkConnection[]>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -475,6 +526,155 @@ export class DatabaseStorage implements IStorage {
       .where(eq(salaryNegotiations.id, id))
       .returning();
     return negotiation;
+  }
+
+  // Resume template operations
+  async createResumeTemplate(template: InsertResumeTemplate): Promise<ResumeTemplate> {
+    const [createdTemplate] = await db.insert(resumeTemplates).values(template).returning();
+    return createdTemplate;
+  }
+
+  async getResumeTemplate(id: string): Promise<ResumeTemplate | undefined> {
+    const [template] = await db.select().from(resumeTemplates).where(eq(resumeTemplates.id, id));
+    return template;
+  }
+
+  async getResumeTemplates(userId: string): Promise<ResumeTemplate[]> {
+    return db.select().from(resumeTemplates).where(eq(resumeTemplates.userId, userId)).orderBy(desc(resumeTemplates.createdAt));
+  }
+
+  async updateResumeTemplate(id: string, updates: Partial<ResumeTemplate>): Promise<ResumeTemplate | undefined> {
+    const [template] = await db
+      .update(resumeTemplates)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(resumeTemplates.id, id))
+      .returning();
+    return template;
+  }
+
+  async deleteResumeTemplate(id: string): Promise<void> {
+    await db.delete(resumeTemplates).where(eq(resumeTemplates.id, id));
+  }
+
+  // Mood board operations
+  async createMoodBoard(moodBoard: InsertMoodBoard): Promise<MoodBoard> {
+    const [createdMoodBoard] = await db.insert(moodBoards).values(moodBoard).returning();
+    return createdMoodBoard;
+  }
+
+  async getMoodBoard(id: string): Promise<MoodBoard | undefined> {
+    const [moodBoard] = await db.select().from(moodBoards).where(eq(moodBoards.id, id));
+    return moodBoard;
+  }
+
+  async getMoodBoards(userId: string): Promise<MoodBoard[]> {
+    return db.select().from(moodBoards).where(eq(moodBoards.userId, userId)).orderBy(desc(moodBoards.createdAt));
+  }
+
+  async updateMoodBoard(id: string, updates: Partial<MoodBoard>): Promise<MoodBoard | undefined> {
+    const [moodBoard] = await db
+      .update(moodBoards)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(moodBoards.id, id))
+      .returning();
+    return moodBoard;
+  }
+
+  async deleteMoodBoard(id: string): Promise<void> {
+    await db.delete(moodBoards).where(eq(moodBoards.id, id));
+  }
+
+  // Skill tracking operations
+  async createSkillTracking(skill: InsertSkillTracking): Promise<SkillTracking> {
+    const [createdSkill] = await db.insert(skillTracking).values(skill).returning();
+    return createdSkill;
+  }
+
+  async getSkillTracking(id: string): Promise<SkillTracking | undefined> {
+    const [skill] = await db.select().from(skillTracking).where(eq(skillTracking.id, id));
+    return skill;
+  }
+
+  async getSkillTrackings(userId: string): Promise<SkillTracking[]> {
+    return db.select().from(skillTracking).where(eq(skillTracking.userId, userId)).orderBy(desc(skillTracking.createdAt));
+  }
+
+  async updateSkillTracking(id: string, updates: Partial<SkillTracking>): Promise<SkillTracking | undefined> {
+    const [skill] = await db
+      .update(skillTracking)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(skillTracking.id, id))
+      .returning();
+    return skill;
+  }
+
+  async deleteSkillTracking(id: string): Promise<void> {
+    await db.delete(skillTracking).where(eq(skillTracking.id, id));
+  }
+
+  // Interview session operations
+  async createInterviewSession(session: InsertInterviewSession): Promise<InterviewSession> {
+    const [createdSession] = await db.insert(interviewSessions).values(session).returning();
+    return createdSession;
+  }
+
+  async getInterviewSession(id: string): Promise<InterviewSession | undefined> {
+    const [session] = await db.select().from(interviewSessions).where(eq(interviewSessions.id, id));
+    return session;
+  }
+
+  async getInterviewSessions(userId: string): Promise<InterviewSession[]> {
+    return db.select().from(interviewSessions).where(eq(interviewSessions.userId, userId)).orderBy(desc(interviewSessions.createdAt));
+  }
+
+  async updateInterviewSession(id: string, updates: Partial<InterviewSession>): Promise<InterviewSession | undefined> {
+    const [session] = await db
+      .update(interviewSessions)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(interviewSessions.id, id))
+      .returning();
+    return session;
+  }
+
+  async deleteInterviewSession(id: string): Promise<void> {
+    await db.delete(interviewSessions).where(eq(interviewSessions.id, id));
+  }
+
+  // Network connection operations
+  async createNetworkConnection(connection: InsertNetworkConnection): Promise<NetworkConnection> {
+    const [createdConnection] = await db.insert(networkConnections).values(connection).returning();
+    return createdConnection;
+  }
+
+  async getNetworkConnection(id: string): Promise<NetworkConnection | undefined> {
+    const [connection] = await db.select().from(networkConnections).where(eq(networkConnections.id, id));
+    return connection;
+  }
+
+  async getNetworkConnections(userId: string): Promise<NetworkConnection[]> {
+    return db.select().from(networkConnections).where(eq(networkConnections.userId, userId)).orderBy(desc(networkConnections.createdAt));
+  }
+
+  async updateNetworkConnection(id: string, updates: Partial<NetworkConnection>): Promise<NetworkConnection | undefined> {
+    const [connection] = await db
+      .update(networkConnections)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(networkConnections.id, id))
+      .returning();
+    return connection;
+  }
+
+  async deleteNetworkConnection(id: string): Promise<void> {
+    await db.delete(networkConnections).where(eq(networkConnections.id, id));
+  }
+
+  async syncNetworkConnections(userId: string, platform: string): Promise<NetworkConnection[]> {
+    return db.select().from(networkConnections).where(
+      and(
+        eq(networkConnections.userId, userId),
+        eq(networkConnections.platform, platform)
+      )
+    );
   }
 }
 

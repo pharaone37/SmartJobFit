@@ -74,6 +74,84 @@ export const jobs = pgTable("jobs", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+// Resume templates and styling
+export const resumeTemplates = pgTable("resume_templates", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  userId: varchar("user_id").references(() => users.id),
+  name: varchar("name").notNull(),
+  templateData: jsonb("template_data").notNull(),
+  styling: jsonb("styling").notNull(),
+  isPublic: boolean("is_public").default(false),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Career mood board
+export const moodBoards = pgTable("mood_boards", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  userId: varchar("user_id").references(() => users.id),
+  title: varchar("title").notNull(),
+  description: text("description"),
+  items: jsonb("items").notNull(), // Array of mood board items
+  goals: jsonb("goals").notNull(), // Career goals and aspirations
+  inspiration: jsonb("inspiration").notNull(), // Inspirational content
+  isPrivate: boolean("is_private").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Skill development tracking
+export const skillTracking = pgTable("skill_tracking", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  userId: varchar("user_id").references(() => users.id),
+  skillName: varchar("skill_name").notNull(),
+  category: varchar("category").notNull(), // technical, soft, language, etc.
+  currentLevel: integer("current_level").default(1), // 1-10 scale
+  targetLevel: integer("target_level").default(5),
+  progress: integer("progress").default(0), // 0-100 percentage
+  timeSpent: integer("time_spent").default(0), // minutes
+  activities: jsonb("activities").notNull(), // Learning activities
+  achievements: jsonb("achievements").notNull(), // Badges and milestones
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Interview chat sessions
+export const interviewSessions = pgTable("interview_sessions", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  userId: varchar("user_id").references(() => users.id),
+  sessionType: varchar("session_type").notNull(), // practice, mock, preparation
+  jobRole: varchar("job_role"),
+  company: varchar("company"),
+  difficulty: varchar("difficulty").default("medium"), // easy, medium, hard
+  questions: jsonb("questions").notNull(),
+  responses: jsonb("responses").notNull(),
+  feedback: jsonb("feedback").notNull(),
+  score: integer("score"),
+  duration: integer("duration"), // seconds
+  isCompleted: boolean("is_completed").default(false),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Professional network connections
+export const networkConnections = pgTable("network_connections", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  userId: varchar("user_id").references(() => users.id),
+  platform: varchar("platform").notNull(), // linkedin, twitter, github, etc.
+  platformUserId: varchar("platform_user_id"),
+  name: varchar("name").notNull(),
+  title: varchar("title"),
+  company: varchar("company"),
+  profileUrl: varchar("profile_url"),
+  connectionData: jsonb("connection_data"),
+  connectionType: varchar("connection_type").default("contact"), // contact, colleague, mentor, etc.
+  isActive: boolean("is_active").default(true),
+  lastSynced: timestamp("last_synced"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
 export const resumes = pgTable("resumes", {
   id: uuid("id").primaryKey().defaultRandom(),
   userId: varchar("user_id").references(() => users.id).notNull(),
@@ -146,6 +224,27 @@ export const notifications = pgTable("notifications", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+// Type definitions for new features
+export type ResumeTemplate = typeof resumeTemplates.$inferSelect;
+export type InsertResumeTemplate = typeof resumeTemplates.$inferInsert;
+export const insertResumeTemplateSchema = createInsertSchema(resumeTemplates);
+
+export type MoodBoard = typeof moodBoards.$inferSelect;
+export type InsertMoodBoard = typeof moodBoards.$inferInsert;
+export const insertMoodBoardSchema = createInsertSchema(moodBoards);
+
+export type SkillTracking = typeof skillTracking.$inferSelect;
+export type InsertSkillTracking = typeof skillTracking.$inferInsert;
+export const insertSkillTrackingSchema = createInsertSchema(skillTracking);
+
+export type InterviewSession = typeof interviewSessions.$inferSelect;
+export type InsertInterviewSession = typeof interviewSessions.$inferInsert;
+export const insertInterviewSessionSchema = createInsertSchema(interviewSessions);
+
+export type NetworkConnection = typeof networkConnections.$inferSelect;
+export type InsertNetworkConnection = typeof networkConnections.$inferInsert;
+export const insertNetworkConnectionSchema = createInsertSchema(networkConnections);
+
 export const userPreferences = pgTable("user_preferences", {
   id: uuid("id").primaryKey().defaultRandom(),
   userId: varchar("user_id").references(() => users.id).notNull(),
@@ -200,6 +299,8 @@ export const salaryNegotiations = pgTable("salary_negotiations", {
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
+
+
 
 // Relations
 export const usersRelations = relations(users, ({ many }) => ({
