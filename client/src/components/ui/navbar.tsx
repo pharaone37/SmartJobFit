@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth, removeAuthToken } from "@/hooks/useAuth";
+import { useQueryClient } from "@tanstack/react-query";
 import { useTheme } from "@/components/theme-provider";
 // import { useTranslation } from "@/lib/i18n"; // Removed - using English only
 
@@ -33,9 +34,15 @@ import {
 export default function Navbar() {
   const { isAuthenticated, user } = useAuth();
   const { theme, setTheme } = useTheme();
-  // const { t } = useTranslation(); // Removed - using English only
+  const queryClient = useQueryClient();
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const handleLogout = () => {
+    removeAuthToken();
+    queryClient.clear();
+    window.location.href = '/';
+  };
 
   const navigationItems = [
     { name: "Overview", href: "/dashboard", icon: BarChart3 },
@@ -57,7 +64,6 @@ export default function Navbar() {
 
   const publicNavigationItems = [
     { name: "Features", href: "#features" },
-    { name: "Dashboard", href: "/dashboard" },
     { name: "Pricing", href: "#pricing" },
     { name: "Reviews", href: "#reviews" },
     { name: "FAQ", href: "/faq" },
@@ -195,12 +201,7 @@ export default function Navbar() {
                         <span>Billing</span>
                       </Link>
                     </DropdownMenuItem>
-                    <DropdownMenuItem 
-                      onClick={() => {
-                        localStorage.removeItem('authToken');
-                        window.location.href = '/login';
-                      }}
-                    >
+                    <DropdownMenuItem onClick={handleLogout}>
                       <LogOut className="mr-2 h-4 w-4" />
                       <span>Log out</span>
                     </DropdownMenuItem>
