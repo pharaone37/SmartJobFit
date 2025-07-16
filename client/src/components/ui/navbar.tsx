@@ -60,6 +60,7 @@ export default function Navbar() {
     { name: "Dashboard", href: "#dashboard" },
     { name: "Pricing", href: "#pricing" },
     { name: "Reviews", href: "#testimonials" },
+    { name: "FAQ", href: "/faq" },
   ];
 
   const isActivePath = (path: string) => {

@@ -52,6 +52,14 @@ import {
   startAICoaching, 
   analyzeInterviewPerformance 
 } from "./interviewPrep";
+import { 
+  getFAQs, 
+  getFAQById, 
+  searchFAQsWithAI, 
+  rateFAQ, 
+  getFAQCategories, 
+  getFAQAnalytics 
+} from "./faq";
 import multer from "multer";
 import { 
   insertJobSchema, 
@@ -6178,6 +6186,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get('/api/auto-apply/logs/:applicationId', requireAuth, autoApply.getSubmissionLogs);
 
   app.get('/api/auto-apply/dashboard', requireAuth, autoApply.getAutomationDashboard);
+
+  // FAQ Routes (Public routes)
+  app.get('/api/faq', getFAQs);
+  app.get('/api/faq/:id', getFAQById);
+  app.post('/api/faq/search', searchFAQsWithAI);
+  app.post('/api/faq/:id/rate', rateFAQ);
+  app.get('/api/faq/categories', getFAQCategories);
+  app.get('/api/faq/analytics', getFAQAnalytics);
 
   const httpServer = createServer(app);
   return httpServer;
