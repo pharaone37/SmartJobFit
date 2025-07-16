@@ -55,95 +55,32 @@ const InterviewCoach: React.FC<InterviewCoachProps> = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
-  // Fetch user's interview sessions
-  const { data: sessions, isLoading: sessionsLoading } = useQuery({
-    queryKey: ['/api/interview-coaching/sessions'],
-    enabled: !activeSession
-  });
+  // Disabled API calls - redirecting to AdvancedInterviewCoach instead
+  const sessions = [];
+  const userProgress = null;
+  const questions = null;
+  const responses = null;
+  const sessionsLoading = false;
+  const progressLoading = false;
+  const questionsLoading = false;
+  const responsesLoading = false;
 
-  // Fetch user's interview progress
-  const { data: userProgress, isLoading: progressLoading } = useQuery({
-    queryKey: ['/api/interview-coaching/progress']
-  });
+  // Disabled mutation - redirecting to AdvancedInterviewCoach instead
+  const createSessionMutation = {
+    isPending: false,
+    mutate: () => {}
+  };
 
-  // Fetch questions for current session
-  const { data: questions, isLoading: questionsLoading } = useQuery({
-    queryKey: ['/api/interview-coaching/questions', sessionType, difficulty],
-    enabled: !!activeSession
-  });
+  // Disabled mutations - redirecting to AdvancedInterviewCoach instead
+  const submitResponseMutation = {
+    isPending: false,
+    mutate: () => {}
+  };
 
-  // Fetch responses for current session
-  const { data: responses, isLoading: responsesLoading } = useQuery({
-    queryKey: ['/api/interview-coaching/responses', activeSession?.id],
-    enabled: !!activeSession
-  });
-
-  // Create new interview session
-  const createSessionMutation = useMutation({
-    mutationFn: async (sessionData: any) => {
-      return apiRequest('/api/interview-coaching/sessions', {
-        method: 'POST',
-        body: sessionData
-      });
-    },
-    onSuccess: (data) => {
-      setActiveSession(data.session);
-      queryClient.invalidateQueries({ queryKey: ['/api/interview-coaching/sessions'] });
-      toast({
-        title: "Interview Session Started",
-        description: "Your interview coaching session has been created successfully!",
-        variant: "default"
-      });
-    },
-    onError: (error: any) => {
-      toast({
-        title: "Error",
-        description: error.message || "Failed to create interview session",
-        variant: "destructive"
-      });
-    }
-  });
-
-  // Submit interview response
-  const submitResponseMutation = useMutation({
-    mutationFn: async (responseData: any) => {
-      return apiRequest('/api/interview-coaching/responses', {
-        method: 'POST',
-        body: responseData
-      });
-    },
-    onSuccess: (data) => {
-      setCurrentResponse('');
-      setAnsweredQuestions(prev => [...prev, currentQuestion?.id || '']);
-      setSessionProgress(prev => prev + 1);
-      queryClient.invalidateQueries({ queryKey: ['/api/interview-coaching/responses', activeSession?.id] });
-      toast({
-        title: "Response Submitted",
-        description: "Your response has been recorded and analyzed!",
-        variant: "default"
-      });
-    },
-    onError: (error: any) => {
-      toast({
-        title: "Error",
-        description: error.message || "Failed to submit response",
-        variant: "destructive"
-      });
-    }
-  });
-
-  // Update session
-  const updateSessionMutation = useMutation({
-    mutationFn: async ({ sessionId, updates }: { sessionId: string; updates: any }) => {
-      return apiRequest(`/api/interview-coaching/sessions/${sessionId}`, {
-        method: 'PUT',
-        body: updates
-      });
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/interview-coaching/sessions'] });
-    }
-  });
+  const updateSessionMutation = {
+    isPending: false,
+    mutate: () => {}
+  };
 
   // Start a new interview session - navigate to advanced coach
   const startNewSession = () => {

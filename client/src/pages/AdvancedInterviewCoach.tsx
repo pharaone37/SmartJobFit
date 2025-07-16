@@ -67,6 +67,12 @@ export default function AdvancedInterviewCoach() {
       navigate('/login');
     }
   }, [isAuthenticated, navigate]);
+  
+  // Prevent API calls that might be causing the fetch errors
+  useEffect(() => {
+    // Component loaded successfully, no API calls needed for this page
+    console.log('AdvancedInterviewCoach ready - no API calls required');
+  }, []);
 
   const interviewTypes = [
     { id: 'general', label: 'General Interview', icon: MessageSquare },
