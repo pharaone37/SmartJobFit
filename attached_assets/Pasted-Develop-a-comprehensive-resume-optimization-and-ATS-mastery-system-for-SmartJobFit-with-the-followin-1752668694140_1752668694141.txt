@@ -1,0 +1,91 @@
+Develop a comprehensive resume optimization and ATS mastery system for SmartJobFit with the following specifications:
+
+CORE FUNCTIONALITY:
+1. Advanced ATS analysis for 200+ major applicant tracking systems
+2. AI-powered content enhancement and achievement narrative generation
+3. Dynamic keyword optimization with semantic understanding
+4. Multi-version resume management for different career paths
+5. Real-time performance analytics and success tracking
+
+REQUIRED APIs & TOOLS:
+- Primary AI: Google Gemini 2.5 Flash for content generation and optimization
+- Resume Parsing: Eden AI Hub (Affinda API for 98% accuracy parsing)
+- ATS Testing: Resume Worded API for compatibility analysis
+- Keyword Analysis: TextRazor API for semantic keyword extraction
+- Document Generation: PDFKit for professional resume formatting
+- Grammar Check: LanguageTool API for writing quality assurance
+
+TECHNICAL IMPLEMENTATION:
+1. Create Flask backend with endpoints:
+   - POST /api/resume/upload (file upload and parsing)
+   - POST /api/resume/optimize (AI-powered optimization)
+   - GET /api/resume/ats-score (ATS compatibility analysis)
+   - POST /api/resume/keywords (keyword optimization)
+   - GET /api/resume/versions (multi-version management)
+   - POST /api/resume/generate-pdf (formatted resume export)
+   - GET /api/resume/analytics (performance tracking)
+
+2. Database Schema:
+   - resumes table: id, user_id, version_name, content_json, ats_score, created_date, last_modified
+   - resume_sections table: resume_id, section_type, content, optimization_suggestions
+   - keywords table: resume_id, keyword, relevance_score, frequency, industry
+   - ats_results table: resume_id, ats_system, compatibility_score, issues, recommendations
+   - performance_metrics table: resume_id, views, downloads, applications, responses
+
+3. AI-Powered Features:
+   - Implement Gemini API for content enhancement and achievement rewriting
+   - Create semantic keyword optimization using TextRazor
+   - Build ATS compatibility checker with detailed scoring
+   - Develop industry-specific optimization templates
+   - Implement real-time content suggestions and improvements
+
+4. Frontend Components:
+   - Drag-and-drop resume upload interface
+   - Real-time ATS score display with detailed breakdown
+   - Interactive content editor with AI suggestions
+   - Keyword optimization panel with semantic analysis
+   - Multi-version management dashboard
+   - Performance analytics visualization
+   - Professional resume preview and export
+
+5. Advanced Features:
+   - Job-specific resume customization based on job descriptions
+   - A/B testing for different resume versions
+   - Industry benchmarking and competitive analysis
+   - Integration with job application tracking
+   - Automated resume updates based on new experiences
+
+SPECIFIC IMPLEMENTATION STEPS:
+1. Set up Flask app with file upload capabilities and security measures
+2. Integrate Eden AI Hub for accurate resume parsing and data extraction
+3. Implement Gemini API for intelligent content enhancement
+4. Create ATS compatibility testing with detailed scoring algorithms
+5. Build semantic keyword optimization using TextRazor API
+6. Develop professional PDF generation with multiple templates
+7. Create interactive frontend with real-time optimization feedback
+8. Implement multi-version management with comparison tools
+9. Add performance analytics and success tracking
+10. Set up automated testing and quality assurance
+
+PERFORMANCE REQUIREMENTS:
+- Resume parsing accuracy: >98% for all major formats
+- ATS compatibility: 99.8% successful parsing across systems
+- Content optimization: Generate 5+ improvement suggestions per section
+- Processing speed: Complete optimization in <30 seconds
+- Response rate improvement: Track 300% increase in recruiter responses
+
+INTEGRATION POINTS:
+- Import job requirements from search engine for targeted optimization
+- Export optimized resumes to application tracking system
+- Share user skills data with interview preparation feature
+- Coordinate with salary intelligence for compensation optimization
+- Provide resume data to career coaching for strategic guidance
+
+DATA COORDINATION:
+- Maintain shared user profile with skills, experience, and achievements
+- Track optimization success metrics for platform-wide analytics
+- Export resume performance data for dashboard integration
+- Share keyword insights with job search algorithm
+- Coordinate with other features for comprehensive user profiling
+
+Create a production-ready system with comprehensive error handling, security measures for file uploads, and scalable architecture for high-volume processing.
