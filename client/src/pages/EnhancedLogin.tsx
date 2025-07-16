@@ -337,7 +337,9 @@ const EnhancedLogin = () => {
                         <Button
                           key={provider.name}
                           variant="outline"
-                          className="w-full hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                          disabled
+                          className="w-full opacity-50 cursor-not-allowed"
+                          title="Social login coming soon"
                         >
                           <provider.icon className="w-5 h-5 mr-2" />
                           {provider.name}
