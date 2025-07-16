@@ -10,7 +10,8 @@ import {
   DropdownMenu, 
   DropdownMenuContent, 
   DropdownMenuItem, 
-  DropdownMenuTrigger 
+  DropdownMenuTrigger,
+  DropdownMenuSeparator 
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -142,10 +143,10 @@ export default function Navbar() {
             {!isAuthenticated ? (
               <>
                 <Button variant="ghost" asChild>
-                  <Link to="/login">Sign In</Link>
+                  <Link to="/auth">Sign In</Link>
                 </Button>
                 <Button asChild>
-                  <Link to="/login">Get Started</Link>
+                  <Link to="/auth">Get Started</Link>
                 </Button>
               </>
             ) : (
@@ -168,40 +169,53 @@ export default function Navbar() {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className="w-56" align="end" forceMount>
-                    <div className="flex items-center justify-start gap-2 p-2">
+                    <div className="flex items-center justify-start gap-2 p-3 border-b">
+                      <Avatar className="h-8 w-8">
+                        <AvatarImage src={user?.profileImageUrl} alt={user?.firstName} />
+                        <AvatarFallback>
+                          {user?.firstName?.[0]}{user?.lastName?.[0]}
+                        </AvatarFallback>
+                      </Avatar>
                       <div className="flex flex-col space-y-1 leading-none">
                         {user?.firstName && (
-                          <p className="font-medium">{user.firstName} {user.lastName}</p>
+                          <p className="font-medium text-sm">{user.firstName} {user.lastName}</p>
                         )}
                         {user?.email && (
-                          <p className="w-[200px] truncate text-sm text-muted-foreground">
+                          <p className="w-[180px] truncate text-xs text-muted-foreground">
                             {user.email}
                           </p>
                         )}
-                        <Badge variant="secondary" className="w-fit">
-                          {user?.subscriptionPlan || "Free"}
+                        <Badge variant="secondary" className="w-fit text-xs">
+                          {user?.subscriptionPlan || "Free Plan"}
                         </Badge>
                       </div>
                     </div>
                     <DropdownMenuItem asChild>
-                      <Link to="/profile">
+                      <Link to="/profile" className="flex items-center">
                         <User className="mr-2 h-4 w-4" />
-                        <span>Profile</span>
+                        <span>Account Settings</span>
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
-                      <Link to="/settings">
+                      <Link to="/settings" className="flex items-center">
                         <Settings className="mr-2 h-4 w-4" />
-                        <span>Settings</span>
+                        <span>Preferences</span>
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
-                      <Link to="/pricing">
+                      <Link to="/pricing" className="flex items-center">
                         <CreditCard className="mr-2 h-4 w-4" />
-                        <span>Billing</span>
+                        <span>Billing & Subscription</span>
                       </Link>
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={handleLogout}>
+                    <DropdownMenuItem asChild>
+                      <Link to="/support" className="flex items-center">
+                        <Bell className="mr-2 h-4 w-4" />
+                        <span>Support</span>
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={handleLogout} className="flex items-center text-red-600 focus:text-red-600">
                       <LogOut className="mr-2 h-4 w-4" />
                       <span>Log out</span>
                     </DropdownMenuItem>

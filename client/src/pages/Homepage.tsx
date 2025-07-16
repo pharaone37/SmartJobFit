@@ -146,7 +146,7 @@ const HeroSection = () => {
                 className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-4 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
                 asChild
               >
-                <Link to="/register">
+                <Link to="/auth">
                   <Rocket className="w-5 h-5 mr-2" />
                   Start Free Trial
                 </Link>
@@ -621,7 +621,7 @@ const SuccessMetrics = () => {
             className="bg-white text-blue-600 hover:bg-blue-50 px-8 py-4 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
             asChild
           >
-            <Link to="/register">
+            <Link to="/auth">
               <Trophy className="w-5 h-5 mr-2" />
               Join Success Stories
             </Link>
@@ -725,7 +725,7 @@ const Homepage = () => {
                   size="lg"
                   asChild
                 >
-                  <Link to="/register">
+                  <Link to="/auth">
                     <Rocket className="w-4 h-4 mr-2" />
                     Start Free Forever
                   </Link>
@@ -821,7 +821,7 @@ const Homepage = () => {
                   size="lg"
                   asChild
                 >
-                  <Link to="/register">
+                  <Link to="/auth">
                     <Crown className="w-4 h-4 mr-2" />
                     Start 7-Day Free Trial
                   </Link>
@@ -883,7 +883,7 @@ const Homepage = () => {
               className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-4 text-lg font-semibold"
               asChild
             >
-              <Link to="/register">
+              <Link to="/auth">
                 <Rocket className="w-5 h-5 mr-2" />
                 Start Your Free Trial
               </Link>
@@ -894,7 +894,7 @@ const Homepage = () => {
               className="border-2 border-gray-300 hover:border-blue-500 px-8 py-4 text-lg font-semibold"
               asChild
             >
-              <Link to="/login">
+              <Link to="/auth">
                 <Eye className="w-5 h-5 mr-2" />
                 Sign In
               </Link>
