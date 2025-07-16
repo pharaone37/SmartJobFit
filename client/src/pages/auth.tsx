@@ -20,7 +20,7 @@ export default function AuthPage() {
   }, []);
 
   const handleSignIn = () => {
-    window.location.href = "/api/login";
+    window.location.href = "/enhanced-login";
   };
 
   return (

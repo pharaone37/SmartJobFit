@@ -2,17 +2,17 @@ import { useQuery } from "@tanstack/react-query";
 
 // Get token from localStorage
 function getToken(): string | null {
-  return localStorage.getItem('authToken');
+  return localStorage.getItem('auth_token');
 }
 
 // Set token in localStorage
 export function setAuthToken(token: string) {
-  localStorage.setItem('authToken', token);
+  localStorage.setItem('auth_token', token);
 }
 
 // Remove token from localStorage
 export function removeAuthToken() {
-  localStorage.removeItem('authToken');
+  localStorage.removeItem('auth_token');
 }
 
 export function useAuth() {

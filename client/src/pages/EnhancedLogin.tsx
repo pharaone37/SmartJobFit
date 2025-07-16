@@ -107,12 +107,64 @@ const EnhancedLogin = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    setErrors({});
     
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
-    setIsLoading(false);
-    navigate('/dashboard');
+    try {
+      if (isLogin) {
+        // Login API call
+        const response = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email: formData.email,
+            password: formData.password,
+          }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          // Store JWT token
+          localStorage.setItem('auth_token', data.token);
+          // Redirect to dashboard
+          navigate('/dashboard');
+        } else {
+          setErrors({ general: data.message || 'Login failed' });
+        }
+      } else {
+        // Register API call
+        const response = await fetch('/api/auth/register', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email: formData.email,
+            password: formData.password,
+            firstName: formData.firstName,
+            lastName: formData.lastName,
+          }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          // Store JWT token
+          localStorage.setItem('auth_token', data.token);
+          // Redirect to dashboard
+          navigate('/dashboard');
+        } else {
+          setErrors({ general: data.message || 'Registration failed' });
+        }
+      }
+    } catch (error) {
+      console.error('Auth error:', error);
+      setErrors({ general: 'Authentication failed. Please try again.' });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleInputChange = (field: string, value: string | boolean) => {
@@ -305,6 +357,16 @@ const EnhancedLogin = () => {
                       </span>
                     </div>
                   </div>
+
+                  {/* Error Display */}
+                  {errors.general && (
+                    <div className="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md">
+                      <div className="flex items-center">
+                        <AlertCircle className="w-4 h-4 text-red-500 mr-2" />
+                        <span className="text-sm text-red-700 dark:text-red-300">{errors.general}</span>
+                      </div>
+                    </div>
+                  )}
 
                   {/* Form */}
                   <form onSubmit={handleSubmit} className="space-y-4">
