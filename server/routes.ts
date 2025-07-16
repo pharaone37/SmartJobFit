@@ -46,6 +46,12 @@ import { salaryIntelligence } from "./salaryIntelligence";
 import { careerCoaching } from "./careerCoaching";
 import * as jobAlerts from "./jobAlerts";
 import * as autoApply from "./autoApply";
+import { 
+  generateInterviewQuestions, 
+  researchCompany, 
+  startAICoaching, 
+  analyzeInterviewPerformance 
+} from "./interviewPrep";
 import multer from "multer";
 import { 
   insertJobSchema, 
@@ -2917,6 +2923,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: 'Failed to generate application report' });
     }
   });
+
+  // Interview Preparation API Routes
+  app.post('/api/interview/generate-questions', requireAuth, generateInterviewQuestions);
+  app.post('/api/interview/research-company', requireAuth, researchCompany);
+  app.post('/api/interview/start-ai-coaching', requireAuth, startAICoaching);
+  app.post('/api/interview/analyze-performance', requireAuth, analyzeInterviewPerformance);
 
   // RAG Search Service - RAG für Recherchen zu Firmen, Trends, Fragen
   app.post('/api/rag/search-tavily', async (req, res) => {
