@@ -25,6 +25,7 @@ import SettingsPage from "@/pages/SettingsPage";
 import BillingPage from "@/pages/BillingPage";
 import Login from "@/pages/Login";
 import NotFound from "@/pages/not-found";
+import FAQPage from "@/pages/FAQPage";
 
 // Components
 import Navbar from "@/components/ui/navbar";
@@ -72,6 +73,7 @@ function AppContent() {
             <Route path="/privacy" element={<PrivacyPolicy />} />
             <Route path="/terms" element={<TermsOfService />} />
             <Route path="/help" element={<HelpCenter />} />
+            <Route path="/faq" element={<FAQPage />} />
             <Route path="/pricing" element={<Pricing />} />
             
             {!isAuthenticated ? (
