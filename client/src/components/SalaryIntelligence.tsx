@@ -733,7 +733,7 @@ export default function SalaryIntelligence({ userId }: SalaryIntelligenceProps) 
             </CardTitle>
           </CardHeader>
           <CardContent>
-            {userBenchmarks?.benchmarks?.length > 0 ? (
+            {userBenchmarks?.benchmarks && userBenchmarks.benchmarks.length > 0 ? (
               <div className="space-y-3">
                 {userBenchmarks.benchmarks.slice(0, 3).map((benchmark: any, index: number) => (
                   <div key={index} className="p-3 bg-gray-50 rounded">
@@ -761,7 +761,7 @@ export default function SalaryIntelligence({ userId }: SalaryIntelligenceProps) 
             </CardTitle>
           </CardHeader>
           <CardContent>
-            {userNegotiations?.negotiations?.length > 0 ? (
+            {userNegotiations?.negotiations && userNegotiations.negotiations.length > 0 ? (
               <div className="space-y-3">
                 {userNegotiations.negotiations.slice(0, 3).map((negotiation: any, index: number) => (
                   <div key={index} className="p-3 bg-gray-50 rounded">
