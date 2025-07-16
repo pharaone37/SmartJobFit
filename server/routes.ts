@@ -44,6 +44,7 @@ import { resumeOptimizer } from "./resumeOptimizer";
 import { applicationTracker } from "./applicationTracker";
 import { salaryIntelligence } from "./salaryIntelligence";
 import { careerCoaching } from "./careerCoaching";
+import * as jobAlerts from "./jobAlerts";
 import multer from "multer";
 import { 
   insertJobSchema, 
@@ -6095,6 +6096,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: 'Failed to get learning recommendations' });
     }
   });
+
+  // Job Alerts and Opportunity Intelligence routes
+  app.post('/api/job-alerts/profiles', requireAuth, jobAlerts.createAlertProfile);
+  app.get('/api/job-alerts/profiles', requireAuth, jobAlerts.getAlertProfiles);
+  app.put('/api/job-alerts/profiles/:alertId', requireAuth, jobAlerts.updateAlertProfile);
+  app.delete('/api/job-alerts/profiles/:alertId', requireAuth, jobAlerts.deleteAlertProfile);
+
+  app.get('/api/job-alerts/opportunities', requireAuth, jobAlerts.discoverOpportunities);
+  app.get('/api/job-alerts/market-intelligence', requireAuth, jobAlerts.getMarketIntelligence);
+
+  app.get('/api/job-alerts/notification-settings', requireAuth, jobAlerts.getNotificationSettings);
+  app.put('/api/job-alerts/notification-settings', requireAuth, jobAlerts.updateNotificationSettings);
+
+  app.get('/api/job-alerts/analytics', requireAuth, jobAlerts.getAlertAnalytics);
+  app.post('/api/job-alerts/feedback', requireAuth, jobAlerts.submitAlertFeedback);
+
+  app.get('/api/job-alerts/dashboard', requireAuth, jobAlerts.getAlertDashboard);
 
   const httpServer = createServer(app);
   return httpServer;

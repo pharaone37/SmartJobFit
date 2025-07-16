@@ -37,6 +37,13 @@ import {
   networkingEvents,
   careerProgress,
   personalBranding,
+  alertProfiles,
+  opportunityPredictions,
+  alertDeliveries,
+  marketSignals,
+  alertUserPreferences,
+  alertAnalytics,
+  companyIntelligence,
   type User,
   type UpsertUser,
   type Job,
@@ -131,6 +138,20 @@ import {
   type InsertCareerProgress,
   type PersonalBranding,
   type InsertPersonalBranding,
+  type AlertProfile,
+  type InsertAlertProfile,
+  type OpportunityPrediction,
+  type InsertOpportunityPrediction,
+  type AlertDelivery,
+  type InsertAlertDelivery,
+  type MarketSignal,
+  type InsertMarketSignal,
+  type AlertUserPreferences,
+  type InsertAlertUserPreferences,
+  type AlertAnalytics,
+  type InsertAlertAnalytics,
+  type CompanyIntelligence,
+  type InsertCompanyIntelligence,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, or, desc, asc, ilike, gte, lte, inArray, isNull } from "drizzle-orm";
@@ -461,6 +482,61 @@ export interface IStorage {
   analyzeCareerPath(userId: string, analysis: any): Promise<any>;
   analyzeSkillGaps(userId: string, analysis: any): Promise<any>;
   getLearningRecommendations(userId: string, preferences: any): Promise<any>;
+  
+  // Job Alerts and Opportunity Intelligence operations
+  createAlertProfile(alertProfile: InsertAlertProfile): Promise<AlertProfile>;
+  getAlertProfile(id: string): Promise<AlertProfile | undefined>;
+  getAlertProfiles(userId: string): Promise<AlertProfile[]>;
+  updateAlertProfile(id: string, updates: Partial<AlertProfile>): Promise<AlertProfile | undefined>;
+  deleteAlertProfile(id: string): Promise<void>;
+  
+  // Opportunity prediction operations
+  createOpportunityPrediction(prediction: InsertOpportunityPrediction): Promise<OpportunityPrediction>;
+  getOpportunityPrediction(id: string): Promise<OpportunityPrediction | undefined>;
+  getOpportunityPredictions(filters?: any): Promise<OpportunityPrediction[]>;
+  updateOpportunityPrediction(id: string, updates: Partial<OpportunityPrediction>): Promise<OpportunityPrediction | undefined>;
+  deleteOpportunityPrediction(id: string): Promise<void>;
+  
+  // Alert delivery operations
+  createAlertDelivery(delivery: InsertAlertDelivery): Promise<AlertDelivery>;
+  getAlertDelivery(id: string): Promise<AlertDelivery | undefined>;
+  getAlertDeliveries(alertId: string): Promise<AlertDelivery[]>;
+  getUserAlertDeliveries(userId: string): Promise<AlertDelivery[]>;
+  updateAlertDelivery(id: string, updates: Partial<AlertDelivery>): Promise<AlertDelivery | undefined>;
+  deleteAlertDelivery(id: string): Promise<void>;
+  
+  // Market signal operations
+  createMarketSignal(signal: InsertMarketSignal): Promise<MarketSignal>;
+  getMarketSignal(id: string): Promise<MarketSignal | undefined>;
+  getMarketSignals(filters?: any): Promise<MarketSignal[]>;
+  updateMarketSignal(id: string, updates: Partial<MarketSignal>): Promise<MarketSignal | undefined>;
+  deleteMarketSignal(id: string): Promise<void>;
+  
+  // Alert user preferences operations
+  createAlertUserPreferences(preferences: InsertAlertUserPreferences): Promise<AlertUserPreferences>;
+  getAlertUserPreferences(userId: string): Promise<AlertUserPreferences | undefined>;
+  updateAlertUserPreferences(userId: string, updates: Partial<AlertUserPreferences>): Promise<AlertUserPreferences | undefined>;
+  deleteAlertUserPreferences(userId: string): Promise<void>;
+  
+  // Alert analytics operations
+  createAlertAnalytics(analytics: InsertAlertAnalytics): Promise<AlertAnalytics>;
+  getAlertAnalytics(alertId: string): Promise<AlertAnalytics | undefined>;
+  getUserAlertAnalytics(userId: string): Promise<AlertAnalytics[]>;
+  updateAlertAnalytics(id: string, updates: Partial<AlertAnalytics>): Promise<AlertAnalytics | undefined>;
+  deleteAlertAnalytics(id: string): Promise<void>;
+  
+  // Company intelligence operations
+  createCompanyIntelligence(intelligence: InsertCompanyIntelligence): Promise<CompanyIntelligence>;
+  getCompanyIntelligence(companyId: string): Promise<CompanyIntelligence | undefined>;
+  getCompanyIntelligences(filters?: any): Promise<CompanyIntelligence[]>;
+  updateCompanyIntelligence(id: string, updates: Partial<CompanyIntelligence>): Promise<CompanyIntelligence | undefined>;
+  deleteCompanyIntelligence(id: string): Promise<void>;
+  
+  // Job alerts utility operations
+  processJobAlerts(userId: string): Promise<any>;
+  generateOpportunityPredictions(companyId: string): Promise<any>;
+  processMarketSignals(signalType: string): Promise<any>;
+  getAlertDashboard(userId: string): Promise<any>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -2157,6 +2233,307 @@ export class DatabaseStorage implements IStorage {
           courses: ["AWS Certification", "Tableau Visualization"]
         }
       ]
+    };
+  }
+
+  // Job Alerts and Opportunity Intelligence operations
+  async createAlertProfile(alertProfileInput: InsertAlertProfile): Promise<AlertProfile> {
+    const [created] = await db.insert(alertProfiles).values(alertProfileInput).returning();
+    return created;
+  }
+
+  async getAlertProfile(id: string): Promise<AlertProfile | undefined> {
+    const [profile] = await db.select().from(alertProfiles).where(eq(alertProfiles.id, id));
+    return profile;
+  }
+
+  async getAlertProfiles(userId: string): Promise<AlertProfile[]> {
+    return await db.select().from(alertProfiles).where(eq(alertProfiles.userId, userId)).orderBy(desc(alertProfiles.createdAt));
+  }
+
+  async updateAlertProfile(id: string, updates: Partial<AlertProfile>): Promise<AlertProfile | undefined> {
+    const [updated] = await db
+      .update(alertProfiles)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(alertProfiles.id, id))
+      .returning();
+    return updated;
+  }
+
+  async deleteAlertProfile(id: string): Promise<void> {
+    await db.delete(alertProfiles).where(eq(alertProfiles.id, id));
+  }
+
+  // Opportunity prediction operations
+  async createOpportunityPrediction(predictionInput: InsertOpportunityPrediction): Promise<OpportunityPrediction> {
+    const [created] = await db.insert(opportunityPredictions).values(predictionInput).returning();
+    return created;
+  }
+
+  async getOpportunityPrediction(id: string): Promise<OpportunityPrediction | undefined> {
+    const [prediction] = await db.select().from(opportunityPredictions).where(eq(opportunityPredictions.id, id));
+    return prediction;
+  }
+
+  async getOpportunityPredictions(filters: any = {}): Promise<OpportunityPrediction[]> {
+    let query = db.select().from(opportunityPredictions);
+
+    if (filters.companyId) {
+      query = query.where(eq(opportunityPredictions.companyId, filters.companyId));
+    }
+
+    if (filters.minConfidence) {
+      query = query.where(gte(opportunityPredictions.confidenceScore, filters.minConfidence));
+    }
+
+    return await query.orderBy(desc(opportunityPredictions.confidenceScore));
+  }
+
+  async updateOpportunityPrediction(id: string, updates: Partial<OpportunityPrediction>): Promise<OpportunityPrediction | undefined> {
+    const [updated] = await db
+      .update(opportunityPredictions)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(opportunityPredictions.id, id))
+      .returning();
+    return updated;
+  }
+
+  async deleteOpportunityPrediction(id: string): Promise<void> {
+    await db.delete(opportunityPredictions).where(eq(opportunityPredictions.id, id));
+  }
+
+  // Alert delivery operations
+  async createAlertDelivery(deliveryInput: InsertAlertDelivery): Promise<AlertDelivery> {
+    const [created] = await db.insert(alertDeliveries).values(deliveryInput).returning();
+    return created;
+  }
+
+  async getAlertDelivery(id: string): Promise<AlertDelivery | undefined> {
+    const [delivery] = await db.select().from(alertDeliveries).where(eq(alertDeliveries.id, id));
+    return delivery;
+  }
+
+  async getAlertDeliveries(alertId: string): Promise<AlertDelivery[]> {
+    return await db.select().from(alertDeliveries).where(eq(alertDeliveries.alertId, alertId)).orderBy(desc(alertDeliveries.sentAt));
+  }
+
+  async getUserAlertDeliveries(userId: string): Promise<AlertDelivery[]> {
+    return await db.select().from(alertDeliveries).where(eq(alertDeliveries.userId, userId)).orderBy(desc(alertDeliveries.sentAt));
+  }
+
+  async updateAlertDelivery(id: string, updates: Partial<AlertDelivery>): Promise<AlertDelivery | undefined> {
+    const [updated] = await db
+      .update(alertDeliveries)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(alertDeliveries.id, id))
+      .returning();
+    return updated;
+  }
+
+  async deleteAlertDelivery(id: string): Promise<void> {
+    await db.delete(alertDeliveries).where(eq(alertDeliveries.id, id));
+  }
+
+  // Market signal operations
+  async createMarketSignal(signalInput: InsertMarketSignal): Promise<MarketSignal> {
+    const [created] = await db.insert(marketSignals).values(signalInput).returning();
+    return created;
+  }
+
+  async getMarketSignal(id: string): Promise<MarketSignal | undefined> {
+    const [signal] = await db.select().from(marketSignals).where(eq(marketSignals.id, id));
+    return signal;
+  }
+
+  async getMarketSignals(filters: any = {}): Promise<MarketSignal[]> {
+    let query = db.select().from(marketSignals);
+
+    if (filters.signalType) {
+      query = query.where(eq(marketSignals.signalType, filters.signalType));
+    }
+
+    if (filters.companyId) {
+      query = query.where(eq(marketSignals.companyId, filters.companyId));
+    }
+
+    return await query.orderBy(desc(marketSignals.detectionDate));
+  }
+
+  async updateMarketSignal(id: string, updates: Partial<MarketSignal>): Promise<MarketSignal | undefined> {
+    const [updated] = await db
+      .update(marketSignals)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(marketSignals.id, id))
+      .returning();
+    return updated;
+  }
+
+  async deleteMarketSignal(id: string): Promise<void> {
+    await db.delete(marketSignals).where(eq(marketSignals.id, id));
+  }
+
+  // Alert user preferences operations
+  async createAlertUserPreferences(preferencesInput: InsertAlertUserPreferences): Promise<AlertUserPreferences> {
+    const [created] = await db.insert(alertUserPreferences).values(preferencesInput).returning();
+    return created;
+  }
+
+  async getAlertUserPreferences(userId: string): Promise<AlertUserPreferences | undefined> {
+    const [preferences] = await db.select().from(alertUserPreferences).where(eq(alertUserPreferences.userId, userId));
+    return preferences;
+  }
+
+  async updateAlertUserPreferences(userId: string, updates: Partial<AlertUserPreferences>): Promise<AlertUserPreferences | undefined> {
+    const [updated] = await db
+      .update(alertUserPreferences)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(alertUserPreferences.userId, userId))
+      .returning();
+    return updated;
+  }
+
+  async deleteAlertUserPreferences(userId: string): Promise<void> {
+    await db.delete(alertUserPreferences).where(eq(alertUserPreferences.userId, userId));
+  }
+
+  // Alert analytics operations
+  async createAlertAnalytics(analyticsInput: InsertAlertAnalytics): Promise<AlertAnalytics> {
+    const [created] = await db.insert(alertAnalytics).values(analyticsInput).returning();
+    return created;
+  }
+
+  async getAlertAnalytics(alertId: string): Promise<AlertAnalytics | undefined> {
+    const [analytics] = await db.select().from(alertAnalytics).where(eq(alertAnalytics.alertId, alertId));
+    return analytics;
+  }
+
+  async getUserAlertAnalytics(userId: string): Promise<AlertAnalytics[]> {
+    return await db.select().from(alertAnalytics).where(eq(alertAnalytics.userId, userId)).orderBy(desc(alertAnalytics.createdAt));
+  }
+
+  async updateAlertAnalytics(id: string, updates: Partial<AlertAnalytics>): Promise<AlertAnalytics | undefined> {
+    const [updated] = await db
+      .update(alertAnalytics)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(alertAnalytics.id, id))
+      .returning();
+    return updated;
+  }
+
+  async deleteAlertAnalytics(id: string): Promise<void> {
+    await db.delete(alertAnalytics).where(eq(alertAnalytics.id, id));
+  }
+
+  // Company intelligence operations
+  async createCompanyIntelligence(intelligenceInput: InsertCompanyIntelligence): Promise<CompanyIntelligence> {
+    const [created] = await db.insert(companyIntelligence).values(intelligenceInput).returning();
+    return created;
+  }
+
+  async getCompanyIntelligence(companyId: string): Promise<CompanyIntelligence | undefined> {
+    const [intelligence] = await db.select().from(companyIntelligence).where(eq(companyIntelligence.companyId, companyId));
+    return intelligence;
+  }
+
+  async getCompanyIntelligences(filters: any = {}): Promise<CompanyIntelligence[]> {
+    let query = db.select().from(companyIntelligence);
+
+    if (filters.industry) {
+      query = query.where(eq(companyIntelligence.industry, filters.industry));
+    }
+
+    if (filters.size) {
+      query = query.where(eq(companyIntelligence.size, filters.size));
+    }
+
+    return await query.orderBy(desc(companyIntelligence.lastUpdated));
+  }
+
+  async updateCompanyIntelligence(id: string, updates: Partial<CompanyIntelligence>): Promise<CompanyIntelligence | undefined> {
+    const [updated] = await db
+      .update(companyIntelligence)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(companyIntelligence.id, id))
+      .returning();
+    return updated;
+  }
+
+  async deleteCompanyIntelligence(id: string): Promise<void> {
+    await db.delete(companyIntelligence).where(eq(companyIntelligence.id, id));
+  }
+
+  // Job alerts utility operations
+  async processJobAlerts(userId: string): Promise<any> {
+    // This would process job alerts for a specific user
+    const alertProfiles = await this.getAlertProfiles(userId);
+    const results = [];
+
+    for (const profile of alertProfiles) {
+      if (profile.isActive) {
+        // Process each active alert
+        const opportunities = await this.getOpportunityPredictions({
+          companyId: profile.criteriaJson?.companyId
+        });
+        
+        results.push({
+          alertId: profile.id,
+          opportunitiesFound: opportunities.length,
+          lastProcessed: new Date()
+        });
+      }
+    }
+
+    return results;
+  }
+
+  async generateOpportunityPredictions(companyId: string): Promise<any> {
+    // This would generate opportunity predictions for a specific company
+    return {
+      companyId,
+      predictions: [
+        {
+          role: 'Software Engineer',
+          confidence: 0.8,
+          timeframe: '1-2 weeks',
+          signals: ['team_expansion', 'funding_round']
+        }
+      ],
+      generatedAt: new Date()
+    };
+  }
+
+  async processMarketSignals(signalType: string): Promise<any> {
+    // This would process market signals of a specific type
+    const signals = await this.getMarketSignals({ signalType });
+    
+    return {
+      signalType,
+      processedSignals: signals.length,
+      highImpactSignals: signals.filter(s => s.impactScore >= 0.8).length,
+      processedAt: new Date()
+    };
+  }
+
+  async getAlertDashboard(userId: string): Promise<any> {
+    // This would return dashboard data for a user
+    const [alertProfiles, opportunities, preferences, analytics] = await Promise.all([
+      this.getAlertProfiles(userId),
+      this.getOpportunityPredictions({}),
+      this.getAlertUserPreferences(userId),
+      this.getUserAlertAnalytics(userId)
+    ]);
+
+    return {
+      alertProfiles,
+      opportunities,
+      preferences,
+      analytics,
+      summary: {
+        totalAlerts: alertProfiles.length,
+        activeAlerts: alertProfiles.filter(a => a.isActive).length,
+        totalOpportunities: opportunities.length,
+        highConfidenceOpportunities: opportunities.filter(o => o.confidenceScore >= 0.8).length
+      }
     };
   }
 }

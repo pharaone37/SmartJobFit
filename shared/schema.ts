@@ -694,6 +694,210 @@ export const personalBrandingRelations = relations(personalBranding, ({ one }) =
   user: one(users, { fields: [personalBranding.userId], references: [users.id] }),
 }));
 
+// Job Alerts and Opportunity Intelligence System Tables
+export const alertProfiles = pgTable("alert_profiles", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  userId: varchar("user_id").references(() => users.id, { onDelete: "cascade" }).notNull(),
+  alertName: varchar("alert_name").notNull(),
+  criteriaJson: jsonb("criteria_json").notNull(), // Search criteria, filters, keywords
+  predictionEnabled: boolean("prediction_enabled").default(true),
+  isActive: boolean("is_active").default(true),
+  frequency: varchar("frequency").default("daily"), // immediate, daily, weekly
+  lastTriggered: timestamp("last_triggered"),
+  relevanceScore: decimal("relevance_score", { precision: 3, scale: 2 }).default("0.00"),
+  totalAlerts: integer("total_alerts").default(0),
+  userFeedbackScore: decimal("user_feedback_score", { precision: 3, scale: 2 }).default("0.00"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const opportunityPredictions = pgTable("opportunity_predictions", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  companyId: varchar("company_id").notNull(),
+  companyName: varchar("company_name").notNull(),
+  predictedRoles: text("predicted_roles").array(),
+  confidenceScore: decimal("confidence_score", { precision: 3, scale: 2 }).notNull(),
+  signalsDetected: jsonb("signals_detected").notNull(), // Array of detected signals
+  industryTrends: jsonb("industry_trends"),
+  competitiveLandscape: jsonb("competitive_landscape"),
+  hiringProbability: decimal("hiring_probability", { precision: 3, scale: 2 }).notNull(),
+  expectedTimeframe: varchar("expected_timeframe"), // 1-7 days, 1-2 weeks, 1-3 months
+  salaryTrends: jsonb("salary_trends"),
+  skillsInDemand: text("skills_in_demand").array(),
+  predictionDate: timestamp("prediction_date").defaultNow(),
+  expiresAt: timestamp("expires_at").notNull(),
+  accuracy: decimal("accuracy", { precision: 3, scale: 2 }), // Post-validation accuracy
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const alertDeliveries = pgTable("alert_deliveries", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  alertId: uuid("alert_id").references(() => alertProfiles.id, { onDelete: "cascade" }).notNull(),
+  opportunityId: uuid("opportunity_id"), // Can reference jobs or predictions
+  opportunityType: varchar("opportunity_type").notNull(), // job_posting, prediction, market_signal
+  deliveryChannel: varchar("delivery_channel").notNull(), // email, push, sms, in_app
+  deliveryStatus: varchar("delivery_status").default("pending"), // pending, sent, delivered, failed
+  userAction: varchar("user_action"), // viewed, clicked, applied, dismissed, saved
+  actionTimestamp: timestamp("action_timestamp"),
+  relevanceScore: decimal("relevance_score", { precision: 3, scale: 2 }).notNull(),
+  urgencyScore: decimal("urgency_score", { precision: 3, scale: 2 }).notNull(),
+  personalizedContent: jsonb("personalized_content"),
+  sentAt: timestamp("sent_at"),
+  deliveredAt: timestamp("delivered_at"),
+  openedAt: timestamp("opened_at"),
+  clickedAt: timestamp("clicked_at"),
+  metadata: jsonb("metadata"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const marketSignals = pgTable("market_signals", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  signalType: varchar("signal_type").notNull(), // funding, expansion, news, social, job_posting
+  companyId: varchar("company_id").notNull(),
+  companyName: varchar("company_name").notNull(),
+  signalData: jsonb("signal_data").notNull(),
+  source: varchar("source").notNull(), // crunchbase, news_api, linkedin, twitter, etc.
+  impactScore: decimal("impact_score", { precision: 3, scale: 2 }).notNull(),
+  sentimentScore: decimal("sentiment_score", { precision: 3, scale: 2 }),
+  detectionDate: timestamp("detection_date").defaultNow(),
+  processingStatus: varchar("processing_status").default("pending"), // pending, processed, analyzed
+  relatedOpportunities: jsonb("related_opportunities"),
+  industryImpact: jsonb("industry_impact"),
+  competitorAnalysis: jsonb("competitor_analysis"),
+  expiresAt: timestamp("expires_at"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const alertUserPreferences = pgTable("alert_user_preferences", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  userId: varchar("user_id").references(() => users.id, { onDelete: "cascade" }).notNull(),
+  notificationChannels: text("notification_channels").array().default([]), // email, push, sms
+  timingPreferences: jsonb("timing_preferences").notNull(), // preferred hours, timezone, frequency
+  frequencySettings: jsonb("frequency_settings").notNull(), // max per day, batching preferences
+  priorityFilters: jsonb("priority_filters"), // minimum relevance, urgency thresholds
+  channelPreferences: jsonb("channel_preferences"), // channel-specific settings
+  quietHours: jsonb("quiet_hours"), // do not disturb periods
+  weekendAlerts: boolean("weekend_alerts").default(false),
+  instantAlerts: boolean("instant_alerts").default(false),
+  batchingEnabled: boolean("batching_enabled").default(true),
+  maxDailyAlerts: integer("max_daily_alerts").default(10),
+  emailDigestEnabled: boolean("email_digest_enabled").default(true),
+  pushEnabled: boolean("push_enabled").default(true),
+  smsEnabled: boolean("sms_enabled").default(false),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const alertAnalytics = pgTable("alert_analytics", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  alertId: uuid("alert_id").references(() => alertProfiles.id, { onDelete: "cascade" }).notNull(),
+  userId: varchar("user_id").references(() => users.id, { onDelete: "cascade" }).notNull(),
+  periodType: varchar("period_type").notNull(), // daily, weekly, monthly
+  periodStart: timestamp("period_start").notNull(),
+  periodEnd: timestamp("period_end").notNull(),
+  totalAlerts: integer("total_alerts").default(0),
+  alertsViewed: integer("alerts_viewed").default(0),
+  alertsClicked: integer("alerts_clicked").default(0),
+  applicationsMade: integer("applications_made").default(0),
+  opportunitiesSaved: integer("opportunities_saved").default(0),
+  averageRelevanceScore: decimal("average_relevance_score", { precision: 3, scale: 2 }).default("0.00"),
+  averageUrgencyScore: decimal("average_urgency_score", { precision: 3, scale: 2 }).default("0.00"),
+  clickThroughRate: decimal("click_through_rate", { precision: 5, scale: 2 }).default("0.00"),
+  conversionRate: decimal("conversion_rate", { precision: 5, scale: 2 }).default("0.00"),
+  userSatisfactionScore: decimal("user_satisfaction_score", { precision: 3, scale: 2 }),
+  performanceMetrics: jsonb("performance_metrics"),
+  improvementSuggestions: jsonb("improvement_suggestions"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const companyIntelligence = pgTable("company_intelligence", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  companyId: varchar("company_id").notNull(),
+  companyName: varchar("company_name").notNull(),
+  industry: varchar("industry"),
+  companySize: varchar("company_size"),
+  foundingYear: integer("founding_year"),
+  location: varchar("location"),
+  website: varchar("website"),
+  description: text("description"),
+  fundingStage: varchar("funding_stage"),
+  totalFunding: decimal("total_funding", { precision: 15, scale: 2 }),
+  lastFundingDate: timestamp("last_funding_date"),
+  lastFundingAmount: decimal("last_funding_amount", { precision: 15, scale: 2 }),
+  growthStage: varchar("growth_stage"), // startup, growth, mature, decline
+  hiringTrends: jsonb("hiring_trends"),
+  technologiesUsed: text("technologies_used").array(),
+  competitorAnalysis: jsonb("competitor_analysis"),
+  marketPosition: jsonb("market_position"),
+  leadershipTeam: jsonb("leadership_team"),
+  recentNews: jsonb("recent_news"),
+  socialMediaData: jsonb("social_media_data"),
+  glassdoorRating: decimal("glassdoor_rating", { precision: 2, scale: 1 }),
+  linkedinFollowers: integer("linkedin_followers"),
+  employeeCount: integer("employee_count"),
+  lastUpdated: timestamp("last_updated").defaultNow(),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Type exports for Job Alerts System
+export type InsertAlertProfile = typeof alertProfiles.$inferInsert;
+export type AlertProfile = typeof alertProfiles.$inferSelect;
+
+export type InsertOpportunityPrediction = typeof opportunityPredictions.$inferInsert;
+export type OpportunityPrediction = typeof opportunityPredictions.$inferSelect;
+
+export type InsertAlertDelivery = typeof alertDeliveries.$inferInsert;
+export type AlertDelivery = typeof alertDeliveries.$inferSelect;
+
+export type InsertMarketSignal = typeof marketSignals.$inferInsert;
+export type MarketSignal = typeof marketSignals.$inferSelect;
+
+export type InsertAlertUserPreferences = typeof alertUserPreferences.$inferInsert;
+export type AlertUserPreferences = typeof alertUserPreferences.$inferSelect;
+
+export type InsertAlertAnalytics = typeof alertAnalytics.$inferInsert;
+export type AlertAnalytics = typeof alertAnalytics.$inferSelect;
+
+export type InsertCompanyIntelligence = typeof companyIntelligence.$inferInsert;
+export type CompanyIntelligence = typeof companyIntelligence.$inferSelect;
+
+// Job Alerts System Zod schemas
+export const insertAlertProfileSchema = createInsertSchema(alertProfiles).omit({ id: true, createdAt: true, updatedAt: true });
+export const insertOpportunityPredictionSchema = createInsertSchema(opportunityPredictions).omit({ id: true, createdAt: true, updatedAt: true });
+export const insertAlertDeliverySchema = createInsertSchema(alertDeliveries).omit({ id: true, createdAt: true });
+export const insertMarketSignalSchema = createInsertSchema(marketSignals).omit({ id: true, createdAt: true, updatedAt: true });
+export const insertAlertUserPreferencesSchema = createInsertSchema(alertUserPreferences).omit({ id: true, createdAt: true, updatedAt: true });
+export const insertAlertAnalyticsSchema = createInsertSchema(alertAnalytics).omit({ id: true, createdAt: true, updatedAt: true });
+export const insertCompanyIntelligenceSchema = createInsertSchema(companyIntelligence).omit({ id: true, createdAt: true, updatedAt: true });
+
+// Job Alerts System Relations
+export const alertProfilesRelations = relations(alertProfiles, ({ one, many }) => ({
+  user: one(users, { fields: [alertProfiles.userId], references: [users.id] }),
+  deliveries: many(alertDeliveries),
+  analytics: many(alertAnalytics),
+}));
+
+export const opportunityPredictionsRelations = relations(opportunityPredictions, ({ many }) => ({
+  deliveries: many(alertDeliveries),
+}));
+
+export const alertDeliveriesRelations = relations(alertDeliveries, ({ one }) => ({
+  alert: one(alertProfiles, { fields: [alertDeliveries.alertId], references: [alertProfiles.id] }),
+}));
+
+export const alertUserPreferencesRelations = relations(alertUserPreferences, ({ one }) => ({
+  user: one(users, { fields: [alertUserPreferences.userId], references: [users.id] }),
+}));
+
+export const alertAnalyticsRelations = relations(alertAnalytics, ({ one }) => ({
+  alert: one(alertProfiles, { fields: [alertAnalytics.alertId], references: [alertProfiles.id] }),
+  user: one(users, { fields: [alertAnalytics.userId], references: [users.id] }),
+}));
+
 // Schema exports
 export type UpsertUser = typeof users.$inferInsert;
 export type User = typeof users.$inferSelect;
