@@ -369,7 +369,7 @@ const FeatureShowcase = () => {
   const currentFeature = features[activeFeature];
 
   return (
-    <section className="py-20 bg-white dark:bg-gray-900">
+    <section id="features" className="py-20 bg-white dark:bg-gray-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <Badge className="bg-gradient-to-r from-green-500 to-blue-500 text-white px-4 py-2 text-sm font-medium mb-4">
@@ -561,7 +561,7 @@ const SuccessMetrics = () => {
   ];
 
   return (
-    <section className="py-20 bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600">
+    <section id="reviews" className="py-20 bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <Badge className="bg-white/20 text-white px-4 py-2 text-sm font-medium mb-4">
@@ -646,7 +646,132 @@ const Homepage = () => {
       <FeatureShowcase />
       <SuccessMetrics />
       
-      {/* Additional sections can be added here */}
+      {/* Pricing Section */}
+      <section id="pricing" className="py-20 bg-white dark:bg-gray-900">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+              Simple, Transparent Pricing
+            </h2>
+            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+              Choose the plan that fits your career goals. Start for free and upgrade when you're ready.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            {/* Free Plan */}
+            <Card className="relative border-2 border-gray-200 dark:border-gray-700 hover:shadow-lg transition-shadow">
+              <CardContent className="p-8">
+                <div className="text-center mb-6">
+                  <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Free</h3>
+                  <div className="text-4xl font-bold text-gray-900 dark:text-white mb-1">€0</div>
+                  <div className="text-gray-600 dark:text-gray-300">Forever</div>
+                </div>
+                
+                <ul className="space-y-3 mb-8">
+                  <li className="flex items-center gap-3">
+                    <CheckCircle className="w-5 h-5 text-green-500" />
+                    <span className="text-gray-700 dark:text-gray-300">Basic job search</span>
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <CheckCircle className="w-5 h-5 text-green-500" />
+                    <span className="text-gray-700 dark:text-gray-300">Resume upload & basic optimization</span>
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <CheckCircle className="w-5 h-5 text-green-500" />
+                    <span className="text-gray-700 dark:text-gray-300">Basic interview preparation</span>
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <CheckCircle className="w-5 h-5 text-green-500" />
+                    <span className="text-gray-700 dark:text-gray-300">Limited AI features</span>
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <CheckCircle className="w-5 h-5 text-green-500" />
+                    <span className="text-gray-700 dark:text-gray-300">Community support</span>
+                  </li>
+                </ul>
+                
+                <Button 
+                  className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white"
+                  asChild
+                >
+                  <Link to="/register">
+                    Get Started Free
+                  </Link>
+                </Button>
+              </CardContent>
+            </Card>
+
+            {/* Professional Plan */}
+            <Card className="relative border-2 border-purple-500 hover:shadow-xl transition-shadow">
+              <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                <Badge className="bg-gradient-to-r from-purple-500 to-blue-500 text-white px-6 py-1">
+                  Most Popular
+                </Badge>
+              </div>
+              <CardContent className="p-8">
+                <div className="text-center mb-6">
+                  <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Professional</h3>
+                  <div className="text-4xl font-bold text-gray-900 dark:text-white mb-1">€39</div>
+                  <div className="text-gray-600 dark:text-gray-300">per month</div>
+                </div>
+                
+                <ul className="space-y-3 mb-8">
+                  <li className="flex items-center gap-3">
+                    <CheckCircle className="w-5 h-5 text-green-500" />
+                    <span className="text-gray-700 dark:text-gray-300">Unlimited AI-powered job search</span>
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <CheckCircle className="w-5 h-5 text-green-500" />
+                    <span className="text-gray-700 dark:text-gray-300">Advanced resume optimization (99.8% ATS)</span>
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <CheckCircle className="w-5 h-5 text-green-500" />
+                    <span className="text-gray-700 dark:text-gray-300">Complete interview coaching</span>
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <CheckCircle className="w-5 h-5 text-green-500" />
+                    <span className="text-gray-700 dark:text-gray-300">Application tracking & analytics</span>
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <CheckCircle className="w-5 h-5 text-green-500" />
+                    <span className="text-gray-700 dark:text-gray-300">Salary intelligence & negotiation</span>
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <CheckCircle className="w-5 h-5 text-green-500" />
+                    <span className="text-gray-700 dark:text-gray-300">One-click apply automation</span>
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <CheckCircle className="w-5 h-5 text-green-500" />
+                    <span className="text-gray-700 dark:text-gray-300">Company intelligence reports</span>
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <CheckCircle className="w-5 h-5 text-green-500" />
+                    <span className="text-gray-700 dark:text-gray-300">Priority support</span>
+                  </li>
+                </ul>
+                
+                <Button 
+                  className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white"
+                  asChild
+                >
+                  <Link to="/register">
+                    Start Professional Trial
+                  </Link>
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="text-center mt-12">
+            <p className="text-gray-600 dark:text-gray-300 text-sm">
+              All plans include 24/7 access to our AI-powered platform. No hidden fees. Cancel anytime.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Final CTA Section */}
       <section className="py-20 bg-gray-50 dark:bg-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-8">

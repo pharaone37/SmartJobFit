@@ -57,9 +57,9 @@ export default function Navbar() {
 
   const publicNavigationItems = [
     { name: "Features", href: "#features" },
-    { name: "Dashboard", href: "#dashboard" },
+    { name: "Dashboard", href: "/dashboard" },
     { name: "Pricing", href: "#pricing" },
-    { name: "Reviews", href: "#testimonials" },
+    { name: "Reviews", href: "#reviews" },
     { name: "FAQ", href: "/faq" },
   ];
 

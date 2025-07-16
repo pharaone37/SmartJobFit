@@ -30,9 +30,6 @@ import {
   Users,
   Shield,
   Settings,
-  Phone,
-  Mail,
-  MessageSquare,
   ExternalLink
 } from 'lucide-react';
 
@@ -559,26 +556,7 @@ const FAQPage: React.FC = () => {
               </CardContent>
             </Card>
 
-            {/* Contact Support */}
-            <Card className="mt-6">
-              <CardHeader>
-                <CardTitle className="text-lg">Need More Help?</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <Button variant="outline" className="w-full justify-start">
-                  <MessageSquare className="h-4 w-4 mr-2" />
-                  Live Chat
-                </Button>
-                <Button variant="outline" className="w-full justify-start">
-                  <Mail className="h-4 w-4 mr-2" />
-                  Email Support
-                </Button>
-                <Button variant="outline" className="w-full justify-start">
-                  <Phone className="h-4 w-4 mr-2" />
-                  Schedule Call
-                </Button>
-              </CardContent>
-            </Card>
+
           </div>
 
           {/* FAQ Content */}
