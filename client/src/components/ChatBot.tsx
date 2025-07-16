@@ -59,6 +59,21 @@ interface ChatBotProps {
   userContext?: any;
 }
 
+interface FeatureOption {
+  id: string;
+  name: string;
+  description: string;
+  icon: string;
+  subTopics: SubTopic[];
+}
+
+interface SubTopic {
+  id: string;
+  name: string;
+  description: string;
+  quickQuestions: string[];
+}
+
 const ChatBot: React.FC<ChatBotProps> = ({ 
   initialOpen = false, 
   currentFeature,
@@ -73,8 +88,357 @@ const ChatBot: React.FC<ChatBotProps> = ({
   const [isTyping, setIsTyping] = useState(false);
   const [showFeedback, setShowFeedback] = useState<string | null>(null);
   const [soundEnabled, setSoundEnabled] = useState(true);
+  const [currentView, setCurrentView] = useState<'features' | 'subtopics' | 'chat'>('features');
+  const [selectedFeature, setSelectedFeature] = useState<FeatureOption | null>(null);
+  const [selectedSubTopic, setSelectedSubTopic] = useState<SubTopic | null>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Decision Tree Data: 9 Core Features with Sub-topics
+  const featureOptions: FeatureOption[] = [
+    {
+      id: 'job-search',
+      name: 'AI-Powered Job Search',
+      description: '94% accuracy job matching across 15+ job boards',
+      icon: '🔍',
+      subTopics: [
+        {
+          id: 'search-basics',
+          name: 'Search Basics',
+          description: 'How to search for jobs effectively',
+          quickQuestions: [
+            'How do I search for jobs?',
+            'What job boards do you support?',
+            'How does AI matching work?'
+          ]
+        },
+        {
+          id: 'filters-sorting',
+          name: 'Filters & Sorting',
+          description: 'Advanced filtering and sorting options',
+          quickQuestions: [
+            'How do I filter jobs by salary?',
+            'Can I filter by location?',
+            'How do I sort results?'
+          ]
+        },
+        {
+          id: 'saved-searches',
+          name: 'Saved Searches',
+          description: 'Save and manage your job searches',
+          quickQuestions: [
+            'How do I save searches?',
+            'Can I edit saved searches?',
+            'How many searches can I save?'
+          ]
+        }
+      ]
+    },
+    {
+      id: 'resume-optimization',
+      name: 'Resume Optimization',
+      description: '99.8% ATS compatibility with AI-powered suggestions',
+      icon: '📄',
+      subTopics: [
+        {
+          id: 'ats-scoring',
+          name: 'ATS Scoring',
+          description: 'Get your resume scored for ATS compatibility',
+          quickQuestions: [
+            'What is ATS scoring?',
+            'How do I improve my ATS score?',
+            'What score should I aim for?'
+          ]
+        },
+        {
+          id: 'keyword-optimization',
+          name: 'Keyword Optimization',
+          description: 'Optimize keywords for specific jobs',
+          quickQuestions: [
+            'How do I optimize keywords?',
+            'What keywords should I use?',
+            'How many keywords should I include?'
+          ]
+        },
+        {
+          id: 'formatting-tips',
+          name: 'Formatting Tips',
+          description: 'Professional formatting guidelines',
+          quickQuestions: [
+            'What format should I use?',
+            'How long should my resume be?',
+            'What sections should I include?'
+          ]
+        }
+      ]
+    },
+    {
+      id: 'interview-prep',
+      name: 'Interview Preparation',
+      description: 'AI-powered coaching with real-time feedback',
+      icon: '🎯',
+      subTopics: [
+        {
+          id: 'mock-interviews',
+          name: 'Mock Interviews',
+          description: 'Practice with AI-powered mock interviews',
+          quickQuestions: [
+            'How do mock interviews work?',
+            'Can I practice specific job types?',
+            'Do you provide feedback?'
+          ]
+        },
+        {
+          id: 'question-types',
+          name: 'Question Types',
+          description: 'Learn about different interview question categories',
+          quickQuestions: [
+            'What types of questions should I expect?',
+            'How do I answer behavioral questions?',
+            'What about technical questions?'
+          ]
+        },
+        {
+          id: 'preparation-strategies',
+          name: 'Preparation Strategies',
+          description: 'Effective interview preparation techniques',
+          quickQuestions: [
+            'How should I prepare for interviews?',
+            'What research should I do?',
+            'How can I reduce interview anxiety?'
+          ]
+        }
+      ]
+    },
+    {
+      id: 'application-tracking',
+      name: 'Application Tracking',
+      description: 'Smart tracking with email integration and analytics',
+      icon: '📊',
+      subTopics: [
+        {
+          id: 'tracking-basics',
+          name: 'Tracking Basics',
+          description: 'How to track your job applications',
+          quickQuestions: [
+            'How do I track applications?',
+            'What information is tracked?',
+            'Can I import existing applications?'
+          ]
+        },
+        {
+          id: 'email-integration',
+          name: 'Email Integration',
+          description: 'Automatic email parsing and updates',
+          quickQuestions: [
+            'How does email integration work?',
+            'What email providers are supported?',
+            'Is my email data secure?'
+          ]
+        },
+        {
+          id: 'analytics',
+          name: 'Analytics',
+          description: 'Track your application performance',
+          quickQuestions: [
+            'What analytics are available?',
+            'How do I improve my success rate?',
+            'What metrics should I track?'
+          ]
+        }
+      ]
+    },
+    {
+      id: 'salary-intelligence',
+      name: 'Salary Intelligence',
+      description: 'Market data and negotiation coaching',
+      icon: '💰',
+      subTopics: [
+        {
+          id: 'salary-research',
+          name: 'Salary Research',
+          description: 'Research salaries for specific roles',
+          quickQuestions: [
+            'How do I research salaries?',
+            'How accurate is the salary data?',
+            'Can I see salary ranges by location?'
+          ]
+        },
+        {
+          id: 'negotiation-coaching',
+          name: 'Negotiation Coaching',
+          description: 'Learn effective salary negotiation strategies',
+          quickQuestions: [
+            'How do I negotiate salary?',
+            'When should I negotiate?',
+            'What if they say no?'
+          ]
+        },
+        {
+          id: 'market-trends',
+          name: 'Market Trends',
+          description: 'Stay updated on salary market trends',
+          quickQuestions: [
+            'What are current market trends?',
+            'How often is data updated?',
+            'Which industries pay the most?'
+          ]
+        }
+      ]
+    },
+    {
+      id: 'career-coaching',
+      name: 'Career Coaching',
+      description: 'Personalized career development and planning',
+      icon: '🚀',
+      subTopics: [
+        {
+          id: 'career-planning',
+          name: 'Career Planning',
+          description: 'Plan your career path effectively',
+          quickQuestions: [
+            'How do I plan my career?',
+            'What career paths are available?',
+            'How do I set career goals?'
+          ]
+        },
+        {
+          id: 'skill-development',
+          name: 'Skill Development',
+          description: 'Identify and develop key skills',
+          quickQuestions: [
+            'What skills do I need?',
+            'How do I improve my skills?',
+            'What skills are in demand?'
+          ]
+        },
+        {
+          id: 'career-transitions',
+          name: 'Career Transitions',
+          description: 'Navigate career changes successfully',
+          quickQuestions: [
+            'How do I change careers?',
+            'What if I have no experience?',
+            'How do I explain career gaps?'
+          ]
+        }
+      ]
+    },
+    {
+      id: 'job-alerts',
+      name: 'Job Alerts',
+      description: 'Real-time notifications for relevant opportunities',
+      icon: '🔔',
+      subTopics: [
+        {
+          id: 'alert-setup',
+          name: 'Alert Setup',
+          description: 'Set up personalized job alerts',
+          quickQuestions: [
+            'How do I set up job alerts?',
+            'Can I customize alert frequency?',
+            'What criteria can I use?'
+          ]
+        },
+        {
+          id: 'notification-preferences',
+          name: 'Notification Preferences',
+          description: 'Manage your notification settings',
+          quickQuestions: [
+            'How do I change notification settings?',
+            'Can I get alerts via email?',
+            'How do I turn off alerts?'
+          ]
+        },
+        {
+          id: 'alert-management',
+          name: 'Alert Management',
+          description: 'Organize and manage your alerts',
+          quickQuestions: [
+            'How do I manage multiple alerts?',
+            'Can I pause alerts temporarily?',
+            'How do I delete old alerts?'
+          ]
+        }
+      ]
+    },
+    {
+      id: 'one-click-apply',
+      name: 'One-Click Apply',
+      description: 'Automated application submission with AI personalization',
+      icon: '⚡',
+      subTopics: [
+        {
+          id: 'automation-setup',
+          name: 'Automation Setup',
+          description: 'Set up application automation',
+          quickQuestions: [
+            'How do I set up automation?',
+            'What platforms are supported?',
+            'Is it safe to use?'
+          ]
+        },
+        {
+          id: 'personalization',
+          name: 'Personalization',
+          description: 'AI-powered application personalization',
+          quickQuestions: [
+            'How does personalization work?',
+            'Can I review before sending?',
+            'What if I want to customize?'
+          ]
+        },
+        {
+          id: 'automation-rules',
+          name: 'Automation Rules',
+          description: 'Create rules for automated applications',
+          quickQuestions: [
+            'How do I create automation rules?',
+            'Can I set application limits?',
+            'What criteria can I use?'
+          ]
+        }
+      ]
+    },
+    {
+      id: 'company-insights',
+      name: 'Company Intelligence',
+      description: '96% accuracy in culture assessments and insights',
+      icon: '🏢',
+      subTopics: [
+        {
+          id: 'company-research',
+          name: 'Company Research',
+          description: 'Research companies effectively',
+          quickQuestions: [
+            'How do I research companies?',
+            'What information is available?',
+            'How current is the data?'
+          ]
+        },
+        {
+          id: 'culture-analysis',
+          name: 'Culture Analysis',
+          description: 'Understand company culture and values',
+          quickQuestions: [
+            'How do you analyze company culture?',
+            'What culture factors matter most?',
+            'How do I assess culture fit?'
+          ]
+        },
+        {
+          id: 'competitive-intel',
+          name: 'Competitive Intelligence',
+          description: 'Compare companies and opportunities',
+          quickQuestions: [
+            'How do I compare companies?',
+            'What makes a company competitive?',
+            'How do I evaluate opportunities?'
+          ]
+        }
+      ]
+    }
+  ];
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
   // Auto-scroll to bottom
@@ -231,19 +595,49 @@ const ChatBot: React.FC<ChatBotProps> = ({
     setMessages([]);
     setSessionId(null);
     setShowFeedback(null);
+    setCurrentView('features');
+    setSelectedFeature(null);
+    setSelectedSubTopic(null);
+  };
+
+  const handleFeatureSelect = (feature: FeatureOption) => {
+    setSelectedFeature(feature);
+    setCurrentView('subtopics');
+  };
+
+  const handleSubTopicSelect = (subTopic: SubTopic) => {
+    setSelectedSubTopic(subTopic);
+    setCurrentView('chat');
     
-    // Add welcome message
-    const welcomeMessage: ChatMessage = {
-      id: `welcome_${Date.now()}`,
-      role: 'assistant',
-      content: `Hi! I'm your SmartJobFit Assistant. I'm here to help you with job search, resume optimization, interview preparation, and all our platform features. What can I help you with today?`,
+    // Add context message
+    const contextMessage: ChatMessage = {
+      id: `context_${Date.now()}`,
+      role: 'system',
+      content: `You've selected ${selectedFeature?.name} > ${subTopic.name}. Here are some quick questions you can ask:`,
       timestamp: new Date(),
       metadata: {
-        suggestedActions: ['Get started guide', 'Explore features', 'Ask a question']
+        suggestedActions: subTopic.quickQuestions
       }
     };
     
-    setMessages([welcomeMessage]);
+    setMessages([contextMessage]);
+  };
+
+  const handleQuickQuestionSelect = (question: string) => {
+    setMessage(question);
+    setCurrentView('chat');
+    handleSendMessage();
+  };
+
+  const handleBackToFeatures = () => {
+    setCurrentView('features');
+    setSelectedFeature(null);
+    setSelectedSubTopic(null);
+  };
+
+  const handleBackToSubTopics = () => {
+    setCurrentView('subtopics');
+    setSelectedSubTopic(null);
   };
 
   const copyMessage = (content: string) => {
