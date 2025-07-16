@@ -109,11 +109,19 @@ export default function InterviewPrep() {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="mock-interview">Mock Interview</TabsTrigger>
-            <TabsTrigger value="questions">Question Bank</TabsTrigger>
-            <TabsTrigger value="sessions">My Sessions</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-4 h-auto mb-6 bg-transparent border-b border-border p-0">
+            <TabsTrigger value="overview" className="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium transition-all border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:text-primary rounded-none">
+              Overview
+            </TabsTrigger>
+            <TabsTrigger value="mock-interview" className="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium transition-all border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:text-primary rounded-none">
+              Mock Interview
+            </TabsTrigger>
+            <TabsTrigger value="questions" className="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium transition-all border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:text-primary rounded-none">
+              Question Bank
+            </TabsTrigger>
+            <TabsTrigger value="sessions" className="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium transition-all border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:text-primary rounded-none">
+              My Sessions
+            </TabsTrigger>
           </TabsList>
 
           {/* Overview Tab */}

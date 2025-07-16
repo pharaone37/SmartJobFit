@@ -265,12 +265,22 @@ export default function JobAlerts() {
 
       {/* Main Content */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid w-full grid-cols-5">
-          <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
-          <TabsTrigger value="opportunities">Opportunities</TabsTrigger>
-          <TabsTrigger value="alerts">My Alerts</TabsTrigger>
-          <TabsTrigger value="intelligence">Market Intelligence</TabsTrigger>
-          <TabsTrigger value="settings">Settings</TabsTrigger>
+        <TabsList className="grid w-full grid-cols-5 h-auto mb-6 bg-transparent border-b border-border p-0">
+          <TabsTrigger value="dashboard" className="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium transition-all border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:text-primary rounded-none">
+            Dashboard
+          </TabsTrigger>
+          <TabsTrigger value="opportunities" className="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium transition-all border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:text-primary rounded-none">
+            Opportunities
+          </TabsTrigger>
+          <TabsTrigger value="alerts" className="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium transition-all border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:text-primary rounded-none">
+            My Alerts
+          </TabsTrigger>
+          <TabsTrigger value="intelligence" className="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium transition-all border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:text-primary rounded-none">
+            Market Intelligence
+          </TabsTrigger>
+          <TabsTrigger value="settings" className="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium transition-all border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:text-primary rounded-none">
+            Settings
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="dashboard" className="space-y-4">

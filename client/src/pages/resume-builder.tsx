@@ -191,10 +191,16 @@ export default function ResumeBuilder() {
             </div>
 
             <Tabs defaultValue="resumes" className="space-y-6">
-              <TabsList className="grid w-full grid-cols-3">
-                <TabsTrigger value="resumes">My Resumes</TabsTrigger>
-                <TabsTrigger value="optimizer">AI Optimizer</TabsTrigger>
-                <TabsTrigger value="templates">Templates</TabsTrigger>
+              <TabsList className="grid w-full grid-cols-3 h-auto mb-6 bg-transparent border-b border-border p-0">
+                <TabsTrigger value="resumes" className="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium transition-all border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:text-primary rounded-none">
+                  My Resumes
+                </TabsTrigger>
+                <TabsTrigger value="optimizer" className="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium transition-all border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:text-primary rounded-none">
+                  AI Optimizer
+                </TabsTrigger>
+                <TabsTrigger value="templates" className="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium transition-all border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:text-primary rounded-none">
+                  Templates
+                </TabsTrigger>
               </TabsList>
 
               <TabsContent value="resumes" className="space-y-6">

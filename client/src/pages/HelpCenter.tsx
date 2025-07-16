@@ -663,10 +663,16 @@ export default function HelpCenter() {
       <div className="container mx-auto px-4 py-12">
         <Tabs defaultValue="faq" className="space-y-8">
           <div className="flex justify-center">
-            <TabsList className="grid w-full max-w-md grid-cols-3">
-              <TabsTrigger value="faq">FAQ</TabsTrigger>
-              <TabsTrigger value="articles">Articles</TabsTrigger>
-              <TabsTrigger value="contact">Contact</TabsTrigger>
+            <TabsList className="grid w-full max-w-md grid-cols-3 h-auto mb-6 bg-transparent border-b border-border p-0">
+              <TabsTrigger value="faq" className="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium transition-all border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:text-primary rounded-none">
+                FAQ
+              </TabsTrigger>
+              <TabsTrigger value="articles" className="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium transition-all border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:text-primary rounded-none">
+                Articles
+              </TabsTrigger>
+              <TabsTrigger value="contact" className="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium transition-all border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:text-primary rounded-none">
+                Contact
+              </TabsTrigger>
             </TabsList>
           </div>
 

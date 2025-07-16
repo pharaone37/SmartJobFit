@@ -196,24 +196,24 @@ const ProfilePage = () => {
   const ProfileTabs = () => (
     <motion.div variants={cardVariants}>
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-5 bg-gray-100 dark:bg-gray-800 rounded-lg p-1">
-          <TabsTrigger value="overview" className="flex items-center gap-2">
+        <TabsList className="grid w-full grid-cols-5 h-auto mb-6 bg-transparent border-b border-border p-0">
+          <TabsTrigger value="overview" className="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium transition-all border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:text-primary rounded-none">
             <User className="w-4 h-4" />
             Overview
           </TabsTrigger>
-          <TabsTrigger value="experience" className="flex items-center gap-2">
+          <TabsTrigger value="experience" className="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium transition-all border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:text-primary rounded-none">
             <Briefcase className="w-4 h-4" />
             Experience
           </TabsTrigger>
-          <TabsTrigger value="skills" className="flex items-center gap-2">
+          <TabsTrigger value="skills" className="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium transition-all border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:text-primary rounded-none">
             <Award className="w-4 h-4" />
             Skills
           </TabsTrigger>
-          <TabsTrigger value="activity" className="flex items-center gap-2">
+          <TabsTrigger value="activity" className="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium transition-all border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:text-primary rounded-none">
             <BarChart3 className="w-4 h-4" />
             Activity
           </TabsTrigger>
-          <TabsTrigger value="settings" className="flex items-center gap-2">
+          <TabsTrigger value="settings" className="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium transition-all border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:text-primary rounded-none">
             <Settings className="w-4 h-4" />
             Settings
           </TabsTrigger>
