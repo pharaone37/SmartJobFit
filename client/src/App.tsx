@@ -20,8 +20,9 @@ import HelpCenter from "@/pages/HelpCenter";
 import PrivacyPolicy from "@/pages/PrivacyPolicy";
 import TermsOfService from "@/pages/TermsOfService";
 import AuthPage from "@/pages/auth";
-import ProfilePage from "@/pages/profile";
-import SettingsPage from "@/pages/settings";
+import ProfilePage from "@/pages/ProfilePage";
+import SettingsPage from "@/pages/SettingsPage";
+import BillingPage from "@/pages/BillingPage";
 import Login from "@/pages/Login";
 import NotFound from "@/pages/not-found";
 
@@ -75,9 +76,11 @@ function AppContent() {
             
             {!isAuthenticated ? (
               <>
-                <Route path="/" element={<Landing />} />
+                <Route path="/" element={<Homepage />} />
+                <Route path="/landing" element={<Landing />} />
                 <Route path="/auth" element={<AuthPage />} />
                 <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<AuthPage />} />
                 <Route path="*" element={<Navigate to="/" replace />} />
               </>
             ) : (
@@ -109,6 +112,7 @@ function AppContent() {
                 
                 <Route path="/profile" element={<ProfilePage />} />
                 <Route path="/settings" element={<SettingsPage />} />
+                <Route path="/billing" element={<BillingPage />} />
                 <Route path="/subscribe" element={<Subscribe />} />
                 <Route path="/login" element={<Navigate to="/dashboard" replace />} />
                 <Route path="*" element={<NotFound />} />
