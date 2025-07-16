@@ -50,14 +50,14 @@ export default function SalaryIntelligence({ userId }: SalaryIntelligenceProps) 
   const { toast } = useToast();
 
   // Query for user benchmarks
-  const { data: userBenchmarks } = useQuery({
+  const { data: userBenchmarks } = useQuery<{benchmarks: any[]}>({
     queryKey: ['/api/salary/benchmarks/user'],
     enabled: !!userId,
     retry: false
   });
 
   // Query for user negotiations
-  const { data: userNegotiations } = useQuery({
+  const { data: userNegotiations } = useQuery<{negotiations: any[]}>({
     queryKey: ['/api/salary/negotiations/user'],
     enabled: !!userId,
     retry: false

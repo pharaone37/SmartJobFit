@@ -114,7 +114,10 @@ export default function CareerCoaching({ userId }: CareerCoachingProps) {
 
   // Mutations
   const createProfileMutation = useMutation({
-    mutationFn: (data: any) => apiRequest('/api/career-coaching/profile', 'POST', data),
+    mutationFn: (data: any) => apiRequest('/api/career-coaching/profile', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    }),
     onSuccess: () => {
       toast({ title: "Profile created successfully" });
       queryClient.invalidateQueries({ queryKey: ['/api/career-coaching/profile'] });
@@ -122,7 +125,10 @@ export default function CareerCoaching({ userId }: CareerCoachingProps) {
   });
 
   const createSkillAssessmentMutation = useMutation({
-    mutationFn: (data: any) => apiRequest('/api/career-coaching/skill-assessments', 'POST', data),
+    mutationFn: (data: any) => apiRequest('/api/career-coaching/skill-assessments', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    }),
     onSuccess: () => {
       toast({ title: "Skill assessment created successfully" });
       queryClient.invalidateQueries({ queryKey: ['/api/career-coaching/skill-assessments'] });
@@ -130,7 +136,10 @@ export default function CareerCoaching({ userId }: CareerCoachingProps) {
   });
 
   const createCareerGoalMutation = useMutation({
-    mutationFn: (data: any) => apiRequest('/api/career-coaching/goals', 'POST', data),
+    mutationFn: (data: any) => apiRequest('/api/career-coaching/goals', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    }),
     onSuccess: () => {
       toast({ title: "Career goal created successfully" });
       queryClient.invalidateQueries({ queryKey: ['/api/career-coaching/goals'] });
@@ -138,7 +147,10 @@ export default function CareerCoaching({ userId }: CareerCoachingProps) {
   });
 
   const createLearningPlanMutation = useMutation({
-    mutationFn: (data: any) => apiRequest('/api/career-coaching/learning-plans', 'POST', data),
+    mutationFn: (data: any) => apiRequest('/api/career-coaching/learning-plans', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    }),
     onSuccess: () => {
       toast({ title: "Learning plan created successfully" });
       queryClient.invalidateQueries({ queryKey: ['/api/career-coaching/learning-plans'] });
@@ -146,7 +158,10 @@ export default function CareerCoaching({ userId }: CareerCoachingProps) {
   });
 
   const generateAdviceMutation = useMutation({
-    mutationFn: (context: any) => apiRequest('/api/career-coaching/advice', 'POST', context),
+    mutationFn: (context: any) => apiRequest('/api/career-coaching/advice', {
+      method: 'POST',
+      body: JSON.stringify(context)
+    }),
     onSuccess: (data) => {
       toast({ title: "Career advice generated successfully" });
       setIsLoadingAdvice(false);
