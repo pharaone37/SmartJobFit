@@ -11,6 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import JobSearchFilters from '@/components/JobSearchFilters';
 import type { JobSearchFilters as JobSearchFiltersType } from '@/components/JobSearchFilters';
 import ApplicationTracker from '@/pages/ApplicationTracker';
+import SalaryIntelligence from '@/components/SalaryIntelligence';
 import { 
   Search, 
   FileText, 
@@ -44,6 +45,7 @@ export default function Dashboard() {
   const [filters, setFilters] = useState<JobSearchFiltersType>({});
   const [isSearching, setIsSearching] = useState(false);
   const [savedJobs, setSavedJobs] = useState<number[]>([]);
+  const [activeTab, setActiveTab] = useState('overview');
 
   // Fetch real user stats
   const { data: userStats, isLoading: statsLoading } = useQuery({
@@ -192,8 +194,15 @@ export default function Dashboard() {
           </Button>
         </div>
 
-        {/* Overview Content */}
-        <div className="space-y-6">
+        {/* Tabs Navigation */}
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="overview">Overview</TabsTrigger>
+            <TabsTrigger value="applications">Applications</TabsTrigger>
+            <TabsTrigger value="salary">Salary Intelligence</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="overview" className="space-y-6">
             {/* Stats Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               <Card className="border-0 shadow-lg">
@@ -335,7 +344,16 @@ export default function Dashboard() {
                 </CardContent>
               </Card>
             </div>
-        </div>
+          </TabsContent>
+
+          <TabsContent value="applications">
+            <ApplicationTracker />
+          </TabsContent>
+
+          <TabsContent value="salary">
+            <SalaryIntelligence userId={user?.id || ''} />
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );
