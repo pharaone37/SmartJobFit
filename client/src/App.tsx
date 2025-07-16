@@ -49,6 +49,7 @@ import ChatBot from "@/components/ChatBot";
 import { JobSearchEngine } from "@/pages/JobSearchEngine";
 import { ResumeOptimizer } from "@/pages/ResumeOptimizer";
 import InterviewCoach from "@/pages/InterviewCoach";
+import AdvancedInterviewCoach from "@/pages/AdvancedInterviewCoach";
 import ApplicationTracker from "@/pages/ApplicationTracker";
 
 import { queryClient } from "@/lib/queryClient";
@@ -106,6 +107,7 @@ function AppContent() {
                 <Route path="/job-search-engine" element={<JobSearchEngine />} />
                 <Route path="/resume-optimizer" element={<ResumeOptimizer />} />
                 <Route path="/interview-coach" element={<InterviewCoach />} />
+                <Route path="/advanced-interview-coach" element={<AdvancedInterviewCoach />} />
                 <Route path="/application-tracker" element={<ApplicationTracker />} />
                 
                 {/* New Interactive Features */}

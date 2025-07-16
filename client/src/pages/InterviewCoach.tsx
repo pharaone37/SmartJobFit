@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
 import { apiRequest } from '@/lib/queryClient';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -52,6 +53,7 @@ const InterviewCoach: React.FC<InterviewCoachProps> = () => {
   
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   // Fetch user's interview sessions
   const { data: sessions, isLoading: sessionsLoading } = useQuery({
@@ -143,32 +145,16 @@ const InterviewCoach: React.FC<InterviewCoachProps> = () => {
     }
   });
 
-  // Start a new interview session
+  // Start a new interview session - navigate to advanced coach
   const startNewSession = () => {
-    if (!targetRole.trim()) {
-      toast({
-        title: "Target Role Required",
-        description: "Please enter the job role you're preparing for",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    const sessionData = {
-      sessionType,
-      difficulty,
-      targetRole: targetRole.trim(),
-      companyId: companyId.trim() || undefined,
-      language: 'en',
-      coachingPersonality: {
-        type: 'supportive',
-        tone: 'encouraging',
-        feedbackStyle: 'constructive',
-        encouragementLevel: 8
-      }
-    };
-
-    createSessionMutation.mutate(sessionData);
+    // Navigate to the advanced interview coach page
+    navigate('/advanced-interview-coach');
+    
+    toast({
+      title: "Launching Advanced Interview Coach",
+      description: "Get ready for AI-powered interview coaching with emotional intelligence!",
+      variant: "default"
+    });
   };
 
   // Get next question
