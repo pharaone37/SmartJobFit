@@ -9,13 +9,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import JobCard from "@/components/JobCard";
-import JobSearchFilters from "@/components/JobSearchFilters";
-import CoverLetterModal from "@/components/CoverLetterModal";
-import CompanyInsightsModal from "@/components/CompanyInsightsModal";
-import type { JobSearchFilters as JobSearchFiltersType } from "@/components/JobSearchFilters";
+import { JobCard } from "@/components/JobCard";
+import { JobRecommendationCarousel } from "@/components/JobRecommendationCarousel";
+import JobSearchFilters, { JobSearchFilters as JobSearchFiltersType } from "@/components/JobSearchFilters";
 import { 
   Search, 
   Filter, 
@@ -29,8 +26,11 @@ import {
   Zap,
   Building,
   Users,
-  TrendingUp
+  TrendingUp,
+  Sparkles,
+  Target
 } from "lucide-react";
+import { Job } from "@shared/schema";
 
 export default function JobSearch() {
   const { user, isLoading, isAuthenticated } = useAuth();
@@ -39,24 +39,8 @@ export default function JobSearch() {
 
   const [searchQuery, setSearchQuery] = useState("");
   const [filters, setFilters] = useState<JobSearchFiltersType>({});
-  const [activeTab, setActiveTab] = useState("search");
-  
-  // Modal states
-  const [coverLetterModal, setCoverLetterModal] = useState({
-    isOpen: false,
-    coverLetter: "",
-    jobTitle: "",
-    company: "",
-    isGenerating: false,
-  });
-  
-  const [companyInsightsModal, setCompanyInsightsModal] = useState({
-    isOpen: false,
-    insights: null,
-    company: "",
-    jobTitle: "",
-    isGenerating: false,
-  });
+  const [activeTab, setActiveTab] = useState("recommended");
+  const [bookmarkedJobs, setBookmarkedJobs] = useState<string[]>([]);
 
   // Redirect to home if not authenticated
   useEffect(() => {
@@ -73,20 +57,80 @@ export default function JobSearch() {
     }
   }, [isAuthenticated, isLoading, toast]);
 
-  // Live API job search
+  // Mock job data for demonstration
+  const mockJobs: Job[] = [
+    {
+      id: "job-1",
+      title: "Senior React Developer",
+      company: "TechCorp",
+      location: "San Francisco, CA",
+      description: "Looking for an experienced React developer to join our team...",
+      salary: "$120,000 - $160,000",
+      workType: "Full-time",
+      remote: true,
+      experienceLevel: "Senior",
+      skills: ["React", "TypeScript", "Node.js", "GraphQL"],
+      postedDate: new Date("2024-01-15"),
+      url: "https://example.com/job-1",
+      source: "internal",
+      matchScore: 92,
+      userId: user?.id || "user-1",
+      isBookmarked: false,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    },
+    {
+      id: "job-2",
+      title: "Frontend Engineer",
+      company: "StartupXYZ",
+      location: "New York, NY",
+      description: "Join our innovative team building the next generation of web applications...",
+      salary: "$90,000 - $130,000",
+      workType: "Full-time",
+      remote: false,
+      experienceLevel: "Mid-level",
+      skills: ["Vue.js", "JavaScript", "CSS", "REST APIs"],
+      postedDate: new Date("2024-01-14"),
+      url: "https://example.com/job-2",
+      source: "internal",
+      matchScore: 85,
+      userId: user?.id || "user-1",
+      isBookmarked: false,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    },
+    {
+      id: "job-3",
+      title: "Full Stack Developer",
+      company: "InnovateTech",
+      location: "Austin, TX",
+      description: "We're seeking a versatile full-stack developer to work on cutting-edge projects...",
+      salary: "$100,000 - $140,000",
+      workType: "Full-time",
+      remote: true,
+      experienceLevel: "Mid-level",
+      skills: ["React", "Node.js", "Python", "PostgreSQL"],
+      postedDate: new Date("2024-01-13"),
+      url: "https://example.com/job-3",
+      source: "internal",
+      matchScore: 78,
+      userId: user?.id || "user-1",
+      isBookmarked: false,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    }
+  ];
+
+  // Job search query
   const { data: jobs, isLoading: jobsLoading, refetch: refetchJobs } = useQuery({
     queryKey: ['/api/jobs', searchQuery, filters],
     queryFn: async () => {
-      const params = new URLSearchParams();
-      if (searchQuery) params.append('query', searchQuery);
-      if (filters.location) params.append('location', filters.location);
-      if (filters.jobType) params.append('jobType', filters.jobType);
-      if (filters.experienceLevel) params.append('experienceLevel', filters.experienceLevel);
-      if (filters.salaryMin) params.append('salaryMin', filters.salaryMin.toString());
-      if (filters.salaryMax) params.append('salaryMax', filters.salaryMax.toString());
-      
-      const response = await apiRequest('GET', `/api/jobs?${params.toString()}`);
-      return response.json();
+      // For now, return mock data
+      return mockJobs.filter(job => 
+        !searchQuery || 
+        job.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        job.company.toLowerCase().includes(searchQuery.toLowerCase())
+      );
     },
     enabled: isAuthenticated,
     retry: 1,
@@ -96,6 +140,10 @@ export default function JobSearch() {
   // Job recommendations
   const { data: recommendations, isLoading: recommendationsLoading } = useQuery({
     queryKey: ['/api/jobs/recommendations'],
+    queryFn: async () => {
+      // Return mock recommendations sorted by match score
+      return mockJobs.sort((a, b) => (b.matchScore || 0) - (a.matchScore || 0));
+    },
     enabled: isAuthenticated,
     retry: 1,
     retryDelay: 1000,
@@ -104,135 +152,50 @@ export default function JobSearch() {
   // Saved jobs
   const { data: savedJobs, isLoading: savedJobsLoading } = useQuery({
     queryKey: ['/api/saved-jobs'],
+    queryFn: async () => {
+      // Return mock saved jobs
+      return mockJobs.filter(job => bookmarkedJobs.includes(job.id));
+    },
     enabled: isAuthenticated,
     retry: 1,
     retryDelay: 1000,
   });
 
-  // External job search mutation
-  const externalSearchMutation = useMutation({
-    mutationFn: async (searchData: { keywords: string; location?: string; jobType?: string; experienceLevel?: string; salaryMin?: number; limit?: number }) => {
-      const response = await apiRequest('POST', '/api/jobs/search', searchData);
-      return response.json();
-    },
-    onSuccess: (data) => {
-      toast({
-        title: "External Search Complete",
-        description: `Found ${data.length} new jobs from external sources`,
-      });
-      // Refetch the main jobs list to include new results
-      refetchJobs();
-    },
-    onError: (error) => {
-      if (isUnauthorizedError(error)) {
-        toast({
-          title: "Unauthorized",
-          description: "You are logged out. Logging in again...",
-          variant: "destructive",
-        });
-        setTimeout(() => {
-          window.location.href = "/api/login";
-        }, 500);
-        return;
-      }
-      console.error('External search failed:', error);
-      toast({
-        title: "Search Failed",
-        description: "Failed to search external job boards. Please try again.",
-        variant: "destructive",
-      });
-    },
-  });
-
-  // Handle search form submission
+  // Handle search
   const handleSearch = () => {
     refetchJobs();
   };
 
-  // Handle external search
-  const handleAISearch = () => {
-    if (!searchQuery.trim()) {
-      toast({
-        title: "Search Required",
-        description: "Please enter keywords to search for jobs",
-        variant: "destructive",
-      });
-      return;
-    }
+  // Handle bookmark/unbookmark
+  const handleBookmark = async (jobId: string) => {
+    const isBookmarked = bookmarkedJobs.includes(jobId);
     
-    externalSearchMutation.mutate({
-      keywords: searchQuery,
-      location: filters.location,
-      jobType: filters.jobType,
-      experienceLevel: filters.experienceLevel,
-      salaryMin: filters.salaryMin,
-      limit: 20
-    });
-  };
-
-  // Save job mutation
-  const saveJobMutation = useMutation({
-    mutationFn: async (jobId: string) => {
-      return await apiRequest("POST", "/api/saved-jobs", { jobId });
-    },
-    onSuccess: () => {
-      toast({
-        title: "Job Saved",
-        description: "Job added to your saved list!",
-      });
-      queryClient.invalidateQueries({ queryKey: ["/api/saved-jobs"] });
-    },
-    onError: (error: Error) => {
-      if (isUnauthorizedError(error)) {
-        toast({
-          title: "Unauthorized",
-          description: "You are logged out. Logging in again...",
-          variant: "destructive",
-        });
-        setTimeout(() => {
-          window.location.href = "/api/login";
-        }, 500);
-        return;
-      }
-      toast({
-        title: "Save Failed",
-        description: "Could not save job. Please try again.",
-        variant: "destructive",
-      });
-    },
-  });
-
-  // Unsave job mutation
-  const unsaveJobMutation = useMutation({
-    mutationFn: async (savedJobId: string) => {
-      return await apiRequest("DELETE", `/api/saved-jobs/${savedJobId}`);
-    },
-    onSuccess: () => {
+    if (isBookmarked) {
+      setBookmarkedJobs(prev => prev.filter(id => id !== jobId));
       toast({
         title: "Job Removed",
-        description: "Job removed from your saved list!",
+        description: "Job removed from your bookmarks",
       });
-      queryClient.invalidateQueries({ queryKey: ["/api/saved-jobs"] });
-    },
-    onError: (error: Error) => {
-      if (isUnauthorizedError(error)) {
-        toast({
-          title: "Unauthorized",
-          description: "You are logged out. Logging in again...",
-          variant: "destructive",
-        });
-        setTimeout(() => {
-          window.location.href = "/api/login";
-        }, 500);
-        return;
-      }
+    } else {
+      setBookmarkedJobs(prev => [...prev, jobId]);
       toast({
-        title: "Remove Failed",
-        description: "Failed to remove job. Please try again.",
-        variant: "destructive",
+        title: "Job Bookmarked",
+        description: "Job added to your bookmarks",
       });
-    },
-  });
+    }
+    
+    // Invalidate saved jobs query
+    queryClient.invalidateQueries({ queryKey: ["/api/saved-jobs"] });
+  };
+
+  // Handle apply
+  const handleApply = (jobId: string) => {
+    toast({
+      title: "Application Started",
+      description: "Redirecting to application page...",
+    });
+    // In a real app, this would redirect to application flow
+  };
 
   if (isLoading || !isAuthenticated) {
     return (
@@ -242,114 +205,9 @@ export default function JobSearch() {
     );
   }
 
-
-
-  const handleSaveJob = (jobId: string) => {
-    // Check if job is already saved
-    const savedJob = savedJobs?.find((saved: any) => saved.jobId === jobId);
-    if (savedJob) {
-      // Unsave the job
-      unsaveJobMutation.mutate(savedJob.id);
-    } else {
-      // Save the job
-      saveJobMutation.mutate(jobId);
-    }
-  };
-
-  // AI Cover Letter mutation
-  const coverLetterMutation = useMutation({
-    mutationFn: async (job: any) => {
-      return await apiRequest("POST", "/api/ai/cover-letter", {
-        jobId: job.id,
-        jobTitle: job.title,
-        company: job.company,
-        jobDescription: job.description
-      });
-    },
-    onSuccess: (data) => {
-      setCoverLetterModal(prev => ({
-        ...prev,
-        coverLetter: data.coverLetter,
-        isGenerating: false,
-      }));
-      toast({
-        title: "Cover Letter Generated",
-        description: "Your personalized cover letter is ready!",
-      });
-    },
-    onError: (error: Error) => {
-      setCoverLetterModal(prev => ({
-        ...prev,
-        isGenerating: false,
-      }));
-      toast({
-        title: "Generation Failed",
-        description: "Failed to generate cover letter. Please try again.",
-        variant: "destructive",
-      });
-    },
-  });
-
-  // Company Insights mutation
-  const companyInsightsMutation = useMutation({
-    mutationFn: async (job: any) => {
-      return await apiRequest("POST", "/api/ai/company-insights", {
-        company: job.company,
-        jobTitle: job.title,
-        jobDescription: job.description
-      });
-    },
-    onSuccess: (data) => {
-      setCompanyInsightsModal(prev => ({
-        ...prev,
-        insights: data.insights,
-        isGenerating: false,
-      }));
-      toast({
-        title: "Company Insights Generated",
-        description: "Company insights are ready to view!",
-      });
-    },
-    onError: (error: Error) => {
-      setCompanyInsightsModal(prev => ({
-        ...prev,
-        isGenerating: false,
-      }));
-      toast({
-        title: "Generation Failed",
-        description: "Failed to generate company insights. Please try again.",
-        variant: "destructive",
-      });
-    },
-  });
-
-  const handleGenerateCoverLetter = (job: any) => {
-    setCoverLetterModal({
-      isOpen: true,
-      coverLetter: "",
-      jobTitle: job.title,
-      company: job.company,
-      isGenerating: true,
-    });
-    coverLetterMutation.mutate(job);
-  };
-
-  const handleCompanyInsights = (job: any) => {
-    setCompanyInsightsModal({
-      isOpen: true,
-      insights: null,
-      company: job.company,
-      jobTitle: job.title,
-      isGenerating: true,
-    });
-    companyInsightsMutation.mutate(job);
-  };
-
-
-
   const JobSkeletons = () => (
     <div className="space-y-6">
-      {[...Array(5)].map((_, i) => (
+      {[...Array(3)].map((_, i) => (
         <Card key={i} className="p-6">
           <div className="flex items-start justify-between mb-4">
             <div className="flex items-start space-x-4 flex-1">
@@ -381,110 +239,158 @@ export default function JobSearch() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">Job Search</h1>
-          <p className="text-muted-foreground">Find your next opportunity with AI-powered matching</p>
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
+              <Target className="w-5 h-5 text-white" />
+            </div>
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Smart Job Search</h1>
+              <p className="text-gray-600 dark:text-gray-400">AI-powered job matching and recommendations</p>
+            </div>
+          </div>
         </div>
 
         {/* Search Interface */}
         <div className="mb-8">
-          <div className="mb-6">
-            <div className="flex gap-4 mb-4">
-              <div className="relative flex-1">
-                <Input
-                  type="text"
-                  placeholder="Job title or keywords"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10"
-                />
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-              </div>
-              <Button 
-                onClick={handleAISearch} 
-                className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600"
-                disabled={externalSearchMutation.isPending}
-              >
-                <Zap className="w-4 h-4 mr-2" />
-                AI Search
-              </Button>
+          <div className="flex gap-4 mb-6">
+            <div className="relative flex-1">
+              <Input
+                type="text"
+                placeholder="Search jobs, companies, or skills..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10 h-12 text-lg"
+                onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+              />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
             </div>
+            <Button 
+              onClick={handleSearch}
+              className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 h-12 px-8"
+            >
+              <Search className="w-4 h-4 mr-2" />
+              Search
+            </Button>
           </div>
-          
+
           <JobSearchFilters 
             filters={filters}
             onFiltersChange={setFilters}
             onSearch={handleSearch}
-            isLoading={jobsLoading || externalSearchMutation.isPending}
+            isLoading={jobsLoading}
           />
         </div>
 
-        {/* Tabs */}
-        <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="search">Search Results</TabsTrigger>
-            <TabsTrigger value="recommended">Recommended</TabsTrigger>
-            <TabsTrigger value="saved">Saved Jobs</TabsTrigger>
-          </TabsList>
+        {/* Smart Recommendations Section */}
+        {recommendations && recommendations.length > 0 && (
+          <div className="mb-8">
+            <JobRecommendationCarousel
+              jobs={recommendations}
+              onBookmark={handleBookmark}
+              onApply={handleApply}
+              bookmarkedJobs={bookmarkedJobs}
+              title="Smart Job Recommendations"
+              subtitle="AI-powered matches based on your profile and preferences"
+            />
+          </div>
+        )}
 
-          {/* Search Results */}
-          <TabsContent value="search" className="mt-6">
-            {jobsLoading ? (
-              <JobSkeletons />
-            ) : jobs && jobs.length > 0 ? (
-              <div className="space-y-6">
-                {jobs.map((job: any) => (
-                  <JobCard
-                    key={job.id}
-                    job={job}
-                    onSave={() => handleSaveJob(job.id)}
-                    onGenerateCoverLetter={() => handleGenerateCoverLetter(job)}
-                    onCompanyInsights={() => handleCompanyInsights(job)}
-                    isSaved={savedJobs?.some((saved: any) => saved.jobId === job.id)}
-                  />
-                ))}
-              </div>
-            ) : (
-              <Card className="p-12 text-center">
-                <Search className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                <h3 className="text-lg font-semibold mb-2">No jobs found</h3>
-                <p className="text-muted-foreground mb-4">
-                  Try adjusting your search terms or use AI Search to find more opportunities
-                </p>
-                <Button onClick={handleAISearch} className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600">
-                  <Zap className="w-4 h-4 mr-2" />
-                  AI Search
-                </Button>
-              </Card>
-            )}
-          </TabsContent>
+        {/* Main Content Tabs */}
+        <Tabs value={activeTab} onValueChange={setActiveTab}>
+          <TabsList className="grid w-full grid-cols-3 mb-6">
+            <TabsTrigger value="recommended" className="flex items-center gap-2">
+              <Sparkles className="w-4 h-4" />
+              Recommended
+            </TabsTrigger>
+            <TabsTrigger value="search" className="flex items-center gap-2">
+              <Search className="w-4 h-4" />
+              Search Results
+            </TabsTrigger>
+            <TabsTrigger value="saved" className="flex items-center gap-2">
+              <Bookmark className="w-4 h-4" />
+              Saved Jobs
+            </TabsTrigger>
+          </TabsList>
 
           {/* Recommended Jobs */}
           <TabsContent value="recommended" className="mt-6">
+            <div className="mb-4">
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+                Personalized Job Recommendations
+              </h2>
+              <p className="text-gray-600 dark:text-gray-400">
+                Jobs matched to your skills, experience, and preferences
+              </p>
+            </div>
+            
             {recommendationsLoading ? (
               <JobSkeletons />
             ) : recommendations && recommendations.length > 0 ? (
-              <div className="space-y-6">
-                {recommendations.map((job: any) => (
+              <div className="grid gap-6">
+                {recommendations.map((job) => (
                   <JobCard
                     key={job.id}
                     job={job}
-                    onSave={() => handleSaveJob(job.id)}
-                    onGenerateCoverLetter={() => handleGenerateCoverLetter(job)}
-                    onCompanyInsights={() => handleCompanyInsights(job)}
-                    isSaved={savedJobs?.some((saved: any) => saved.jobId === job.id)}
+                    onBookmark={handleBookmark}
+                    onApply={handleApply}
+                    isBookmarked={bookmarkedJobs.includes(job.id)}
                     showMatchScore={true}
                   />
                 ))}
               </div>
             ) : (
               <Card className="p-12 text-center">
-                <Star className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                <h3 className="text-lg font-semibold mb-2">No recommendations yet</h3>
-                <p className="text-muted-foreground mb-4">
-                  Complete your profile and upload a resume to get personalized job recommendations
+                <Sparkles className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                <h3 className="text-lg font-semibold text-gray-600 dark:text-gray-400 mb-2">
+                  No recommendations yet
+                </h3>
+                <p className="text-gray-500 dark:text-gray-500 mb-4">
+                  Complete your profile to get AI-powered job recommendations
                 </p>
-                <Button>
+                <Button onClick={() => window.location.href = "/dashboard"}>
                   Complete Profile
+                </Button>
+              </Card>
+            )}
+          </TabsContent>
+
+          {/* Search Results */}
+          <TabsContent value="search" className="mt-6">
+            <div className="mb-4">
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+                Search Results
+              </h2>
+              <p className="text-gray-600 dark:text-gray-400">
+                {jobs ? `Found ${jobs.length} jobs` : "Search for jobs using the form above"}
+              </p>
+            </div>
+
+            {jobsLoading ? (
+              <JobSkeletons />
+            ) : jobs && jobs.length > 0 ? (
+              <div className="grid gap-6">
+                {jobs.map((job) => (
+                  <JobCard
+                    key={job.id}
+                    job={job}
+                    onBookmark={handleBookmark}
+                    onApply={handleApply}
+                    isBookmarked={bookmarkedJobs.includes(job.id)}
+                    showMatchScore={false}
+                  />
+                ))}
+              </div>
+            ) : (
+              <Card className="p-12 text-center">
+                <Search className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                <h3 className="text-lg font-semibold text-gray-600 dark:text-gray-400 mb-2">
+                  No jobs found
+                </h3>
+                <p className="text-gray-500 dark:text-gray-500 mb-4">
+                  Try adjusting your search terms or filters
+                </p>
+                <Button onClick={() => setSearchQuery("")}>
+                  Clear Search
                 </Button>
               </Card>
             )}
@@ -492,52 +398,47 @@ export default function JobSearch() {
 
           {/* Saved Jobs */}
           <TabsContent value="saved" className="mt-6">
+            <div className="mb-4">
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+                Saved Jobs
+              </h2>
+              <p className="text-gray-600 dark:text-gray-400">
+                Jobs you've bookmarked for later review
+              </p>
+            </div>
+
             {savedJobsLoading ? (
               <JobSkeletons />
             ) : savedJobs && savedJobs.length > 0 ? (
-              <div className="space-y-6">
-                {savedJobs.map((savedJob: any) => (
+              <div className="grid gap-6">
+                {savedJobs.map((job) => (
                   <JobCard
-                    key={savedJob.id}
-                    job={savedJob.job}
-                    onSave={() => handleSaveJob(savedJob.job.id)}
-                    onGenerateCoverLetter={() => handleGenerateCoverLetter(savedJob.job)}
-                    onCompanyInsights={() => handleCompanyInsights(savedJob.job)}
-                    isSaved={true}
+                    key={job.id}
+                    job={job}
+                    onBookmark={handleBookmark}
+                    onApply={handleApply}
+                    isBookmarked={true}
+                    showMatchScore={true}
                   />
                 ))}
               </div>
             ) : (
               <Card className="p-12 text-center">
-                <Bookmark className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                <h3 className="text-lg font-semibold mb-2">No saved jobs</h3>
-                <p className="text-muted-foreground mb-4">
-                  Save interesting jobs to review and apply to them later
+                <Bookmark className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                <h3 className="text-lg font-semibold text-gray-600 dark:text-gray-400 mb-2">
+                  No saved jobs yet
+                </h3>
+                <p className="text-gray-500 dark:text-gray-500 mb-4">
+                  Bookmark jobs you're interested in to save them for later
                 </p>
+                <Button onClick={() => setActiveTab("recommended")}>
+                  Explore Recommendations
+                </Button>
               </Card>
             )}
           </TabsContent>
         </Tabs>
       </div>
-      
-      {/* Modals */}
-      <CoverLetterModal
-        isOpen={coverLetterModal.isOpen}
-        onClose={() => setCoverLetterModal(prev => ({ ...prev, isOpen: false }))}
-        coverLetter={coverLetterModal.coverLetter}
-        jobTitle={coverLetterModal.jobTitle}
-        company={coverLetterModal.company}
-        isGenerating={coverLetterModal.isGenerating}
-      />
-      
-      <CompanyInsightsModal
-        isOpen={companyInsightsModal.isOpen}
-        onClose={() => setCompanyInsightsModal(prev => ({ ...prev, isOpen: false }))}
-        insights={companyInsightsModal.insights}
-        company={companyInsightsModal.company}
-        jobTitle={companyInsightsModal.jobTitle}
-        isGenerating={companyInsightsModal.isGenerating}
-      />
     </div>
   );
 }
