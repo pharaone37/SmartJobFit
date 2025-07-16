@@ -39,6 +39,10 @@ export default function AdvancedInterviewCoach() {
   const navigate = useNavigate();
   const { toast } = useToast();
   
+  useEffect(() => {
+    console.log('AdvancedInterviewCoach component loaded');
+  }, []);
+  
   const [sessionType, setSessionType] = useState('general');
   const [difficulty, setDifficulty] = useState('medium');
   const [language, setLanguage] = useState('english');

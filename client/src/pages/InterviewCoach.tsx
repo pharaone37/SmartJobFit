@@ -147,6 +147,8 @@ const InterviewCoach: React.FC<InterviewCoachProps> = () => {
 
   // Start a new interview session - navigate to advanced coach
   const startNewSession = () => {
+    console.log('Start Interview Session button clicked');
+    
     // Navigate to the advanced interview coach page
     navigate('/advanced-interview-coach');
     
@@ -578,10 +580,9 @@ const InterviewCoach: React.FC<InterviewCoachProps> = () => {
               <div className="flex justify-end">
                 <Button
                   onClick={startNewSession}
-                  disabled={createSessionMutation.isPending}
                   className="bg-blue-600 hover:bg-blue-700"
                 >
-                  {createSessionMutation.isPending ? 'Creating...' : 'Start Interview Session'}
+                  Start Interview Session
                   <ArrowRight className="w-4 h-4 ml-2" />
                 </Button>
               </div>
