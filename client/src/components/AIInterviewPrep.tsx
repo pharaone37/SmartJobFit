@@ -132,9 +132,21 @@ const COMPANY_TYPES = [
 ];
 
 export default function AIInterviewPrep() {
-  const { user } = useAuth();
+  const { user, isAuthenticated } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  
+  // Show loading state if not authenticated
+  if (!isAuthenticated) {
+    return (
+      <div className="max-w-6xl mx-auto p-6 space-y-6">
+        <div className="text-center space-y-2">
+          <h1 className="text-3xl font-bold">AI Interview Preparation</h1>
+          <p className="text-gray-600">Please log in to access interview preparation features</p>
+        </div>
+      </div>
+    );
+  }
   
   // Basic interview setup
   const [jobDescription, setJobDescription] = useState("");

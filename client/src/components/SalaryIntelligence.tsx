@@ -294,25 +294,21 @@ export default function SalaryIntelligence({ userId }: SalaryIntelligenceProps) 
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-3 sm:grid-cols-5 gap-1 sm:gap-0 h-auto sm:h-10 mb-4 sm:mb-6">
-          <TabsTrigger value="market-research" className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2 p-2 sm:p-3 text-xs sm:text-sm">
-            <span className="hidden sm:inline">Market Research</span>
-            <span className="sm:hidden">Market</span>
+        <TabsList className="grid w-full grid-cols-5 h-12 p-1 mb-6">
+          <TabsTrigger value="market-research" className="flex items-center justify-center p-3 text-sm h-full">
+            Market Research
           </TabsTrigger>
-          <TabsTrigger value="personalized-analysis" className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2 p-2 sm:p-3 text-xs sm:text-sm">
-            <span className="hidden sm:inline">Personalized Analysis</span>
-            <span className="sm:hidden">Personal</span>
+          <TabsTrigger value="personalized-analysis" className="flex items-center justify-center p-3 text-sm h-full">
+            Personalized Analysis
           </TabsTrigger>
-          <TabsTrigger value="company-insights" className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2 p-2 sm:p-3 text-xs sm:text-sm">
-            <span className="hidden sm:inline">Company Insights</span>
-            <span className="sm:hidden">Company</span>
+          <TabsTrigger value="company-insights" className="flex items-center justify-center p-3 text-sm h-full">
+            Company Insights
           </TabsTrigger>
-          <TabsTrigger value="negotiation-strategy" className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2 p-2 sm:p-3 text-xs sm:text-sm">
-            <span className="hidden sm:inline">Negotiation Strategy</span>
-            <span className="sm:hidden">Strategy</span>
+          <TabsTrigger value="negotiation-strategy" className="flex items-center justify-center p-3 text-sm h-full">
+            Negotiation Strategy
           </TabsTrigger>
-          <TabsTrigger value="simulation" className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2 p-2 sm:p-3 text-xs sm:text-sm">
-            <span>Simulation</span>
+          <TabsTrigger value="simulation" className="flex items-center justify-center p-3 text-sm h-full">
+            Simulation
           </TabsTrigger>
         </TabsList>
 
