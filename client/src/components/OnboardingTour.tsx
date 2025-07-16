@@ -294,21 +294,34 @@ const OnboardingTour: React.FC<OnboardingTourProps> = ({
     }
   };
 
-  const handleSkip = () => {
-    setCurrentStep(onboardingSteps.length - 1);
+  const handleSkip = async () => {
+    try {
+      await apiRequest('/api/user/onboarding/skip', {
+        method: 'POST',
+        body: JSON.stringify({ skippedAt: new Date().toISOString() })
+      });
+      onComplete();
+      onClose();
+    } catch (error) {
+      console.error('Failed to skip onboarding:', error);
+      onComplete(); // Complete anyway
+      onClose();
+    }
   };
 
   const handleComplete = async () => {
     try {
       await apiRequest('/api/user/onboarding/complete', {
         method: 'POST',
-        body: { completedAt: new Date().toISOString() }
+        body: JSON.stringify({ completedAt: new Date().toISOString() })
       });
       setCompletedSteps(new Set(onboardingSteps.map(s => s.id)));
       onComplete();
+      onClose();
     } catch (error) {
       console.error('Failed to mark onboarding as complete:', error);
       onComplete(); // Complete anyway
+      onClose();
     }
   };
 

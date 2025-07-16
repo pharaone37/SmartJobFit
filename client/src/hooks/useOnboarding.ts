@@ -54,12 +54,15 @@ export function useOnboarding() {
     mutationFn: async () => {
       return apiRequest('/api/user/onboarding/complete', {
         method: 'POST',
-        body: { completedAt: new Date().toISOString() }
+        body: JSON.stringify({ completedAt: new Date().toISOString() })
       });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/user/onboarding'] });
       setShouldShowTour(false);
+    },
+    onError: (error) => {
+      console.error('Failed to mark onboarding as complete:', error);
     }
   });
 
@@ -68,19 +71,28 @@ export function useOnboarding() {
     mutationFn: async () => {
       return apiRequest('/api/user/onboarding/skip', {
         method: 'POST',
-        body: { skippedAt: new Date().toISOString() }
+        body: JSON.stringify({ skippedAt: new Date().toISOString() })
       });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/user/onboarding'] });
       setShouldShowTour(false);
+    },
+    onError: (error) => {
+      console.error('Failed to skip onboarding:', error);
     }
   });
 
-  // Check if user should see onboarding
+  // Check if user should see onboarding - only for truly new users
   useEffect(() => {
     if (user && onboardingState && !isLoading) {
-      const shouldShow = !onboardingState.isCompleted && 
+      const userCreatedAt = new Date(user.createdAt || '');
+      const hoursToOnboarding = 24; // Show onboarding for users created within last 24 hours
+      const hoursSinceCreation = (new Date().getTime() - userCreatedAt.getTime()) / (1000 * 60 * 60);
+      const isNewUser = hoursSinceCreation <= hoursToOnboarding;
+      
+      const shouldShow = isNewUser && 
+                        !onboardingState.isCompleted && 
                         !localStorage.getItem('onboarding-skipped') &&
                         !localStorage.getItem('onboarding-dismissed');
       setShouldShowTour(shouldShow);

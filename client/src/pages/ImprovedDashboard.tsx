@@ -380,10 +380,10 @@ export default function ImprovedDashboard() {
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                     <div>
                       <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
-                        Welcome back, {user?.firstName || 'User'}!
+                        {isNewUser ? `Welcome, ${user?.firstName || 'User'}!` : `Welcome back, ${user?.firstName || 'User'}!`}
                       </h2>
                       <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 mt-2">
-                        Your career journey continues. Here's what's happening today.
+                        {isNewUser ? 'Let\'s get you started on your career journey.' : 'Your career journey continues. Here\'s what\'s happening today.'}
                       </p>
                       {(isNewUser || isProfileIncomplete) && (
                         <div className="mt-3 flex items-center gap-2">
