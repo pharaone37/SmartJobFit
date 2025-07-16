@@ -73,6 +73,93 @@ export const jobs = pgTable("jobs", {
   postedAt: timestamp("posted_at").defaultNow(),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
+  // Enhanced job search fields
+  benefits: text("benefits").array(),
+  workSchedule: varchar("work_schedule"), // flexible, 9-5, shift, etc.
+  educationLevel: varchar("education_level"), // high-school, bachelor, master, phd
+  industry: varchar("industry"),
+  companySize: varchar("company_size"), // startup, small, medium, large, enterprise
+  remote: boolean("remote").default(false),
+  companyLogo: varchar("company_logo"),
+  companyDescription: text("company_description"),
+  companyWebsite: varchar("company_website"),
+  companyRating: decimal("company_rating", { precision: 2, scale: 1 }),
+  companyReviewCount: integer("company_review_count"),
+  matchScore: integer("match_score").default(0), // 0-100 match score
+  keywordMatch: jsonb("keyword_match"), // matched keywords and relevance
+  aiAnalysis: jsonb("ai_analysis"), // AI analysis of job posting
+});
+
+// Job bookmarks table
+export const jobBookmarks = pgTable("job_bookmarks", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  userId: varchar("user_id").references(() => users.id),
+  jobId: uuid("job_id").references(() => jobs.id),
+  notes: text("notes"),
+  tags: text("tags").array(),
+  status: varchar("status").default("saved"), // saved, applied, rejected, interviewing
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Job match analytics
+export const jobMatches = pgTable("job_matches", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  userId: varchar("user_id").references(() => users.id),
+  jobId: uuid("job_id").references(() => jobs.id),
+  matchScore: integer("match_score").notNull(),
+  skillsMatch: jsonb("skills_match"), // matched skills and weights
+  experienceMatch: jsonb("experience_match"), // experience level match
+  locationMatch: jsonb("location_match"), // location preferences
+  salaryMatch: jsonb("salary_match"), // salary expectations
+  cultureMatch: jsonb("culture_match"), // company culture fit
+  aiRecommendation: text("ai_recommendation"), // AI explanation of match
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Company insights
+export const companyInsights = pgTable("company_insights", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  companyName: varchar("company_name").notNull(),
+  industry: varchar("industry"),
+  size: varchar("size"),
+  founded: integer("founded"),
+  headquarters: varchar("headquarters"),
+  website: varchar("website"),
+  description: text("description"),
+  mission: text("mission"),
+  values: text("values").array(),
+  culture: jsonb("culture"),
+  benefits: text("benefits").array(),
+  avgSalary: jsonb("avg_salary"), // by role
+  growthRate: decimal("growth_rate", { precision: 3, scale: 1 }),
+  rating: decimal("rating", { precision: 2, scale: 1 }),
+  reviewCount: integer("review_count"),
+  interviewProcess: jsonb("interview_process"),
+  techStack: text("tech_stack").array(),
+  competitors: text("competitors").array(),
+  recentNews: jsonb("recent_news"),
+  socialMedia: jsonb("social_media"),
+  diversity: jsonb("diversity"),
+  workLifeBalance: decimal("work_life_balance", { precision: 2, scale: 1 }),
+  careerOpportunities: decimal("career_opportunities", { precision: 2, scale: 1 }),
+  managementQuality: decimal("management_quality", { precision: 2, scale: 1 }),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Job search analytics
+export const jobSearchAnalytics = pgTable("job_search_analytics", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  userId: varchar("user_id").references(() => users.id),
+  searchQuery: text("search_query"),
+  filters: jsonb("filters"),
+  resultsCount: integer("results_count"),
+  clickedJobs: text("clicked_jobs").array(),
+  bookmarkedJobs: text("bookmarked_jobs").array(),
+  appliedJobs: text("applied_jobs").array(),
+  searchDuration: integer("search_duration"), // seconds
+  createdAt: timestamp("created_at").defaultNow(),
 });
 
 // Resume templates and styling
