@@ -45,6 +45,7 @@ import { applicationTracker } from "./applicationTracker";
 import { salaryIntelligence } from "./salaryIntelligence";
 import { careerCoaching } from "./careerCoaching";
 import * as jobAlerts from "./jobAlerts";
+import * as autoApply from "./autoApply";
 import multer from "multer";
 import { 
   insertJobSchema, 
@@ -87,7 +88,15 @@ import {
   insertCompanyCompensationSchema,
   insertMarketTrendSchema,
   insertNegotiationSessionSchema,
-  insertSalaryBenchmarkSchema
+  insertSalaryBenchmarkSchema,
+  insertAutomationProfileSchema,
+  insertApplicationQueueSchema,
+  insertAutomationRuleSchema,
+  insertQualityMetricSchema,
+  insertSubmissionLogSchema,
+  insertAutomationAnalyticsSchema,
+  insertPlatformCredentialSchema,
+  insertAutomationSessionSchema
 } from "@shared/schema";
 import { z } from "zod";
 
@@ -6113,6 +6122,36 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post('/api/job-alerts/feedback', requireAuth, jobAlerts.submitAlertFeedback);
 
   app.get('/api/job-alerts/dashboard', requireAuth, jobAlerts.getAlertDashboard);
+
+  // Auto-Apply Automation routes
+  app.post('/api/auto-apply/profiles', requireAuth, autoApply.createAutomationProfile);
+  app.get('/api/auto-apply/profiles', requireAuth, autoApply.getAutomationProfiles);
+  app.put('/api/auto-apply/profiles/:profileId', requireAuth, autoApply.updateAutomationProfile);
+  app.delete('/api/auto-apply/profiles/:profileId', requireAuth, autoApply.deleteAutomationProfile);
+
+  app.post('/api/auto-apply/start', requireAuth, autoApply.startAutomation);
+  app.post('/api/auto-apply/stop', requireAuth, autoApply.stopAutomation);
+  app.post('/api/auto-apply/pause', requireAuth, autoApply.pauseAutomation);
+  app.post('/api/auto-apply/resume', requireAuth, autoApply.resumeAutomation);
+
+  app.get('/api/auto-apply/queue', requireAuth, autoApply.getApplicationQueue);
+  app.post('/api/auto-apply/queue/process', requireAuth, autoApply.processApplicationQueue);
+
+  app.get('/api/auto-apply/analytics', requireAuth, autoApply.getAutomationAnalytics);
+  app.get('/api/auto-apply/performance', requireAuth, autoApply.getPerformanceMetrics);
+
+  app.post('/api/auto-apply/platforms/credentials', requireAuth, autoApply.savePlatformCredentials);
+  app.get('/api/auto-apply/platforms/credentials', requireAuth, autoApply.getPlatformCredentials);
+
+  app.post('/api/auto-apply/rules', requireAuth, autoApply.createAutomationRule);
+  app.get('/api/auto-apply/rules/:profileId', requireAuth, autoApply.getAutomationRules);
+  app.put('/api/auto-apply/rules/:ruleId', requireAuth, autoApply.updateAutomationRule);
+  app.delete('/api/auto-apply/rules/:ruleId', requireAuth, autoApply.deleteAutomationRule);
+
+  app.get('/api/auto-apply/sessions', requireAuth, autoApply.getAutomationSessions);
+  app.get('/api/auto-apply/logs/:applicationId', requireAuth, autoApply.getSubmissionLogs);
+
+  app.get('/api/auto-apply/dashboard', requireAuth, autoApply.getAutomationDashboard);
 
   const httpServer = createServer(app);
   return httpServer;

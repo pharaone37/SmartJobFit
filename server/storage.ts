@@ -152,6 +152,30 @@ import {
   type InsertAlertAnalytics,
   type CompanyIntelligence,
   type InsertCompanyIntelligence,
+  automationProfiles,
+  applicationQueue,
+  automationRules,
+  qualityMetrics,
+  submissionLogs,
+  automationAnalytics,
+  platformCredentials,
+  automationSessions,
+  type AutomationProfile,
+  type InsertAutomationProfile,
+  type ApplicationQueue,
+  type InsertApplicationQueue,
+  type AutomationRule,
+  type InsertAutomationRule,
+  type QualityMetric,
+  type InsertQualityMetric,
+  type SubmissionLog,
+  type InsertSubmissionLog,
+  type AutomationAnalytics,
+  type InsertAutomationAnalytics,
+  type PlatformCredential,
+  type InsertPlatformCredential,
+  type AutomationSession,
+  type InsertAutomationSession,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, or, desc, asc, ilike, gte, lte, inArray, isNull } from "drizzle-orm";
@@ -537,6 +561,61 @@ export interface IStorage {
   generateOpportunityPredictions(companyId: string): Promise<any>;
   processMarketSignals(signalType: string): Promise<any>;
   getAlertDashboard(userId: string): Promise<any>;
+
+  // Auto-Apply Automation operations
+  createAutomationProfile(userId: string, profile: InsertAutomationProfile): Promise<AutomationProfile>;
+  getAutomationProfile(id: string): Promise<AutomationProfile | undefined>;
+  getUserAutomationProfiles(userId: string): Promise<AutomationProfile[]>;
+  updateAutomationProfile(id: string, updates: Partial<AutomationProfile>): Promise<AutomationProfile | undefined>;
+  deleteAutomationProfile(id: string): Promise<void>;
+  
+  // Application queue operations
+  createApplicationQueue(item: InsertApplicationQueue): Promise<ApplicationQueue>;
+  getApplicationQueueItem(id: string): Promise<ApplicationQueue | undefined>;
+  getApplicationQueue(userId: string, filters?: any): Promise<ApplicationQueue[]>;
+  updateApplicationQueue(id: string, updates: Partial<ApplicationQueue>): Promise<ApplicationQueue | undefined>;
+  deleteApplicationQueue(id: string): Promise<void>;
+  
+  // Automation rules operations
+  createAutomationRule(rule: InsertAutomationRule): Promise<AutomationRule>;
+  getAutomationRule(id: string): Promise<AutomationRule | undefined>;
+  getAutomationRules(profileId: string): Promise<AutomationRule[]>;
+  updateAutomationRule(id: string, updates: Partial<AutomationRule>): Promise<AutomationRule | undefined>;
+  deleteAutomationRule(id: string): Promise<void>;
+  
+  // Quality metrics operations
+  createQualityMetric(metric: InsertQualityMetric): Promise<QualityMetric>;
+  getQualityMetric(applicationId: string): Promise<QualityMetric | undefined>;
+  getQualityMetrics(applicationId: string): Promise<QualityMetric[]>;
+  updateQualityMetric(id: string, updates: Partial<QualityMetric>): Promise<QualityMetric | undefined>;
+  deleteQualityMetric(id: string): Promise<void>;
+  
+  // Submission logs operations
+  createSubmissionLog(log: InsertSubmissionLog): Promise<SubmissionLog>;
+  getSubmissionLog(id: string): Promise<SubmissionLog | undefined>;
+  getSubmissionLogs(applicationId: string): Promise<SubmissionLog[]>;
+  deleteSubmissionLog(id: string): Promise<void>;
+  
+  // Automation analytics operations
+  createAutomationAnalytics(analytics: InsertAutomationAnalytics): Promise<AutomationAnalytics>;
+  getAutomationAnalytics(userId: string, profileId: string, timeRange: string): Promise<AutomationAnalytics | undefined>;
+  getAutomationAnalyticsHistory(userId: string, profileId: string): Promise<AutomationAnalytics[]>;
+  updateAutomationAnalytics(id: string, updates: Partial<AutomationAnalytics>): Promise<AutomationAnalytics | undefined>;
+  deleteAutomationAnalytics(id: string): Promise<void>;
+  
+  // Platform credentials operations
+  createPlatformCredential(credential: InsertPlatformCredential): Promise<PlatformCredential>;
+  getPlatformCredential(userId: string, platform: string): Promise<PlatformCredential | undefined>;
+  getPlatformCredentials(userId: string): Promise<PlatformCredential[]>;
+  updatePlatformCredential(id: string, updates: Partial<PlatformCredential>): Promise<PlatformCredential | undefined>;
+  deletePlatformCredential(id: string): Promise<void>;
+  
+  // Automation sessions operations
+  createAutomationSession(session: InsertAutomationSession): Promise<AutomationSession>;
+  getAutomationSession(id: string): Promise<AutomationSession | undefined>;
+  getAutomationSessions(userId: string): Promise<AutomationSession[]>;
+  updateAutomationSession(id: string, updates: Partial<AutomationSession>): Promise<AutomationSession | undefined>;
+  deleteAutomationSession(id: string): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -2535,6 +2614,359 @@ export class DatabaseStorage implements IStorage {
         highConfidenceOpportunities: opportunities.filter(o => o.confidenceScore >= 0.8).length
       }
     };
+  }
+
+  // Auto-Apply Automation operations
+  async createAutomationProfile(userId: string, profile: InsertAutomationProfile): Promise<AutomationProfile> {
+    const [automationProfile] = await db
+      .insert(automationProfiles)
+      .values({
+        userId,
+        ...profile,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      })
+      .returning();
+    return automationProfile;
+  }
+
+  async getAutomationProfile(id: string): Promise<AutomationProfile | undefined> {
+    const [profile] = await db
+      .select()
+      .from(automationProfiles)
+      .where(eq(automationProfiles.id, id));
+    return profile;
+  }
+
+  async getUserAutomationProfiles(userId: string): Promise<AutomationProfile[]> {
+    return await db
+      .select()
+      .from(automationProfiles)
+      .where(eq(automationProfiles.userId, userId))
+      .orderBy(desc(automationProfiles.createdAt));
+  }
+
+  async updateAutomationProfile(id: string, updates: Partial<AutomationProfile>): Promise<AutomationProfile | undefined> {
+    const [profile] = await db
+      .update(automationProfiles)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(automationProfiles.id, id))
+      .returning();
+    return profile;
+  }
+
+  async deleteAutomationProfile(id: string): Promise<void> {
+    await db.delete(automationProfiles).where(eq(automationProfiles.id, id));
+  }
+
+  // Application queue operations
+  async createApplicationQueue(item: InsertApplicationQueue): Promise<ApplicationQueue> {
+    const [queueItem] = await db
+      .insert(applicationQueue)
+      .values({
+        ...item,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      })
+      .returning();
+    return queueItem;
+  }
+
+  async getApplicationQueueItem(id: string): Promise<ApplicationQueue | undefined> {
+    const [item] = await db
+      .select()
+      .from(applicationQueue)
+      .where(eq(applicationQueue.id, id));
+    return item;
+  }
+
+  async getApplicationQueue(userId: string, filters: any = {}): Promise<ApplicationQueue[]> {
+    let query = db
+      .select()
+      .from(applicationQueue)
+      .where(eq(applicationQueue.userId, userId));
+
+    if (filters.status) {
+      query = query.where(eq(applicationQueue.status, filters.status));
+    }
+
+    if (filters.profileId) {
+      query = query.where(eq(applicationQueue.profileId, filters.profileId));
+    }
+
+    return await query.orderBy(desc(applicationQueue.createdAt));
+  }
+
+  async updateApplicationQueue(id: string, updates: Partial<ApplicationQueue>): Promise<ApplicationQueue | undefined> {
+    const [item] = await db
+      .update(applicationQueue)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(applicationQueue.id, id))
+      .returning();
+    return item;
+  }
+
+  async deleteApplicationQueue(id: string): Promise<void> {
+    await db.delete(applicationQueue).where(eq(applicationQueue.id, id));
+  }
+
+  // Automation rules operations
+  async createAutomationRule(rule: InsertAutomationRule): Promise<AutomationRule> {
+    const [automationRule] = await db
+      .insert(automationRules)
+      .values({
+        ...rule,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      })
+      .returning();
+    return automationRule;
+  }
+
+  async getAutomationRule(id: string): Promise<AutomationRule | undefined> {
+    const [rule] = await db
+      .select()
+      .from(automationRules)
+      .where(eq(automationRules.id, id));
+    return rule;
+  }
+
+  async getAutomationRules(profileId: string): Promise<AutomationRule[]> {
+    return await db
+      .select()
+      .from(automationRules)
+      .where(eq(automationRules.profileId, profileId))
+      .orderBy(desc(automationRules.priority));
+  }
+
+  async updateAutomationRule(id: string, updates: Partial<AutomationRule>): Promise<AutomationRule | undefined> {
+    const [rule] = await db
+      .update(automationRules)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(automationRules.id, id))
+      .returning();
+    return rule;
+  }
+
+  async deleteAutomationRule(id: string): Promise<void> {
+    await db.delete(automationRules).where(eq(automationRules.id, id));
+  }
+
+  // Quality metrics operations
+  async createQualityMetric(metric: InsertQualityMetric): Promise<QualityMetric> {
+    const [qualityMetric] = await db
+      .insert(qualityMetrics)
+      .values({
+        ...metric,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      })
+      .returning();
+    return qualityMetric;
+  }
+
+  async getQualityMetric(applicationId: string): Promise<QualityMetric | undefined> {
+    const [metric] = await db
+      .select()
+      .from(qualityMetrics)
+      .where(eq(qualityMetrics.applicationId, applicationId));
+    return metric;
+  }
+
+  async getQualityMetrics(applicationId: string): Promise<QualityMetric[]> {
+    return await db
+      .select()
+      .from(qualityMetrics)
+      .where(eq(qualityMetrics.applicationId, applicationId))
+      .orderBy(desc(qualityMetrics.createdAt));
+  }
+
+  async updateQualityMetric(id: string, updates: Partial<QualityMetric>): Promise<QualityMetric | undefined> {
+    const [metric] = await db
+      .update(qualityMetrics)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(qualityMetrics.id, id))
+      .returning();
+    return metric;
+  }
+
+  async deleteQualityMetric(id: string): Promise<void> {
+    await db.delete(qualityMetrics).where(eq(qualityMetrics.id, id));
+  }
+
+  // Submission logs operations
+  async createSubmissionLog(log: InsertSubmissionLog): Promise<SubmissionLog> {
+    const [submissionLog] = await db
+      .insert(submissionLogs)
+      .values({
+        ...log,
+        createdAt: new Date(),
+      })
+      .returning();
+    return submissionLog;
+  }
+
+  async getSubmissionLog(id: string): Promise<SubmissionLog | undefined> {
+    const [log] = await db
+      .select()
+      .from(submissionLogs)
+      .where(eq(submissionLogs.id, id));
+    return log;
+  }
+
+  async getSubmissionLogs(applicationId: string): Promise<SubmissionLog[]> {
+    return await db
+      .select()
+      .from(submissionLogs)
+      .where(eq(submissionLogs.applicationId, applicationId))
+      .orderBy(desc(submissionLogs.createdAt));
+  }
+
+  async deleteSubmissionLog(id: string): Promise<void> {
+    await db.delete(submissionLogs).where(eq(submissionLogs.id, id));
+  }
+
+  // Automation analytics operations
+  async createAutomationAnalytics(analytics: InsertAutomationAnalytics): Promise<AutomationAnalytics> {
+    const [automationAnalytic] = await db
+      .insert(automationAnalytics)
+      .values({
+        ...analytics,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      })
+      .returning();
+    return automationAnalytic;
+  }
+
+  async getAutomationAnalytics(userId: string, profileId: string, timeRange: string): Promise<AutomationAnalytics | undefined> {
+    const [analytics] = await db
+      .select()
+      .from(automationAnalytics)
+      .where(
+        and(
+          eq(automationAnalytics.userId, userId),
+          eq(automationAnalytics.profileId, profileId),
+          eq(automationAnalytics.periodType, timeRange)
+        )
+      )
+      .orderBy(desc(automationAnalytics.createdAt));
+    return analytics;
+  }
+
+  async getAutomationAnalyticsHistory(userId: string, profileId: string): Promise<AutomationAnalytics[]> {
+    return await db
+      .select()
+      .from(automationAnalytics)
+      .where(
+        and(
+          eq(automationAnalytics.userId, userId),
+          eq(automationAnalytics.profileId, profileId)
+        )
+      )
+      .orderBy(desc(automationAnalytics.createdAt));
+  }
+
+  async updateAutomationAnalytics(id: string, updates: Partial<AutomationAnalytics>): Promise<AutomationAnalytics | undefined> {
+    const [analytics] = await db
+      .update(automationAnalytics)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(automationAnalytics.id, id))
+      .returning();
+    return analytics;
+  }
+
+  async deleteAutomationAnalytics(id: string): Promise<void> {
+    await db.delete(automationAnalytics).where(eq(automationAnalytics.id, id));
+  }
+
+  // Platform credentials operations
+  async createPlatformCredential(credential: InsertPlatformCredential): Promise<PlatformCredential> {
+    const [platformCredential] = await db
+      .insert(platformCredentials)
+      .values({
+        ...credential,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      })
+      .returning();
+    return platformCredential;
+  }
+
+  async getPlatformCredential(userId: string, platform: string): Promise<PlatformCredential | undefined> {
+    const [credential] = await db
+      .select()
+      .from(platformCredentials)
+      .where(
+        and(
+          eq(platformCredentials.userId, userId),
+          eq(platformCredentials.platform, platform)
+        )
+      );
+    return credential;
+  }
+
+  async getPlatformCredentials(userId: string): Promise<PlatformCredential[]> {
+    return await db
+      .select()
+      .from(platformCredentials)
+      .where(eq(platformCredentials.userId, userId))
+      .orderBy(desc(platformCredentials.createdAt));
+  }
+
+  async updatePlatformCredential(id: string, updates: Partial<PlatformCredential>): Promise<PlatformCredential | undefined> {
+    const [credential] = await db
+      .update(platformCredentials)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(platformCredentials.id, id))
+      .returning();
+    return credential;
+  }
+
+  async deletePlatformCredential(id: string): Promise<void> {
+    await db.delete(platformCredentials).where(eq(platformCredentials.id, id));
+  }
+
+  // Automation sessions operations
+  async createAutomationSession(session: InsertAutomationSession): Promise<AutomationSession> {
+    const [automationSession] = await db
+      .insert(automationSessions)
+      .values({
+        ...session,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      })
+      .returning();
+    return automationSession;
+  }
+
+  async getAutomationSession(id: string): Promise<AutomationSession | undefined> {
+    const [session] = await db
+      .select()
+      .from(automationSessions)
+      .where(eq(automationSessions.id, id));
+    return session;
+  }
+
+  async getAutomationSessions(userId: string): Promise<AutomationSession[]> {
+    return await db
+      .select()
+      .from(automationSessions)
+      .where(eq(automationSessions.userId, userId))
+      .orderBy(desc(automationSessions.createdAt));
+  }
+
+  async updateAutomationSession(id: string, updates: Partial<AutomationSession>): Promise<AutomationSession | undefined> {
+    const [session] = await db
+      .update(automationSessions)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(automationSessions.id, id))
+      .returning();
+    return session;
+  }
+
+  async deleteAutomationSession(id: string): Promise<void> {
+    await db.delete(automationSessions).where(eq(automationSessions.id, id));
   }
 }
 

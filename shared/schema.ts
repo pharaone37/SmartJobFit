@@ -1011,6 +1011,249 @@ export const insertNetworkingEventSchema = createInsertSchema(networkingEvents).
 export const insertCareerProgressSchema = createInsertSchema(careerProgress).omit({ id: true, createdAt: true });
 export const insertPersonalBrandingSchema = createInsertSchema(personalBranding).omit({ id: true, createdAt: true, updatedAt: true });
 
+// Auto-Apply Automation System Tables
+export const automationProfiles = pgTable("automation_profiles", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  userId: varchar("user_id").references(() => users.id, { onDelete: "cascade" }).notNull(),
+  profileName: varchar("profile_name").notNull(),
+  automationRules: jsonb("automation_rules").notNull(), // Application criteria, filters, exclusions
+  qualitySettings: jsonb("quality_settings").notNull(), // Quality thresholds, review requirements
+  approvalRequired: boolean("approval_required").default(true),
+  isActive: boolean("is_active").default(true),
+  dailyLimit: integer("daily_limit").default(10),
+  weeklyLimit: integer("weekly_limit").default(50),
+  monthlyLimit: integer("monthly_limit").default(200),
+  successRate: decimal("success_rate", { precision: 5, scale: 2 }).default("0.00"),
+  totalApplications: integer("total_applications").default(0),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const applicationQueue = pgTable("application_queue", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  userId: varchar("user_id").references(() => users.id, { onDelete: "cascade" }).notNull(),
+  profileId: uuid("profile_id").references(() => automationProfiles.id, { onDelete: "cascade" }).notNull(),
+  jobId: uuid("job_id").references(() => jobs.id, { onDelete: "set null" }),
+  jobUrl: varchar("job_url").notNull(),
+  companyName: varchar("company_name").notNull(),
+  positionTitle: varchar("position_title").notNull(),
+  status: varchar("status").default("pending"), // pending, analyzed, generated, review, approved, submitted, failed
+  generatedContent: jsonb("generated_content"), // Cover letter, resume customization, answers
+  reviewStatus: varchar("review_status").default("pending"), // pending, approved, rejected, needs_revision
+  reviewNotes: text("review_notes"),
+  qualityScore: decimal("quality_score", { precision: 3, scale: 2 }),
+  personalizationScore: decimal("personalization_score", { precision: 3, scale: 2 }),
+  atsCompatibility: decimal("ats_compatibility", { precision: 3, scale: 2 }),
+  submissionDate: timestamp("submission_date"),
+  submissionMethod: varchar("submission_method"), // direct_upload, email, form_fill, api
+  submissionResponse: jsonb("submission_response"),
+  errorDetails: text("error_details"),
+  retryCount: integer("retry_count").default(0),
+  maxRetries: integer("max_retries").default(3),
+  nextRetryAt: timestamp("next_retry_at"),
+  priority: integer("priority").default(50), // 0-100 priority score
+  estimatedCompletionTime: integer("estimated_completion_time"), // in minutes
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const automationRules = pgTable("automation_rules", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  userId: varchar("user_id").references(() => users.id, { onDelete: "cascade" }).notNull(),
+  profileId: uuid("profile_id").references(() => automationProfiles.id, { onDelete: "cascade" }).notNull(),
+  ruleType: varchar("rule_type").notNull(), // include, exclude, prioritize, customize
+  conditions: jsonb("conditions").notNull(), // Keywords, salary range, location, etc.
+  actions: jsonb("actions").notNull(), // Apply specific template, skip, priority adjustment
+  priority: integer("priority").default(50), // Rule execution priority
+  activeStatus: boolean("active_status").default(true),
+  matchCount: integer("match_count").default(0),
+  successRate: decimal("success_rate", { precision: 5, scale: 2 }).default("0.00"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const qualityMetrics = pgTable("quality_metrics", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  applicationId: uuid("application_id").references(() => applicationQueue.id, { onDelete: "cascade" }).notNull(),
+  qualityScore: decimal("quality_score", { precision: 3, scale: 2 }).notNull(),
+  personalizationScore: decimal("personalization_score", { precision: 3, scale: 2 }).notNull(),
+  atsCompatibility: decimal("ats_compatibility", { precision: 3, scale: 2 }).notNull(),
+  humanReview: boolean("human_review").default(false),
+  grammarScore: decimal("grammar_score", { precision: 3, scale: 2 }),
+  relevanceScore: decimal("relevance_score", { precision: 3, scale: 2 }),
+  originalityScore: decimal("originality_score", { precision: 3, scale: 2 }),
+  professionalismScore: decimal("professionalism_score", { precision: 3, scale: 2 }),
+  keywordOptimization: decimal("keyword_optimization", { precision: 3, scale: 2 }),
+  detailedAnalysis: jsonb("detailed_analysis"), // Specific feedback and suggestions
+  improvementSuggestions: text("improvement_suggestions").array(),
+  flaggedIssues: text("flagged_issues").array(),
+  comparisonBenchmarks: jsonb("comparison_benchmarks"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const submissionLogs = pgTable("submission_logs", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  applicationId: uuid("application_id").references(() => applicationQueue.id, { onDelete: "cascade" }).notNull(),
+  submissionMethod: varchar("submission_method").notNull(), // direct_upload, email, form_fill, api
+  platform: varchar("platform").notNull(), // linkedin, indeed, company_website, etc.
+  successStatus: boolean("success_status").notNull(),
+  httpStatus: integer("http_status"),
+  errorDetails: text("error_details"),
+  responseData: jsonb("response_data"),
+  submissionDuration: integer("submission_duration"), // in seconds
+  documentsSubmitted: text("documents_submitted").array(),
+  formFieldsCompleted: jsonb("form_fields_completed"),
+  captchaEncountered: boolean("captcha_encountered").default(false),
+  humanInterventionRequired: boolean("human_intervention_required").default(false),
+  ipAddress: varchar("ip_address"),
+  userAgent: varchar("user_agent"),
+  sessionId: varchar("session_id"),
+  screenshotPath: varchar("screenshot_path"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const automationAnalytics = pgTable("automation_analytics", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  userId: varchar("user_id").references(() => users.id, { onDelete: "cascade" }).notNull(),
+  profileId: uuid("profile_id").references(() => automationProfiles.id, { onDelete: "cascade" }).notNull(),
+  periodType: varchar("period_type").notNull(), // daily, weekly, monthly
+  periodStart: timestamp("period_start").notNull(),
+  periodEnd: timestamp("period_end").notNull(),
+  totalApplications: integer("total_applications").default(0),
+  successfulSubmissions: integer("successful_submissions").default(0),
+  failedSubmissions: integer("failed_submissions").default(0),
+  averageQualityScore: decimal("average_quality_score", { precision: 3, scale: 2 }).default("0.00"),
+  averagePersonalizationScore: decimal("average_personalization_score", { precision: 3, scale: 2 }).default("0.00"),
+  averageAtsCompatibility: decimal("average_ats_compatibility", { precision: 3, scale: 2 }).default("0.00"),
+  responseRate: decimal("response_rate", { precision: 5, scale: 2 }).default("0.00"),
+  interviewInviteRate: decimal("interview_invite_rate", { precision: 5, scale: 2 }).default("0.00"),
+  timeSaved: integer("time_saved"), // in minutes
+  costPerApplication: decimal("cost_per_application", { precision: 5, scale: 2 }),
+  automationEfficiency: decimal("automation_efficiency", { precision: 5, scale: 2 }),
+  topPerformingRules: jsonb("top_performing_rules"),
+  improvementSuggestions: text("improvement_suggestions").array(),
+  performanceMetrics: jsonb("performance_metrics"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const platformCredentials = pgTable("platform_credentials", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  userId: varchar("user_id").references(() => users.id, { onDelete: "cascade" }).notNull(),
+  platform: varchar("platform").notNull(), // linkedin, indeed, glassdoor, etc.
+  credentialType: varchar("credential_type").notNull(), // oauth, username_password, api_key
+  encryptedCredentials: text("encrypted_credentials").notNull(),
+  credentialStatus: varchar("credential_status").default("active"), // active, expired, revoked, invalid
+  lastValidated: timestamp("last_validated"),
+  validationErrors: text("validation_errors").array(),
+  permissions: text("permissions").array(),
+  usageCount: integer("usage_count").default(0),
+  lastUsed: timestamp("last_used"),
+  expiresAt: timestamp("expires_at"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const automationSessions = pgTable("automation_sessions", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  userId: varchar("user_id").references(() => users.id, { onDelete: "cascade" }).notNull(),
+  profileId: uuid("profile_id").references(() => automationProfiles.id, { onDelete: "cascade" }).notNull(),
+  sessionType: varchar("session_type").notNull(), // scheduled, manual, test
+  status: varchar("status").default("running"), // running, completed, failed, paused, cancelled
+  startTime: timestamp("start_time").defaultNow(),
+  endTime: timestamp("end_time"),
+  totalJobs: integer("total_jobs").default(0),
+  processedJobs: integer("processed_jobs").default(0),
+  successfulApplications: integer("successful_applications").default(0),
+  failedApplications: integer("failed_applications").default(0),
+  averageProcessingTime: integer("average_processing_time"), // in seconds
+  errorsSummary: jsonb("errors_summary"),
+  performanceMetrics: jsonb("performance_metrics"),
+  resourceUsage: jsonb("resource_usage"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Auto-Apply System Relations
+export const automationProfilesRelations = relations(automationProfiles, ({ one, many }) => ({
+  user: one(users, { fields: [automationProfiles.userId], references: [users.id] }),
+  queue: many(applicationQueue),
+  rules: many(automationRules),
+  analytics: many(automationAnalytics),
+  sessions: many(automationSessions),
+}));
+
+export const applicationQueueRelations = relations(applicationQueue, ({ one, many }) => ({
+  user: one(users, { fields: [applicationQueue.userId], references: [users.id] }),
+  profile: one(automationProfiles, { fields: [applicationQueue.profileId], references: [automationProfiles.id] }),
+  job: one(jobs, { fields: [applicationQueue.jobId], references: [jobs.id] }),
+  qualityMetrics: many(qualityMetrics),
+  submissionLogs: many(submissionLogs),
+}));
+
+export const automationRulesRelations = relations(automationRules, ({ one }) => ({
+  user: one(users, { fields: [automationRules.userId], references: [users.id] }),
+  profile: one(automationProfiles, { fields: [automationRules.profileId], references: [automationProfiles.id] }),
+}));
+
+export const qualityMetricsRelations = relations(qualityMetrics, ({ one }) => ({
+  application: one(applicationQueue, { fields: [qualityMetrics.applicationId], references: [applicationQueue.id] }),
+}));
+
+export const submissionLogsRelations = relations(submissionLogs, ({ one }) => ({
+  application: one(applicationQueue, { fields: [submissionLogs.applicationId], references: [applicationQueue.id] }),
+}));
+
+export const automationAnalyticsRelations = relations(automationAnalytics, ({ one }) => ({
+  user: one(users, { fields: [automationAnalytics.userId], references: [users.id] }),
+  profile: one(automationProfiles, { fields: [automationAnalytics.profileId], references: [automationProfiles.id] }),
+}));
+
+export const platformCredentialsRelations = relations(platformCredentials, ({ one }) => ({
+  user: one(users, { fields: [platformCredentials.userId], references: [users.id] }),
+}));
+
+export const automationSessionsRelations = relations(automationSessions, ({ one }) => ({
+  user: one(users, { fields: [automationSessions.userId], references: [users.id] }),
+  profile: one(automationProfiles, { fields: [automationSessions.profileId], references: [automationProfiles.id] }),
+}));
+
+// Auto-Apply System Types
+export type InsertAutomationProfile = typeof automationProfiles.$inferInsert;
+export type AutomationProfile = typeof automationProfiles.$inferSelect;
+
+export type InsertApplicationQueue = typeof applicationQueue.$inferInsert;
+export type ApplicationQueue = typeof applicationQueue.$inferSelect;
+
+export type InsertAutomationRule = typeof automationRules.$inferInsert;
+export type AutomationRule = typeof automationRules.$inferSelect;
+
+export type InsertQualityMetric = typeof qualityMetrics.$inferInsert;
+export type QualityMetric = typeof qualityMetrics.$inferSelect;
+
+export type InsertSubmissionLog = typeof submissionLogs.$inferInsert;
+export type SubmissionLog = typeof submissionLogs.$inferSelect;
+
+export type InsertAutomationAnalytics = typeof automationAnalytics.$inferInsert;
+export type AutomationAnalytics = typeof automationAnalytics.$inferSelect;
+
+export type InsertPlatformCredential = typeof platformCredentials.$inferInsert;
+export type PlatformCredential = typeof platformCredentials.$inferSelect;
+
+export type InsertAutomationSession = typeof automationSessions.$inferInsert;
+export type AutomationSession = typeof automationSessions.$inferSelect;
+
+// Auto-Apply System Zod Schemas
+export const insertAutomationProfileSchema = createInsertSchema(automationProfiles).omit({ id: true, createdAt: true, updatedAt: true });
+export const insertApplicationQueueSchema = createInsertSchema(applicationQueue).omit({ id: true, createdAt: true, updatedAt: true });
+export const insertAutomationRuleSchema = createInsertSchema(automationRules).omit({ id: true, createdAt: true, updatedAt: true });
+export const insertQualityMetricSchema = createInsertSchema(qualityMetrics).omit({ id: true, createdAt: true, updatedAt: true });
+export const insertSubmissionLogSchema = createInsertSchema(submissionLogs).omit({ id: true, createdAt: true });
+export const insertAutomationAnalyticsSchema = createInsertSchema(automationAnalytics).omit({ id: true, createdAt: true, updatedAt: true });
+export const insertPlatformCredentialSchema = createInsertSchema(platformCredentials).omit({ id: true, createdAt: true, updatedAt: true });
+export const insertAutomationSessionSchema = createInsertSchema(automationSessions).omit({ id: true, createdAt: true, updatedAt: true });
+
 // Application Tracking and Management System
 export const applications = pgTable("applications", {
   id: uuid("id").primaryKey().defaultRandom(),

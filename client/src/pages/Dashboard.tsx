@@ -14,6 +14,7 @@ import ApplicationTracker from '@/pages/ApplicationTracker';
 import SalaryIntelligence from '@/components/SalaryIntelligence';
 import CareerCoaching from '@/components/CareerCoaching';
 import JobAlerts from '@/components/JobAlerts';
+import { AutoApply } from '@/components/AutoApply';
 import { 
   Search, 
   FileText, 
@@ -199,12 +200,13 @@ export default function Dashboard() {
 
         {/* Tabs Navigation */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-5">
+          <TabsList className="grid w-full grid-cols-6">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="applications">Applications</TabsTrigger>
             <TabsTrigger value="salary">Salary Intelligence</TabsTrigger>
             <TabsTrigger value="career">Career Coaching</TabsTrigger>
             <TabsTrigger value="alerts">Job Alerts</TabsTrigger>
+            <TabsTrigger value="auto-apply">Auto-Apply</TabsTrigger>
           </TabsList>
 
           <TabsContent value="overview" className="space-y-6">
@@ -365,6 +367,10 @@ export default function Dashboard() {
 
           <TabsContent value="alerts">
             <JobAlerts />
+          </TabsContent>
+
+          <TabsContent value="auto-apply">
+            <AutoApply userId={user?.id || ''} />
           </TabsContent>
         </Tabs>
       </div>
