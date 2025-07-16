@@ -767,7 +767,7 @@ export default function ImprovedDashboard() {
                         className="flex-1"
                         onClick={() => {
                           console.log('Dashboard Start Practice Session clicked');
-                          navigate('/advanced-interview-coach');
+                          navigate('/interview-coach');
                           toast({
                             title: "Launching Interview Coach",
                             description: "Starting your AI-powered interview coaching session!",
