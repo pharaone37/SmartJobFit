@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useAuth } from '@/hooks/useAuth';
+import { useAuth, removeAuthToken } from '@/hooks/useAuth';
 import { useQuery } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
@@ -81,7 +81,7 @@ export default function ImprovedDashboard() {
   const [filters, setFilters] = useState<JobSearchFiltersType>({});
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
+    removeAuthToken();
     window.location.href = '/';
   };
   const [isSearching, setIsSearching] = useState(false);
