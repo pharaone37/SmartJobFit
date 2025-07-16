@@ -473,17 +473,19 @@ const FeatureShowcase = () => {
                 {/* Feature Screenshot */}
                 <div className="space-y-3">
                   <h4 className="font-semibold text-gray-900 dark:text-white">Live Feature Preview:</h4>
-                  <div className="relative overflow-hidden rounded-lg shadow-xl bg-white group">
-                    <img 
-                      src={currentFeature.screenshot} 
-                      alt={`${currentFeature.title} screenshot`}
-                      className="w-full h-80 object-contain bg-white border border-gray-200 dark:border-gray-700 cursor-pointer hover:scale-105 transition-transform duration-300"
-                      style={{ 
-                        filter: 'brightness(1.1) contrast(1.05)',
-                        imageRendering: 'crisp-edges'
-                      }}
-                      onClick={() => window.open(currentFeature.screenshot, '_blank')}
-                    />
+                  <div className="relative rounded-lg shadow-xl bg-white group border border-gray-200 dark:border-gray-700">
+                    <div className="p-4">
+                      <img 
+                        src={currentFeature.screenshot} 
+                        alt={`${currentFeature.title} screenshot`}
+                        className="w-full max-h-96 object-contain cursor-pointer hover:scale-[1.02] transition-transform duration-300"
+                        style={{ 
+                          imageRendering: 'high-quality',
+                          imageResolution: 'from-image'
+                        }}
+                        onClick={() => window.open(currentFeature.screenshot, '_blank')}
+                      />
+                    </div>
                     <div className="absolute top-2 right-2 bg-black/50 text-white px-2 py-1 rounded text-xs opacity-0 group-hover:opacity-100 transition-opacity">
                       Click to view full size
                     </div>
