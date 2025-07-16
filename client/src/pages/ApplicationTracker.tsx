@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
-import { Calendar, Clock, Building, MapPin, DollarSign, FileText, Mail, Phone, Users } from "lucide-react";
+import { Calendar, Clock, Building, MapPin, DollarSign, FileText, Mail, Phone, Users, Lightbulb, BarChart } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 import { apiRequest } from "@/lib/queryClient";
@@ -188,15 +188,15 @@ export default function ApplicationTracker() {
   }
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Application Tracker</h1>
-        <div className="flex space-x-2">
-          <Button variant="outline">
+    <div className="container mx-auto p-4 sm:p-6 space-y-4 sm:space-y-6 pb-20 sm:pb-6">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <h1 className="text-2xl sm:text-3xl font-bold">Application Tracker</h1>
+        <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+          <Button variant="outline" size="sm" className="w-full sm:w-auto">
             <Mail className="w-4 h-4 mr-2" />
             Sync Emails
           </Button>
-          <Button>
+          <Button size="sm" className="w-full sm:w-auto">
             <FileText className="w-4 h-4 mr-2" />
             Add Application
           </Button>
@@ -204,18 +204,18 @@ export default function ApplicationTracker() {
       </div>
 
       <Tabs defaultValue="dashboard" className="w-full">
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
-          <TabsTrigger value="applications">Applications</TabsTrigger>
-          <TabsTrigger value="analytics">Analytics</TabsTrigger>
-          <TabsTrigger value="follow-ups">Follow-ups</TabsTrigger>
+        <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 gap-1 h-auto p-1">
+          <TabsTrigger value="dashboard" className="text-xs sm:text-sm p-2 sm:p-3">Dashboard</TabsTrigger>
+          <TabsTrigger value="applications" className="text-xs sm:text-sm p-2 sm:p-3">Applications</TabsTrigger>
+          <TabsTrigger value="analytics" className="text-xs sm:text-sm p-2 sm:p-3">Analytics</TabsTrigger>
+          <TabsTrigger value="follow-ups" className="text-xs sm:text-sm p-2 sm:p-3">Follow-ups</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="dashboard" className="space-y-6">
-          {dashboard && (
+        <TabsContent value="dashboard" className="space-y-4 sm:space-y-6 mt-4 sm:mt-6">
+          {dashboard ? (
             <>
               {/* Quick Stats */}
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <CardTitle className="text-sm font-medium">Total Applications</CardTitle>
@@ -317,10 +317,127 @@ export default function ApplicationTracker() {
                         </Button>
                       </div>
                     ))}
+                    {(!dashboard.upcomingFollowUps || dashboard.upcomingFollowUps.length === 0) && (
+                      <div className="text-center py-4 text-muted-foreground">
+                        No upcoming follow-ups
+                      </div>
+                    )}
                   </div>
                 </CardContent>
               </Card>
             </>
+          ) : (
+            /* Fallback Dashboard */
+            <div className="space-y-4 sm:space-y-6">
+              {/* Quick Stats - Fallback */}
+              <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+                <Card>
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">Total Applications</CardTitle>
+                    <FileText className="h-4 w-4 text-muted-foreground" />
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold">0</div>
+                    <p className="text-xs text-muted-foreground">No applications yet</p>
+                  </CardContent>
+                </Card>
+                
+                <Card>
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">Response Rate</CardTitle>
+                    <Users className="h-4 w-4 text-muted-foreground" />
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold">0%</div>
+                    <p className="text-xs text-muted-foreground">Start applying!</p>
+                  </CardContent>
+                </Card>
+                
+                <Card>
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">Interview Rate</CardTitle>
+                    <Calendar className="h-4 w-4 text-muted-foreground" />
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold">0%</div>
+                    <p className="text-xs text-muted-foreground">No interviews yet</p>
+                  </CardContent>
+                </Card>
+                
+                <Card>
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">Offer Rate</CardTitle>
+                    <DollarSign className="h-4 w-4 text-muted-foreground" />
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold">0%</div>
+                    <p className="text-xs text-muted-foreground">No offers yet</p>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Getting Started Guide */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Lightbulb className="w-5 h-5" />
+                    Getting Started
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="flex items-start gap-3">
+                      <div className="bg-primary/10 p-2 rounded-full">
+                        <FileText className="w-4 h-4 text-primary" />
+                      </div>
+                      <div>
+                        <h3 className="font-semibold">Add Your First Application</h3>
+                        <p className="text-sm text-muted-foreground">Start tracking your job applications to see your progress</p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-start gap-3">
+                      <div className="bg-primary/10 p-2 rounded-full">
+                        <Mail className="w-4 h-4 text-primary" />
+                      </div>
+                      <div>
+                        <h3 className="font-semibold">Sync Your Emails</h3>
+                        <p className="text-sm text-muted-foreground">Automatically track responses and communications</p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-start gap-3">
+                      <div className="bg-primary/10 p-2 rounded-full">
+                        <BarChart className="w-4 h-4 text-primary" />
+                      </div>
+                      <div>
+                        <h3 className="font-semibold">View Analytics</h3>
+                        <p className="text-sm text-muted-foreground">Get insights into your application performance</p>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Quick Actions */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Quick Actions</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <Button className="w-full" size="lg">
+                      <FileText className="w-4 h-4 mr-2" />
+                      Add Application
+                    </Button>
+                    <Button variant="outline" className="w-full" size="lg">
+                      <Mail className="w-4 h-4 mr-2" />
+                      Sync Emails
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
           )}
         </TabsContent>
 

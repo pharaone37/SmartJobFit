@@ -305,4 +305,71 @@
   ::-webkit-scrollbar-thumb:hover {
     background: rgba(0, 0, 0, 0.3);
   }
+  
+  /* Salary Intelligence Mobile Optimizations */
+  .salary-form-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  .salary-form-row {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .salary-form-group {
+    margin-bottom: 20px;
+  }
+  
+  .salary-form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    font-size: 0.875rem;
+  }
+  
+  .salary-form-group input,
+  .salary-form-group select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid hsl(var(--border));
+    border-radius: 8px;
+    font-size: 16px;
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+  }
+  
+  .salary-form-group input:focus,
+  .salary-form-group select:focus {
+    outline: none;
+    border-color: hsl(var(--primary));
+    box-shadow: 0 0 0 2px hsl(var(--primary) / 0.2);
+  }
+  
+  .salary-results-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  .salary-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  
+  .salary-negotiation-form {
+    padding: 16px;
+  }
+  
+  .salary-negotiation-form .space-y-4 > * + * {
+    margin-top: 16px;
+  }
+  
+  .salary-company-insights {
+    padding: 16px;
+  }
+  
+  .salary-company-insights .space-y-4 > * + * {
+    margin-top: 16px;
+  }
 }
