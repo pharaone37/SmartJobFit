@@ -574,14 +574,28 @@ export default function CareerCoaching({ userId }: CareerCoachingProps) {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-1 h-auto p-1">
-          <TabsTrigger value="profile" className="text-xs sm:text-sm p-2 sm:p-3">Profile</TabsTrigger>
-          <TabsTrigger value="skills" className="text-xs sm:text-sm p-2 sm:p-3">Skills</TabsTrigger>
-          <TabsTrigger value="goals" className="text-xs sm:text-sm p-2 sm:p-3">Goals</TabsTrigger>
-          <TabsTrigger value="learning" className="text-xs sm:text-sm p-2 sm:p-3">Learning</TabsTrigger>
-          <TabsTrigger value="mentorship" className="text-xs sm:text-sm p-2 sm:p-3">Mentorship</TabsTrigger>
-          <TabsTrigger value="progress" className="text-xs sm:text-sm p-2 sm:p-3">Progress</TabsTrigger>
-          <TabsTrigger value="ai-advice" className="text-xs sm:text-sm p-2 sm:p-3">AI Advice</TabsTrigger>
+        <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 h-auto mb-6 bg-transparent border-b border-border p-0">
+          <TabsTrigger value="profile" className="flex items-center justify-center gap-2 px-2 py-3 text-xs sm:text-sm font-medium transition-all border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:text-primary rounded-none">
+            Profile
+          </TabsTrigger>
+          <TabsTrigger value="skills" className="flex items-center justify-center gap-2 px-2 py-3 text-xs sm:text-sm font-medium transition-all border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:text-primary rounded-none">
+            Skills
+          </TabsTrigger>
+          <TabsTrigger value="goals" className="flex items-center justify-center gap-2 px-2 py-3 text-xs sm:text-sm font-medium transition-all border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:text-primary rounded-none">
+            Goals
+          </TabsTrigger>
+          <TabsTrigger value="learning" className="flex items-center justify-center gap-2 px-2 py-3 text-xs sm:text-sm font-medium transition-all border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:text-primary rounded-none">
+            Learning
+          </TabsTrigger>
+          <TabsTrigger value="mentorship" className="flex items-center justify-center gap-2 px-2 py-3 text-xs sm:text-sm font-medium transition-all border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:text-primary rounded-none">
+            Mentorship
+          </TabsTrigger>
+          <TabsTrigger value="progress" className="flex items-center justify-center gap-2 px-2 py-3 text-xs sm:text-sm font-medium transition-all border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:text-primary rounded-none">
+            Progress
+          </TabsTrigger>
+          <TabsTrigger value="ai-advice" className="flex items-center justify-center gap-2 px-2 py-3 text-xs sm:text-sm font-medium transition-all border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:text-primary rounded-none">
+            AI Advice
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="profile" className="mt-6">

@@ -294,12 +294,22 @@ export default function SalaryIntelligence({ userId }: SalaryIntelligenceProps) 
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-1 h-auto p-1">
-          <TabsTrigger value="market-research" className="text-xs sm:text-sm p-2 sm:p-3">Market Research</TabsTrigger>
-          <TabsTrigger value="personalized-analysis" className="text-xs sm:text-sm p-2 sm:p-3">Personalized Analysis</TabsTrigger>
-          <TabsTrigger value="company-insights" className="text-xs sm:text-sm p-2 sm:p-3">Company Insights</TabsTrigger>
-          <TabsTrigger value="negotiation-strategy" className="text-xs sm:text-sm p-2 sm:p-3">Negotiation Strategy</TabsTrigger>
-          <TabsTrigger value="simulation" className="text-xs sm:text-sm p-2 sm:p-3">Simulation</TabsTrigger>
+        <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 h-auto mb-6 bg-transparent border-b border-border p-0">
+          <TabsTrigger value="market-research" className="flex items-center justify-center gap-2 px-2 py-3 text-xs sm:text-sm font-medium transition-all border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:text-primary rounded-none">
+            Market Research
+          </TabsTrigger>
+          <TabsTrigger value="personalized-analysis" className="flex items-center justify-center gap-2 px-2 py-3 text-xs sm:text-sm font-medium transition-all border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:text-primary rounded-none">
+            Personalized Analysis
+          </TabsTrigger>
+          <TabsTrigger value="company-insights" className="flex items-center justify-center gap-2 px-2 py-3 text-xs sm:text-sm font-medium transition-all border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:text-primary rounded-none">
+            Company Insights
+          </TabsTrigger>
+          <TabsTrigger value="negotiation-strategy" className="flex items-center justify-center gap-2 px-2 py-3 text-xs sm:text-sm font-medium transition-all border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:text-primary rounded-none">
+            Negotiation Strategy
+          </TabsTrigger>
+          <TabsTrigger value="simulation" className="flex items-center justify-center gap-2 px-2 py-3 text-xs sm:text-sm font-medium transition-all border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:text-primary rounded-none">
+            Simulation
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="market-research">
