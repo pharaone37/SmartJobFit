@@ -8,6 +8,7 @@ import { LanguageProvider } from "@/components/LanguageProvider";
 // Pages
 import Landing from "@/pages/Landing";
 import Dashboard from "@/pages/Dashboard";
+import ImprovedDashboard from "@/pages/ImprovedDashboard";
 import JobSearch from "@/pages/JobSearch";
 import ResumeOptimization from "@/pages/ResumeOptimization";
 import InterviewPrep from "@/pages/InterviewPrep";
@@ -80,8 +81,8 @@ function AppContent() {
               </>
             ) : (
               <>
-                <Route path="/" element={<Dashboard />} />
-                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/" element={<ImprovedDashboard />} />
+                <Route path="/dashboard" element={<ImprovedDashboard />} />
                 <Route path="/jobs" element={<JobSearch />} />
                 <Route path="/resume" element={<ResumeOptimization />} />
                 <Route path="/resume-analyzer" element={<AIResumeAnalyzer />} />
