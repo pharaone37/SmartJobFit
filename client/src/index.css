@@ -232,3 +232,77 @@
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Mobile-specific improvements */
+@media (max-width: 768px) {
+  /* Ensure mobile navigation doesn't interfere with content */
+  .mobile-nav-safe {
+    padding-bottom: 5rem;
+  }
+  
+  /* Improve touch targets */
+  button, .button {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Better scroll behavior */
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  /* Prevent horizontal scroll */
+  body {
+    overflow-x: hidden;
+  }
+  
+  /* Optimize card spacing */
+  .card {
+    margin-bottom: 1rem;
+  }
+  
+  /* Mobile-friendly text sizes */
+  .text-responsive {
+    font-size: clamp(0.875rem, 2.5vw, 1rem);
+  }
+  
+  /* Better tap targets for mobile */
+  .tap-target {
+    min-height: 48px;
+    min-width: 48px;
+  }
+  
+  /* Responsive font sizes */
+  .text-4xl { font-size: 2rem; }
+  .text-3xl { font-size: 1.5rem; }
+  .text-2xl { font-size: 1.25rem; }
+  .text-xl { font-size: 1.125rem; }
+}
+
+/* Fix for mobile viewport issues */
+@supports (-webkit-touch-callout: none) {
+  .min-h-screen {
+    min-height: -webkit-fill-available;
+  }
+}
+
+/* Enhanced mobile scrollbar */
+@media (max-width: 768px) {
+  ::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 2px;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.3);
+  }
+}

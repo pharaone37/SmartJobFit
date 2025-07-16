@@ -175,16 +175,16 @@ export default function JobSearchFilters({
   };
 
   return (
-    <Card className="w-full max-w-4xl mx-auto">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Search className="w-5 h-5" />
+    <Card className="w-full mx-auto">
+      <CardHeader className="p-4 sm:p-6">
+        <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+          <Search className="w-4 h-4 sm:w-5 sm:h-5" />
           Advanced Job Search
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-6">
+      <CardContent className="space-y-4 sm:space-y-6 p-4 sm:p-6 pt-0">
         {/* Basic Filters */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
           <div className="space-y-2">
             <Label htmlFor="location" className="flex items-center gap-2">
               <MapPin className="w-4 h-4" />
@@ -235,21 +235,22 @@ export default function JobSearchFilters({
 
         {/* Skills */}
         <div className="space-y-2">
-          <Label htmlFor="skills">Skills & Keywords</Label>
-          <div className="flex gap-2">
+          <Label htmlFor="skills" className="text-sm sm:text-base">Skills & Keywords</Label>
+          <div className="flex flex-col sm:flex-row gap-2">
             <Input
               id="skills"
               placeholder="Add skills (e.g., React, Python, Marketing)"
               value={skillInput}
               onChange={(e) => setSkillInput(e.target.value)}
               onKeyPress={(e) => e.key === 'Enter' && addSkill()}
+              className="flex-1"
             />
-            <Button type="button" onClick={addSkill}>Add</Button>
+            <Button type="button" onClick={addSkill} className="w-full sm:w-auto">Add</Button>
           </div>
           {filters.skills && filters.skills.length > 0 && (
             <div className="flex flex-wrap gap-2">
               {filters.skills.map(skill => (
-                <Badge key={skill} variant="secondary" className="flex items-center gap-1">
+                <Badge key={skill} variant="secondary" className="flex items-center gap-1 text-xs">
                   {skill}
                   <X className="w-3 h-3 cursor-pointer" onClick={() => removeSkill(skill)} />
                 </Badge>
