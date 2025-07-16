@@ -12,6 +12,7 @@ import JobSearchFilters from '@/components/JobSearchFilters';
 import type { JobSearchFilters as JobSearchFiltersType } from '@/components/JobSearchFilters';
 import ApplicationTracker from '@/pages/ApplicationTracker';
 import SalaryIntelligence from '@/components/SalaryIntelligence';
+import CareerCoaching from '@/components/CareerCoaching';
 import { 
   Search, 
   FileText, 
@@ -196,10 +197,11 @@ export default function Dashboard() {
 
         {/* Tabs Navigation */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="applications">Applications</TabsTrigger>
             <TabsTrigger value="salary">Salary Intelligence</TabsTrigger>
+            <TabsTrigger value="career">Career Coaching</TabsTrigger>
           </TabsList>
 
           <TabsContent value="overview" className="space-y-6">
@@ -352,6 +354,10 @@ export default function Dashboard() {
 
           <TabsContent value="salary">
             <SalaryIntelligence userId={user?.id || ''} />
+          </TabsContent>
+
+          <TabsContent value="career">
+            <CareerCoaching userId={user?.id || ''} />
           </TabsContent>
         </Tabs>
       </div>

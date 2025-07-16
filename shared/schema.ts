@@ -391,6 +391,172 @@ export const userInterviewProgress = pgTable("user_interview_progress", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+// Career Coaching System Tables
+export const careerProfiles = pgTable("career_profiles", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  userId: varchar("user_id").references(() => users.id).notNull(),
+  currentRole: varchar("current_role"),
+  targetRole: varchar("target_role"),
+  experienceLevel: varchar("experience_level"), // entry, junior, mid, senior, lead, executive
+  industry: varchar("industry"),
+  careerStage: varchar("career_stage"), // exploration, establishment, advancement, transition, maintenance
+  personalityType: varchar("personality_type"),
+  workStyle: varchar("work_style"),
+  careerValues: text("career_values").array(),
+  strengths: text("strengths").array(),
+  improvementAreas: text("improvement_areas").array(),
+  careerGoals: text("career_goals").array(),
+  assessmentData: jsonb("assessment_data"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const skillAssessments = pgTable("skill_assessments", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  userId: varchar("user_id").references(() => users.id).notNull(),
+  skillName: varchar("skill_name").notNull(),
+  skillCategory: varchar("skill_category"), // technical, soft, industry-specific
+  currentLevel: integer("current_level"), // 1-10 scale
+  targetLevel: integer("target_level"),
+  importanceScore: integer("importance_score"), // 1-10 scale
+  marketDemand: integer("market_demand"), // 1-10 scale
+  assessmentMethod: varchar("assessment_method"), // self-assessment, test, peer-review, ai-evaluation
+  evidenceData: jsonb("evidence_data"),
+  lastAssessed: timestamp("last_assessed"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const careerGoals = pgTable("career_goals", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  userId: varchar("user_id").references(() => users.id).notNull(),
+  goalType: varchar("goal_type").notNull(), // role_advancement, skill_development, salary_increase, industry_change
+  title: varchar("title").notNull(),
+  description: text("description"),
+  targetDate: date("target_date"),
+  progressPercentage: integer("progress_percentage").default(0),
+  priority: varchar("priority").default("medium"), // low, medium, high, critical
+  status: varchar("status").default("active"), // active, completed, paused, cancelled
+  milestones: jsonb("milestones"),
+  actionItems: text("action_items").array(),
+  successMetrics: jsonb("success_metrics"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const learningPlans = pgTable("learning_plans", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  userId: varchar("user_id").references(() => users.id).notNull(),
+  goalId: uuid("goal_id").references(() => careerGoals.id),
+  courseId: varchar("course_id"),
+  courseName: varchar("course_name").notNull(),
+  platform: varchar("platform").notNull(), // coursera, udemy, linkedin_learning, internal
+  courseUrl: varchar("course_url"),
+  skillsTargeted: text("skills_targeted").array(),
+  estimatedDuration: integer("estimated_duration"), // in hours
+  difficulty: varchar("difficulty"), // beginner, intermediate, advanced
+  status: varchar("status").default("planned"), // planned, in_progress, completed, abandoned
+  progress: integer("progress").default(0), // 0-100 percentage
+  startDate: date("start_date"),
+  completionDate: date("completion_date"),
+  skillImpact: jsonb("skill_impact"),
+  certificateUrl: varchar("certificate_url"),
+  rating: integer("rating"), // 1-5 scale
+  notes: text("notes"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const mentorshipMatches = pgTable("mentorship_matches", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  mentorId: varchar("mentor_id").references(() => users.id).notNull(),
+  menteeId: varchar("mentee_id").references(() => users.id).notNull(),
+  matchScore: integer("match_score"), // 1-100 compatibility score
+  matchingCriteria: jsonb("matching_criteria"),
+  relationshipType: varchar("relationship_type"), // formal, informal, group, peer
+  goals: text("goals").array(),
+  meetingFrequency: varchar("meeting_frequency"), // weekly, biweekly, monthly, as_needed
+  communicationPreference: varchar("communication_preference"), // video, phone, chat, email
+  status: varchar("status").default("pending"), // pending, active, completed, cancelled
+  startDate: date("start_date"),
+  endDate: date("end_date"),
+  satisfactionScore: integer("satisfaction_score"), // 1-10 scale
+  outcomes: text("outcomes").array(),
+  nextMeetingDate: date("next_meeting_date"),
+  totalMeetings: integer("total_meetings").default(0),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const industryInsights = pgTable("industry_insights", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  industry: varchar("industry").notNull(),
+  trendType: varchar("trend_type").notNull(), // growth, decline, disruption, emergence
+  title: varchar("title").notNull(),
+  description: text("description"),
+  impactScore: integer("impact_score"), // 1-10 scale
+  timeHorizon: varchar("time_horizon"), // short_term, medium_term, long_term
+  affectedRoles: text("affected_roles").array(),
+  skillsInDemand: text("skills_in_demand").array(),
+  skillsDepreciating: text("skills_depreciating").array(),
+  sourceUrl: varchar("source_url"),
+  confidence: integer("confidence"), // 1-10 scale
+  region: varchar("region"), // global, us, europe, asia, etc.
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const networkingEvents = pgTable("networking_events", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  title: varchar("title").notNull(),
+  description: text("description"),
+  eventType: varchar("event_type"), // conference, meetup, workshop, webinar, job_fair
+  industry: varchar("industry"),
+  targetAudience: text("target_audience").array(),
+  location: varchar("location"),
+  isVirtual: boolean("is_virtual").default(false),
+  eventDate: timestamp("event_date"),
+  registrationUrl: varchar("registration_url"),
+  cost: decimal("cost"),
+  organizer: varchar("organizer"),
+  skillsRelevant: text("skills_relevant").array(),
+  networkingPotential: integer("networking_potential"), // 1-10 scale
+  careerImpact: integer("career_impact"), // 1-10 scale
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const careerProgress = pgTable("career_progress", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  userId: varchar("user_id").references(() => users.id).notNull(),
+  goalId: uuid("goal_id").references(() => careerGoals.id),
+  progressType: varchar("progress_type"), // milestone, skill_improvement, goal_completion
+  progressData: jsonb("progress_data"),
+  description: text("description"),
+  impactScore: integer("impact_score"), // 1-10 scale
+  evidenceUrl: varchar("evidence_url"),
+  recognitionReceived: text("recognition_received"),
+  nextSteps: text("next_steps").array(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const personalBranding = pgTable("personal_branding", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  userId: varchar("user_id").references(() => users.id).notNull(),
+  brandStatement: text("brand_statement"),
+  valueProposition: text("value_proposition"),
+  targetAudience: text("target_audience"),
+  keyMessages: text("key_messages").array(),
+  brandingGoals: text("branding_goals").array(),
+  linkedinOptimization: jsonb("linkedin_optimization"),
+  contentStrategy: jsonb("content_strategy"),
+  networkingStrategy: jsonb("networking_strategy"),
+  brandConsistency: integer("brand_consistency"), // 1-10 scale
+  onlinePresence: jsonb("online_presence"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
 
 
 // Relations
@@ -406,6 +572,13 @@ export const usersRelations = relations(users, ({ many }) => ({
   salaryNegotiations: many(salaryNegotiations),
   interviewCoachingSessions: many(interviewCoachingSessions),
   userInterviewProgress: many(userInterviewProgress),
+  careerProfiles: many(careerProfiles),
+  skillAssessments: many(skillAssessments),
+  careerGoals: many(careerGoals),
+  learningPlans: many(learningPlans),
+  mentorshipMatches: many(mentorshipMatches),
+  careerProgress: many(careerProgress),
+  personalBranding: many(personalBranding),
 }));
 
 export const jobsRelations = relations(jobs, ({ many }) => ({
@@ -487,6 +660,40 @@ export const userInterviewProgressRelations = relations(userInterviewProgress, (
   user: one(users, { fields: [userInterviewProgress.userId], references: [users.id] }),
 }));
 
+// Career Coaching System Relations
+export const careerProfilesRelations = relations(careerProfiles, ({ one }) => ({
+  user: one(users, { fields: [careerProfiles.userId], references: [users.id] }),
+}));
+
+export const skillAssessmentsRelations = relations(skillAssessments, ({ one }) => ({
+  user: one(users, { fields: [skillAssessments.userId], references: [users.id] }),
+}));
+
+export const careerGoalsRelations = relations(careerGoals, ({ one, many }) => ({
+  user: one(users, { fields: [careerGoals.userId], references: [users.id] }),
+  learningPlans: many(learningPlans),
+  careerProgress: many(careerProgress),
+}));
+
+export const learningPlansRelations = relations(learningPlans, ({ one }) => ({
+  user: one(users, { fields: [learningPlans.userId], references: [users.id] }),
+  goal: one(careerGoals, { fields: [learningPlans.goalId], references: [careerGoals.id] }),
+}));
+
+export const mentorshipMatchesRelations = relations(mentorshipMatches, ({ one }) => ({
+  mentor: one(users, { fields: [mentorshipMatches.mentorId], references: [users.id] }),
+  mentee: one(users, { fields: [mentorshipMatches.menteeId], references: [users.id] }),
+}));
+
+export const careerProgressRelations = relations(careerProgress, ({ one }) => ({
+  user: one(users, { fields: [careerProgress.userId], references: [users.id] }),
+  goal: one(careerGoals, { fields: [careerProgress.goalId], references: [careerGoals.id] }),
+}));
+
+export const personalBrandingRelations = relations(personalBranding, ({ one }) => ({
+  user: one(users, { fields: [personalBranding.userId], references: [users.id] }),
+}));
+
 // Schema exports
 export type UpsertUser = typeof users.$inferInsert;
 export type User = typeof users.$inferSelect;
@@ -540,6 +747,34 @@ export type CompanyInterviewInsights = typeof companyInterviewInsights.$inferSel
 export type InsertUserInterviewProgress = typeof userInterviewProgress.$inferInsert;
 export type UserInterviewProgress = typeof userInterviewProgress.$inferSelect;
 
+// Career Coaching System Types
+export type InsertCareerProfile = typeof careerProfiles.$inferInsert;
+export type CareerProfile = typeof careerProfiles.$inferSelect;
+
+export type InsertSkillAssessment = typeof skillAssessments.$inferInsert;
+export type SkillAssessment = typeof skillAssessments.$inferSelect;
+
+export type InsertCareerGoal = typeof careerGoals.$inferInsert;
+export type CareerGoal = typeof careerGoals.$inferSelect;
+
+export type InsertLearningPlan = typeof learningPlans.$inferInsert;
+export type LearningPlan = typeof learningPlans.$inferSelect;
+
+export type InsertMentorshipMatch = typeof mentorshipMatches.$inferInsert;
+export type MentorshipMatch = typeof mentorshipMatches.$inferSelect;
+
+export type InsertIndustryInsight = typeof industryInsights.$inferInsert;
+export type IndustryInsight = typeof industryInsights.$inferSelect;
+
+export type InsertNetworkingEvent = typeof networkingEvents.$inferInsert;
+export type NetworkingEvent = typeof networkingEvents.$inferSelect;
+
+export type InsertCareerProgress = typeof careerProgress.$inferInsert;
+export type CareerProgress = typeof careerProgress.$inferSelect;
+
+export type InsertPersonalBranding = typeof personalBranding.$inferInsert;
+export type PersonalBranding = typeof personalBranding.$inferSelect;
+
 // Zod schemas
 export const insertUserSchema = createInsertSchema(users).omit({ id: true, createdAt: true, updatedAt: true });
 export const insertJobSchema = createInsertSchema(jobs).omit({ id: true, createdAt: true, updatedAt: true });
@@ -560,6 +795,17 @@ export const insertInterviewResponseSchema = createInsertSchema(interviewRespons
 export const insertInterviewFeedbackSchema = createInsertSchema(interviewFeedback).omit({ id: true, createdAt: true });
 export const insertCompanyInterviewInsightsSchema = createInsertSchema(companyInterviewInsights).omit({ id: true, createdAt: true, updatedAt: true });
 export const insertUserInterviewProgressSchema = createInsertSchema(userInterviewProgress).omit({ id: true, createdAt: true, updatedAt: true });
+
+// Career Coaching System Zod schemas
+export const insertCareerProfileSchema = createInsertSchema(careerProfiles).omit({ id: true, createdAt: true, updatedAt: true });
+export const insertSkillAssessmentSchema = createInsertSchema(skillAssessments).omit({ id: true, createdAt: true, updatedAt: true });
+export const insertCareerGoalSchema = createInsertSchema(careerGoals).omit({ id: true, createdAt: true, updatedAt: true });
+export const insertLearningPlanSchema = createInsertSchema(learningPlans).omit({ id: true, createdAt: true, updatedAt: true });
+export const insertMentorshipMatchSchema = createInsertSchema(mentorshipMatches).omit({ id: true, createdAt: true, updatedAt: true });
+export const insertIndustryInsightSchema = createInsertSchema(industryInsights).omit({ id: true, createdAt: true, updatedAt: true });
+export const insertNetworkingEventSchema = createInsertSchema(networkingEvents).omit({ id: true, createdAt: true, updatedAt: true });
+export const insertCareerProgressSchema = createInsertSchema(careerProgress).omit({ id: true, createdAt: true });
+export const insertPersonalBrandingSchema = createInsertSchema(personalBranding).omit({ id: true, createdAt: true, updatedAt: true });
 
 // Application Tracking and Management System
 export const applications = pgTable("applications", {

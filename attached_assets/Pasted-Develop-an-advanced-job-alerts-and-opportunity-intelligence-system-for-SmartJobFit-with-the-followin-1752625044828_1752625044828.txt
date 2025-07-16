@@ -1,0 +1,132 @@
+Develop an advanced job alerts and opportunity intelligence system for SmartJobFit with the following specifications:
+
+CORE FUNCTIONALITY:
+1. Predictive opportunity discovery using machine learning and market analysis
+2. Intelligent alert customization with natural language preference understanding
+3. Market intelligence integration with comprehensive opportunity context
+4. Multi-channel notification system with intelligent timing optimization
+5. Early opportunity identification with competitive advantage insights
+
+REQUIRED APIs & TOOLS:
+- Job Aggregation: RapidAPI Job Search, Adzuna API, JSearch API for comprehensive coverage
+- Predictive Analytics: Google Cloud AI Platform for opportunity prediction modeling
+- Company Intelligence: Clearbit API, Crunchbase API for company growth analysis
+- News Monitoring: NewsAPI, Google News API for company expansion signals
+- Social Media: Twitter API, LinkedIn API for hiring signal detection
+- Email Delivery: SendGrid API for intelligent notification delivery
+- Push Notifications: Firebase Cloud Messaging for real-time mobile alerts
+
+TECHNICAL IMPLEMENTATION:
+1. Create Flask backend with endpoints:
+   - POST /api/alerts/create (intelligent alert setup)
+   - GET /api/alerts/opportunities (predictive opportunity discovery)
+   - PUT /api/alerts/preferences (alert customization and optimization)
+   - GET /api/alerts/market-intelligence (comprehensive opportunity context)
+   - POST /api/alerts/notification-settings (multi-channel notification management)
+   - GET /api/alerts/analytics (alert performance and effectiveness tracking)
+   - POST /api/alerts/feedback (user feedback for alert optimization)
+
+2. Database Schema:
+   - alert_profiles table: user_id, alert_name, criteria_json, prediction_enabled, created_date, last_modified
+   - opportunity_predictions table: company_id, predicted_roles, confidence_score, prediction_date, signals_detected
+   - alert_deliveries table: alert_id, opportunity_id, delivery_channel, sent_date, user_action, relevance_score
+   - market_signals table: signal_type, company_id, signal_data, detection_date, impact_score
+   - user_preferences table: user_id, notification_channels, timing_preferences, frequency_settings
+
+3. Predictive Intelligence Engine:
+   - Implement machine learning models for opportunity prediction using company growth signals
+   - Create natural language processing for complex alert criteria understanding
+   - Build market intelligence aggregation with real-time signal detection
+   - Develop intelligent timing algorithms for optimal notification delivery
+   - Implement relevance scoring with continuous learning from user feedback
+
+4. Frontend Components:
+   - Intelligent alert creation interface with natural language input
+   - Predictive opportunity dashboard with early discovery highlights
+   - Market intelligence viewer with comprehensive opportunity context
+   - Multi-channel notification management with timing optimization
+   - Alert performance analytics with relevance and effectiveness metrics
+   - Mobile-responsive design with push notification integration
+
+5. Advanced Features:
+   - Company expansion tracking with hiring prediction models
+   - Industry trend analysis with opportunity impact assessment
+   - Competitive intelligence for application timing optimization
+   - Geographic opportunity mapping with relocation insights
+   - Salary trend integration with compensation opportunity alerts
+
+SPECIFIC IMPLEMENTATION STEPS:
+1. Set up Flask app with comprehensive job aggregation and real-time processing
+2. Implement machine learning pipeline for predictive opportunity discovery
+3. Create natural language processing system for intelligent alert customization
+4. Build market intelligence aggregation with multi-source signal detection
+5. Develop intelligent notification system with timing and channel optimization
+6. Implement comprehensive analytics and feedback systems for continuous improvement
+7. Create mobile-responsive interface with push notification integration
+8. Add predictive modeling for company hiring patterns and expansion signals
+9. Build competitive intelligence system for strategic application timing
+10. Set up automated testing and performance monitoring for alert accuracy
+
+PERFORMANCE REQUIREMENTS:
+- Alert relevance: 94% of alerts rated as relevant or highly relevant by users
+- Early discovery: 67% of opportunities identified 3-7 days before public posting
+- Prediction accuracy: 84% accuracy in predicting company hiring within 30 days
+- User engagement: 78% of users take action on high-priority alerts within 24 hours
+- Notification optimization: 52% higher engagement through intelligent timing
+
+INTEGRATION POINTS:
+- Import user preferences and search history from job search engine
+- Export opportunity data to application tracking system for pipeline management
+- Share market intelligence with salary intelligence for compensation insights
+- Coordinate with company intelligence for comprehensive opportunity context
+- Provide alert data to career coaching for strategic opportunity planning
+
+DATA COORDINATION:
+- Maintain shared user preference profile across all platform features
+- Track alert effectiveness metrics for platform-wide optimization
+- Export opportunity intelligence data for dashboard integration
+- Share market signals and company insights with other features
+- Coordinate notification preferences with other platform communications
+
+ADVANCED FEATURES:
+1. Predictive Opportunity Discovery:
+   - Company growth signal analysis using financial data and news monitoring
+   - Team expansion detection through LinkedIn and social media analysis
+   - Funding round impact analysis for startup hiring prediction
+   - Industry disruption monitoring with opportunity impact assessment
+
+2. Intelligent Market Intelligence:
+   - Competitive landscape analysis for application timing optimization
+   - Salary trend integration with compensation opportunity identification
+   - Skills demand forecasting with proactive alert recommendations
+   - Geographic opportunity mapping with relocation and remote work insights
+
+3. Advanced Notification Optimization:
+   - User behavior analysis for optimal notification timing
+   - Channel preference learning with effectiveness optimization
+   - Urgency scoring based on opportunity competitiveness and user fit
+   - Batch notification optimization to prevent alert fatigue
+
+4. Strategic Application Intelligence:
+   - Application deadline prediction based on historical company patterns
+   - Competitive analysis with application volume and success rate insights
+   - Optimal application timing recommendations based on company hiring cycles
+   - Interview scheduling prediction for calendar planning and preparation
+
+SPECIAL CONSIDERATIONS:
+1. Privacy and Data Protection:
+   - Implement comprehensive privacy controls for alert data and preferences
+   - Provide granular notification settings with easy opt-out mechanisms
+   - Ensure compliance with anti-spam regulations and communication preferences
+
+2. Alert Quality and Relevance:
+   - Implement continuous learning algorithms for relevance improvement
+   - Provide detailed feedback mechanisms for alert optimization
+   - Create quality scoring systems for opportunity validation
+
+3. Scalability and Performance:
+   - Design for processing millions of job postings and market signals daily
+   - Implement efficient notification delivery with rate limiting and optimization
+   - Create scalable prediction models that improve with increased data volume
+
+Create a production-ready system with robust real-time processing capabilities, comprehensive privacy protection, and scalable architecture for high-volume alert delivery and market intelligence processing.

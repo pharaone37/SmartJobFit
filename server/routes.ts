@@ -43,6 +43,7 @@ import { jobSearchEngine } from "./jobSearchEngine";
 import { resumeOptimizer } from "./resumeOptimizer";
 import { applicationTracker } from "./applicationTracker";
 import { salaryIntelligence } from "./salaryIntelligence";
+import { careerCoaching } from "./careerCoaching";
 import multer from "multer";
 import { 
   insertJobSchema, 
@@ -73,6 +74,15 @@ import {
   insertApplicationAnalyticsSchema,
   insertSalaryDataSchema,
   insertUserNegotiationSchema,
+  insertCareerProfileSchema,
+  insertSkillAssessmentSchema,
+  insertCareerGoalSchema,
+  insertLearningPlanSchema,
+  insertMentorshipMatchSchema,
+  insertIndustryInsightSchema,
+  insertNetworkingEventSchema,
+  insertCareerProgressSchema,
+  insertPersonalBrandingSchema,
   insertCompanyCompensationSchema,
   insertMarketTrendSchema,
   insertNegotiationSessionSchema,
@@ -5619,6 +5629,470 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Analyze email content error:', error);
       res.status(500).json({ message: 'Failed to analyze email content' });
+    }
+  });
+
+  // Career Coaching System Routes
+  // Career profile management
+  app.post('/api/career-coaching/profile', requireAuth, async (req, res) => {
+    try {
+      const userId = getUserId(req);
+      const profileData = insertCareerProfileSchema.parse({
+        ...req.body,
+        userId
+      });
+      
+      const profile = await storage.createCareerProfile(profileData);
+      
+      res.json({
+        success: true,
+        profile,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Create career profile error:', error);
+      res.status(500).json({ message: 'Failed to create career profile' });
+    }
+  });
+
+  app.get('/api/career-coaching/profile', requireAuth, async (req, res) => {
+    try {
+      const userId = getUserId(req);
+      const profile = await storage.getCareerProfile(userId);
+      
+      res.json({
+        success: true,
+        profile,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Get career profile error:', error);
+      res.status(500).json({ message: 'Failed to get career profile' });
+    }
+  });
+
+  app.put('/api/career-coaching/profile', requireAuth, async (req, res) => {
+    try {
+      const userId = getUserId(req);
+      const updates = req.body;
+      
+      const profile = await storage.updateCareerProfile(userId, updates);
+      
+      res.json({
+        success: true,
+        profile,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Update career profile error:', error);
+      res.status(500).json({ message: 'Failed to update career profile' });
+    }
+  });
+
+  // Skill assessment management
+  app.post('/api/career-coaching/skill-assessments', requireAuth, async (req, res) => {
+    try {
+      const userId = getUserId(req);
+      const assessmentData = insertSkillAssessmentSchema.parse({
+        ...req.body,
+        userId
+      });
+      
+      const assessment = await storage.createSkillAssessment(assessmentData);
+      
+      res.json({
+        success: true,
+        assessment,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Create skill assessment error:', error);
+      res.status(500).json({ message: 'Failed to create skill assessment' });
+    }
+  });
+
+  app.get('/api/career-coaching/skill-assessments', requireAuth, async (req, res) => {
+    try {
+      const userId = getUserId(req);
+      const assessments = await storage.getUserSkillAssessments(userId);
+      
+      res.json({
+        success: true,
+        assessments,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Get skill assessments error:', error);
+      res.status(500).json({ message: 'Failed to get skill assessments' });
+    }
+  });
+
+  app.put('/api/career-coaching/skill-assessments/:id', requireAuth, async (req, res) => {
+    try {
+      const { id } = req.params;
+      const updates = req.body;
+      
+      const assessment = await storage.updateSkillAssessment(id, updates);
+      
+      res.json({
+        success: true,
+        assessment,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Update skill assessment error:', error);
+      res.status(500).json({ message: 'Failed to update skill assessment' });
+    }
+  });
+
+  // Career goal management
+  app.post('/api/career-coaching/goals', requireAuth, async (req, res) => {
+    try {
+      const userId = getUserId(req);
+      const goalData = insertCareerGoalSchema.parse({
+        ...req.body,
+        userId
+      });
+      
+      const goal = await storage.createCareerGoal(goalData);
+      
+      res.json({
+        success: true,
+        goal,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Create career goal error:', error);
+      res.status(500).json({ message: 'Failed to create career goal' });
+    }
+  });
+
+  app.get('/api/career-coaching/goals', requireAuth, async (req, res) => {
+    try {
+      const userId = getUserId(req);
+      const goals = await storage.getUserCareerGoals(userId);
+      
+      res.json({
+        success: true,
+        goals,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Get career goals error:', error);
+      res.status(500).json({ message: 'Failed to get career goals' });
+    }
+  });
+
+  app.put('/api/career-coaching/goals/:id', requireAuth, async (req, res) => {
+    try {
+      const { id } = req.params;
+      const updates = req.body;
+      
+      const goal = await storage.updateCareerGoal(id, updates);
+      
+      res.json({
+        success: true,
+        goal,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Update career goal error:', error);
+      res.status(500).json({ message: 'Failed to update career goal' });
+    }
+  });
+
+  // Learning plan management
+  app.post('/api/career-coaching/learning-plans', requireAuth, async (req, res) => {
+    try {
+      const userId = getUserId(req);
+      const planData = insertLearningPlanSchema.parse({
+        ...req.body,
+        userId
+      });
+      
+      const plan = await storage.createLearningPlan(planData);
+      
+      res.json({
+        success: true,
+        plan,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Create learning plan error:', error);
+      res.status(500).json({ message: 'Failed to create learning plan' });
+    }
+  });
+
+  app.get('/api/career-coaching/learning-plans', requireAuth, async (req, res) => {
+    try {
+      const userId = getUserId(req);
+      const plans = await storage.getUserLearningPlans(userId);
+      
+      res.json({
+        success: true,
+        plans,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Get learning plans error:', error);
+      res.status(500).json({ message: 'Failed to get learning plans' });
+    }
+  });
+
+  app.put('/api/career-coaching/learning-plans/:id', requireAuth, async (req, res) => {
+    try {
+      const { id } = req.params;
+      const updates = req.body;
+      
+      const plan = await storage.updateLearningPlan(id, updates);
+      
+      res.json({
+        success: true,
+        plan,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Update learning plan error:', error);
+      res.status(500).json({ message: 'Failed to update learning plan' });
+    }
+  });
+
+  // Mentorship matching
+  app.post('/api/career-coaching/mentorship', requireAuth, async (req, res) => {
+    try {
+      const userId = getUserId(req);
+      const matchData = insertMentorshipMatchSchema.parse({
+        ...req.body,
+        menteeId: userId // Assuming user is the mentee
+      });
+      
+      const match = await storage.createMentorshipMatch(matchData);
+      
+      res.json({
+        success: true,
+        match,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Create mentorship match error:', error);
+      res.status(500).json({ message: 'Failed to create mentorship match' });
+    }
+  });
+
+  app.get('/api/career-coaching/mentorship', requireAuth, async (req, res) => {
+    try {
+      const userId = getUserId(req);
+      const matches = await storage.getUserMentorshipMatches(userId);
+      
+      res.json({
+        success: true,
+        matches,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Get mentorship matches error:', error);
+      res.status(500).json({ message: 'Failed to get mentorship matches' });
+    }
+  });
+
+  // Industry insights
+  app.get('/api/career-coaching/industry-insights', requireAuth, async (req, res) => {
+    try {
+      const { industry, region } = req.query;
+      const insights = await storage.getIndustryInsights(industry as string, region as string);
+      
+      res.json({
+        success: true,
+        insights,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Get industry insights error:', error);
+      res.status(500).json({ message: 'Failed to get industry insights' });
+    }
+  });
+
+  // Networking events
+  app.get('/api/career-coaching/networking-events', requireAuth, async (req, res) => {
+    try {
+      const { industry, location, eventType } = req.query;
+      const events = await storage.getNetworkingEvents(industry as string, location as string, eventType as string);
+      
+      res.json({
+        success: true,
+        events,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Get networking events error:', error);
+      res.status(500).json({ message: 'Failed to get networking events' });
+    }
+  });
+
+  // Career progress tracking
+  app.post('/api/career-coaching/progress', requireAuth, async (req, res) => {
+    try {
+      const userId = getUserId(req);
+      const progressData = insertCareerProgressSchema.parse({
+        ...req.body,
+        userId
+      });
+      
+      const progress = await storage.recordCareerProgress(progressData);
+      
+      res.json({
+        success: true,
+        progress,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Record career progress error:', error);
+      res.status(500).json({ message: 'Failed to record career progress' });
+    }
+  });
+
+  app.get('/api/career-coaching/progress', requireAuth, async (req, res) => {
+    try {
+      const userId = getUserId(req);
+      const progress = await storage.getUserCareerProgress(userId);
+      
+      res.json({
+        success: true,
+        progress,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Get career progress error:', error);
+      res.status(500).json({ message: 'Failed to get career progress' });
+    }
+  });
+
+  // Personal branding
+  app.post('/api/career-coaching/personal-branding', requireAuth, async (req, res) => {
+    try {
+      const userId = getUserId(req);
+      const brandingData = insertPersonalBrandingSchema.parse({
+        ...req.body,
+        userId
+      });
+      
+      const branding = await storage.createPersonalBranding(brandingData);
+      
+      res.json({
+        success: true,
+        branding,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Create personal branding error:', error);
+      res.status(500).json({ message: 'Failed to create personal branding' });
+    }
+  });
+
+  app.get('/api/career-coaching/personal-branding', requireAuth, async (req, res) => {
+    try {
+      const userId = getUserId(req);
+      const branding = await storage.getPersonalBranding(userId);
+      
+      res.json({
+        success: true,
+        branding,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Get personal branding error:', error);
+      res.status(500).json({ message: 'Failed to get personal branding' });
+    }
+  });
+
+  app.put('/api/career-coaching/personal-branding', requireAuth, async (req, res) => {
+    try {
+      const userId = getUserId(req);
+      const updates = req.body;
+      
+      const branding = await storage.updatePersonalBranding(userId, updates);
+      
+      res.json({
+        success: true,
+        branding,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Update personal branding error:', error);
+      res.status(500).json({ message: 'Failed to update personal branding' });
+    }
+  });
+
+  // AI-powered career coaching
+  app.post('/api/career-coaching/advice', requireAuth, async (req, res) => {
+    try {
+      const userId = getUserId(req);
+      const context = req.body;
+      
+      const advice = await storage.generateCareerAdvice(context);
+      
+      res.json({
+        success: true,
+        advice,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Generate career advice error:', error);
+      res.status(500).json({ message: 'Failed to generate career advice' });
+    }
+  });
+
+  app.post('/api/career-coaching/analyze-path', requireAuth, async (req, res) => {
+    try {
+      const userId = getUserId(req);
+      const analysis = req.body;
+      
+      const pathAnalysis = await storage.analyzeCareerPath(userId, analysis);
+      
+      res.json({
+        success: true,
+        pathAnalysis,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Analyze career path error:', error);
+      res.status(500).json({ message: 'Failed to analyze career path' });
+    }
+  });
+
+  app.post('/api/career-coaching/analyze-skills', requireAuth, async (req, res) => {
+    try {
+      const userId = getUserId(req);
+      const analysis = req.body;
+      
+      const skillAnalysis = await storage.analyzeSkillGaps(userId, analysis);
+      
+      res.json({
+        success: true,
+        skillAnalysis,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Analyze skill gaps error:', error);
+      res.status(500).json({ message: 'Failed to analyze skill gaps' });
+    }
+  });
+
+  app.post('/api/career-coaching/learning-recommendations', requireAuth, async (req, res) => {
+    try {
+      const userId = getUserId(req);
+      const preferences = req.body;
+      
+      const recommendations = await storage.getLearningRecommendations(userId, preferences);
+      
+      res.json({
+        success: true,
+        recommendations,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Get learning recommendations error:', error);
+      res.status(500).json({ message: 'Failed to get learning recommendations' });
     }
   });
 

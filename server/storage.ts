@@ -28,6 +28,15 @@ import {
   outcomePredictions,
   emailIntegrations,
   applicationAnalytics,
+  careerProfiles,
+  skillAssessments,
+  careerGoals,
+  learningPlans,
+  mentorshipMatches,
+  industryInsights,
+  networkingEvents,
+  careerProgress,
+  personalBranding,
   type User,
   type UpsertUser,
   type Job,
@@ -104,6 +113,24 @@ import {
   type insertMarketTrendSchema,
   type insertNegotiationSessionSchema,
   type insertSalaryBenchmarkSchema,
+  type CareerProfile,
+  type InsertCareerProfile,
+  type SkillAssessment,
+  type InsertSkillAssessment,
+  type CareerGoal,
+  type InsertCareerGoal,
+  type LearningPlan,
+  type InsertLearningPlan,
+  type MentorshipMatch,
+  type InsertMentorshipMatch,
+  type IndustryInsight,
+  type InsertIndustryInsight,
+  type NetworkingEvent,
+  type InsertNetworkingEvent,
+  type CareerProgress,
+  type InsertCareerProgress,
+  type PersonalBranding,
+  type InsertPersonalBranding,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, or, desc, asc, ilike, gte, lte, inArray, isNull } from "drizzle-orm";
@@ -367,6 +394,73 @@ export interface IStorage {
   getApplicationsWithCommunications(userId: string): Promise<any[]>;
   getApplicationPortfolioStats(userId: string): Promise<any>;
   syncEmailForApplications(userId: string, emailData: any[]): Promise<void>;
+  
+  // Career coaching operations
+  createCareerProfile(profile: InsertCareerProfile): Promise<CareerProfile>;
+  getCareerProfile(userId: string): Promise<CareerProfile | undefined>;
+  updateCareerProfile(userId: string, updates: Partial<CareerProfile>): Promise<CareerProfile | undefined>;
+  deleteCareerProfile(userId: string): Promise<void>;
+  
+  // Skill assessment operations
+  createSkillAssessment(assessment: InsertSkillAssessment): Promise<SkillAssessment>;
+  getSkillAssessment(id: string): Promise<SkillAssessment | undefined>;
+  getUserSkillAssessments(userId: string): Promise<SkillAssessment[]>;
+  updateSkillAssessment(id: string, updates: Partial<SkillAssessment>): Promise<SkillAssessment | undefined>;
+  deleteSkillAssessment(id: string): Promise<void>;
+  
+  // Career goal operations
+  createCareerGoal(goal: InsertCareerGoal): Promise<CareerGoal>;
+  getCareerGoal(id: string): Promise<CareerGoal | undefined>;
+  getUserCareerGoals(userId: string): Promise<CareerGoal[]>;
+  updateCareerGoal(id: string, updates: Partial<CareerGoal>): Promise<CareerGoal | undefined>;
+  deleteCareerGoal(id: string): Promise<void>;
+  
+  // Learning plan operations
+  createLearningPlan(plan: InsertLearningPlan): Promise<LearningPlan>;
+  getLearningPlan(id: string): Promise<LearningPlan | undefined>;
+  getUserLearningPlans(userId: string): Promise<LearningPlan[]>;
+  updateLearningPlan(id: string, updates: Partial<LearningPlan>): Promise<LearningPlan | undefined>;
+  deleteLearningPlan(id: string): Promise<void>;
+  
+  // Mentorship operations
+  createMentorshipMatch(match: InsertMentorshipMatch): Promise<MentorshipMatch>;
+  getMentorshipMatch(id: string): Promise<MentorshipMatch | undefined>;
+  getUserMentorshipMatches(userId: string): Promise<MentorshipMatch[]>;
+  updateMentorshipMatch(id: string, updates: Partial<MentorshipMatch>): Promise<MentorshipMatch | undefined>;
+  deleteMentorshipMatch(id: string): Promise<void>;
+  
+  // Industry insights operations
+  createIndustryInsight(insight: InsertIndustryInsight): Promise<IndustryInsight>;
+  getIndustryInsight(id: string): Promise<IndustryInsight | undefined>;
+  getIndustryInsights(industry?: string, region?: string): Promise<IndustryInsight[]>;
+  updateIndustryInsight(id: string, updates: Partial<IndustryInsight>): Promise<IndustryInsight | undefined>;
+  deleteIndustryInsight(id: string): Promise<void>;
+  
+  // Networking events operations
+  createNetworkingEvent(event: InsertNetworkingEvent): Promise<NetworkingEvent>;
+  getNetworkingEvent(id: string): Promise<NetworkingEvent | undefined>;
+  getNetworkingEvents(industry?: string, location?: string, eventType?: string): Promise<NetworkingEvent[]>;
+  updateNetworkingEvent(id: string, updates: Partial<NetworkingEvent>): Promise<NetworkingEvent | undefined>;
+  deleteNetworkingEvent(id: string): Promise<void>;
+  
+  // Career progress operations
+  recordCareerProgress(progress: InsertCareerProgress): Promise<CareerProgress>;
+  getCareerProgress(id: string): Promise<CareerProgress | undefined>;
+  getUserCareerProgress(userId: string): Promise<CareerProgress[]>;
+  updateCareerProgress(id: string, updates: Partial<CareerProgress>): Promise<CareerProgress | undefined>;
+  deleteCareerProgress(id: string): Promise<void>;
+  
+  // Personal branding operations
+  createPersonalBranding(branding: InsertPersonalBranding): Promise<PersonalBranding>;
+  getPersonalBranding(userId: string): Promise<PersonalBranding | undefined>;
+  updatePersonalBranding(userId: string, updates: Partial<PersonalBranding>): Promise<PersonalBranding | undefined>;
+  deletePersonalBranding(userId: string): Promise<void>;
+  
+  // AI-powered career coaching operations
+  generateCareerAdvice(context: any): Promise<any>;
+  analyzeCareerPath(userId: string, analysis: any): Promise<any>;
+  analyzeSkillGaps(userId: string, analysis: any): Promise<any>;
+  getLearningRecommendations(userId: string, preferences: any): Promise<any>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -1671,6 +1765,399 @@ export class DatabaseStorage implements IStorage {
 
   async deleteSalaryBenchmark(id: string): Promise<void> {
     await db.delete(salaryBenchmarks).where(eq(salaryBenchmarks.id, id));
+  }
+
+  // Career coaching operations
+  async createCareerProfile(profileInput: InsertCareerProfile): Promise<CareerProfile> {
+    const [created] = await db.insert(careerProfiles).values(profileInput).returning();
+    return created;
+  }
+
+  async getCareerProfile(userId: string): Promise<CareerProfile | undefined> {
+    const [profile] = await db.select().from(careerProfiles).where(eq(careerProfiles.userId, userId));
+    return profile;
+  }
+
+  async updateCareerProfile(userId: string, updates: Partial<CareerProfile>): Promise<CareerProfile | undefined> {
+    const [updated] = await db
+      .update(careerProfiles)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(careerProfiles.userId, userId))
+      .returning();
+    return updated;
+  }
+
+  async deleteCareerProfile(userId: string): Promise<void> {
+    await db.delete(careerProfiles).where(eq(careerProfiles.userId, userId));
+  }
+
+  // Skill assessment operations
+  async createSkillAssessment(assessmentInput: InsertSkillAssessment): Promise<SkillAssessment> {
+    const [created] = await db.insert(skillAssessments).values(assessmentInput).returning();
+    return created;
+  }
+
+  async getSkillAssessment(id: string): Promise<SkillAssessment | undefined> {
+    const [assessment] = await db.select().from(skillAssessments).where(eq(skillAssessments.id, id));
+    return assessment;
+  }
+
+  async getUserSkillAssessments(userId: string): Promise<SkillAssessment[]> {
+    return await db.select().from(skillAssessments).where(eq(skillAssessments.userId, userId)).orderBy(desc(skillAssessments.lastAssessed));
+  }
+
+  async updateSkillAssessment(id: string, updates: Partial<SkillAssessment>): Promise<SkillAssessment | undefined> {
+    const [updated] = await db
+      .update(skillAssessments)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(skillAssessments.id, id))
+      .returning();
+    return updated;
+  }
+
+  async deleteSkillAssessment(id: string): Promise<void> {
+    await db.delete(skillAssessments).where(eq(skillAssessments.id, id));
+  }
+
+  // Career goal operations
+  async createCareerGoal(goalInput: InsertCareerGoal): Promise<CareerGoal> {
+    const [created] = await db.insert(careerGoals).values(goalInput).returning();
+    return created;
+  }
+
+  async getCareerGoal(id: string): Promise<CareerGoal | undefined> {
+    const [goal] = await db.select().from(careerGoals).where(eq(careerGoals.id, id));
+    return goal;
+  }
+
+  async getUserCareerGoals(userId: string): Promise<CareerGoal[]> {
+    return await db.select().from(careerGoals).where(eq(careerGoals.userId, userId)).orderBy(desc(careerGoals.createdAt));
+  }
+
+  async updateCareerGoal(id: string, updates: Partial<CareerGoal>): Promise<CareerGoal | undefined> {
+    const [updated] = await db
+      .update(careerGoals)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(careerGoals.id, id))
+      .returning();
+    return updated;
+  }
+
+  async deleteCareerGoal(id: string): Promise<void> {
+    await db.delete(careerGoals).where(eq(careerGoals.id, id));
+  }
+
+  // Learning plan operations
+  async createLearningPlan(planInput: InsertLearningPlan): Promise<LearningPlan> {
+    const [created] = await db.insert(learningPlans).values(planInput).returning();
+    return created;
+  }
+
+  async getLearningPlan(id: string): Promise<LearningPlan | undefined> {
+    const [plan] = await db.select().from(learningPlans).where(eq(learningPlans.id, id));
+    return plan;
+  }
+
+  async getUserLearningPlans(userId: string): Promise<LearningPlan[]> {
+    return await db.select().from(learningPlans).where(eq(learningPlans.userId, userId)).orderBy(desc(learningPlans.createdAt));
+  }
+
+  async updateLearningPlan(id: string, updates: Partial<LearningPlan>): Promise<LearningPlan | undefined> {
+    const [updated] = await db
+      .update(learningPlans)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(learningPlans.id, id))
+      .returning();
+    return updated;
+  }
+
+  async deleteLearningPlan(id: string): Promise<void> {
+    await db.delete(learningPlans).where(eq(learningPlans.id, id));
+  }
+
+  // Mentorship operations
+  async createMentorshipMatch(matchInput: InsertMentorshipMatch): Promise<MentorshipMatch> {
+    const [created] = await db.insert(mentorshipMatches).values(matchInput).returning();
+    return created;
+  }
+
+  async getMentorshipMatch(id: string): Promise<MentorshipMatch | undefined> {
+    const [match] = await db.select().from(mentorshipMatches).where(eq(mentorshipMatches.id, id));
+    return match;
+  }
+
+  async getUserMentorshipMatches(userId: string): Promise<MentorshipMatch[]> {
+    return await db.select().from(mentorshipMatches).where(
+      or(
+        eq(mentorshipMatches.mentorId, userId),
+        eq(mentorshipMatches.menteeId, userId)
+      )
+    ).orderBy(desc(mentorshipMatches.createdAt));
+  }
+
+  async updateMentorshipMatch(id: string, updates: Partial<MentorshipMatch>): Promise<MentorshipMatch | undefined> {
+    const [updated] = await db
+      .update(mentorshipMatches)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(mentorshipMatches.id, id))
+      .returning();
+    return updated;
+  }
+
+  async deleteMentorshipMatch(id: string): Promise<void> {
+    await db.delete(mentorshipMatches).where(eq(mentorshipMatches.id, id));
+  }
+
+  // Industry insights operations
+  async createIndustryInsight(insightInput: InsertIndustryInsight): Promise<IndustryInsight> {
+    const [created] = await db.insert(industryInsights).values(insightInput).returning();
+    return created;
+  }
+
+  async getIndustryInsight(id: string): Promise<IndustryInsight | undefined> {
+    const [insight] = await db.select().from(industryInsights).where(eq(industryInsights.id, id));
+    return insight;
+  }
+
+  async getIndustryInsights(industry?: string, region?: string): Promise<IndustryInsight[]> {
+    let query = db.select().from(industryInsights);
+
+    if (industry) {
+      query = query.where(eq(industryInsights.industry, industry));
+    }
+
+    if (region) {
+      query = query.where(eq(industryInsights.region, region));
+    }
+
+    return await query.orderBy(desc(industryInsights.createdAt));
+  }
+
+  async updateIndustryInsight(id: string, updates: Partial<IndustryInsight>): Promise<IndustryInsight | undefined> {
+    const [updated] = await db
+      .update(industryInsights)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(industryInsights.id, id))
+      .returning();
+    return updated;
+  }
+
+  async deleteIndustryInsight(id: string): Promise<void> {
+    await db.delete(industryInsights).where(eq(industryInsights.id, id));
+  }
+
+  // Networking events operations
+  async createNetworkingEvent(eventInput: InsertNetworkingEvent): Promise<NetworkingEvent> {
+    const [created] = await db.insert(networkingEvents).values(eventInput).returning();
+    return created;
+  }
+
+  async getNetworkingEvent(id: string): Promise<NetworkingEvent | undefined> {
+    const [event] = await db.select().from(networkingEvents).where(eq(networkingEvents.id, id));
+    return event;
+  }
+
+  async getNetworkingEvents(industry?: string, location?: string, eventType?: string): Promise<NetworkingEvent[]> {
+    let query = db.select().from(networkingEvents);
+
+    if (industry) {
+      query = query.where(eq(networkingEvents.industry, industry));
+    }
+
+    if (location) {
+      query = query.where(ilike(networkingEvents.location, `%${location}%`));
+    }
+
+    if (eventType) {
+      query = query.where(eq(networkingEvents.eventType, eventType));
+    }
+
+    return await query.orderBy(desc(networkingEvents.eventDate));
+  }
+
+  async updateNetworkingEvent(id: string, updates: Partial<NetworkingEvent>): Promise<NetworkingEvent | undefined> {
+    const [updated] = await db
+      .update(networkingEvents)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(networkingEvents.id, id))
+      .returning();
+    return updated;
+  }
+
+  async deleteNetworkingEvent(id: string): Promise<void> {
+    await db.delete(networkingEvents).where(eq(networkingEvents.id, id));
+  }
+
+  // Career progress operations
+  async recordCareerProgress(progressInput: InsertCareerProgress): Promise<CareerProgress> {
+    const [created] = await db.insert(careerProgress).values(progressInput).returning();
+    return created;
+  }
+
+  async getCareerProgress(id: string): Promise<CareerProgress | undefined> {
+    const [progress] = await db.select().from(careerProgress).where(eq(careerProgress.id, id));
+    return progress;
+  }
+
+  async getUserCareerProgress(userId: string): Promise<CareerProgress[]> {
+    return await db.select().from(careerProgress).where(eq(careerProgress.userId, userId)).orderBy(desc(careerProgress.createdAt));
+  }
+
+  async updateCareerProgress(id: string, updates: Partial<CareerProgress>): Promise<CareerProgress | undefined> {
+    const [updated] = await db
+      .update(careerProgress)
+      .set(updates)
+      .where(eq(careerProgress.id, id))
+      .returning();
+    return updated;
+  }
+
+  async deleteCareerProgress(id: string): Promise<void> {
+    await db.delete(careerProgress).where(eq(careerProgress.id, id));
+  }
+
+  // Personal branding operations
+  async createPersonalBranding(brandingInput: InsertPersonalBranding): Promise<PersonalBranding> {
+    const [created] = await db.insert(personalBranding).values(brandingInput).returning();
+    return created;
+  }
+
+  async getPersonalBranding(userId: string): Promise<PersonalBranding | undefined> {
+    const [branding] = await db.select().from(personalBranding).where(eq(personalBranding.userId, userId));
+    return branding;
+  }
+
+  async updatePersonalBranding(userId: string, updates: Partial<PersonalBranding>): Promise<PersonalBranding | undefined> {
+    const [updated] = await db
+      .update(personalBranding)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(personalBranding.userId, userId))
+      .returning();
+    return updated;
+  }
+
+  async deletePersonalBranding(userId: string): Promise<void> {
+    await db.delete(personalBranding).where(eq(personalBranding.userId, userId));
+  }
+
+  // AI-powered career coaching operations
+  async generateCareerAdvice(context: any): Promise<any> {
+    // This would integrate with AI services to generate personalized career advice
+    // For now, return a structured response
+    return {
+      advice: "Based on your profile and goals, I recommend focusing on developing your technical skills in cloud computing and data analysis. Consider taking online courses and building projects to demonstrate your capabilities.",
+      actionItems: [
+        "Complete AWS certification",
+        "Build a data visualization project",
+        "Network with professionals in your target industry",
+        "Update your LinkedIn profile with recent achievements"
+      ],
+      resources: [
+        {
+          title: "AWS Cloud Practitioner Certification",
+          url: "https://aws.amazon.com/certification/certified-cloud-practitioner/",
+          type: "certification"
+        },
+        {
+          title: "Data Analysis with Python",
+          url: "https://www.coursera.org/learn/data-analysis-with-python",
+          type: "course"
+        }
+      ]
+    };
+  }
+
+  async analyzeCareerPath(userId: string, analysis: any): Promise<any> {
+    // This would use AI to analyze career path options
+    return {
+      currentPosition: analysis.currentProfile?.currentRole || "Not specified",
+      targetPosition: analysis.targetRole,
+      careerGap: "2-3 years with focused skill development",
+      requiredSkills: ["Cloud Computing", "Data Analysis", "Project Management"],
+      recommendations: [
+        "Focus on cloud certifications",
+        "Gain experience with data visualization tools",
+        "Develop leadership skills through project management"
+      ],
+      similarPaths: [
+        {
+          role: "Senior Data Analyst",
+          company: "Tech Company",
+          timeframe: "18 months",
+          requirements: ["Python", "SQL", "Tableau"]
+        }
+      ]
+    };
+  }
+
+  async analyzeSkillGaps(userId: string, analysis: any): Promise<any> {
+    // This would analyze skill gaps using AI
+    return {
+      criticalGaps: [
+        {
+          skill: "Cloud Computing",
+          currentLevel: 3,
+          requiredLevel: 7,
+          priority: "high",
+          timeToAcquire: "6 months"
+        },
+        {
+          skill: "Data Visualization",
+          currentLevel: 4,
+          requiredLevel: 8,
+          priority: "high",
+          timeToAcquire: "4 months"
+        }
+      ],
+      developmentPlan: [
+        {
+          phase: "Phase 1 (Months 1-3)",
+          focus: "Cloud Computing Fundamentals",
+          activities: ["AWS Certification", "Hands-on projects"]
+        },
+        {
+          phase: "Phase 2 (Months 4-6)",
+          focus: "Data Visualization",
+          activities: ["Tableau certification", "Build portfolio projects"]
+        }
+      ]
+    };
+  }
+
+  async getLearningRecommendations(userId: string, preferences: any): Promise<any> {
+    // This would provide personalized learning recommendations
+    return {
+      recommendations: [
+        {
+          title: "AWS Solutions Architect",
+          provider: "AWS",
+          duration: "40 hours",
+          difficulty: "intermediate",
+          relevance: 95,
+          cost: "$150"
+        },
+        {
+          title: "Data Visualization with Tableau",
+          provider: "Coursera",
+          duration: "25 hours",
+          difficulty: "beginner",
+          relevance: 90,
+          cost: "$49/month"
+        }
+      ],
+      learningPath: [
+        {
+          step: 1,
+          title: "Foundation Building",
+          courses: ["Cloud Computing Basics", "Data Analysis Fundamentals"]
+        },
+        {
+          step: 2,
+          title: "Skill Development",
+          courses: ["AWS Certification", "Tableau Visualization"]
+        }
+      ]
+    };
   }
 }
 

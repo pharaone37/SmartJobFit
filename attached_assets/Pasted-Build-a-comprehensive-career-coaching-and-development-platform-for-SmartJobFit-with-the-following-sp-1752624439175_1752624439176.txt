@@ -1,0 +1,117 @@
+Build a comprehensive career coaching and development platform for SmartJobFit with the following specifications:
+
+CORE FUNCTIONALITY:
+1. AI career strategist providing personalized career roadmaps and guidance
+2. Comprehensive skill gap analysis with development planning
+3. Industry trend analysis and future career planning
+4. Mentorship matching and networking facilitation
+5. Strategic career move recommendations with timing optimization
+
+REQUIRED APIs & TOOLS:
+- Primary AI: Google Gemini 2.5 Flash for strategic career guidance and planning
+- Skills Analysis: IBM Watson Natural Language Understanding for skill extraction
+- Learning Platforms: Coursera API, Udemy API, LinkedIn Learning API for course recommendations
+- Industry Data: Bureau of Labor Statistics API for employment trends and projections
+- Professional Networks: LinkedIn API for mentorship matching and networking
+- Personality Assessment: IBM Watson Personality Insights for career fit analysis
+- Market Intelligence: Burning Glass Technologies API for skills demand analysis
+
+TECHNICAL IMPLEMENTATION:
+1. Create Flask backend with endpoints:
+   - POST /api/career/assessment (comprehensive career assessment)
+   - GET /api/career/roadmap (personalized career development plan)
+   - POST /api/career/skills-analysis (skill gap identification)
+   - GET /api/career/learning-plan (customized learning recommendations)
+   - POST /api/career/mentor-matching (mentorship connection system)
+   - GET /api/career/industry-trends (market analysis and predictions)
+   - POST /api/career/goal-tracking (progress monitoring and adjustment)
+
+2. Database Schema:
+   - career_profiles table: user_id, current_role, target_role, experience_level, industry, career_stage
+   - skill_assessments table: user_id, skill_name, current_level, target_level, importance_score, last_assessed
+   - career_goals table: user_id, goal_type, description, target_date, progress_percentage, milestones
+   - learning_plans table: user_id, course_id, platform, status, completion_date, skill_impact
+   - mentorship_matches table: mentor_id, mentee_id, match_score, status, start_date, goals
+   - industry_insights table: industry, trend_type, description, impact_score, time_horizon
+
+3. AI-Powered Career Intelligence:
+   - Implement Gemini API for strategic career planning and personalized guidance
+   - Create skill gap analysis using Watson NLU and market demand data
+   - Build career trajectory prediction models based on industry trends
+   - Develop personalized learning path optimization
+   - Implement mentorship matching algorithm with compatibility scoring
+
+4. Frontend Components:
+   - Interactive career assessment questionnaire with personality insights
+   - Visual career roadmap with milestones and progress tracking
+   - Skills dashboard with gap analysis and development recommendations
+   - Learning platform integration with progress tracking
+   - Mentorship matching interface with communication tools
+   - Industry trends analyzer with career impact insights
+
+5. Advanced Features:
+   - Career pivot planning with risk assessment and transition strategies
+   - Networking event recommendations based on career goals
+   - Personal branding guidance with LinkedIn optimization
+   - Salary progression planning integrated with market intelligence
+   - Work-life balance optimization based on career stage and goals
+
+SPECIFIC IMPLEMENTATION STEPS:
+1. Set up Flask app with comprehensive user profiling and assessment systems
+2. Integrate Google Gemini API for intelligent career guidance and strategy development
+3. Implement skills analysis using Watson NLU and market demand APIs
+4. Create personalized learning recommendation engine with multiple platform integration
+5. Build mentorship matching system with compatibility algorithms
+6. Develop industry trend analysis with predictive career impact modeling
+7. Create interactive career roadmap with milestone tracking and adjustment
+8. Implement goal setting and progress monitoring with automated reminders
+9. Add networking facilitation with event recommendations and connection tools
+10. Set up comprehensive analytics and success tracking systems
+
+PERFORMANCE REQUIREMENTS:
+- Career advancement: 68% of users achieve career progression within 12 months
+- Skill development: 85% complete recommended development programs
+- Mentorship success: 79% of matched relationships continue beyond 6 months
+- Strategic planning: 91% report improved career clarity and direction
+- Learning effectiveness: 73% achieve target skill levels within planned timeframes
+
+INTEGRATION POINTS:
+- Import user skills and experience from resume optimization feature
+- Export career goals to job search engine for targeted opportunity discovery
+- Share skill development progress with interview preparation system
+- Coordinate with salary intelligence for career progression planning
+- Provide career insights to application tracking for strategic decision making
+
+DATA COORDINATION:
+- Maintain comprehensive user career profile across all platform features
+- Track career development metrics for platform-wide success measurement
+- Export skill assessments and learning progress to dashboard
+- Share industry insights and trend analysis with other features
+- Coordinate mentorship and networking data for relationship management
+
+ADVANCED FEATURES:
+1. Intelligent Career Strategy Development:
+   - Multi-scenario career path analysis with risk-reward assessment
+   - Industry disruption impact analysis and adaptation strategies
+   - Geographic career opportunity analysis for relocation planning
+   - Entrepreneurship readiness assessment and startup guidance
+
+2. Personalized Learning Optimization:
+   - Learning style assessment and customized content delivery
+   - Microlearning integration with busy professional schedules
+   - Skill validation through project-based assessments
+   - Peer learning group formation based on career goals and interests
+
+3. Advanced Mentorship and Networking:
+   - AI-powered conversation starters and relationship building guidance
+   - Group mentorship programs for specific career transitions
+   - Industry expert access for specialized guidance and insights
+   - Alumni network integration for career advancement opportunities
+
+4. Career Intelligence and Market Analysis:
+   - Predictive modeling for emerging career opportunities
+   - Skills demand forecasting with proactive development recommendations
+   - Company culture fit analysis for career satisfaction optimization
+   - Work-life integration planning based on career stage and personal priorities
+
+Create a production-ready system with comprehensive privacy protection for personal career data, scalable architecture for learning content delivery, and detailed analytics for continuous coaching improvement.

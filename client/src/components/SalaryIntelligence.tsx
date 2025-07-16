@@ -52,19 +52,22 @@ export default function SalaryIntelligence({ userId }: SalaryIntelligenceProps) 
   // Query for user benchmarks
   const { data: userBenchmarks } = useQuery({
     queryKey: ['/api/salary/benchmarks/user'],
-    enabled: !!userId
+    enabled: !!userId,
+    retry: false
   });
 
   // Query for user negotiations
   const { data: userNegotiations } = useQuery({
     queryKey: ['/api/salary/negotiations/user'],
-    enabled: !!userId
+    enabled: !!userId,
+    retry: false
   });
 
   // Query for market trends
   const { data: marketTrends } = useQuery({
     queryKey: ['/api/salary/market-trends'],
-    enabled: !!userId
+    enabled: !!userId,
+    retry: false
   });
 
   // Market data mutation
