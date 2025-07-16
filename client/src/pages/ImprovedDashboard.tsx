@@ -12,6 +12,7 @@ import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 
 import JobSearchFilters from '@/components/JobSearchFilters';
 import type { JobSearchFilters as JobSearchFiltersType } from '@/components/JobSearchFilters';
@@ -66,13 +67,21 @@ import {
   Lightbulb,
   Rocket,
   Shield,
-  Globe
+  Globe,
+  User,
+  CreditCard,
+  LogOut
 } from 'lucide-react';
 
 export default function ImprovedDashboard() {
   const { user } = useAuth();
   const { toast } = useToast();
   const [filters, setFilters] = useState<JobSearchFiltersType>({});
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    window.location.href = '/';
+  };
   const [isSearching, setIsSearching] = useState(false);
   const [savedJobs, setSavedJobs] = useState<number[]>([]);
   const [activeTab, setActiveTab] = useState('overview');
@@ -250,12 +259,62 @@ export default function ImprovedDashboard() {
                     {data.profileCompletion}% Complete
                   </p>
                 </div>
-                <Avatar className="h-7 w-7 sm:h-8 sm:w-8">
-                  <AvatarImage src={user?.profileImageUrl} />
-                  <AvatarFallback>
-                    {user?.firstName?.[0] || 'U'}
-                  </AvatarFallback>
-                </Avatar>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+                      <Avatar className="h-8 w-8">
+                        <AvatarImage src={user?.profileImageUrl} alt={user?.firstName} />
+                        <AvatarFallback>
+                          {user?.firstName?.[0] || 'U'}
+                        </AvatarFallback>
+                      </Avatar>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="w-56" align="end" forceMount>
+                    <div className="flex items-center justify-start gap-2 p-3 border-b">
+                      <Avatar className="h-8 w-8">
+                        <AvatarImage src={user?.profileImageUrl} alt={user?.firstName} />
+                        <AvatarFallback>
+                          {user?.firstName?.[0] || 'U'}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="flex flex-col space-y-1 leading-none">
+                        {user?.firstName && (
+                          <p className="font-medium text-sm">{user.firstName} {user.lastName}</p>
+                        )}
+                        {user?.email && (
+                          <p className="w-[180px] truncate text-xs text-muted-foreground">
+                            {user.email}
+                          </p>
+                        )}
+                        <Badge variant="secondary" className="w-fit text-xs">
+                          {user?.subscriptionPlan || "Free Plan"}
+                        </Badge>
+                      </div>
+                    </div>
+                    <DropdownMenuItem>
+                      <User className="mr-2 h-4 w-4" />
+                      <span>Account Settings</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <Settings className="mr-2 h-4 w-4" />
+                      <span>Preferences</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <CreditCard className="mr-2 h-4 w-4" />
+                      <span>Billing & Subscription</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <Bell className="mr-2 h-4 w-4" />
+                      <span>Support</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={handleLogout} className="flex items-center text-red-600 focus:text-red-600">
+                      <LogOut className="mr-2 h-4 w-4" />
+                      <span>Log out</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
             </div>
           </div>
