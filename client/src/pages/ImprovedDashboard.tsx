@@ -763,7 +763,18 @@ export default function ImprovedDashboard() {
                     </div>
                     
                     <div className="mt-6 flex gap-3">
-                      <Button className="flex-1">
+                      <Button 
+                        className="flex-1"
+                        onClick={() => {
+                          console.log('Dashboard Start Practice Session clicked');
+                          navigate('/advanced-interview-coach');
+                          toast({
+                            title: "Launching Interview Coach",
+                            description: "Starting your AI-powered interview coaching session!",
+                            variant: "default"
+                          });
+                        }}
+                      >
                         <Play className="w-4 h-4 mr-2" />
                         Start Practice Session
                       </Button>
