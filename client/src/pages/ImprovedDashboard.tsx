@@ -306,7 +306,7 @@ export default function ImprovedDashboard() {
                       <CreditCard className="mr-2 h-4 w-4" />
                       <span>Billing & Subscription</span>
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => navigate('/support')}>
+                    <DropdownMenuItem onClick={() => navigate('/faq')}>
                       <Bell className="mr-2 h-4 w-4" />
                       <span>Support</span>
                     </DropdownMenuItem>

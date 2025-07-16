@@ -45,6 +45,8 @@ AI Integration: Enterprise-grade specialized AI services implemented (17 provide
 UI Language: English-only interface (removed German translations)
 Hosting: Multiple options available - Replit Deployments (quickest), Vercel (recommended), Railway, DigitalOcean
 Deployment: Ready for production deployment with comprehensive guides created
+Privacy & Legal: Enhanced Privacy Policy and Terms of Service to be GDPR-compliant and modern
+Support Integration: Support button in dashboard profile menu now links to FAQ page
 ```
 
 ## System Architecture
