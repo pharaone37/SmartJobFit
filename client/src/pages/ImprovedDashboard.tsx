@@ -279,31 +279,18 @@ export default function ImprovedDashboard() {
               </TabsList>
             </div>
 
-            {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center justify-between mb-6">
-              <TabsList className="grid w-full max-w-3xl grid-cols-5 gap-1 bg-white/50 dark:bg-slate-800/50 p-1 h-auto">
-                {navigationItems.slice(0, 5).map((item) => (
-                  <TabsTrigger
-                    key={item.id}
-                    value={item.id}
-                    className="flex flex-col items-center gap-1 px-3 py-2 text-xs"
-                  >
-                    <item.icon className={`h-4 w-4 ${item.color}`} />
-                    <span>{item.label}</span>
-                  </TabsTrigger>
-                ))}
-              </TabsList>
-              
-              <div className="hidden lg:flex">
-                <TabsList className="grid grid-cols-5 gap-1 bg-white/50 dark:bg-slate-800/50 p-1 h-auto">
-                  {navigationItems.slice(5).map((item) => (
+            {/* Desktop Navigation - Unified and Smooth */}
+            <div className="desktop-nav-container hidden md:flex">
+              <div className="nav-pill-container">
+                <TabsList className="nav-tabs-list">
+                  {navigationItems.map((item) => (
                     <TabsTrigger
                       key={item.id}
                       value={item.id}
-                      className="flex flex-col items-center gap-1 px-3 py-2 text-xs"
+                      className="nav-tab-trigger"
                     >
-                      <item.icon className={`h-4 w-4 ${item.color}`} />
-                      <span>{item.label}</span>
+                      <item.icon className={`h-4 w-4 ${activeTab === item.id ? 'text-blue-600 dark:text-blue-400' : item.color}`} />
+                      <span className="truncate">{item.label}</span>
                     </TabsTrigger>
                   ))}
                 </TabsList>
