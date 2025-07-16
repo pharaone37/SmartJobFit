@@ -24,6 +24,7 @@ import {
   Search, 
   FileText, 
   MessageSquare, 
+  MessageCircle,
   BarChart3, 
   Users, 
   Calendar,
@@ -53,6 +54,8 @@ import {
   PieChart,
   Zap,
   Menu,
+  Play,
+  Download,
   X,
   ChevronRight,
   PlayCircle,
@@ -518,6 +521,267 @@ export default function ImprovedDashboard() {
             <TabsContent value="applications" className="pb-20 md:pb-6">
               <div className="space-y-4">
                 <ApplicationTracker />
+              </div>
+            </TabsContent>
+
+            {/* Resume Section with Sample Data */}
+            <TabsContent value="resume" className="pb-20 md:pb-6">
+              <div className="space-y-6">
+                <Card className="border-0 shadow-lg">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <FileText className="h-5 w-5 text-blue-500" />
+                      Resume Analytics & Optimization
+                    </CardTitle>
+                    <CardDescription>
+                      AI-powered resume analysis with 99.8% ATS compatibility
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-medium">ATS Score</span>
+                          <span className="text-2xl font-bold text-green-600">94%</span>
+                        </div>
+                        <Progress value={94} className="h-3" />
+                        <p className="text-xs text-muted-foreground">Excellent compatibility</p>
+                      </div>
+                      
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-medium">Keyword Match</span>
+                          <span className="text-2xl font-bold text-blue-600">87%</span>
+                        </div>
+                        <Progress value={87} className="h-3" />
+                        <p className="text-xs text-muted-foreground">Strong keyword optimization</p>
+                      </div>
+                      
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-medium">Format Score</span>
+                          <span className="text-2xl font-bold text-purple-600">91%</span>
+                        </div>
+                        <Progress value={91} className="h-3" />
+                        <p className="text-xs text-muted-foreground">Professional formatting</p>
+                      </div>
+                    </div>
+                    
+                    <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="p-4 bg-green-50 rounded-lg">
+                        <h4 className="font-semibold text-green-800 mb-2">Strengths</h4>
+                        <ul className="text-sm text-green-700 space-y-1">
+                          <li>• Strong technical skills section</li>
+                          <li>• Quantified achievements</li>
+                          <li>• Industry-relevant keywords</li>
+                          <li>• Professional formatting</li>
+                        </ul>
+                      </div>
+                      
+                      <div className="p-4 bg-blue-50 rounded-lg">
+                        <h4 className="font-semibold text-blue-800 mb-2">Recommendations</h4>
+                        <ul className="text-sm text-blue-700 space-y-1">
+                          <li>• Add more action verbs</li>
+                          <li>• Include soft skills</li>
+                          <li>• Optimize for specific roles</li>
+                          <li>• Add portfolio links</li>
+                        </ul>
+                      </div>
+                    </div>
+                    
+                    <div className="mt-6 flex gap-3">
+                      <Button className="flex-1">
+                        <Target className="w-4 h-4 mr-2" />
+                        Optimize for Job
+                      </Button>
+                      <Button variant="outline" className="flex-1">
+                        <FileText className="w-4 h-4 mr-2" />
+                        Download Resume
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </TabsContent>
+
+            {/* Interview Section with Sample Data */}
+            <TabsContent value="interviews" className="pb-20 md:pb-6">
+              <div className="space-y-6">
+                <Card className="border-0 shadow-lg">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <MessageCircle className="h-5 w-5 text-purple-500" />
+                      Interview Preparation & Coaching
+                    </CardTitle>
+                    <CardDescription>
+                      AI-powered interview practice with real-time feedback
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-medium">Performance Score</span>
+                          <span className="text-2xl font-bold text-purple-600">85%</span>
+                        </div>
+                        <Progress value={85} className="h-3" />
+                        <p className="text-xs text-muted-foreground">Above average performance</p>
+                      </div>
+                      
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-medium">Questions Practiced</span>
+                          <span className="text-2xl font-bold text-green-600">47</span>
+                        </div>
+                        <Progress value={75} className="h-3" />
+                        <p className="text-xs text-muted-foreground">Strong preparation</p>
+                      </div>
+                      
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-medium">Sessions Completed</span>
+                          <span className="text-2xl font-bold text-blue-600">12</span>
+                        </div>
+                        <Progress value={60} className="h-3" />
+                        <p className="text-xs text-muted-foreground">Consistent practice</p>
+                      </div>
+                    </div>
+                    
+                    <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="p-4 bg-purple-50 rounded-lg">
+                        <h4 className="font-semibold text-purple-800 mb-2">Upcoming Interviews</h4>
+                        <div className="space-y-2">
+                          <div className="flex justify-between text-sm">
+                            <span>Software Engineer - Google</span>
+                            <span className="text-purple-600">Tomorrow 2 PM</span>
+                          </div>
+                          <div className="flex justify-between text-sm">
+                            <span>Product Manager - Meta</span>
+                            <span className="text-purple-600">Friday 10 AM</span>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="p-4 bg-green-50 rounded-lg">
+                        <h4 className="font-semibold text-green-800 mb-2">Recent Practice</h4>
+                        <div className="space-y-2">
+                          <div className="flex justify-between text-sm">
+                            <span>Behavioral Questions</span>
+                            <span className="text-green-600">Score: 88%</span>
+                          </div>
+                          <div className="flex justify-between text-sm">
+                            <span>Technical Deep Dive</span>
+                            <span className="text-green-600">Score: 82%</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="mt-6 flex gap-3">
+                      <Button className="flex-1">
+                        <Play className="w-4 h-4 mr-2" />
+                        Start Practice Session
+                      </Button>
+                      <Button variant="outline" className="flex-1">
+                        <BarChart3 className="w-4 h-4 mr-2" />
+                        View Analytics
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </TabsContent>
+
+            {/* Analytics Section with Sample Data */}
+            <TabsContent value="analytics" className="pb-20 md:pb-6">
+              <div className="space-y-6">
+                <Card className="border-0 shadow-lg">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <BarChart3 className="h-5 w-5 text-green-500" />
+                      Job Search Analytics & Insights
+                    </CardTitle>
+                    <CardDescription>
+                      Comprehensive performance tracking and market insights
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                      <div className="space-y-2">
+                        <div className="text-2xl font-bold text-blue-600">156</div>
+                        <div className="text-sm text-muted-foreground">Applications Sent</div>
+                        <div className="text-xs text-green-600">+12% this month</div>
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <div className="text-2xl font-bold text-green-600">23</div>
+                        <div className="text-sm text-muted-foreground">Interview Invites</div>
+                        <div className="text-xs text-green-600">+8% this month</div>
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <div className="text-2xl font-bold text-purple-600">14.7%</div>
+                        <div className="text-sm text-muted-foreground">Response Rate</div>
+                        <div className="text-xs text-green-600">Above average</div>
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <div className="text-2xl font-bold text-orange-600">5</div>
+                        <div className="text-sm text-muted-foreground">Job Offers</div>
+                        <div className="text-xs text-green-600">+2 this week</div>
+                      </div>
+                    </div>
+                    
+                    <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="p-4 bg-blue-50 rounded-lg">
+                        <h4 className="font-semibold text-blue-800 mb-2">Top Performing Skills</h4>
+                        <div className="space-y-2">
+                          <div className="flex justify-between text-sm">
+                            <span>React Development</span>
+                            <Badge className="bg-blue-100 text-blue-800">92% match</Badge>
+                          </div>
+                          <div className="flex justify-between text-sm">
+                            <span>Product Management</span>
+                            <Badge className="bg-blue-100 text-blue-800">88% match</Badge>
+                          </div>
+                          <div className="flex justify-between text-sm">
+                            <span>Data Analysis</span>
+                            <Badge className="bg-blue-100 text-blue-800">84% match</Badge>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="p-4 bg-green-50 rounded-lg">
+                        <h4 className="font-semibold text-green-800 mb-2">Market Trends</h4>
+                        <div className="space-y-2">
+                          <div className="flex justify-between text-sm">
+                            <span>Remote Work Opportunities</span>
+                            <span className="text-green-600">↑ 23%</span>
+                          </div>
+                          <div className="flex justify-between text-sm">
+                            <span>Average Salary Range</span>
+                            <span className="text-green-600">$95K - $145K</span>
+                          </div>
+                          <div className="flex justify-between text-sm">
+                            <span>Competition Level</span>
+                            <span className="text-orange-600">Medium</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="mt-6 flex gap-3">
+                      <Button className="flex-1">
+                        <TrendingUp className="w-4 h-4 mr-2" />
+                        View Detailed Report
+                      </Button>
+                      <Button variant="outline" className="flex-1">
+                        <Download className="w-4 h-4 mr-2" />
+                        Export Data
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
               </div>
             </TabsContent>
 

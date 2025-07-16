@@ -294,22 +294,12 @@ export default function SalaryIntelligence({ userId }: SalaryIntelligenceProps) 
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-5 h-12 p-1 mb-6">
-          <TabsTrigger value="market-research" className="flex items-center justify-center p-3 text-sm h-full">
-            Market Research
-          </TabsTrigger>
-          <TabsTrigger value="personalized-analysis" className="flex items-center justify-center p-3 text-sm h-full">
-            Personalized Analysis
-          </TabsTrigger>
-          <TabsTrigger value="company-insights" className="flex items-center justify-center p-3 text-sm h-full">
-            Company Insights
-          </TabsTrigger>
-          <TabsTrigger value="negotiation-strategy" className="flex items-center justify-center p-3 text-sm h-full">
-            Negotiation Strategy
-          </TabsTrigger>
-          <TabsTrigger value="simulation" className="flex items-center justify-center p-3 text-sm h-full">
-            Simulation
-          </TabsTrigger>
+        <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-1 h-auto p-1">
+          <TabsTrigger value="market-research" className="text-xs sm:text-sm p-2 sm:p-3">Market Research</TabsTrigger>
+          <TabsTrigger value="personalized-analysis" className="text-xs sm:text-sm p-2 sm:p-3">Personalized Analysis</TabsTrigger>
+          <TabsTrigger value="company-insights" className="text-xs sm:text-sm p-2 sm:p-3">Company Insights</TabsTrigger>
+          <TabsTrigger value="negotiation-strategy" className="text-xs sm:text-sm p-2 sm:p-3">Negotiation Strategy</TabsTrigger>
+          <TabsTrigger value="simulation" className="text-xs sm:text-sm p-2 sm:p-3">Simulation</TabsTrigger>
         </TabsList>
 
         <TabsContent value="market-research">
