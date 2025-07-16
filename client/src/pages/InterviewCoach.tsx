@@ -83,11 +83,26 @@ const InterviewCoach: React.FC<InterviewCoachProps> = () => {
   };
 
   // Start a new interview session - navigate to advanced coach
-  const startNewSession = () => {
-    console.log('Start Interview Session button clicked');
+  const startNewSession = (e?: React.MouseEvent) => {
+    e?.preventDefault();
+    e?.stopPropagation();
     
-    // Navigate to the advanced interview coach page
-    navigate('/advanced-interview-coach');
+    console.log('Start Interview Session button clicked');
+    console.log('About to navigate to /advanced-interview-coach');
+    
+    try {
+      // Try direct window location first
+      console.log('Trying window.location.href method');
+      window.location.href = '/advanced-interview-coach';
+      
+      // Also try navigate as backup
+      console.log('Also trying navigate method');
+      navigate('/advanced-interview-coach');
+      
+      console.log('Navigation methods called successfully');
+    } catch (error) {
+      console.error('Navigation error:', error);
+    }
     
     toast({
       title: "Launching Advanced Interview Coach",
