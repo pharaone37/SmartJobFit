@@ -98,8 +98,8 @@ const ChatBot: React.FC<ChatBotProps> = ({
   const featureOptions: FeatureOption[] = [
     {
       id: 'job-search',
-      name: 'AI-Powered Job Search',
-      description: '94% accuracy job matching across 15+ job boards',
+      name: 'Find Jobs with AI',
+      description: 'Search millions of jobs from 15+ platforms with 94% accuracy matching',
       icon: '🔍',
       subTopics: [
         {
@@ -136,8 +136,8 @@ const ChatBot: React.FC<ChatBotProps> = ({
     },
     {
       id: 'resume-optimization',
-      name: 'Resume Optimization',
-      description: '99.8% ATS compatibility with AI-powered suggestions',
+      name: 'Optimize Your Resume',
+      description: 'Get 99.8% ATS compatibility and 300% more recruiter responses',
       icon: '📄',
       subTopics: [
         {
@@ -174,8 +174,8 @@ const ChatBot: React.FC<ChatBotProps> = ({
     },
     {
       id: 'interview-prep',
-      name: 'Interview Preparation',
-      description: 'AI-powered coaching with real-time feedback',
+      name: 'Ace Your Interviews',
+      description: 'AI coaching with 78% success rate and real-time feedback',
       icon: '🎯',
       subTopics: [
         {
@@ -212,8 +212,8 @@ const ChatBot: React.FC<ChatBotProps> = ({
     },
     {
       id: 'application-tracking',
-      name: 'Application Tracking',
-      description: 'Smart tracking with email integration and analytics',
+      name: 'Track Your Applications',
+      description: 'Smart tracking with 87% outcome prediction and email integration',
       icon: '📊',
       subTopics: [
         {
@@ -250,8 +250,8 @@ const ChatBot: React.FC<ChatBotProps> = ({
     },
     {
       id: 'salary-intelligence',
-      name: 'Salary Intelligence',
-      description: 'Market data and negotiation coaching',
+      name: 'Salary Intelligence & Negotiation',
+      description: '73% achieve salary increases with market data and coaching',
       icon: '💰',
       subTopics: [
         {
@@ -288,8 +288,8 @@ const ChatBot: React.FC<ChatBotProps> = ({
     },
     {
       id: 'career-coaching',
-      name: 'Career Coaching',
-      description: 'Personalized career development and planning',
+      name: 'Career Coaching & Development',
+      description: '68% career advancement with personalized roadmaps and mentorship',
       icon: '🚀',
       subTopics: [
         {
@@ -326,8 +326,8 @@ const ChatBot: React.FC<ChatBotProps> = ({
     },
     {
       id: 'job-alerts',
-      name: 'Job Alerts',
-      description: 'Real-time notifications for relevant opportunities',
+      name: 'Smart Job Alerts',
+      description: 'Get notified instantly when perfect jobs match your criteria',
       icon: '🔔',
       subTopics: [
         {
@@ -364,8 +364,8 @@ const ChatBot: React.FC<ChatBotProps> = ({
     },
     {
       id: 'one-click-apply',
-      name: 'One-Click Apply',
-      description: 'Automated application submission with AI personalization',
+      name: 'One-Click Apply Automation',
+      description: 'Save 8 hours per week with automated applications and AI personalization',
       icon: '⚡',
       subTopics: [
         {
@@ -609,18 +609,39 @@ const ChatBot: React.FC<ChatBotProps> = ({
     setSelectedSubTopic(subTopic);
     setCurrentView('chat');
     
-    // Add context message
-    const contextMessage: ChatMessage = {
-      id: `context_${Date.now()}`,
-      role: 'system',
-      content: `You've selected ${selectedFeature?.name} > ${subTopic.name}. Here are some quick questions you can ask:`,
-      timestamp: new Date(),
-      metadata: {
-        suggestedActions: subTopic.quickQuestions
-      }
-    };
-    
-    setMessages([contextMessage]);
+    // Auto-trigger the first question from the sub-topic
+    if (subTopic.quickQuestions.length > 0) {
+      const firstQuestion = subTopic.quickQuestions[0];
+      
+      // Add user message
+      const userMessage: ChatMessage = {
+        id: `user_${Date.now()}`,
+        role: 'user',
+        content: firstQuestion,
+        timestamp: new Date()
+      };
+      
+      setMessages([userMessage]);
+      setIsTyping(true);
+      
+      // Auto-send the question
+      setTimeout(() => {
+        sendMessageMutation.mutate({ 
+          message: firstQuestion, 
+          sessionId: sessionId || undefined 
+        });
+      }, 100);
+    } else {
+      // Fallback to context message if no questions available
+      const contextMessage: ChatMessage = {
+        id: `context_${Date.now()}`,
+        role: 'system',
+        content: `You've selected ${selectedFeature?.name} > ${subTopic.name}. How can I help you with this topic?`,
+        timestamp: new Date()
+      };
+      
+      setMessages([contextMessage]);
+    }
   };
 
   const handleQuickQuestionSelect = (question: string) => {
