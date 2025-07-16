@@ -65,11 +65,39 @@ const InterviewCoach: React.FC<InterviewCoachProps> = () => {
   const questionsLoading = false;
   const responsesLoading = false;
 
-  // Disabled mutation - redirecting to AdvancedInterviewCoach instead
-  const createSessionMutation = {
-    isPending: false,
-    mutate: () => {}
-  };
+  // Create new interview session
+  const createSessionMutation = useMutation({
+    mutationFn: async (sessionData: any) => {
+      // Since we don't have the backend endpoint, create a mock session
+      const mockSession = {
+        id: `session_${Date.now()}`,
+        ...sessionData,
+        questions: [],
+        responses: [],
+        createdAt: new Date().toISOString()
+      };
+      
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      return { session: mockSession };
+    },
+    onSuccess: (data) => {
+      setActiveSession(data.session);
+      toast({
+        title: "Interview Session Started",
+        description: "Your interview coaching session has been created successfully!",
+        variant: "default"
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to create interview session",
+        variant: "destructive"
+      });
+    }
+  });
 
   // Disabled mutations - redirecting to AdvancedInterviewCoach instead
   const submitResponseMutation = {
@@ -82,33 +110,22 @@ const InterviewCoach: React.FC<InterviewCoachProps> = () => {
     mutate: () => {}
   };
 
-  // Start a new interview session - navigate to advanced coach
-  const startNewSession = (e?: React.MouseEvent) => {
-    e?.preventDefault();
-    e?.stopPropagation();
-    
+  // Start a new interview session
+  const startNewSession = () => {
     console.log('Start Interview Session button clicked');
-    console.log('About to navigate to /advanced-interview-coach');
     
-    try {
-      // Try direct window location first
-      console.log('Trying window.location.href method');
-      window.location.href = '/advanced-interview-coach';
-      
-      // Also try navigate as backup
-      console.log('Also trying navigate method');
-      navigate('/advanced-interview-coach');
-      
-      console.log('Navigation methods called successfully');
-    } catch (error) {
-      console.error('Navigation error:', error);
-    }
+    // Create session data
+    const sessionData = {
+      sessionType,
+      difficulty,
+      targetRole,
+      companyId: companyId || 'General',
+      startTime: new Date().toISOString(),
+      status: 'active'
+    };
     
-    toast({
-      title: "Launching Advanced Interview Coach",
-      description: "Get ready for AI-powered interview coaching with emotional intelligence!",
-      variant: "default"
-    });
+    // Start the session
+    createSessionMutation.mutate(sessionData);
   };
 
   // Get next question
@@ -438,19 +455,6 @@ const InterviewCoach: React.FC<InterviewCoachProps> = () => {
       ) : (
         /* Session Setup */
         <div className="space-y-6">
-          {/* Test Button Outside Card */}
-          <div className="p-4 bg-yellow-100 border border-yellow-300 rounded-lg">
-            <p className="text-sm mb-2">Debug: Test button (should work)</p>
-            <Button
-              onClick={() => {
-                console.log('TEST BUTTON CLICKED - This should appear in console');
-                window.location.href = '/advanced-interview-coach';
-              }}
-              className="bg-red-600 hover:bg-red-700"
-            >
-              TEST: Direct Navigation
-            </Button>
-          </div>
           {/* Recent Sessions */}
           {sessions?.sessions && sessions.sessions.length > 0 && (
             <Card>
