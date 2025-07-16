@@ -1,0 +1,195 @@
+Develop an intelligent chatbot that can answer all questions about SmartJobFit's 9 core features, provide personalized guidance, and achieve 92% user satisfaction through advanced AI training and comprehensive knowledge integration.
+
+**Detailed Replit Prompt**
+
+Plain Text
+
+Create a comprehensive AI-powered chatbot for SmartJobFit that can answer all user questions with the following specifications:
+
+CORE FUNCTIONALITY:
+1. Advanced conversational AI with deep knowledge of all 9 platform features
+2. Personalized guidance based on user profile and current platform usage
+3. Multi-turn conversations with context awareness and memory
+4. Seamless escalation to human support when needed
+5. Proactive assistance with feature discovery and optimization tips
+
+REQUIRED TECHNOLOGIES & TOOLS:
+- Primary AI: Google Gemini 2.5 Flash for conversational intelligence and reasoning
+- Knowledge Base: Vector database (Pinecone) for comprehensive platform knowledge
+- Chat Interface: React with real-time messaging and typing indicators
+- Natural Language Processing: Advanced intent recognition and entity extraction
+- Analytics: Conversation analytics with satisfaction tracking and improvement insights
+- Integration: Seamless connection with all platform features and user data
+
+TECHNICAL IMPLEMENTATION:
+1. Create Flask backend for chatbot API:
+   - POST /api/chatbot/message (process user messages and generate responses)
+   - GET /api/chatbot/conversation (retrieve conversation history)
+   - POST /api/chatbot/feedback (collect user satisfaction and improvement feedback)
+   - GET /api/chatbot/suggestions (proactive assistance and feature recommendations)
+   - POST /api/chatbot/escalate (transfer to human support when needed)
+
+2. React frontend components:
+   - ChatInterface: Main chat window with message history and input
+   - MessageBubble: Individual message display with typing indicators
+   - QuickActions: Suggested responses and common question shortcuts
+   - FeatureIntegration: Direct links to relevant platform features
+   - FeedbackWidget: User satisfaction rating and feedback collection
+
+3. Knowledge Base Structure:
+   - Feature Documentation: Comprehensive information about all 9 core features
+   - User Guides: Step-by-step instructions for common tasks and workflows
+   - Troubleshooting: Solutions for common issues and error scenarios
+   - Best Practices: Optimization tips and advanced usage strategies
+   - FAQ Integration: Complete FAQ database with contextual answers
+
+COMPREHENSIVE CHATBOT TRAINING DATA:
+
+### Platform Overview Knowledge:
+- SmartJobFit mission, vision, and unique value propositions
+- Complete feature overview with benefits and use cases
+- User onboarding process and getting started guidance
+- Pricing plans, trial options, and subscription management
+- Platform security, privacy, and data protection measures
+
+### AI-Powered Job Search Expertise:
+- How the AI job matching algorithm works and its 94% accuracy
+- Natural language search capabilities and optimization tips
+- Job aggregation sources and update frequencies
+- Advanced filtering options and search customization
+- Saved searches, alerts, and recommendation personalization
+
+### Resume Optimization Mastery:
+- ATS compatibility analysis and 99.8% success rate explanation
+- AI-powered content enhancement and achievement rewriting
+- Keyword optimization strategies without compromising readability
+- Multi-version resume management for different career paths
+- Performance analytics and response rate improvement tracking
+
+### Interview Preparation Coaching:
+- AI coach capabilities and 78% success rate methodology
+- Multi-language support and cultural adaptation features
+- Company-specific preparation and insider insights
+- Practice session types and performance analytics
+- Confidence building and anxiety management techniques
+
+### Application Tracking Intelligence:
+- Automated email integration and status detection
+- 87% outcome prediction accuracy and methodology
+- Portfolio analytics and optimization recommendations
+- Follow-up automation and timing strategies
+- Calendar integration and interview scheduling
+
+### Salary Intelligence Guidance:
+- Market data sources and 95% accuracy validation
+- Negotiation coaching and 73% success rate strategies
+- Company-specific compensation insights and benchmarking
+- Cost-of-living adjustments and geographic analysis
+- Total compensation evaluation including equity and benefits
+
+### Career Coaching Wisdom:
+- Personalized development planning and 68% advancement rate
+- Skill gap analysis and learning resource recommendations
+- Industry trend analysis and future career planning
+- Mentorship matching and networking facilitation
+- Career transition strategies and risk assessment
+
+### Job Alerts Intelligence:
+- Predictive opportunity discovery and 67% early identification
+- Natural language alert setup and customization
+- Multi-channel notification optimization and timing
+- Market intelligence integration and opportunity context
+- Alert performance analytics and relevance improvement
+
+### One-Click Apply Automation:
+- Intelligent automation with 91% quality maintenance
+- Personalization engine and authenticity preservation
+- Quality control processes and human oversight options
+- Strategic application management and timing optimization
+- Success rate improvement and response analytics
+
+### Company Intelligence Insights:
+- Multi-source data aggregation and 96% accuracy methodology
+- Culture analysis and leadership assessment capabilities
+- Growth prediction and stability forecasting
+- Competitive intelligence and market positioning insights
+- Real-time monitoring and early warning systems
+
+SPECIFIC IMPLEMENTATION STEPS:
+1. Set up Flask backend with Gemini API integration and vector database
+2. Create comprehensive knowledge base with all platform information and FAQs
+3. Implement advanced conversation management with context awareness
+4. Build React chat interface with real-time messaging and rich interactions
+5. Train AI model with platform-specific knowledge and conversation patterns
+6. Implement intent recognition and entity extraction for accurate responses
+7. Add proactive assistance with feature recommendations and optimization tips
+8. Create seamless escalation system for complex queries requiring human support
+9. Implement conversation analytics and satisfaction tracking
+10. Test chatbot across all feature areas and conversation scenarios
+
+CONVERSATION CAPABILITIES:
+
+1. Feature Explanation and Guidance:
+   - Detailed explanations of how each feature works
+   - Step-by-step guidance for feature setup and optimization
+   - Best practices and advanced usage tips
+   - Troubleshooting common issues and error resolution
+
+2. Personalized Recommendations:
+   - Feature suggestions based on user profile and goals
+   - Optimization recommendations for current platform usage
+   - Career guidance based on user's industry and experience level
+   - Strategic advice for job search and career advancement
+
+3. Technical Support:
+   - Account setup and configuration assistance
+   - Integration help with email, calendar, and other tools
+   - Troubleshooting technical issues and error messages
+   - Performance optimization and platform usage tips
+
+4. Strategic Consultation:
+   - Job search strategy development and optimization
+   - Career planning and development guidance
+   - Application strategy and timing recommendations
+   - Salary negotiation preparation and strategy
+
+PERFORMANCE REQUIREMENTS:
+- Response time: Under 2 seconds for most queries
+- Accuracy: 92% user satisfaction with chatbot responses
+- Context retention: Maintain conversation context for up to 50 message exchanges
+- Escalation rate: Less than 15% of conversations require human intervention
+- Feature coverage: Comprehensive knowledge of all 9 core features
+
+INTEGRATION POINTS:
+- Direct access to user profile and platform usage data
+- Seamless navigation to relevant features and pages
+- Integration with FAQ system for comprehensive answer coverage
+- Connection to human support system for complex query escalation
+- Analytics integration for conversation tracking and improvement
+
+ADVANCED FEATURES:
+1. Proactive Assistance:
+   - Feature discovery based on user behavior and goals
+   - Optimization suggestions for improving platform results
+   - Timely reminders for important actions and follow-ups
+   - Personalized tips based on user's career stage and industry
+
+2. Contextual Intelligence:
+   - Understanding of user's current platform context and recent actions
+   - Personalized responses based on user profile and preferences
+   - Memory of previous conversations and established preferences
+   - Adaptive communication style based on user expertise level
+
+3. Multi-Modal Support:
+   - Text-based conversations with rich formatting and links
+   - Quick action buttons for common tasks and navigation
+   - Integration with voice input for accessibility
+   - Visual elements and screenshots for complex explanations
+
+4. Continuous Learning:
+   - Feedback integration for response quality improvement
+   - Conversation analysis for identifying knowledge gaps
+   - User satisfaction tracking with targeted improvements
+   - Regular knowledge base updates based on user questions
+
+Create a production-ready chatbot that serves as an intelligent assistant for SmartJobFit users, providing instant, accurate, and personalized support while reducing the burden on human customer service and enhancing overall user experience.
