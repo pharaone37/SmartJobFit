@@ -787,7 +787,7 @@ const ChatBot: React.FC<ChatBotProps> = ({
         {!isMinimized && (
           <>
             {/* Content Area */}
-            <CardContent className="flex-1 overflow-y-auto p-4 max-h-full">
+            <CardContent className="flex-1 overflow-y-auto p-4 max-h-full min-h-0">
               {/* Decision Tree Views */}
               {currentView === 'features' && (
                 <div className="space-y-4">
@@ -816,11 +816,11 @@ const ChatBot: React.FC<ChatBotProps> = ({
                         >
                           <div className="flex items-start gap-3 w-full">
                             <span className="text-2xl flex-shrink-0">{feature.icon}</span>
-                            <div className="flex-1 min-w-0">
-                              <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-1 break-words">
+                            <div className="flex-1 min-w-0 overflow-hidden">
+                              <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-1 break-words hyphens-auto">
                                 {feature.name}
                               </h4>
-                              <p className="text-sm text-gray-600 dark:text-gray-400 break-words leading-relaxed">
+                              <p className="text-sm text-gray-600 dark:text-gray-400 break-words leading-relaxed hyphens-auto whitespace-normal">
                                 {feature.description}
                               </p>
                             </div>
@@ -865,17 +865,17 @@ const ChatBot: React.FC<ChatBotProps> = ({
                           className="w-full p-4 h-auto text-left hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:border-blue-300 dark:hover:border-blue-700 transition-all"
                           onClick={() => handleSubTopicSelect(subTopic)}
                         >
-                          <div className="flex-1 min-w-0">
-                            <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-1 break-words">
+                          <div className="flex-1 min-w-0 overflow-hidden">
+                            <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-1 break-words hyphens-auto whitespace-normal">
                               {subTopic.name}
                             </h4>
-                            <p className="text-sm text-gray-600 dark:text-gray-400 mb-2 break-words leading-relaxed">
+                            <p className="text-sm text-gray-600 dark:text-gray-400 mb-2 break-words leading-relaxed hyphens-auto whitespace-normal">
                               {subTopic.description}
                             </p>
                             <div className="flex flex-wrap gap-1">
                               {subTopic.quickQuestions.slice(0, 2).map((question, idx) => (
-                                <Badge key={idx} variant="secondary" className="text-xs break-words">
-                                  {question.length > 25 ? `${question.substring(0, 25)}...` : question}
+                                <Badge key={idx} variant="secondary" className="text-xs break-words whitespace-normal">
+                                  {question.length > 30 ? `${question.substring(0, 30)}...` : question}
                                 </Badge>
                               ))}
                             </div>

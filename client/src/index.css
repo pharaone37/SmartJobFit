@@ -224,6 +224,30 @@
   }
 }
 
+/* Chatbot text wrapping fixes */
+.chatbot-text-container {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
+  -webkit-hyphens: auto;
+  -ms-hyphens: auto;
+}
+
+.chatbot-text-container p,
+.chatbot-text-container h4 {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
+  line-height: 1.5;
+}
+
+.chatbot-button-content {
+  overflow: hidden;
+  white-space: normal;
+  word-wrap: break-word;
+  hyphens: auto;
+}
+
 /* Reduced motion support */
 @media (prefers-reduced-motion: reduce) {
   * {
