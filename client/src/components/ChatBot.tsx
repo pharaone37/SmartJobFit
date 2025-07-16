@@ -626,7 +626,26 @@ const ChatBot: React.FC<ChatBotProps> = ({
   const handleQuickQuestionSelect = (question: string) => {
     setMessage(question);
     setCurrentView('chat');
-    handleSendMessage();
+    setTimeout(() => {
+      handleSendMessage();
+    }, 100);
+  };
+
+  const handleDirectChatClick = () => {
+    setCurrentView('chat');
+    if (messages.length === 0) {
+      // Add welcome message for direct chat
+      const welcomeMessage: ChatMessage = {
+        id: `welcome_${Date.now()}`,
+        role: 'assistant',
+        content: `Hi! I'm your SmartJobFit Assistant. I can help you with any questions about our 9 core features: job search, resume optimization, interview prep, application tracking, salary intelligence, career coaching, job alerts, one-click apply, and company intelligence. What would you like to know?`,
+        timestamp: new Date(),
+        metadata: {
+          suggestedActions: ['How do I get started?', 'Help me find jobs', 'Optimize my resume', 'Practice interviews']
+        }
+      };
+      setMessages([welcomeMessage]);
+    }
   };
 
   const handleBackToFeatures = () => {
@@ -746,8 +765,143 @@ const ChatBot: React.FC<ChatBotProps> = ({
 
         {!isMinimized && (
           <>
-            {/* Messages */}
-            <CardContent className="flex-1 overflow-y-auto p-4 space-y-4">
+            {/* Content Area */}
+            <CardContent className="flex-1 overflow-y-auto p-4">
+              {/* Decision Tree Views */}
+              {currentView === 'features' && (
+                <div className="space-y-4">
+                  <div className="text-center mb-6">
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
+                      How can I help you today?
+                    </h3>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                      Choose from our 9 core features to get started
+                    </p>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 gap-3">
+                    {featureOptions.map((feature) => (
+                      <motion.div
+                        key={feature.id}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: featureOptions.indexOf(feature) * 0.1 }}
+                      >
+                        <Button
+                          variant="outline"
+                          className="w-full p-4 h-auto text-left hover:bg-purple-50 dark:hover:bg-purple-900/20 hover:border-purple-300 dark:hover:border-purple-700 transition-all"
+                          onClick={() => handleFeatureSelect(feature)}
+                        >
+                          <div className="flex items-start gap-3">
+                            <span className="text-2xl">{feature.icon}</span>
+                            <div className="flex-1">
+                              <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-1">
+                                {feature.name}
+                              </h4>
+                              <p className="text-sm text-gray-600 dark:text-gray-400">
+                                {feature.description}
+                              </p>
+                            </div>
+                          </div>
+                        </Button>
+                      </motion.div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {currentView === 'subtopics' && selectedFeature && (
+                <div className="space-y-4">
+                  <div className="flex items-center gap-2 mb-4">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={handleBackToFeatures}
+                      className="p-2"
+                    >
+                      ← Back
+                    </Button>
+                    <div className="flex items-center gap-2">
+                      <span className="text-lg">{selectedFeature.icon}</span>
+                      <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                        {selectedFeature.name}
+                      </h3>
+                    </div>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 gap-3">
+                    {selectedFeature.subTopics.map((subTopic) => (
+                      <motion.div
+                        key={subTopic.id}
+                        initial={{ opacity: 0, x: 20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: selectedFeature.subTopics.indexOf(subTopic) * 0.1 }}
+                      >
+                        <Button
+                          variant="outline"
+                          className="w-full p-4 h-auto text-left hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:border-blue-300 dark:hover:border-blue-700 transition-all"
+                          onClick={() => handleSubTopicSelect(subTopic)}
+                        >
+                          <div className="flex-1">
+                            <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-1">
+                              {subTopic.name}
+                            </h4>
+                            <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+                              {subTopic.description}
+                            </p>
+                            <div className="flex flex-wrap gap-1">
+                              {subTopic.quickQuestions.slice(0, 2).map((question, idx) => (
+                                <Badge key={idx} variant="secondary" className="text-xs">
+                                  {question.length > 25 ? `${question.substring(0, 25)}...` : question}
+                                </Badge>
+                              ))}
+                            </div>
+                          </div>
+                        </Button>
+                      </motion.div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {currentView === 'chat' && (
+                <div className="space-y-4">
+                  {/* Chat Header */}
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-2">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={handleBackToSubTopics}
+                        className="p-2"
+                      >
+                        ← Back
+                      </Button>
+                      <div className="flex items-center gap-2">
+                        <span className="text-lg">{selectedFeature?.icon}</span>
+                        <div>
+                          <h3 className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                            {selectedFeature?.name}
+                          </h3>
+                          <p className="text-xs text-gray-600 dark:text-gray-400">
+                            {selectedSubTopic?.name}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={startNewConversation}
+                      className="text-xs"
+                    >
+                      <RotateCcw className="h-3 w-3 mr-1" />
+                      Reset
+                    </Button>
+                  </div>
+
+                  {/* Messages */}
+                  <div className="space-y-4">
               <AnimatePresence>
                 {messages.map((msg) => (
                   <motion.div
@@ -881,10 +1035,33 @@ const ChatBot: React.FC<ChatBotProps> = ({
               )}
               
               <div ref={messagesEndRef} />
+                  </div>
+                </div>
+              )}
             </CardContent>
 
-            {/* Quick Actions */}
-            {messages.length <= 1 && (
+            {/* Footer Actions for non-chat views */}
+            {(currentView === 'features' || currentView === 'subtopics') && (
+              <div className="p-4 border-t border-gray-200 dark:border-gray-700">
+                <div className="flex items-center justify-between">
+                  <p className="text-xs text-gray-500">
+                    {currentView === 'features' ? 'Select a feature above or ask directly' : 'Select a topic above or ask directly'}
+                  </p>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={handleDirectChatClick}
+                    className="text-xs h-7"
+                  >
+                    <MessageCircle className="h-3 w-3 mr-1" />
+                    Direct Chat
+                  </Button>
+                </div>
+              </div>
+            )}
+
+            {/* Quick Actions - Only show in chat mode */}
+            {currentView === 'chat' && messages.length <= 1 && (
               <div className="p-4 border-t border-gray-200 dark:border-gray-700">
                 <div className="grid grid-cols-2 gap-2">
                   {quickActions.slice(0, 4).map((action, index) => (
@@ -903,8 +1080,9 @@ const ChatBot: React.FC<ChatBotProps> = ({
               </div>
             )}
 
-            {/* Input */}
-            <div className="p-4 border-t border-gray-200 dark:border-gray-700">
+            {/* Input - Only show in chat mode */}
+            {currentView === 'chat' && (
+              <div className="p-4 border-t border-gray-200 dark:border-gray-700">
               <div className="flex gap-2">
                 <Textarea
                   ref={inputRef}
@@ -939,7 +1117,8 @@ const ChatBot: React.FC<ChatBotProps> = ({
                   Press Enter to send, Shift+Enter for new line
                 </div>
               </div>
-            </div>
+              </div>
+            )}
           </>
         )}
       </Card>
