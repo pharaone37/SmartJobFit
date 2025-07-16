@@ -7,6 +7,7 @@ import { LanguageProvider } from "@/components/LanguageProvider";
 
 // Pages
 import Landing from "@/pages/Landing";
+import Homepage from "@/pages/Homepage";
 import Dashboard from "@/pages/Dashboard";
 import ImprovedDashboard from "@/pages/ImprovedDashboard";
 import JobSearch from "@/pages/JobSearch";
