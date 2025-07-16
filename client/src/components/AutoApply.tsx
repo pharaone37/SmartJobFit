@@ -205,27 +205,42 @@ export function AutoApply({ userId }: AutoApplyProps) {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-3 sm:grid-cols-5 gap-1 sm:gap-0 h-auto sm:h-10 mb-4 sm:mb-6">
-          <TabsTrigger value="dashboard" className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2 p-2 sm:p-3 text-xs sm:text-sm">
-            <BarChart3 className="w-4 h-4 sm:w-4 sm:h-4" />
+        <TabsList className="grid w-full grid-cols-3 sm:grid-cols-5 h-auto mb-6 bg-transparent border-b border-border p-0">
+          <TabsTrigger 
+            value="dashboard" 
+            className="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium transition-all border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:text-primary rounded-none"
+          >
+            <BarChart3 className="w-4 h-4" />
             <span className="hidden sm:inline">Dashboard</span>
             <span className="sm:hidden">Stats</span>
           </TabsTrigger>
-          <TabsTrigger value="profiles" className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2 p-2 sm:p-3 text-xs sm:text-sm">
-            <Users className="w-4 h-4 sm:w-4 sm:h-4" />
+          <TabsTrigger 
+            value="profiles" 
+            className="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium transition-all border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:text-primary rounded-none"
+          >
+            <Users className="w-4 h-4" />
             <span>Profiles</span>
           </TabsTrigger>
-          <TabsTrigger value="queue" className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2 p-2 sm:p-3 text-xs sm:text-sm">
-            <Clock className="w-4 h-4 sm:w-4 sm:h-4" />
+          <TabsTrigger 
+            value="queue" 
+            className="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium transition-all border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:text-primary rounded-none"
+          >
+            <Clock className="w-4 h-4" />
             <span>Queue</span>
           </TabsTrigger>
-          <TabsTrigger value="analytics" className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2 p-2 sm:p-3 text-xs sm:text-sm">
-            <TrendingUp className="w-4 h-4 sm:w-4 sm:h-4" />
+          <TabsTrigger 
+            value="analytics" 
+            className="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium transition-all border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:text-primary rounded-none"
+          >
+            <TrendingUp className="w-4 h-4" />
             <span className="hidden sm:inline">Analytics</span>
             <span className="sm:hidden">Stats</span>
           </TabsTrigger>
-          <TabsTrigger value="settings" className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2 p-2 sm:p-3 text-xs sm:text-sm">
-            <Settings className="w-4 h-4 sm:w-4 sm:h-4" />
+          <TabsTrigger 
+            value="settings" 
+            className="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium transition-all border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:text-primary rounded-none"
+          >
+            <Settings className="w-4 h-4" />
             <span>Settings</span>
           </TabsTrigger>
         </TabsList>
