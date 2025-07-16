@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
-import { Calendar, Clock, Building, MapPin, DollarSign, FileText, Mail, Phone, Users, Lightbulb, BarChart } from "lucide-react";
+import { Calendar, Clock, Building, MapPin, DollarSign, FileText, Mail, Phone, Users, Lightbulb, BarChart, TrendingUp, Target, RefreshCw, Send, MessageSquare, Bell, CheckCircle, Settings } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 import { apiRequest } from "@/lib/queryClient";
@@ -442,8 +442,9 @@ export default function ApplicationTracker() {
         </TabsContent>
 
         <TabsContent value="applications" className="space-y-6">
-          <div className="grid grid-cols-1 gap-4">
-            {applications?.applications?.map((app: Application) => (
+          {applications?.applications?.length > 0 ? (
+            <div className="grid grid-cols-1 gap-4">
+              {applications?.applications?.map((app: Application) => (
               <Card key={app.id} className="hover:shadow-lg transition-shadow">
                 <CardHeader>
                   <div className="flex items-center justify-between">
@@ -519,7 +520,119 @@ export default function ApplicationTracker() {
                 </CardContent>
               </Card>
             ))}
-          </div>
+            </div>
+          ) : (
+            /* Applications Empty State */
+            <div className="space-y-6">
+              {/* What You'll See Here */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>What You'll See Here</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-4">
+                      <div className="flex items-start gap-3">
+                        <div className="bg-primary/10 p-2 rounded-full">
+                          <FileText className="w-4 h-4 text-primary" />
+                        </div>
+                        <div>
+                          <h3 className="font-semibold">Application Details</h3>
+                          <p className="text-sm text-muted-foreground">
+                            Position titles, company names, application dates, and status tracking
+                          </p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-start gap-3">
+                        <div className="bg-primary/10 p-2 rounded-full">
+                          <Badge className="w-4 h-4 text-primary" />
+                        </div>
+                        <div>
+                          <h3 className="font-semibold">Status Management</h3>
+                          <p className="text-sm text-muted-foreground">
+                            Track progress from applied to screening, interviews, and offers
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-4">
+                      <div className="flex items-start gap-3">
+                        <div className="bg-primary/10 p-2 rounded-full">
+                          <TrendingUp className="w-4 h-4 text-primary" />
+                        </div>
+                        <div>
+                          <h3 className="font-semibold">Priority Scoring</h3>
+                          <p className="text-sm text-muted-foreground">
+                            AI-powered priority scores to help you focus on high-value opportunities
+                          </p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-start gap-3">
+                        <div className="bg-primary/10 p-2 rounded-full">
+                          <Zap className="w-4 h-4 text-primary" />
+                        </div>
+                        <div>
+                          <h3 className="font-semibold">Smart Actions</h3>
+                          <p className="text-sm text-muted-foreground">
+                            Quick actions to update status and generate outcome predictions
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Getting Started */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Getting Started</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="flex items-start gap-3">
+                      <div className="bg-primary/10 p-2 rounded-full">
+                        <Search className="w-4 h-4 text-primary" />
+                      </div>
+                      <div>
+                        <h3 className="font-semibold">1. Find Jobs</h3>
+                        <p className="text-sm text-muted-foreground">
+                          Use the Job Search feature to find relevant positions and save interesting opportunities
+                        </p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-start gap-3">
+                      <div className="bg-primary/10 p-2 rounded-full">
+                        <Plus className="w-4 h-4 text-primary" />
+                      </div>
+                      <div>
+                        <h3 className="font-semibold">2. Add Applications</h3>
+                        <p className="text-sm text-muted-foreground">
+                          Manually add applications or import from job boards to start tracking
+                        </p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-start gap-3">
+                      <div className="bg-primary/10 p-2 rounded-full">
+                        <Target className="w-4 h-4 text-primary" />
+                      </div>
+                      <div>
+                        <h3 className="font-semibold">3. Track Progress</h3>
+                        <p className="text-sm text-muted-foreground">
+                          Update application status and set up follow-up reminders
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          )}
         </TabsContent>
 
         <TabsContent value="analytics" className="space-y-6">
@@ -618,43 +731,421 @@ export default function ApplicationTracker() {
                 </CardContent>
               </Card>
             </>
+          ) : (
+            /* Analytics Empty State */
+            <div className="space-y-6">
+              {/* What You'll See Here */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <BarChart className="w-5 h-5" />
+                    Analytics Overview
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-6">
+                    <div className="text-center py-8">
+                      <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <TrendingUp className="w-8 h-8 text-primary" />
+                      </div>
+                      <h3 className="text-lg font-semibold mb-2">Track Your Job Search Performance</h3>
+                      <p className="text-muted-foreground mb-6">
+                        Get detailed insights and analytics once you start adding applications
+                      </p>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="space-y-4">
+                        <h4 className="font-semibold text-sm text-primary">Key Metrics You'll Track</h4>
+                        <div className="space-y-3">
+                          <div className="flex items-center gap-3">
+                            <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                            <span className="text-sm">Response Rate - How often companies respond to your applications</span>
+                          </div>
+                          <div className="flex items-center gap-3">
+                            <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                            <span className="text-sm">Interview Rate - Percentage of applications that lead to interviews</span>
+                          </div>
+                          <div className="flex items-center gap-3">
+                            <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+                            <span className="text-sm">Offer Rate - Applications that result in job offers</span>
+                          </div>
+                          <div className="flex items-center gap-3">
+                            <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
+                            <span className="text-sm">Application Pipeline - Track progress through each stage</span>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="space-y-4">
+                        <h4 className="font-semibold text-sm text-primary">Smart Insights</h4>
+                        <div className="space-y-3">
+                          <div className="flex items-center gap-3">
+                            <Target className="w-4 h-4 text-muted-foreground" />
+                            <span className="text-sm">Personalized optimization suggestions</span>
+                          </div>
+                          <div className="flex items-center gap-3">
+                            <Calendar className="w-4 h-4 text-muted-foreground" />
+                            <span className="text-sm">Best times to apply and follow up</span>
+                          </div>
+                          <div className="flex items-center gap-3">
+                            <Users className="w-4 h-4 text-muted-foreground" />
+                            <span className="text-sm">Industry and role-specific benchmarks</span>
+                          </div>
+                          <div className="flex items-center gap-3">
+                            <Lightbulb className="w-4 h-4 text-muted-foreground" />
+                            <span className="text-sm">AI-powered improvement recommendations</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Sample Analytics Preview */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-sm">Sample Analytics Dashboard</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div className="p-4 border rounded-lg opacity-60">
+                        <div className="text-2xl font-bold text-muted-foreground">--</div>
+                        <p className="text-sm text-muted-foreground">Response Rate</p>
+                        <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
+                          <div className="bg-blue-500 h-2 rounded-full" style={{ width: '0%' }}></div>
+                        </div>
+                      </div>
+                      <div className="p-4 border rounded-lg opacity-60">
+                        <div className="text-2xl font-bold text-muted-foreground">--</div>
+                        <p className="text-sm text-muted-foreground">Interview Rate</p>
+                        <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
+                          <div className="bg-green-500 h-2 rounded-full" style={{ width: '0%' }}></div>
+                        </div>
+                      </div>
+                      <div className="p-4 border rounded-lg opacity-60">
+                        <div className="text-2xl font-bold text-muted-foreground">--</div>
+                        <p className="text-sm text-muted-foreground">Offer Rate</p>
+                        <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
+                          <div className="bg-purple-500 h-2 rounded-full" style={{ width: '0%' }}></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="text-center py-4">
+                      <p className="text-sm text-muted-foreground">
+                        This dashboard will populate with real data as you add applications
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Quick Start */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-sm">Get Started with Analytics</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="flex items-start gap-3">
+                      <div className="bg-primary/10 p-2 rounded-full">
+                        <FileText className="w-4 h-4 text-primary" />
+                      </div>
+                      <div>
+                        <h3 className="font-semibold">1. Add Applications</h3>
+                        <p className="text-sm text-muted-foreground">Start by adding your job applications with company and position details</p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-start gap-3">
+                      <div className="bg-primary/10 p-2 rounded-full">
+                        <RefreshCw className="w-4 h-4 text-primary" />
+                      </div>
+                      <div>
+                        <h3 className="font-semibold">2. Update Status</h3>
+                        <p className="text-sm text-muted-foreground">Keep your application status updated as you progress through the hiring process</p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-start gap-3">
+                      <div className="bg-primary/10 p-2 rounded-full">
+                        <TrendingUp className="w-4 h-4 text-primary" />
+                      </div>
+                      <div>
+                        <h3 className="font-semibold">3. Review Insights</h3>
+                        <p className="text-sm text-muted-foreground">Get personalized analytics and optimization suggestions</p>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
           )}
         </TabsContent>
 
         <TabsContent value="follow-ups" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Upcoming Follow-ups</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {dashboard?.upcomingFollowUps?.map((followUp: any) => (
-                  <div key={followUp.id} className="flex items-center justify-between p-4 border rounded-lg">
-                    <div className="flex items-center space-x-4">
-                      <Clock className="h-4 w-4 text-muted-foreground" />
+          {dashboard?.upcomingFollowUps?.length > 0 ? (
+            <Card>
+              <CardHeader>
+                <CardTitle>Upcoming Follow-ups</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {dashboard?.upcomingFollowUps?.map((followUp: any) => (
+                    <div key={followUp.id} className="flex items-center justify-between p-4 border rounded-lg">
+                      <div className="flex items-center space-x-4">
+                        <Clock className="h-4 w-4 text-muted-foreground" />
+                        <div>
+                          <h3 className="font-semibold">{followUp.positionTitle}</h3>
+                          <p className="text-sm text-muted-foreground">
+                            {followUp.companyName} • {format(new Date(followUp.scheduledDate), 'MMM d, yyyy')}
+                          </p>
+                          <p className="text-sm text-muted-foreground">
+                            Type: {followUp.followUpType}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex space-x-2">
+                        <Button variant="outline" size="sm">
+                          Edit
+                        </Button>
+                        <Button size="sm">
+                          Send Now
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          ) : (
+            /* Follow-ups Empty State */
+            <div className="space-y-6">
+              {/* Main Follow-ups Overview */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Clock className="w-5 h-5" />
+                    Follow-up Management
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-6">
+                    <div className="text-center py-8">
+                      <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <Send className="w-8 h-8 text-primary" />
+                      </div>
+                      <h3 className="text-lg font-semibold mb-2">Smart Follow-up System</h3>
+                      <p className="text-muted-foreground mb-6">
+                        Automated reminders and AI-powered follow-up messages to keep your applications active
+                      </p>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="space-y-4">
+                        <h4 className="font-semibold text-sm text-primary">Follow-up Types</h4>
+                        <div className="space-y-3">
+                          <div className="flex items-center gap-3">
+                            <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                            <span className="text-sm">Thank You Follow-up - Send within 24 hours after application</span>
+                          </div>
+                          <div className="flex items-center gap-3">
+                            <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                            <span className="text-sm">Status Update - Check application status after 1-2 weeks</span>
+                          </div>
+                          <div className="flex items-center gap-3">
+                            <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
+                            <span className="text-sm">Interest Reconfirmation - Follow up after 3-4 weeks</span>
+                          </div>
+                          <div className="flex items-center gap-3">
+                            <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+                            <span className="text-sm">Interview Follow-up - Thank you note after interviews</span>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="space-y-4">
+                        <h4 className="font-semibold text-sm text-primary">AI-Powered Features</h4>
+                        <div className="space-y-3">
+                          <div className="flex items-center gap-3">
+                            <MessageSquare className="w-4 h-4 text-muted-foreground" />
+                            <span className="text-sm">Personalized message templates</span>
+                          </div>
+                          <div className="flex items-center gap-3">
+                            <Calendar className="w-4 h-4 text-muted-foreground" />
+                            <span className="text-sm">Optimal timing recommendations</span>
+                          </div>
+                          <div className="flex items-center gap-3">
+                            <Users className="w-4 h-4 text-muted-foreground" />
+                            <span className="text-sm">Company-specific customization</span>
+                          </div>
+                          <div className="flex items-center gap-3">
+                            <Bell className="w-4 h-4 text-muted-foreground" />
+                            <span className="text-sm">Automated scheduling and reminders</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Follow-up Best Practices */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-sm">Follow-up Best Practices</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="space-y-4">
+                        <h4 className="font-semibold text-sm text-primary">Timing Guidelines</h4>
+                        <div className="space-y-3">
+                          <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                            <div className="font-medium text-sm">Application Submission</div>
+                            <div className="text-xs text-muted-foreground">Send thank you within 24 hours</div>
+                          </div>
+                          <div className="p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
+                            <div className="font-medium text-sm">First Follow-up</div>
+                            <div className="text-xs text-muted-foreground">Wait 1-2 weeks, then check status</div>
+                          </div>
+                          <div className="p-3 bg-orange-50 dark:bg-orange-900/20 rounded-lg">
+                            <div className="font-medium text-sm">Second Follow-up</div>
+                            <div className="text-xs text-muted-foreground">After 3-4 weeks, reconfirm interest</div>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="space-y-4">
+                        <h4 className="font-semibold text-sm text-primary">Message Tips</h4>
+                        <div className="space-y-3">
+                          <div className="flex items-start gap-3">
+                            <CheckCircle className="w-4 h-4 text-green-500 mt-0.5" />
+                            <div>
+                              <div className="text-sm font-medium">Keep it Brief</div>
+                              <div className="text-xs text-muted-foreground">2-3 sentences maximum</div>
+                            </div>
+                          </div>
+                          <div className="flex items-start gap-3">
+                            <CheckCircle className="w-4 h-4 text-green-500 mt-0.5" />
+                            <div>
+                              <div className="text-sm font-medium">Add Value</div>
+                              <div className="text-xs text-muted-foreground">Include relevant updates or insights</div>
+                            </div>
+                          </div>
+                          <div className="flex items-start gap-3">
+                            <CheckCircle className="w-4 h-4 text-green-500 mt-0.5" />
+                            <div>
+                              <div className="text-sm font-medium">Be Professional</div>
+                              <div className="text-xs text-muted-foreground">Use formal tone and proper grammar</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Sample Follow-up Templates */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-sm">Sample Follow-up Templates</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="p-4 border rounded-lg">
+                        <h4 className="font-semibold text-sm mb-2">Thank You Follow-up</h4>
+                        <div className="text-xs text-muted-foreground bg-muted/50 p-3 rounded-md">
+                          "Thank you for considering my application for the [Position] role. I'm excited about the opportunity to contribute to [Company]. I look forward to hearing from you."
+                        </div>
+                      </div>
+                      <div className="p-4 border rounded-lg">
+                        <h4 className="font-semibold text-sm mb-2">Status Update</h4>
+                        <div className="text-xs text-muted-foreground bg-muted/50 p-3 rounded-md">
+                          "I wanted to follow up on my application for the [Position] role. I remain very interested in the opportunity and would welcome the chance to discuss my qualifications further."
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="text-center py-4">
+                      <p className="text-sm text-muted-foreground">
+                        AI will customize these templates based on your specific applications and company research
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Get Started */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-sm">Get Started with Follow-ups</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="flex items-start gap-3">
+                      <div className="bg-primary/10 p-2 rounded-full">
+                        <FileText className="w-4 h-4 text-primary" />
+                      </div>
                       <div>
-                        <h3 className="font-semibold">{followUp.positionTitle}</h3>
+                        <h3 className="font-semibold">1. Add Your Applications</h3>
                         <p className="text-sm text-muted-foreground">
-                          {followUp.companyName} • {format(new Date(followUp.scheduledDate), 'MMM d, yyyy')}
-                        </p>
-                        <p className="text-sm text-muted-foreground">
-                          Type: {followUp.followUpType}
+                          Start by adding applications to enable automated follow-up scheduling
                         </p>
                       </div>
                     </div>
-                    <div className="flex space-x-2">
-                      <Button variant="outline" size="sm">
-                        Edit
-                      </Button>
-                      <Button size="sm">
-                        Send Now
-                      </Button>
+                    
+                    <div className="flex items-start gap-3">
+                      <div className="bg-primary/10 p-2 rounded-full">
+                        <Settings className="w-4 h-4 text-primary" />
+                      </div>
+                      <div>
+                        <h3 className="font-semibold">2. Configure Preferences</h3>
+                        <p className="text-sm text-muted-foreground">
+                          Set your follow-up preferences and customize message templates
+                        </p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-start gap-3">
+                      <div className="bg-primary/10 p-2 rounded-full">
+                        <Send className="w-4 h-4 text-primary" />
+                      </div>
+                      <div>
+                        <h3 className="font-semibold">3. Let AI Handle the Rest</h3>
+                        <p className="text-sm text-muted-foreground">
+                          Receive reminders and AI-generated follow-up messages at optimal times
+                        </p>
+                      </div>
                     </div>
                   </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
+                </CardContent>
+              </Card>
+
+              {/* Quick Actions */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Quick Actions</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <Button className="w-full" size="lg">
+                      <FileText className="w-4 h-4 mr-2" />
+                      Add Application
+                    </Button>
+                    <Button variant="outline" className="w-full" size="lg">
+                      <Settings className="w-4 h-4 mr-2" />
+                      Configure Settings
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          )}
         </TabsContent>
       </Tabs>
     </div>
