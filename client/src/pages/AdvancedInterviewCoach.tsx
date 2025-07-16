@@ -193,54 +193,85 @@ export default function AdvancedInterviewCoach() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20">
-      <div className="container mx-auto px-4 py-8">
-        <div className="max-w-6xl mx-auto">
-          {/* Header */}
-          <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
-              Advanced Interview Preparation & Coaching
-            </h1>
-            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-              AI-powered interview coaching with emotional intelligence, multi-language support, 
-              and personalized feedback based on 50,000+ real interview questions.
-            </p>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
+      <div className="mx-auto px-3 sm:px-4 lg:px-6">
+        <div className="max-w-7xl mx-auto">
+          {/* Header - Match Dashboard Style */}
+          <div className="pt-6 pb-4 mb-6 border-b border-slate-200 dark:border-slate-700">
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white">
+                  Advanced Interview Preparation & Coaching
+                </h1>
+                <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 mt-1">
+                  AI-powered interview coaching with emotional intelligence and personalized feedback
+                </p>
+              </div>
+              <Button
+                variant="outline"
+                onClick={() => navigate('/dashboard')}
+                className="gap-2"
+              >
+                <BarChart3 className="h-4 w-4" />
+                Back to Dashboard
+              </Button>
+            </div>
           </div>
 
-          {/* Success Metrics */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-            <Card className="text-center">
-              <CardContent className="p-4">
-                <div className="text-2xl font-bold text-green-600">78%</div>
-                <div className="text-sm text-gray-600">Success Rate</div>
+          {/* Success Metrics - Match Dashboard Style */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-8">
+            <Card className="border-0 shadow-lg">
+              <CardContent className="p-3 sm:p-4">
+                <div className="text-xl sm:text-2xl font-bold text-green-600">78%</div>
+                <div className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">Success Rate</div>
               </CardContent>
             </Card>
-            <Card className="text-center">
-              <CardContent className="p-4">
-                <div className="text-2xl font-bold text-blue-600">85%</div>
-                <div className="text-sm text-gray-600">Confidence Boost</div>
+            <Card className="border-0 shadow-lg">
+              <CardContent className="p-3 sm:p-4">
+                <div className="text-xl sm:text-2xl font-bold text-blue-600">85%</div>
+                <div className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">Confidence Boost</div>
               </CardContent>
             </Card>
-            <Card className="text-center">
-              <CardContent className="p-4">
-                <div className="text-2xl font-bold text-purple-600">92%</div>
-                <div className="text-sm text-gray-600">Accuracy Rate</div>
+            <Card className="border-0 shadow-lg">
+              <CardContent className="p-3 sm:p-4">
+                <div className="text-xl sm:text-2xl font-bold text-purple-600">92%</div>
+                <div className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">Accuracy Rate</div>
               </CardContent>
             </Card>
-            <Card className="text-center">
-              <CardContent className="p-4">
-                <div className="text-2xl font-bold text-orange-600">60%</div>
-                <div className="text-sm text-gray-600">Time Reduction</div>
+            <Card className="border-0 shadow-lg">
+              <CardContent className="p-3 sm:p-4">
+                <div className="text-xl sm:text-2xl font-bold text-orange-600">60%</div>
+                <div className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">Time Reduction</div>
               </CardContent>
             </Card>
           </div>
 
-          <Tabs defaultValue="practice" className="w-full">
-            <TabsList className="grid w-full grid-cols-4">
-              <TabsTrigger value="practice">Practice Session</TabsTrigger>
-              <TabsTrigger value="analytics">Performance Analytics</TabsTrigger>
-              <TabsTrigger value="questions">Question Bank</TabsTrigger>
-              <TabsTrigger value="company">Company Prep</TabsTrigger>
+          <Tabs defaultValue="practice" className="w-full pb-20 md:pb-6">
+            <TabsList className="grid w-full grid-cols-2 lg:grid-cols-4 bg-slate-100 dark:bg-slate-800 rounded-xl p-1 mb-6">
+              <TabsTrigger 
+                value="practice" 
+                className="rounded-lg data-[state=active]:bg-white data-[state=active]:text-slate-900 dark:data-[state=active]:bg-slate-900 dark:data-[state=active]:text-white transition-all duration-200 text-sm sm:text-base"
+              >
+                Practice Session
+              </TabsTrigger>
+              <TabsTrigger 
+                value="analytics" 
+                className="rounded-lg data-[state=active]:bg-white data-[state=active]:text-slate-900 dark:data-[state=active]:bg-slate-900 dark:data-[state=active]:text-white transition-all duration-200 text-sm sm:text-base"
+              >
+                Performance Analytics
+              </TabsTrigger>
+              <TabsTrigger 
+                value="questions" 
+                className="rounded-lg data-[state=active]:bg-white data-[state=active]:text-slate-900 dark:data-[state=active]:bg-slate-900 dark:data-[state=active]:text-white transition-all duration-200 text-sm sm:text-base"
+              >
+                Question Bank
+              </TabsTrigger>
+              <TabsTrigger 
+                value="company" 
+                className="rounded-lg data-[state=active]:bg-white data-[state=active]:text-slate-900 dark:data-[state=active]:bg-slate-900 dark:data-[state=active]:text-white transition-all duration-200 text-sm sm:text-base"
+              >
+                Company Prep
+              </TabsTrigger>
             </TabsList>
 
             {/* Practice Session Tab */}
@@ -248,13 +279,13 @@ export default function AdvancedInterviewCoach() {
               {!isSessionActive ? (
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                   {/* Setup Panel */}
-                  <Card>
+                  <Card className="border-0 shadow-lg">
                     <CardHeader>
-                      <CardTitle className="flex items-center gap-2">
-                        <Settings className="h-5 w-5" />
+                      <CardTitle className="flex items-center gap-2 text-slate-900 dark:text-white">
+                        <Settings className="h-5 w-5 text-blue-500" />
                         Session Configuration
                       </CardTitle>
-                      <CardDescription>
+                      <CardDescription className="text-slate-600 dark:text-slate-400">
                         Customize your AI interview coaching experience
                       </CardDescription>
                     </CardHeader>
@@ -355,10 +386,10 @@ export default function AdvancedInterviewCoach() {
                   </Card>
 
                   {/* Features Overview */}
-                  <Card>
+                  <Card className="border-0 shadow-lg">
                     <CardHeader>
-                      <CardTitle className="flex items-center gap-2">
-                        <Zap className="h-5 w-5" />
+                      <CardTitle className="flex items-center gap-2 text-slate-900 dark:text-white">
+                        <Zap className="h-5 w-5 text-yellow-500" />
                         AI Coach Features
                       </CardTitle>
                     </CardHeader>
@@ -367,8 +398,8 @@ export default function AdvancedInterviewCoach() {
                         <div className="flex items-start gap-3">
                           <Brain className="h-5 w-5 text-purple-600 mt-0.5" />
                           <div>
-                            <div className="font-medium">Emotional Intelligence</div>
-                            <div className="text-sm text-gray-600">
+                            <div className="font-medium text-slate-900 dark:text-white">Emotional Intelligence</div>
+                            <div className="text-sm text-slate-600 dark:text-slate-400">
                               Analyzes vocal patterns, confidence levels, and emotional states
                             </div>
                           </div>
@@ -377,8 +408,8 @@ export default function AdvancedInterviewCoach() {
                         <div className="flex items-start gap-3">
                           <Globe className="h-5 w-5 text-blue-600 mt-0.5" />
                           <div>
-                            <div className="font-medium">Multi-Language Support</div>
-                            <div className="text-sm text-gray-600">
+                            <div className="font-medium text-slate-900 dark:text-white">Multi-Language Support</div>
+                            <div className="text-sm text-slate-600 dark:text-slate-400">
                               Native-level coaching in 6 languages with cultural adaptation
                             </div>
                           </div>
@@ -387,8 +418,8 @@ export default function AdvancedInterviewCoach() {
                         <div className="flex items-start gap-3">
                           <Target className="h-5 w-5 text-green-600 mt-0.5" />
                           <div>
-                            <div className="font-medium">Personalized Feedback</div>
-                            <div className="text-sm text-gray-600">
+                            <div className="font-medium text-slate-900 dark:text-white">Personalized Feedback</div>
+                            <div className="text-sm text-slate-600 dark:text-slate-400">
                               Adapts teaching style to your learning preferences and anxiety levels
                             </div>
                           </div>
@@ -397,8 +428,8 @@ export default function AdvancedInterviewCoach() {
                         <div className="flex items-start gap-3">
                           <Building className="h-5 w-5 text-orange-600 mt-0.5" />
                           <div>
-                            <div className="font-medium">Company-Specific Prep</div>
-                            <div className="text-sm text-gray-600">
+                            <div className="font-medium text-slate-900 dark:text-white">Company-Specific Prep</div>
+                            <div className="text-sm text-slate-600 dark:text-slate-400">
                               Tailored questions and insights for specific companies
                             </div>
                           </div>
@@ -407,8 +438,8 @@ export default function AdvancedInterviewCoach() {
                         <div className="flex items-start gap-3">
                           <BarChart3 className="h-5 w-5 text-red-600 mt-0.5" />
                           <div>
-                            <div className="font-medium">Real-Time Analytics</div>
-                            <div className="text-sm text-gray-600">
+                            <div className="font-medium text-slate-900 dark:text-white">Real-Time Analytics</div>
+                            <div className="text-sm text-slate-600 dark:text-slate-400">
                               Live performance feedback and improvement suggestions
                             </div>
                           </div>
