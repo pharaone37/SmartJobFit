@@ -740,9 +740,9 @@ const ChatBot: React.FC<ChatBotProps> = ({
         isMinimized ? 'w-80 h-16' : 'w-96 h-[600px]'
       } transition-all duration-300`}
     >
-      <Card className="h-full flex flex-col shadow-2xl border-0 bg-white dark:bg-gray-900">
+      <Card className="h-full flex flex-col shadow-2xl border-0 bg-white dark:bg-gray-900 overflow-hidden">
         {/* Header */}
-        <CardHeader className="flex-row items-center justify-between p-4 bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded-t-lg">
+        <CardHeader className="flex-row items-center justify-between p-4 bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded-t-lg flex-shrink-0">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
               <Bot className="h-5 w-5" />
@@ -787,7 +787,7 @@ const ChatBot: React.FC<ChatBotProps> = ({
         {!isMinimized && (
           <>
             {/* Content Area */}
-            <CardContent className="flex-1 overflow-y-auto p-4">
+            <CardContent className="flex-1 overflow-y-auto p-4 max-h-full">
               {/* Decision Tree Views */}
               {currentView === 'features' && (
                 <div className="space-y-4">
@@ -800,26 +800,27 @@ const ChatBot: React.FC<ChatBotProps> = ({
                     </p>
                   </div>
                   
-                  <div className="grid grid-cols-1 gap-3">
+                  <div className="grid grid-cols-1 gap-3 max-w-full">
                     {featureOptions.map((feature) => (
                       <motion.div
                         key={feature.id}
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: featureOptions.indexOf(feature) * 0.1 }}
+                        className="w-full"
                       >
                         <Button
                           variant="outline"
                           className="w-full p-4 h-auto text-left hover:bg-purple-50 dark:hover:bg-purple-900/20 hover:border-purple-300 dark:hover:border-purple-700 transition-all"
                           onClick={() => handleFeatureSelect(feature)}
                         >
-                          <div className="flex items-start gap-3">
-                            <span className="text-2xl">{feature.icon}</span>
-                            <div className="flex-1">
-                              <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-1">
+                          <div className="flex items-start gap-3 w-full">
+                            <span className="text-2xl flex-shrink-0">{feature.icon}</span>
+                            <div className="flex-1 min-w-0">
+                              <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-1 break-words">
                                 {feature.name}
                               </h4>
-                              <p className="text-sm text-gray-600 dark:text-gray-400">
+                              <p className="text-sm text-gray-600 dark:text-gray-400 break-words leading-relaxed">
                                 {feature.description}
                               </p>
                             </div>
@@ -850,29 +851,30 @@ const ChatBot: React.FC<ChatBotProps> = ({
                     </div>
                   </div>
                   
-                  <div className="grid grid-cols-1 gap-3">
+                  <div className="grid grid-cols-1 gap-3 max-w-full">
                     {selectedFeature.subTopics.map((subTopic) => (
                       <motion.div
                         key={subTopic.id}
                         initial={{ opacity: 0, x: 20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: selectedFeature.subTopics.indexOf(subTopic) * 0.1 }}
+                        className="w-full"
                       >
                         <Button
                           variant="outline"
                           className="w-full p-4 h-auto text-left hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:border-blue-300 dark:hover:border-blue-700 transition-all"
                           onClick={() => handleSubTopicSelect(subTopic)}
                         >
-                          <div className="flex-1">
-                            <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-1">
+                          <div className="flex-1 min-w-0">
+                            <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-1 break-words">
                               {subTopic.name}
                             </h4>
-                            <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+                            <p className="text-sm text-gray-600 dark:text-gray-400 mb-2 break-words leading-relaxed">
                               {subTopic.description}
                             </p>
                             <div className="flex flex-wrap gap-1">
                               {subTopic.quickQuestions.slice(0, 2).map((question, idx) => (
-                                <Badge key={idx} variant="secondary" className="text-xs">
+                                <Badge key={idx} variant="secondary" className="text-xs break-words">
                                   {question.length > 25 ? `${question.substring(0, 25)}...` : question}
                                 </Badge>
                               ))}
