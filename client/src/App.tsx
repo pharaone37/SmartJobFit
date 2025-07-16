@@ -42,6 +42,7 @@ import CareerMoodBoard from "@/components/CareerMoodBoard";
 import SkillTracker from "@/components/SkillTracker";
 import InterviewChatbot from "@/components/InterviewChatbot";
 import NetworkSync from "@/components/NetworkSync";
+import ChatBot from "@/components/ChatBot";
 
 // New AI Systems
 import { JobSearchEngine } from "@/pages/JobSearchEngine";
@@ -125,6 +126,9 @@ function AppContent() {
         {/* Show footer on all pages */}
         <Footer />
         <Toaster />
+        
+        {/* Global Chatbot - available on all pages */}
+        <ChatBot />
       </div>
     </BrowserRouter>
   );

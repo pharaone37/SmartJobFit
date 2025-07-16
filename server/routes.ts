@@ -60,6 +60,15 @@ import {
   getFAQCategories, 
   getFAQAnalytics 
 } from "./faq";
+import {
+  processMessage,
+  getConversationHistory,
+  submitFeedback,
+  getSuggestions,
+  escalateToHuman,
+  updatePreferences,
+  getChatbotAnalytics
+} from "./chatbot";
 import multer from "multer";
 import { 
   insertJobSchema, 
@@ -6194,6 +6203,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post('/api/faq/:id/rate', rateFAQ);
   app.get('/api/faq/categories', getFAQCategories);
   app.get('/api/faq/analytics', getFAQAnalytics);
+
+  // Chatbot Routes (Public routes)
+  app.post('/api/chatbot/message', processMessage);
+  app.get('/api/chatbot/conversation/:sessionId', getConversationHistory);
+  app.post('/api/chatbot/feedback', submitFeedback);
+  app.get('/api/chatbot/suggestions', getSuggestions);
+  app.post('/api/chatbot/escalate', escalateToHuman);
+  app.put('/api/chatbot/preferences/:sessionId', updatePreferences);
+  app.get('/api/chatbot/analytics', getChatbotAnalytics);
 
   const httpServer = createServer(app);
   return httpServer;
