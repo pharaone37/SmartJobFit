@@ -204,11 +204,19 @@ export default function ApplicationTracker() {
       </div>
 
       <Tabs defaultValue="dashboard" className="w-full">
-        <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 gap-1 h-auto p-1">
-          <TabsTrigger value="dashboard" className="text-xs sm:text-sm p-2 sm:p-3">Dashboard</TabsTrigger>
-          <TabsTrigger value="applications" className="text-xs sm:text-sm p-2 sm:p-3">Applications</TabsTrigger>
-          <TabsTrigger value="analytics" className="text-xs sm:text-sm p-2 sm:p-3">Analytics</TabsTrigger>
-          <TabsTrigger value="follow-ups" className="text-xs sm:text-sm p-2 sm:p-3">Follow-ups</TabsTrigger>
+        <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 h-auto mb-6 bg-transparent border-b border-border p-0">
+          <TabsTrigger value="dashboard" className="flex items-center justify-center gap-2 px-2 py-3 text-xs sm:text-sm font-medium transition-all border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:text-primary rounded-none">
+            Dashboard
+          </TabsTrigger>
+          <TabsTrigger value="applications" className="flex items-center justify-center gap-2 px-2 py-3 text-xs sm:text-sm font-medium transition-all border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:text-primary rounded-none">
+            Applications
+          </TabsTrigger>
+          <TabsTrigger value="analytics" className="flex items-center justify-center gap-2 px-2 py-3 text-xs sm:text-sm font-medium transition-all border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:text-primary rounded-none">
+            Analytics
+          </TabsTrigger>
+          <TabsTrigger value="follow-ups" className="flex items-center justify-center gap-2 px-2 py-3 text-xs sm:text-sm font-medium transition-all border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:text-primary rounded-none">
+            Follow-ups
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="dashboard" className="space-y-4 sm:space-y-6 mt-4 sm:mt-6">
