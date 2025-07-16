@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import Stripe from "stripe";
-import { storage } from "./storage-simplified";
+import { storage } from "./storage";
 import { setupJWTAuth, requireAuth, getUserId } from "./auth/jwtAuth";
 import { jobBoardService } from "./services/jobBoards";
 import { jobService } from "./services/jobService";

@@ -1168,7 +1168,8 @@ export class DatabaseStorage implements IStorage {
 
   async storeOptimizationResults(resumeId: string, suggestions: any[]): Promise<void> {
     const optimizationData = {
-      analysis: { suggestions, lastOptimized: new Date() },
+      optimizationSuggestions: suggestions,
+      lastOptimized: new Date(),
       updatedAt: new Date()
     };
     
@@ -1187,8 +1188,10 @@ export class DatabaseStorage implements IStorage {
       fileName: resume.fileName,
       createdAt: resume.createdAt,
       lastModified: resume.updatedAt,
+      version: resume.version,
+      optimizationSuggestions: resume.optimizationSuggestions,
       atsScore: resume.atsScore,
-      analysis: resume.analysis
+      keywords: resume.keywords
     };
   }
 
@@ -1204,6 +1207,7 @@ export class DatabaseStorage implements IStorage {
     await db
       .update(resumes)
       .set({ 
+        lastModified: new Date(),
         updatedAt: new Date()
       })
       .where(eq(resumes.id, resumeId));
