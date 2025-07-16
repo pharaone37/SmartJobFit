@@ -60,6 +60,17 @@ import {
   Tablet
 } from 'lucide-react';
 
+// Import screenshots
+import jobSearchScreenshot from '@/assets/Screenshot 2025-07-16 at 18.29.41_1752684043849.png';
+import applicationTrackerScreenshot from '@/assets/Screenshot 2025-07-16 at 18.29.56_1752684043850.png';
+import autoApplyScreenshot from '@/assets/Screenshot 2025-07-16 at 18.30.04_1752684043850.png';
+import resumeOptimizationScreenshot from '@/assets/Screenshot 2025-07-16 at 18.30.14_1752684043851.png';
+import interviewCoachingScreenshot from '@/assets/Screenshot 2025-07-16 at 18.30.23_1752684043851.png';
+import salaryIntelligenceScreenshot from '@/assets/Screenshot 2025-07-16 at 18.30.33_1752684043852.png';
+import jobAlertsScreenshot from '@/assets/Screenshot 2025-07-16 at 18.31.05_1752684043852.png';
+import analyticsScreenshot from '@/assets/Screenshot 2025-07-16 at 18.31.13_1752684043853.png';
+import careerCoachingScreenshot from '@/assets/Screenshot 2025-07-16 at 18.32.15_1752684043853.png';
+
 // Hero Section Component
 const HeroSection = () => {
   const [currentFeature, setCurrentFeature] = useState(0);
@@ -227,6 +238,14 @@ const HeroSection = () => {
 const FeatureShowcase = () => {
   const [activeFeature, setActiveFeature] = useState(0);
   
+  // Auto-rotate through features
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setActiveFeature((prev) => (prev + 1) % 9); // 9 features total
+    }, 5000); // Change every 5 seconds
+    return () => clearInterval(interval);
+  }, []);
+  
   const features = [
     {
       id: 0,
@@ -234,6 +253,7 @@ const FeatureShowcase = () => {
       title: "AI-Powered Job Search",
       description: "Find 94% relevant jobs in under 2 seconds",
       benefits: ["Multi-platform search", "Smart deduplication", "Real-time matching"],
+      screenshot: jobSearchScreenshot,
       demo: {
         metric: "2.3 seconds",
         label: "Average search time",
@@ -246,6 +266,7 @@ const FeatureShowcase = () => {
       title: "Resume Optimization",
       description: "300% increase in recruiter responses",
       benefits: ["ATS compatibility", "Keyword optimization", "Industry-specific tailoring"],
+      screenshot: resumeOptimizationScreenshot,
       demo: {
         metric: "98.7%",
         label: "ATS compatibility score",
@@ -258,6 +279,7 @@ const FeatureShowcase = () => {
       title: "Interview Preparation",
       description: "78% interview success rate",
       benefits: ["AI-powered coaching", "Multi-language support", "Real-time feedback"],
+      screenshot: interviewCoachingScreenshot,
       demo: {
         metric: "78%",
         label: "Interview success rate",
@@ -270,6 +292,7 @@ const FeatureShowcase = () => {
       title: "Application Tracking",
       description: "87% outcome prediction accuracy",
       benefits: ["Automated tracking", "Communication timeline", "Success prediction"],
+      screenshot: applicationTrackerScreenshot,
       demo: {
         metric: "87%",
         label: "Prediction accuracy",
@@ -282,6 +305,7 @@ const FeatureShowcase = () => {
       title: "Salary Intelligence",
       description: "73% achieve salary increases",
       benefits: ["Real-time market data", "Negotiation coaching", "Geographic analysis"],
+      screenshot: salaryIntelligenceScreenshot,
       demo: {
         metric: "73%",
         label: "Salary increase rate",
@@ -294,6 +318,7 @@ const FeatureShowcase = () => {
       title: "Career Coaching",
       description: "68% career advancement in 12 months",
       benefits: ["Personalized roadmaps", "Skill gap analysis", "Mentorship matching"],
+      screenshot: careerCoachingScreenshot,
       demo: {
         metric: "68%",
         label: "Career advancement rate",
@@ -306,6 +331,7 @@ const FeatureShowcase = () => {
       title: "Job Alerts",
       description: "67% early opportunity discovery",
       benefits: ["Predictive algorithms", "Multi-channel alerts", "Natural language processing"],
+      screenshot: jobAlertsScreenshot,
       demo: {
         metric: "67%",
         label: "Early discovery rate",
@@ -318,6 +344,7 @@ const FeatureShowcase = () => {
       title: "One-Click Apply",
       description: "95% time savings, 34% higher response rates",
       benefits: ["Quality automation", "AI review process", "Time optimization"],
+      screenshot: autoApplyScreenshot,
       demo: {
         metric: "95%",
         label: "Time savings",
@@ -330,6 +357,7 @@ const FeatureShowcase = () => {
       title: "Company Intelligence",
       description: "96% accuracy in culture assessments",
       benefits: ["Culture analysis", "Leadership insights", "Competitive intelligence"],
+      screenshot: analyticsScreenshot,
       demo: {
         metric: "96%",
         label: "Culture accuracy",
@@ -439,6 +467,19 @@ const FeatureShowcase = () => {
                     <div className="text-sm text-gray-600 dark:text-gray-300">
                       User satisfaction
                     </div>
+                  </div>
+                </div>
+
+                {/* Feature Screenshot */}
+                <div className="space-y-3">
+                  <h4 className="font-semibold text-gray-900 dark:text-white">Live Feature Preview:</h4>
+                  <div className="relative overflow-hidden rounded-lg shadow-lg">
+                    <img 
+                      src={currentFeature.screenshot} 
+                      alt={`${currentFeature.title} screenshot`}
+                      className="w-full h-64 object-cover object-top border border-gray-200 dark:border-gray-700"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent"></div>
                   </div>
                 </div>
 
