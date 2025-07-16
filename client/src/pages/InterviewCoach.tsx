@@ -112,20 +112,29 @@ const InterviewCoach: React.FC<InterviewCoachProps> = () => {
 
   // Start a new interview session
   const startNewSession = () => {
-    console.log('Start Interview Session button clicked');
+    console.log('Start AI Interview button clicked');
     
-    // Create session data
-    const sessionData = {
-      sessionType,
-      difficulty,
-      targetRole,
-      companyId: companyId || 'General',
-      startTime: new Date().toISOString(),
-      status: 'active'
-    };
-    
-    // Start the session
-    createSessionMutation.mutate(sessionData);
+    // If already on interview-coach page, just proceed with session
+    if (window.location.pathname === '/interview-coach') {
+      console.log('Already on interview-coach page, starting session');
+      
+      // Create session data
+      const sessionData = {
+        sessionType,
+        difficulty,
+        targetRole,
+        companyId: companyId || 'General',
+        startTime: new Date().toISOString(),
+        status: 'active'
+      };
+      
+      // Start the session
+      createSessionMutation.mutate(sessionData);
+    } else {
+      // Navigate to interview-coach page
+      console.log('Navigating to interview-coach page');
+      navigate('/interview-coach');
+    }
   };
 
   // Get next question
@@ -556,7 +565,7 @@ const InterviewCoach: React.FC<InterviewCoachProps> = () => {
                   className="bg-blue-600 hover:bg-blue-700 cursor-pointer"
                   style={{ pointerEvents: 'auto', zIndex: 10 }}
                 >
-                  Start Interview Session
+                  Start AI Interview
                   <ArrowRight className="w-4 h-4 ml-2" />
                 </Button>
               </div>
