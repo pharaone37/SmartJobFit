@@ -193,38 +193,40 @@ export function AutoApply({ userId }: AutoApplyProps) {
   }
 
   return (
-    <div className="w-full max-w-7xl mx-auto p-6">
-      <div className="mb-8">
+    <div className="w-full max-w-7xl mx-auto p-3 sm:p-6 pb-20 sm:pb-6">
+      <div className="mb-6 sm:mb-8">
         <div className="flex items-center gap-3 mb-2">
-          <Brain className="w-8 h-8 text-primary" />
-          <h1 className="text-3xl font-bold">Auto-Apply AI Agent</h1>
+          <Brain className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
+          <h1 className="text-xl sm:text-3xl font-bold">Auto-Apply AI Agent</h1>
         </div>
-        <p className="text-muted-foreground">
+        <p className="text-sm sm:text-base text-muted-foreground">
           Intelligent job application automation with AI-powered matching and quality control
         </p>
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-5">
-          <TabsTrigger value="dashboard" className="flex items-center gap-2">
-            <BarChart3 className="w-4 h-4" />
-            Dashboard
+        <TabsList className="grid w-full grid-cols-3 sm:grid-cols-5 gap-1 sm:gap-0 h-auto sm:h-10 mb-4 sm:mb-6">
+          <TabsTrigger value="dashboard" className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2 p-2 sm:p-3 text-xs sm:text-sm">
+            <BarChart3 className="w-4 h-4 sm:w-4 sm:h-4" />
+            <span className="hidden sm:inline">Dashboard</span>
+            <span className="sm:hidden">Stats</span>
           </TabsTrigger>
-          <TabsTrigger value="profiles" className="flex items-center gap-2">
-            <Users className="w-4 h-4" />
-            Profiles
+          <TabsTrigger value="profiles" className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2 p-2 sm:p-3 text-xs sm:text-sm">
+            <Users className="w-4 h-4 sm:w-4 sm:h-4" />
+            <span>Profiles</span>
           </TabsTrigger>
-          <TabsTrigger value="queue" className="flex items-center gap-2">
-            <Clock className="w-4 h-4" />
-            Queue
+          <TabsTrigger value="queue" className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2 p-2 sm:p-3 text-xs sm:text-sm">
+            <Clock className="w-4 h-4 sm:w-4 sm:h-4" />
+            <span>Queue</span>
           </TabsTrigger>
-          <TabsTrigger value="analytics" className="flex items-center gap-2">
-            <TrendingUp className="w-4 h-4" />
-            Analytics
+          <TabsTrigger value="analytics" className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2 p-2 sm:p-3 text-xs sm:text-sm">
+            <TrendingUp className="w-4 h-4 sm:w-4 sm:h-4" />
+            <span className="hidden sm:inline">Analytics</span>
+            <span className="sm:hidden">Stats</span>
           </TabsTrigger>
-          <TabsTrigger value="settings" className="flex items-center gap-2">
-            <Settings className="w-4 h-4" />
-            Settings
+          <TabsTrigger value="settings" className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2 p-2 sm:p-3 text-xs sm:text-sm">
+            <Settings className="w-4 h-4 sm:w-4 sm:h-4" />
+            <span>Settings</span>
           </TabsTrigger>
         </TabsList>
 

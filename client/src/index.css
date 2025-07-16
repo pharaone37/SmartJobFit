@@ -372,4 +372,54 @@
   .salary-company-insights .space-y-4 > * + * {
     margin-top: 16px;
   }
+  
+  /* Auto-Apply and Salary Intelligence Tab Mobile Optimizations */
+  .auto-apply-tabs .tabs-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    height: auto;
+    padding: 8px;
+  }
+  
+  .auto-apply-tabs .tabs-trigger {
+    flex: 1;
+    min-width: 70px;
+    padding: 8px 4px;
+    font-size: 0.75rem;
+    line-height: 1.2;
+    text-align: center;
+    border-radius: 6px;
+  }
+  
+  .salary-tabs .tabs-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    height: auto;
+    padding: 8px;
+  }
+  
+  .salary-tabs .tabs-trigger {
+    flex: 1;
+    min-width: 70px;
+    padding: 8px 4px;
+    font-size: 0.75rem;
+    line-height: 1.2;
+    text-align: center;
+    border-radius: 6px;
+  }
+  
+  /* Better tab spacing for mobile */
+  .mobile-tabs-container {
+    margin-bottom: 20px;
+  }
+  
+  .mobile-tabs-container .tabs-list {
+    margin-bottom: 16px;
+  }
+  
+  .mobile-tabs-container .tabs-content {
+    padding: 16px 0;
+  }
 }

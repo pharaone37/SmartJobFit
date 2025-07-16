@@ -287,19 +287,33 @@ export default function SalaryIntelligence({ userId }: SalaryIntelligenceProps) 
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 pb-20 sm:pb-6">
       <div className="text-center mb-6">
-        <h2 className="text-2xl font-bold mb-2">Salary Intelligence & Negotiation Coaching</h2>
-        <p className="text-gray-600">AI-powered salary research, market analysis, and negotiation strategy</p>
+        <h2 className="text-lg sm:text-2xl font-bold mb-2">Salary Intelligence & Negotiation Coaching</h2>
+        <p className="text-sm sm:text-base text-gray-600">AI-powered salary research, market analysis, and negotiation strategy</p>
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-5">
-          <TabsTrigger value="market-research">Market Research</TabsTrigger>
-          <TabsTrigger value="personalized-analysis">Personalized Analysis</TabsTrigger>
-          <TabsTrigger value="company-insights">Company Insights</TabsTrigger>
-          <TabsTrigger value="negotiation-strategy">Negotiation Strategy</TabsTrigger>
-          <TabsTrigger value="simulation">Simulation</TabsTrigger>
+        <TabsList className="grid w-full grid-cols-3 sm:grid-cols-5 gap-1 sm:gap-0 h-auto sm:h-10 mb-4 sm:mb-6">
+          <TabsTrigger value="market-research" className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2 p-2 sm:p-3 text-xs sm:text-sm">
+            <span className="hidden sm:inline">Market Research</span>
+            <span className="sm:hidden">Market</span>
+          </TabsTrigger>
+          <TabsTrigger value="personalized-analysis" className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2 p-2 sm:p-3 text-xs sm:text-sm">
+            <span className="hidden sm:inline">Personalized Analysis</span>
+            <span className="sm:hidden">Personal</span>
+          </TabsTrigger>
+          <TabsTrigger value="company-insights" className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2 p-2 sm:p-3 text-xs sm:text-sm">
+            <span className="hidden sm:inline">Company Insights</span>
+            <span className="sm:hidden">Company</span>
+          </TabsTrigger>
+          <TabsTrigger value="negotiation-strategy" className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2 p-2 sm:p-3 text-xs sm:text-sm">
+            <span className="hidden sm:inline">Negotiation Strategy</span>
+            <span className="sm:hidden">Strategy</span>
+          </TabsTrigger>
+          <TabsTrigger value="simulation" className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2 p-2 sm:p-3 text-xs sm:text-sm">
+            <span>Simulation</span>
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="market-research">
