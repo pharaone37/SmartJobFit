@@ -30,7 +30,10 @@ import {
   Settings,
   BookOpen,
   Languages,
-  Zap
+  Zap,
+  Briefcase,
+  Search,
+  Plus
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
@@ -194,27 +197,60 @@ export default function AdvancedInterviewCoach() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
-      <div className="mx-auto px-3 sm:px-4 lg:px-6">
-        <div className="max-w-7xl mx-auto">
-          {/* Header - Match Dashboard Style */}
-          <div className="pt-6 pb-4 mb-6 border-b border-slate-200 dark:border-slate-700">
-            <div className="flex items-center justify-between">
-              <div>
-                <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white">
-                  Advanced Interview Preparation & Coaching
-                </h1>
-                <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 mt-1">
-                  AI-powered interview coaching with emotional intelligence and personalized feedback
-                </p>
+      {/* Main Top Navigation - Match Dashboard Style */}
+      <header className="sticky top-0 z-50 bg-white/95 dark:bg-slate-900/95 backdrop-blur-lg border-b border-slate-200 dark:border-slate-700">
+        <div className="mx-auto px-3 sm:px-4 lg:px-6">
+          <div className="flex justify-between items-center h-14 sm:h-16">
+            {/* Left Side - Logo */}
+            <div className="flex items-center gap-2">
+              <div className="w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center">
+                <Briefcase className="h-3 w-3 sm:h-5 sm:w-5 text-white" />
               </div>
+              <div>
+                <h1 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white">SmartJobFit</h1>
+                <p className="text-xs text-slate-500 dark:text-slate-400">AI-Powered Career Platform</p>
+              </div>
+            </div>
+
+            {/* Right Side - Actions */}
+            <div className="flex items-center gap-2 sm:gap-4">
+              <div className="hidden md:flex items-center gap-2">
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
+                  <Input
+                    placeholder="Search jobs, companies..."
+                    className="pl-10 pr-4 py-2 w-60 lg:w-80 bg-white/50 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700"
+                  />
+                </div>
+              </div>
+              <Button variant="outline" size="sm" className="gap-2 px-2 sm:px-3">
+                <Plus className="h-4 w-4" />
+                <span className="hidden sm:inline">Quick Actions</span>
+              </Button>
               <Button
                 variant="outline"
                 onClick={() => navigate('/dashboard')}
                 className="gap-2"
               >
                 <BarChart3 className="h-4 w-4" />
-                Back to Dashboard
+                Dashboard
               </Button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div className="mx-auto px-3 sm:px-4 lg:px-6">
+        <div className="max-w-7xl mx-auto">
+          {/* Page Header */}
+          <div className="pt-6 pb-4 mb-6">
+            <div className="text-center">
+              <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white">
+                Advanced Interview Preparation & Coaching
+              </h1>
+              <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 mt-1">
+                AI-powered interview coaching with emotional intelligence and personalized feedback
+              </p>
             </div>
           </div>
 
@@ -247,32 +283,35 @@ export default function AdvancedInterviewCoach() {
           </div>
 
           <Tabs defaultValue="practice" className="w-full pb-20 md:pb-6">
-            <TabsList className="grid w-full grid-cols-2 lg:grid-cols-4 bg-slate-100 dark:bg-slate-800 rounded-xl p-1 mb-6">
-              <TabsTrigger 
-                value="practice" 
-                className="rounded-lg data-[state=active]:bg-white data-[state=active]:text-slate-900 dark:data-[state=active]:bg-slate-900 dark:data-[state=active]:text-white transition-all duration-200 text-sm sm:text-base"
-              >
-                Practice Session
-              </TabsTrigger>
-              <TabsTrigger 
-                value="analytics" 
-                className="rounded-lg data-[state=active]:bg-white data-[state=active]:text-slate-900 dark:data-[state=active]:bg-slate-900 dark:data-[state=active]:text-white transition-all duration-200 text-sm sm:text-base"
-              >
-                Performance Analytics
-              </TabsTrigger>
-              <TabsTrigger 
-                value="questions" 
-                className="rounded-lg data-[state=active]:bg-white data-[state=active]:text-slate-900 dark:data-[state=active]:bg-slate-900 dark:data-[state=active]:text-white transition-all duration-200 text-sm sm:text-base"
-              >
-                Question Bank
-              </TabsTrigger>
-              <TabsTrigger 
-                value="company" 
-                className="rounded-lg data-[state=active]:bg-white data-[state=active]:text-slate-900 dark:data-[state=active]:bg-slate-900 dark:data-[state=active]:text-white transition-all duration-200 text-sm sm:text-base"
-              >
-                Company Prep
-              </TabsTrigger>
-            </TabsList>
+            {/* Clean Underlined Tabs - Match Reference Style */}
+            <div className="border-b border-slate-200 dark:border-slate-700 mb-6">
+              <TabsList className="grid w-full grid-cols-2 lg:grid-cols-4 bg-transparent h-auto p-0 border-0">
+                <TabsTrigger 
+                  value="practice" 
+                  className="relative bg-transparent border-0 rounded-none pb-3 px-6 text-slate-600 dark:text-slate-400 data-[state=active]:text-blue-600 data-[state=active]:dark:text-blue-400 hover:text-slate-900 dark:hover:text-white transition-colors duration-200 after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-blue-600 after:dark:bg-blue-400 after:opacity-0 data-[state=active]:after:opacity-100 after:transition-opacity after:duration-200"
+                >
+                  Practice Session
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="analytics"
+                  className="relative bg-transparent border-0 rounded-none pb-3 px-6 text-slate-600 dark:text-slate-400 data-[state=active]:text-blue-600 data-[state=active]:dark:text-blue-400 hover:text-slate-900 dark:hover:text-white transition-colors duration-200 after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-blue-600 after:dark:bg-blue-400 after:opacity-0 data-[state=active]:after:opacity-100 after:transition-opacity after:duration-200"
+                >
+                  Performance Analytics
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="questions"
+                  className="relative bg-transparent border-0 rounded-none pb-3 px-6 text-slate-600 dark:text-slate-400 data-[state=active]:text-blue-600 data-[state=active]:dark:text-blue-400 hover:text-slate-900 dark:hover:text-white transition-colors duration-200 after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-blue-600 after:dark:bg-blue-400 after:opacity-0 data-[state=active]:after:opacity-100 after:transition-opacity after:duration-200"
+                >
+                  Question Bank
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="company"
+                  className="relative bg-transparent border-0 rounded-none pb-3 px-6 text-slate-600 dark:text-slate-400 data-[state=active]:text-blue-600 data-[state=active]:dark:text-blue-400 hover:text-slate-900 dark:hover:text-white transition-colors duration-200 after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-blue-600 after:dark:bg-blue-400 after:opacity-0 data-[state=active]:after:opacity-100 after:transition-opacity after:duration-200"
+                >
+                  Company Prep
+                </TabsTrigger>
+              </TabsList>
+            </div>
 
             {/* Practice Session Tab */}
             <TabsContent value="practice" className="space-y-6">
