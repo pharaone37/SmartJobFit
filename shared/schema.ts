@@ -49,6 +49,7 @@ export const users = pgTable("users", {
   jobSearchesThisMonth: integer("job_searches_this_month").default(0),
   resumeOptimizationsThisMonth: integer("resume_optimizations_this_month").default(0),
   provider: varchar("provider").default("email"), // 'email', 'linkedin', 'replit'
+  onboardingState: jsonb("onboarding_state"), // Onboarding progress and preferences
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });

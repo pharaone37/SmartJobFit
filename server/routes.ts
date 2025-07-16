@@ -3121,6 +3121,142 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Onboarding API routes
+  app.get('/api/user/onboarding', requireAuth, async (req, res) => {
+    try {
+      const userId = getUserId(req);
+      const user = await storage.getUser(userId);
+      
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+
+      // Get or create onboarding state
+      let onboardingState = user.onboardingState || {
+        isCompleted: false,
+        preferences: {
+          showTips: true,
+          autoAdvance: false,
+          reminderFrequency: 'weekly'
+        }
+      };
+
+      res.json(onboardingState);
+    } catch (error) {
+      console.error('Get onboarding state error:', error);
+      res.status(500).json({ message: 'Failed to get onboarding state' });
+    }
+  });
+
+  app.patch('/api/user/onboarding', requireAuth, async (req, res) => {
+    try {
+      const userId = getUserId(req);
+      const updates = req.body;
+      
+      const user = await storage.getUser(userId);
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+
+      // Update onboarding state
+      const currentState = user.onboardingState || {
+        isCompleted: false,
+        preferences: {
+          showTips: true,
+          autoAdvance: false,
+          reminderFrequency: 'weekly'
+        }
+      };
+
+      const updatedState = {
+        ...currentState,
+        ...updates,
+        updatedAt: new Date().toISOString()
+      };
+
+      await storage.updateUser(userId, {
+        onboardingState: updatedState
+      });
+
+      res.json({ success: true, onboardingState: updatedState });
+    } catch (error) {
+      console.error('Update onboarding state error:', error);
+      res.status(500).json({ message: 'Failed to update onboarding state' });
+    }
+  });
+
+  app.post('/api/user/onboarding/complete', requireAuth, async (req, res) => {
+    try {
+      const userId = getUserId(req);
+      const { completedAt } = req.body;
+      
+      const user = await storage.getUser(userId);
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+
+      const currentState = user.onboardingState || {
+        preferences: {
+          showTips: true,
+          autoAdvance: false,
+          reminderFrequency: 'weekly'
+        }
+      };
+
+      const completedState = {
+        ...currentState,
+        isCompleted: true,
+        completedAt: completedAt || new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+
+      await storage.updateUser(userId, {
+        onboardingState: completedState
+      });
+
+      res.json({ success: true, onboardingState: completedState });
+    } catch (error) {
+      console.error('Complete onboarding error:', error);
+      res.status(500).json({ message: 'Failed to complete onboarding' });
+    }
+  });
+
+  app.post('/api/user/onboarding/skip', requireAuth, async (req, res) => {
+    try {
+      const userId = getUserId(req);
+      const { skippedAt } = req.body;
+      
+      const user = await storage.getUser(userId);
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+
+      const currentState = user.onboardingState || {
+        preferences: {
+          showTips: true,
+          autoAdvance: false,
+          reminderFrequency: 'weekly'
+        }
+      };
+
+      const skippedState = {
+        ...currentState,
+        isCompleted: true,
+        skippedAt: skippedAt || new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+
+      await storage.updateUser(userId, {
+        onboardingState: skippedState
+      });
+
+      res.json({ success: true, onboardingState: skippedState });
+    } catch (error) {
+      console.error('Skip onboarding error:', error);
+      res.status(500).json({ message: 'Failed to skip onboarding' });
+    }
+  });
+
 
 
   // Salary Intelligence API Routes

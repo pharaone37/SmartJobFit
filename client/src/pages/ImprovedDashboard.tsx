@@ -3,6 +3,7 @@ import { useAuth, removeAuthToken } from '@/hooks/useAuth';
 import { useQuery } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
+import { useOnboarding } from '@/hooks/useOnboarding';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -22,6 +23,7 @@ import SalaryIntelligence from '@/components/SalaryIntelligence';
 import CareerCoaching from '@/components/CareerCoaching';
 import JobAlerts from '@/components/JobAlerts';
 import { AutoApply } from '@/components/AutoApply';
+import OnboardingTour from '@/components/OnboardingTour';
 import { 
   Search, 
   FileText, 
@@ -79,6 +81,14 @@ export default function ImprovedDashboard() {
   const { toast } = useToast();
   const navigate = useNavigate();
   const [filters, setFilters] = useState<JobSearchFiltersType>({});
+  const { 
+    shouldShowTour, 
+    closeTour, 
+    completeTour, 
+    startTour, 
+    isNewUser,
+    isProfileIncomplete 
+  } = useOnboarding();
 
   const handleLogout = () => {
     removeAuthToken();
@@ -302,7 +312,7 @@ export default function ImprovedDashboard() {
                       <Settings className="mr-2 h-4 w-4" />
                       <span>Preferences</span>
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => navigate('/pricing')}>
+                    <DropdownMenuItem id="premium-upgrade" onClick={() => navigate('/pricing')}>
                       <CreditCard className="mr-2 h-4 w-4" />
                       <span>Billing & Subscription</span>
                     </DropdownMenuItem>
@@ -351,6 +361,7 @@ export default function ImprovedDashboard() {
                     <TabsTrigger
                       key={item.id}
                       value={item.id}
+                      id={`${item.id}-tab`}
                       className="nav-tab-trigger"
                     >
                       <item.icon className={`h-4 w-4 ${activeTab === item.id ? 'text-blue-600 dark:text-blue-400' : item.color}`} />
@@ -364,7 +375,7 @@ export default function ImprovedDashboard() {
             {/* Overview Tab - Mobile Optimized */}
             <TabsContent value="overview" className="space-y-4 sm:space-y-6 pb-20 md:pb-6">
               {/* Welcome Section */}
-              <Card className="border-0 shadow-lg bg-gradient-to-r from-blue-50 to-purple-50 dark:from-slate-800 dark:to-slate-700">
+              <Card id="welcome-card" className="border-0 shadow-lg bg-gradient-to-r from-blue-50 to-purple-50 dark:from-slate-800 dark:to-slate-700">
                 <CardContent className="p-4 sm:p-6">
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                     <div>
@@ -374,6 +385,19 @@ export default function ImprovedDashboard() {
                       <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 mt-2">
                         Your career journey continues. Here's what's happening today.
                       </p>
+                      {(isNewUser || isProfileIncomplete) && (
+                        <div className="mt-3 flex items-center gap-2">
+                          <Button
+                            onClick={startTour}
+                            size="sm"
+                            className="bg-blue-600 hover:bg-blue-700 text-white"
+                          >
+                            <Rocket className="h-4 w-4 mr-2" />
+                            Start Interactive Tour
+                          </Button>
+                          <span className="text-xs text-slate-500">Learn how to use SmartJobFit</span>
+                        </div>
+                      )}
                     </div>
                     <div className="flex items-center gap-3 self-start sm:self-center">
                       <div className="text-center sm:text-right">
@@ -389,7 +413,7 @@ export default function ImprovedDashboard() {
               </Card>
 
               {/* Progress Overview */}
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+              <div id="profile-completion" className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
                 {progressIndicators.map((indicator) => (
                   <Card key={indicator.label} className="border-0 shadow-lg">
                     <CardContent className="p-3 sm:p-4">
@@ -943,6 +967,14 @@ export default function ImprovedDashboard() {
           </div>
         </SheetContent>
       </Sheet>
+
+      {/* Onboarding Tour */}
+      <OnboardingTour 
+        isOpen={shouldShowTour} 
+        onClose={closeTour} 
+        onComplete={completeTour}
+        userProfile={user} 
+      />
     </div>
   );
 }
