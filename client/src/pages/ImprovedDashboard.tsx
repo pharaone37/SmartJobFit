@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { useQuery } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -76,6 +77,7 @@ import {
 export default function ImprovedDashboard() {
   const { user } = useAuth();
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [filters, setFilters] = useState<JobSearchFiltersType>({});
 
   const handleLogout = () => {
@@ -292,19 +294,19 @@ export default function ImprovedDashboard() {
                         </Badge>
                       </div>
                     </div>
-                    <DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => navigate('/profile')}>
                       <User className="mr-2 h-4 w-4" />
                       <span>Account Settings</span>
                     </DropdownMenuItem>
-                    <DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => navigate('/settings')}>
                       <Settings className="mr-2 h-4 w-4" />
                       <span>Preferences</span>
                     </DropdownMenuItem>
-                    <DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => navigate('/pricing')}>
                       <CreditCard className="mr-2 h-4 w-4" />
                       <span>Billing & Subscription</span>
                     </DropdownMenuItem>
-                    <DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => navigate('/support')}>
                       <Bell className="mr-2 h-4 w-4" />
                       <span>Support</span>
                     </DropdownMenuItem>
