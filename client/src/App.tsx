@@ -24,6 +24,7 @@ import ProfilePage from "@/pages/ProfilePage";
 import SettingsPage from "@/pages/SettingsPage";
 import BillingPage from "@/pages/BillingPage";
 import Login from "@/pages/Login";
+import EnhancedLogin from "@/pages/EnhancedLogin";
 import NotFound from "@/pages/not-found";
 import FAQPage from "@/pages/FAQPage";
 
@@ -83,6 +84,7 @@ function AppContent() {
                 <Route path="/landing" element={<Landing />} />
                 <Route path="/auth" element={<AuthPage />} />
                 <Route path="/login" element={<Login />} />
+                <Route path="/enhanced-login" element={<EnhancedLogin />} />
                 <Route path="/register" element={<AuthPage />} />
                 <Route path="*" element={<Navigate to="/" replace />} />
               </>
