@@ -438,6 +438,19 @@ const InterviewCoach: React.FC<InterviewCoachProps> = () => {
       ) : (
         /* Session Setup */
         <div className="space-y-6">
+          {/* Test Button Outside Card */}
+          <div className="p-4 bg-yellow-100 border border-yellow-300 rounded-lg">
+            <p className="text-sm mb-2">Debug: Test button (should work)</p>
+            <Button
+              onClick={() => {
+                console.log('TEST BUTTON CLICKED - This should appear in console');
+                window.location.href = '/advanced-interview-coach';
+              }}
+              className="bg-red-600 hover:bg-red-700"
+            >
+              TEST: Direct Navigation
+            </Button>
+          </div>
           {/* Recent Sessions */}
           {sessions?.sessions && sessions.sessions.length > 0 && (
             <Card>
@@ -531,8 +544,13 @@ const InterviewCoach: React.FC<InterviewCoachProps> = () => {
 
               <div className="flex justify-end">
                 <Button
-                  onClick={startNewSession}
-                  className="bg-blue-600 hover:bg-blue-700"
+                  type="button"
+                  onClick={(e) => {
+                    console.log('Button clicked - event triggered');
+                    startNewSession(e);
+                  }}
+                  className="bg-blue-600 hover:bg-blue-700 cursor-pointer"
+                  style={{ pointerEvents: 'auto', zIndex: 10 }}
                 >
                   Start Interview Session
                   <ArrowRight className="w-4 h-4 ml-2" />
