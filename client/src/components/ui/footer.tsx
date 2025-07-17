@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Bot, Mail, ArrowRight, CheckCircle, Globe, Shield, Users, Zap, Twitter, Linkedin, Github, X, Sparkles, Star } from "lucide-react";
+import { Bot, Mail, ArrowRight, CheckCircle, Globe, Shield, Users, Zap, Linkedin, X, Sparkles, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 // import { useTranslation } from "@/lib/i18n"; // Removed - using English only
@@ -14,62 +14,7 @@ import {
   SiStripe
 } from "react-icons/si";
 
-// Cookie Banner Component
-const CookieBanner = () => {
-  const [showBanner, setShowBanner] = useState(false);
-
-  useEffect(() => {
-    const cookieConsent = localStorage.getItem('cookieConsent');
-    if (!cookieConsent) {
-      setShowBanner(true);
-    }
-  }, []);
-
-  const acceptCookies = () => {
-    localStorage.setItem('cookieConsent', 'accepted');
-    setShowBanner(false);
-  };
-
-  const declineCookies = () => {
-    localStorage.setItem('cookieConsent', 'declined');
-    setShowBanner(false);
-  };
-
-  if (!showBanner) return null;
-
-  return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 bg-gray-900 border-t border-gray-700 p-4 shadow-lg">
-      <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <Shield className="w-5 h-5 text-purple-400" />
-          <p className="text-sm text-gray-300">
-            We use cookies to enhance your experience, analyze site traffic, and for marketing purposes. 
-            <Link to="/cookies" className="text-purple-400 hover:text-purple-300 ml-1 underline">
-              Learn more
-            </Link>
-          </p>
-        </div>
-        <div className="flex gap-3">
-          <Button 
-            onClick={declineCookies}
-            variant="outline" 
-            size="sm"
-            className="border-gray-600 text-gray-300 hover:bg-gray-800"
-          >
-            Decline
-          </Button>
-          <Button 
-            onClick={acceptCookies}
-            size="sm"
-            className="bg-purple-600 hover:bg-purple-700 text-white"
-          >
-            Accept All
-          </Button>
-        </div>
-      </div>
-    </div>
-  );
-};
+import { CookieConsent } from './cookie-consent';
 
 export default function Footer() {
   const [email, setEmail] = useState('');
@@ -94,9 +39,19 @@ export default function Footer() {
     setTimeout(() => setIsSubscribed(false), 3000);
   };
 
+  const handleCookieAccept = (preferences: any) => {
+    console.log('Cookie preferences accepted:', preferences);
+    // Here you would typically initialize analytics/tracking based on preferences
+  };
+
+  const handleCookieDecline = () => {
+    console.log('Cookies declined');
+    // Here you would disable non-essential tracking
+  };
+
   return (
     <>
-      <CookieBanner />
+      <CookieConsent onAccept={handleCookieAccept} onDecline={handleCookieDecline} />
       <footer className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white">
         {/* Enhanced Newsletter Section */}
         <div className="relative overflow-hidden">
@@ -197,13 +152,7 @@ export default function Footer() {
               {/* Social Links */}
               <div className="flex space-x-4 pt-4">
                 <a href="#" className="text-gray-400 hover:text-white transition-colors">
-                  <Twitter className="w-5 h-5" />
-                </a>
-                <a href="#" className="text-gray-400 hover:text-white transition-colors">
                   <Linkedin className="w-5 h-5" />
-                </a>
-                <a href="#" className="text-gray-400 hover:text-white transition-colors">
-                  <Github className="w-5 h-5" />
                 </a>
               </div>
             </div>
@@ -225,7 +174,6 @@ export default function Footer() {
               <h4 className="text-lg font-semibold mb-4">Support</h4>
               <ul className="space-y-2 text-gray-400">
                 <li><Link to="/faq" className="hover:text-white transition-colors">FAQ</Link></li>
-                <li><Link to="/contact" className="hover:text-white transition-colors">Contact Us</Link></li>
                 <li><Link to="/help" className="hover:text-white transition-colors">Help Center</Link></li>
               </ul>
             </div>
