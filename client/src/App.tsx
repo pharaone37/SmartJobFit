@@ -55,6 +55,7 @@ import { ResumeOptimizer } from "@/pages/ResumeOptimizer";
 import InterviewCoach from "@/pages/InterviewCoach";
 import AdvancedInterviewCoach from "@/pages/AdvancedInterviewCoach";
 import ApplicationTracker from "@/pages/ApplicationTracker";
+import CommunicationTest from "@/pages/CommunicationTest";
 
 import { queryClient } from "@/lib/queryClient";
 
@@ -115,6 +116,7 @@ function AppContent() {
                 <Route path="/interview-coach" element={<InterviewCoach />} />
                 <Route path="/advanced-interview-coach" element={<AdvancedInterviewCoach />} />
                 <Route path="/application-tracker" element={<ApplicationTracker />} />
+                <Route path="/communication-test" element={<CommunicationTest />} />
                 
                 {/* New Interactive Features */}
                 <Route path="/resume-preview" element={<ResumePreview />} />

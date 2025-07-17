@@ -43,7 +43,7 @@ import { jobSearchEngine } from "./jobSearchEngine";
 import { resumeOptimizer } from "./resumeOptimizer";
 import { applicationTracker } from "./applicationTracker";
 import { salaryIntelligence } from "./salaryIntelligence";
-import { careerCoaching } from "./careerCoaching";
+import * as careerCoaching from "./careerCoaching";
 import * as jobAlerts from "./jobAlerts";
 import * as autoApply from "./autoApply";
 import { 
@@ -6547,6 +6547,92 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post('/api/chatbot/escalate', escalateToHuman);
   app.put('/api/chatbot/preferences/:sessionId', updatePreferences);
   app.get('/api/chatbot/analytics', getChatbotAnalytics);
+
+  // Communication Test Endpoint
+  app.post('/api/test/communication', async (req, res) => {
+    try {
+      const { runCommunicationTests } = await import('./test/communicationTest');
+      console.log('🚀 Running communication tests...');
+      
+      const results = await runCommunicationTests();
+      
+      res.json({
+        success: true,
+        message: 'Communication tests completed successfully',
+        results,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Communication test error:', error);
+      res.status(500).json({ 
+        success: false,
+        message: 'Communication test failed',
+        error: error.message,
+        timestamp: new Date().toISOString()
+      });
+    }
+  });
+
+  // Test individual service communication
+  app.post('/api/test/service/:serviceName', async (req, res) => {
+    try {
+      const { serviceName } = req.params;
+      const { testData } = req.body;
+      
+      console.log(`🔧 Testing service: ${serviceName}`);
+      
+      let result;
+      switch (serviceName) {
+        case 'jobSearch':
+          result = await jobSearchEngine.search(testData || {
+            query: 'Software Engineer',
+            location: 'San Francisco',
+            jobType: 'full-time'
+          });
+          break;
+        case 'resumeOptimizer':
+          result = await resumeOptimizer.optimizeResume(testData?.resumeId || 'test-resume-id', {
+            jobTitle: 'Software Engineer',
+            userSkills: ['JavaScript', 'React']
+          });
+          break;
+        case 'applicationTracker':
+          result = await applicationTracker.getApplicationDashboard(testData?.userId || 'test-user');
+          break;
+        case 'salaryIntelligence':
+          result = await salaryIntelligence.getMarketData(testData || {
+            jobTitle: 'Software Engineer',
+            location: 'San Francisco',
+            experienceLevel: 'mid'
+          });
+          break;
+        case 'careerCoaching':
+          result = await careerCoaching.getCareerProfile({ user: { id: testData?.userId || 'test-user' } }, {});
+          break;
+        default:
+          return res.status(400).json({
+            success: false,
+            message: `Unknown service: ${serviceName}`,
+            availableServices: ['jobSearch', 'resumeOptimizer', 'applicationTracker', 'salaryIntelligence', 'careerCoaching']
+          });
+      }
+      
+      res.json({
+        success: true,
+        service: serviceName,
+        result,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error(`Service ${req.params.serviceName} test error:`, error);
+      res.status(500).json({
+        success: false,
+        service: req.params.serviceName,
+        error: error.message,
+        timestamp: new Date().toISOString()
+      });
+    }
+  });
 
   const httpServer = createServer(app);
   return httpServer;
