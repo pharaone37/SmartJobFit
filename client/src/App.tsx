@@ -27,6 +27,10 @@ import Login from "@/pages/Login";
 import EnhancedLogin from "@/pages/EnhancedLogin";
 import NotFound from "@/pages/not-found";
 import FAQPage from "@/pages/FAQPage";
+import Contact from "@/pages/Contact";
+import Privacy from "@/pages/Privacy";
+import Terms from "@/pages/Terms";
+import Cookies from "@/pages/Cookies";
 
 // Components
 import Navbar from "@/components/ui/navbar";
@@ -73,8 +77,10 @@ function AppContent() {
         <main className="flex-1">
           <Routes>
             {/* Public routes accessible to all users */}
-            <Route path="/privacy" element={<PrivacyPolicy />} />
-            <Route path="/terms" element={<TermsOfService />} />
+            <Route path="/privacy" element={<Privacy />} />
+            <Route path="/terms" element={<Terms />} />
+            <Route path="/cookies" element={<Cookies />} />
+            <Route path="/contact" element={<Contact />} />
             <Route path="/help" element={<HelpCenter />} />
             <Route path="/faq" element={<FAQPage />} />
             <Route path="/pricing" element={<Pricing />} />
