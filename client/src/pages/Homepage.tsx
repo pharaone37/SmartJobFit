@@ -59,7 +59,8 @@ import {
   Monitor,
   Tablet,
   Crown,
-  ChevronDown
+  ChevronDown,
+  Gift
 } from 'lucide-react';
 
 // Import screenshots
@@ -232,6 +233,169 @@ const HeroSection = () => {
                 </div>
               </CardContent>
             </Card>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+// Waiting List Component
+const WaitingListSection = () => {
+  const [email, setEmail] = useState('');
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email || isSubmitting) return;
+    
+    setIsSubmitting(true);
+    
+    // Simulate API call - in real implementation, this would send to your backend
+    try {
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      setIsSubmitted(true);
+      setEmail('');
+    } catch (error) {
+      console.error('Error submitting email:', error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  return (
+    <section className="py-20 bg-gradient-to-r from-purple-600 via-blue-600 to-indigo-600 relative overflow-hidden">
+      {/* Background Effects */}
+      <div className="absolute inset-0 bg-black/20"></div>
+      <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 via-blue-500/20 to-indigo-500/20 backdrop-blur-sm"></div>
+      
+      <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div className="space-y-8">
+          {/* Header */}
+          <div className="space-y-4">
+            <Badge className="bg-white/20 text-white border-white/30 px-4 py-2 text-sm font-medium">
+              🎯 Early Access Available
+            </Badge>
+            
+            <h2 className="text-3xl md:text-5xl font-bold text-white leading-tight">
+              Be Among the First to Experience
+              <span className="block text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 to-orange-200">
+                The Future of Job Search
+              </span>
+            </h2>
+            
+            <p className="text-xl text-white/90 leading-relaxed max-w-2xl mx-auto">
+              Join our exclusive waiting list to get early access to SmartJobFit's revolutionary AI-powered job search platform. 
+              Be the first to experience features that will transform your career journey.
+            </p>
+          </div>
+
+          {/* Benefits */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-3xl mx-auto">
+            {[
+              {
+                icon: Crown,
+                title: "VIP Early Access",
+                description: "Get exclusive access before the official launch"
+              },
+              {
+                icon: Zap,
+                title: "50% Launch Discount",
+                description: "Special pricing for our first 1,000 members"
+              },
+              {
+                icon: Gift,
+                title: "Premium Features",
+                description: "Access to advanced AI tools and personalized coaching"
+              }
+            ].map((benefit, index) => (
+              <div key={index} className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
+                <div className="w-12 h-12 bg-gradient-to-r from-yellow-400 to-orange-400 rounded-xl flex items-center justify-center mx-auto mb-4">
+                  <benefit.icon className="w-6 h-6 text-white" />
+                </div>
+                <h3 className="text-lg font-semibold text-white mb-2">{benefit.title}</h3>
+                <p className="text-white/80 text-sm">{benefit.description}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* Email Form */}
+          <div className="max-w-md mx-auto">
+            {!isSubmitted ? (
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <Input
+                    type="email"
+                    placeholder="Enter your email address"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="flex-1 bg-white/10 backdrop-blur-sm border-white/30 text-white placeholder-white/70 focus:border-white/50 focus:ring-white/25"
+                    required
+                  />
+                  <Button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="bg-gradient-to-r from-yellow-400 to-orange-400 hover:from-yellow-500 hover:to-orange-500 text-gray-900 font-semibold px-8 py-3 disabled:opacity-50"
+                  >
+                    {isSubmitting ? (
+                      <div className="flex items-center gap-2">
+                        <div className="w-4 h-4 border-2 border-gray-900 border-t-transparent rounded-full animate-spin"></div>
+                        Joining...
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-2">
+                        <Mail className="w-4 h-4" />
+                        Join Waiting List
+                      </div>
+                    )}
+                  </Button>
+                </div>
+                <p className="text-white/70 text-sm">
+                  No spam, unsubscribe anytime. We respect your privacy.
+                </p>
+              </form>
+            ) : (
+              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/20">
+                <div className="flex items-center justify-center mb-4">
+                  <div className="w-16 h-16 bg-gradient-to-r from-green-400 to-emerald-400 rounded-full flex items-center justify-center">
+                    <CheckCircle className="w-8 h-8 text-white" />
+                  </div>
+                </div>
+                <h3 className="text-2xl font-bold text-white mb-2">Welcome to the Future!</h3>
+                <p className="text-white/90 mb-4">
+                  You're now on our exclusive waiting list. We'll notify you as soon as SmartJobFit launches.
+                </p>
+                <div className="flex items-center justify-center gap-4 text-white/80 text-sm">
+                  <span className="flex items-center gap-1">
+                    <Clock className="w-4 h-4" />
+                    Expected launch: Q2 2025
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <Users className="w-4 h-4" />
+                    12,847+ members
+                  </span>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Social Proof */}
+          <div className="flex items-center justify-center gap-8 text-white/80 text-sm">
+            <div className="flex items-center gap-2">
+              <div className="flex -space-x-2">
+                {[1, 2, 3, 4, 5].map((i) => (
+                  <div key={i} className="w-8 h-8 bg-gradient-to-r from-pink-400 to-purple-400 rounded-full border-2 border-white/30"></div>
+                ))}
+              </div>
+              <span>12,847+ professionals waiting</span>
+            </div>
+            <div className="flex items-center gap-1">
+              {[1, 2, 3, 4, 5].map((i) => (
+                <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+              ))}
+              <span className="ml-1">Coming soon reviews</span>
+            </div>
           </div>
         </div>
       </div>
@@ -758,6 +922,7 @@ const Homepage = () => {
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900">
       <HeroSection />
+      <WaitingListSection />
       <FeatureShowcase />
       <SuccessMetrics />
       
