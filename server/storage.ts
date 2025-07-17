@@ -44,8 +44,11 @@ import {
   alertUserPreferences,
   alertAnalytics,
   companyIntelligence,
+  waitingList,
   type User,
   type UpsertUser,
+  type WaitingListEntry,
+  type InsertWaitingListEntry,
   type Job,
   type InsertJob,
   type Resume,
@@ -178,7 +181,7 @@ import {
   type InsertAutomationSession,
 } from "@shared/schema";
 import { db } from "./db";
-import { eq, and, or, desc, asc, ilike, gte, lte, inArray, isNull } from "drizzle-orm";
+import { eq, and, or, desc, asc, ilike, gte, lte, inArray, isNull, sql } from "drizzle-orm";
 
 export interface JobSearchFilters {
   location?: string;
@@ -616,6 +619,12 @@ export interface IStorage {
   getAutomationSessions(userId: string): Promise<AutomationSession[]>;
   updateAutomationSession(id: string, updates: Partial<AutomationSession>): Promise<AutomationSession | undefined>;
   deleteAutomationSession(id: string): Promise<void>;
+  
+  // Waiting list operations
+  createWaitingListEntry(entry: InsertWaitingListEntry): Promise<WaitingListEntry>;
+  getWaitingListEntryByEmail(email: string): Promise<WaitingListEntry | undefined>;
+  getWaitingListCount(): Promise<number>;
+  getRecentWaitingListSignups(): Promise<WaitingListEntry[]>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -2967,6 +2976,42 @@ export class DatabaseStorage implements IStorage {
 
   async deleteAutomationSession(id: string): Promise<void> {
     await db.delete(automationSessions).where(eq(automationSessions.id, id));
+  }
+
+  // Waiting list operations
+  async createWaitingListEntry(entry: InsertWaitingListEntry): Promise<WaitingListEntry> {
+    const [waitingListEntry] = await db
+      .insert(waitingList)
+      .values({
+        ...entry,
+        createdAt: new Date(),
+      })
+      .returning();
+    return waitingListEntry;
+  }
+
+  async getWaitingListEntryByEmail(email: string): Promise<WaitingListEntry | undefined> {
+    const [entry] = await db
+      .select()
+      .from(waitingList)
+      .where(eq(waitingList.email, email));
+    return entry;
+  }
+
+  async getWaitingListCount(): Promise<number> {
+    const result = await db
+      .select({ count: sql<number>`count(*)` })
+      .from(waitingList);
+    return result[0].count;
+  }
+
+  async getRecentWaitingListSignups(): Promise<WaitingListEntry[]> {
+    const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+    return await db
+      .select()
+      .from(waitingList)
+      .where(gte(waitingList.createdAt, oneDayAgo))
+      .orderBy(desc(waitingList.createdAt));
   }
 }
 

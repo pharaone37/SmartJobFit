@@ -240,13 +240,34 @@ const WaitingListSection = () => {
     
     setIsSubmitting(true);
     
-    // Simulate API call - in real implementation, this would send to your backend
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      setIsSubmitted(true);
-      setEmail('');
+      const response = await fetch('/api/waiting-list/join', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+          email: email.trim(),
+          source: 'homepage'
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setIsSubmitted(true);
+        setEmail('');
+      } else if (response.status === 409) {
+        // Email already registered
+        setIsSubmitted(true);
+        setEmail('');
+      } else {
+        console.error('Error joining waiting list:', data.message);
+        // Could show error message to user
+      }
     } catch (error) {
       console.error('Error submitting email:', error);
+      // Could show error message to user
     } finally {
       setIsSubmitting(false);
     }

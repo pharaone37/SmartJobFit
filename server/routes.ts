@@ -119,7 +119,8 @@ import {
   insertSubmissionLogSchema,
   insertAutomationAnalyticsSchema,
   insertPlatformCredentialSchema,
-  insertAutomationSessionSchema
+  insertAutomationSessionSchema,
+  insertWaitingListSchema
 } from "@shared/schema";
 import { z } from "zod";
 
@@ -242,6 +243,68 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('CRM insights error:', error);
       res.status(500).json({ message: 'Failed to generate CRM insights' });
+    }
+  });
+
+  // Waiting List API
+  app.post('/api/waiting-list/join', async (req, res) => {
+    try {
+      const validatedData = insertWaitingListSchema.parse(req.body);
+      
+      // Check if email already exists
+      const existingEntry = await storage.getWaitingListEntryByEmail(validatedData.email);
+      if (existingEntry) {
+        return res.status(409).json({ 
+          message: 'Email already registered on waiting list',
+          alreadyRegistered: true
+        });
+      }
+
+      const waitingListEntry = await storage.createWaitingListEntry(validatedData);
+      
+      // Send welcome email (optional)
+      try {
+        await emailService.sendWelcomeEmail(validatedData.email, 'SmartJobFit Waiting List');
+      } catch (emailError) {
+        console.error('Failed to send welcome email:', emailError);
+        // Don't fail the registration if email fails
+      }
+
+      // Get current waiting list count
+      const waitingListCount = await storage.getWaitingListCount();
+      
+      res.json({ 
+        success: true, 
+        message: 'Successfully joined waiting list',
+        position: waitingListCount,
+        estimatedLaunch: 'Q2 2025'
+      });
+    } catch (error) {
+      console.error('Waiting list registration error:', error);
+      if (error.code === '23505') { // Unique constraint violation
+        res.status(409).json({ 
+          message: 'Email already registered on waiting list',
+          alreadyRegistered: true
+        });
+      } else {
+        res.status(500).json({ message: 'Failed to join waiting list' });
+      }
+    }
+  });
+
+  app.get('/api/waiting-list/stats', async (req, res) => {
+    try {
+      const count = await storage.getWaitingListCount();
+      const recentSignups = await storage.getRecentWaitingListSignups();
+      
+      res.json({ 
+        totalCount: count,
+        recentSignups: recentSignups.length,
+        estimatedLaunch: 'Q2 2025'
+      });
+    } catch (error) {
+      console.error('Waiting list stats error:', error);
+      res.status(500).json({ message: 'Failed to get waiting list stats' });
     }
   });
 
