@@ -54,6 +54,15 @@ export const users = pgTable("users", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+// Waiting list table for email collection
+export const waitingList = pgTable("waiting_list", {
+  id: serial("id").primaryKey(),
+  email: varchar("email", { length: 255 }).notNull().unique(),
+  createdAt: timestamp("created_at").defaultNow(),
+  notified: boolean("notified").default(false),
+  source: varchar("source").default("homepage"), // tracking where they signed up from
+});
+
 export const jobs = pgTable("jobs", {
   id: uuid("id").primaryKey().defaultRandom(),
   title: varchar("title").notNull(),
@@ -1706,3 +1715,10 @@ export const negotiationSessionsRelations = relations(negotiationSessions, ({ on
 export const salaryBenchmarksRelations = relations(salaryBenchmarks, ({ one }) => ({
   user: one(users, { fields: [salaryBenchmarks.userId], references: [users.id] }),
 }));
+
+// Waiting List Types and Schemas
+export type WaitingListEntry = typeof waitingList.$inferSelect;
+export type InsertWaitingListEntry = typeof waitingList.$inferInsert;
+
+export const insertWaitingListSchema = createInsertSchema(waitingList).omit({ id: true, createdAt: true });
+export type InsertWaitingListType = z.infer<typeof insertWaitingListSchema>;
