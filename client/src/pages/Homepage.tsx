@@ -156,7 +156,7 @@ const HeroSection = () => {
               <Button 
                 size="lg" 
                 variant="outline"
-                className="border-2 border-purple-600 text-purple-600 hover:bg-purple-600 hover:text-white px-8 py-4 text-lg font-semibold transition-all duration-300"
+                className="hidden sm:flex border-2 border-purple-600 text-purple-600 hover:bg-purple-600 hover:text-white px-8 py-4 text-lg font-semibold transition-all duration-300"
                 asChild
               >
                 <Link to="/auth">
