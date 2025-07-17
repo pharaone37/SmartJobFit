@@ -625,6 +625,9 @@ export interface IStorage {
   getWaitingListEntryByEmail(email: string): Promise<WaitingListEntry | undefined>;
   getWaitingListCount(): Promise<number>;
   getRecentWaitingListSignups(): Promise<WaitingListEntry[]>;
+  getWaitingListEntries(page: number, limit: number, search: string): Promise<WaitingListEntry[]>;
+  getAllWaitingListEntries(): Promise<WaitingListEntry[]>;
+  updateWaitingListEntry(id: number, updates: Partial<WaitingListEntry>): Promise<WaitingListEntry | undefined>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -3012,6 +3015,38 @@ export class DatabaseStorage implements IStorage {
       .from(waitingList)
       .where(gte(waitingList.createdAt, oneDayAgo))
       .orderBy(desc(waitingList.createdAt));
+  }
+
+  async getWaitingListEntries(page: number, limit: number, search: string): Promise<WaitingListEntry[]> {
+    const offset = (page - 1) * limit;
+    let query = db
+      .select()
+      .from(waitingList)
+      .limit(limit)
+      .offset(offset)
+      .orderBy(desc(waitingList.createdAt));
+
+    if (search) {
+      query = query.where(ilike(waitingList.email, `%${search}%`));
+    }
+
+    return await query;
+  }
+
+  async getAllWaitingListEntries(): Promise<WaitingListEntry[]> {
+    return await db
+      .select()
+      .from(waitingList)
+      .orderBy(desc(waitingList.createdAt));
+  }
+
+  async updateWaitingListEntry(id: number, updates: Partial<WaitingListEntry>): Promise<WaitingListEntry | undefined> {
+    const [entry] = await db
+      .update(waitingList)
+      .set(updates)
+      .where(eq(waitingList.id, id))
+      .returning();
+    return entry;
   }
 }
 

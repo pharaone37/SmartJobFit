@@ -308,6 +308,142 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Admin endpoints for managing waiting list
+  app.get('/api/admin/waiting-list', requireAuth, async (req, res) => {
+    try {
+      // Check if user has admin privileges (you can implement proper admin check)
+      const userId = getUserId(req);
+      const user = await storage.getUser(userId);
+      
+      if (!user || user.email !== process.env.ADMIN_EMAIL) {
+        return res.status(403).json({ message: 'Admin access required' });
+      }
+
+      const { page = 1, limit = 50, search = '' } = req.query;
+      const entries = await storage.getWaitingListEntries(
+        Number(page), 
+        Number(limit), 
+        search as string
+      );
+      
+      const totalCount = await storage.getWaitingListCount();
+      const recentSignups = await storage.getRecentWaitingListSignups();
+      
+      res.json({
+        entries,
+        pagination: {
+          page: Number(page),
+          limit: Number(limit),
+          total: totalCount,
+          pages: Math.ceil(totalCount / Number(limit))
+        },
+        stats: {
+          totalCount,
+          recentSignups: recentSignups.length,
+          todaySignups: recentSignups.filter(entry => 
+            new Date(entry.createdAt).toDateString() === new Date().toDateString()
+          ).length
+        }
+      });
+    } catch (error) {
+      console.error('Admin waiting list error:', error);
+      res.status(500).json({ message: 'Failed to get waiting list entries' });
+    }
+  });
+
+  app.post('/api/admin/waiting-list/export', requireAuth, async (req, res) => {
+    try {
+      const userId = getUserId(req);
+      const user = await storage.getUser(userId);
+      
+      if (!user || user.email !== process.env.ADMIN_EMAIL) {
+        return res.status(403).json({ message: 'Admin access required' });
+      }
+
+      const allEntries = await storage.getAllWaitingListEntries();
+      
+      // Create CSV content
+      const csvHeader = 'Email,Source,Created At,Notified\n';
+      const csvContent = allEntries.map(entry => 
+        `${entry.email},${entry.source || 'homepage'},${entry.createdAt},${entry.notified ? 'Yes' : 'No'}`
+      ).join('\n');
+      
+      res.setHeader('Content-Type', 'text/csv');
+      res.setHeader('Content-Disposition', 'attachment; filename="waiting-list-export.csv"');
+      res.send(csvHeader + csvContent);
+    } catch (error) {
+      console.error('Export waiting list error:', error);
+      res.status(500).json({ message: 'Failed to export waiting list' });
+    }
+  });
+
+  app.post('/api/admin/waiting-list/notify', requireAuth, async (req, res) => {
+    try {
+      const userId = getUserId(req);
+      const user = await storage.getUser(userId);
+      
+      if (!user || user.email !== process.env.ADMIN_EMAIL) {
+        return res.status(403).json({ message: 'Admin access required' });
+      }
+
+      const { subject, message, testMode = false } = req.body;
+      
+      if (!subject || !message) {
+        return res.status(400).json({ message: 'Subject and message are required' });
+      }
+
+      const entries = testMode 
+        ? await storage.getWaitingListEntries(1, 5, '') // Test with first 5 entries
+        : await storage.getAllWaitingListEntries();
+
+      let successCount = 0;
+      let failureCount = 0;
+
+      // Send emails to all waiting list members
+      for (const entry of entries) {
+        try {
+          await emailService.sendEmail(
+            entry.email,
+            subject,
+            message,
+            `<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+              <h2 style="color: #4f46e5;">SmartJobFit Update</h2>
+              <div style="background: #f8fafc; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                ${message.replace(/\n/g, '<br>')}
+              </div>
+              <p style="color: #6b7280; font-size: 14px;">
+                You're receiving this because you joined our waiting list. 
+                <a href="mailto:support@smartjobfit.com">Contact us</a> if you have questions.
+              </p>
+            </div>`
+          );
+          successCount++;
+          
+          // Mark as notified if not test mode
+          if (!testMode) {
+            await storage.updateWaitingListEntry(entry.id, { notified: true });
+          }
+        } catch (emailError) {
+          console.error(`Failed to send email to ${entry.email}:`, emailError);
+          failureCount++;
+        }
+      }
+
+      res.json({
+        success: true,
+        message: `Email ${testMode ? 'test' : 'campaign'} completed`,
+        stats: {
+          total: entries.length,
+          sent: successCount,
+          failed: failureCount
+        }
+      });
+    } catch (error) {
+      console.error('Notify waiting list error:', error);
+      res.status(500).json({ message: 'Failed to send notifications' });
+    }
+  });
+
   app.post('/api/resume/analyze', async (req, res) => {
     try {
       const { resumeContent, jobDescription } = req.body;
