@@ -339,7 +339,7 @@ const WaitingListSection = () => {
                     placeholder="Enter your email address"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="flex-1 bg-white/20 backdrop-blur-sm border-white/40 text-white placeholder-white/90 focus:border-white/70 focus:ring-white/30 focus:bg-white/25"
+                    className="flex-1 bg-white/20 backdrop-blur-sm border-white/40 text-white placeholder-white focus:border-white/70 focus:ring-white/30 focus:bg-white/25"
                     required
                   />
                   <Button
