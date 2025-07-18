@@ -75,6 +75,11 @@ import jobAlertsNotifications from '@/assets/Screenshot 2025-07-16 at 18.31.05_1
 import careerAnalyticsDashboard from '@/assets/Screenshot 2025-07-16 at 18.31.13_1752684043853.png';
 import careerCoachingInterface from '@/assets/Screenshot 2025-07-16 at 18.32.15_1752684043853.png';
 
+// Add alias variables for any references that might use different names
+const salaryIntelligenceScreenshot = salaryIntelligenceAnalytics;
+const careerCoachingScreenshot = careerCoachingInterface;
+const jobAlertsScreenshot = jobAlertsNotifications;
+
 // Hero Section Component
 const HeroSection = () => {
   const [currentFeature, setCurrentFeature] = useState(0);

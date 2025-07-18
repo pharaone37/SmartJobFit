@@ -548,3 +548,52 @@ export async function getCareerDashboardSummary(req: Request, res: Response) {
     res.status(500).json({ error: 'Failed to fetch career dashboard summary' });
   }
 }
+
+// Career Coaching Service Object for tests and other services
+export const careerCoaching = {
+  async getPersonalizedAdvice(context: any) {
+    try {
+      const { userId, currentRole, targetRole, skills, experience, salaryData } = context;
+      
+      // Get user's career profile and goals
+      const profile = await storage.getCareerProfile(userId);
+      const goals = await storage.getUserCareerGoals(userId);
+      const assessments = await storage.getUserSkillAssessments(userId);
+      
+      // Generate personalized advice based on context
+      const advice = await storage.generateCareerAdvice({
+        profile,
+        goals,
+        assessments,
+        currentRole,
+        targetRole,
+        skills,
+        experience,
+        salaryData
+      });
+      
+      return advice;
+    } catch (error) {
+      console.error('Error getting personalized advice:', error);
+      throw error;
+    }
+  },
+
+  async analyzeSkillGaps(context: any) {
+    try {
+      const { currentSkills, targetJobSkills, industryTrends } = context;
+      
+      // Analyze skill gaps
+      const skillGaps = await storage.analyzeSkillGaps(context.userId || 'test-user-id', {
+        currentSkills,
+        targetJobSkills,
+        industryTrends
+      });
+      
+      return skillGaps;
+    } catch (error) {
+      console.error('Error analyzing skill gaps:', error);
+      throw error;
+    }
+  }
+};
