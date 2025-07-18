@@ -1,0 +1,112 @@
+You are an expert QA engineer, security analyst, and backend developer.
+
+Your task is to run a **complete functional, logic, API, database, and security test** for a full-stack MVP web application (https://smartjobfit.com/). 
+
+Please go through the following critical categories in depth:
+
+---
+
+🔍 1. FUNCTIONAL TESTING:
+- Visit every route and endpoint (public and protected).
+- Ensure all routes respond with correct HTTP status codes (200, 400, 403, 404, 500).
+- Validate forms (login, signup, profile, AI job match, resume upload).
+- Check for broken links, buttons, or UI elements triggering JS errors.
+- Verify input field validation (both client and server).
+- Handle edge cases (e.g., missing resume file, blank inputs, too-long strings).
+
+---
+
+🧠 2. BUSINESS LOGIC TESTING:
+- Validate AI job match logic: does it recommend relevant jobs based on skills?
+- Ensure job application automation submits correct and expected data.
+- Interview coaching module: test input/output of guidance or coaching assistant.
+- Simulate full user journey: Register → Upload Resume → Get Job Match → Apply → Interview Coaching.
+- Test failed workflows (e.g., corrupted resume, expired session).
+
+---
+
+🔐 3. SECURITY CHECK:
+- Test all authentication routes (login, logout, signup, password reset).
+- Try brute-force login (rate limit, CAPTCHA, 2FA if available).
+- Check for exposed environment variables or API keys.
+- Verify cookies are HttpOnly, Secure, and SameSite=strict.
+- Test for common OWASP Top 10:
+  - SQL Injection
+  - XSS
+  - CSRF
+  - Insecure Deserialization
+  - Broken Access Control (try accessing other user data)
+  - IDOR (e.g., `GET /user/123`)
+- Run security headers check (CSP, X-Content-Type-Options, etc).
+
+---
+
+🧪 4. API TESTING:
+- Check all exposed endpoints (GET, POST, PUT, DELETE) with valid and invalid inputs.
+- Ensure consistent error messaging and fallback mechanisms.
+- Validate response time (under 500ms ideally).
+- Ensure API versioning if applicable (e.g., `/api/v1/`).
+- Use tools like Postman or curl to simulate client requests.
+
+---
+
+🧮 5. DATABASE VALIDATION:
+- Check schema integrity: fields are correct types, indexed where needed.
+- Test for missing relations or foreign key issues.
+- Verify cascade deletes or orphan record handling.
+- Load test: simulate 1,000+ users in DB — see how backend handles it.
+- Backup & restore test (critical for production readiness).
+
+---
+
+🚀 6. PERFORMANCE CHECK:
+- Run a load test (e.g., 100 concurrent users for 10 minutes).
+- Identify slow routes and DB queries.
+- Memory leak test (run server under stress and monitor RAM).
+- Measure page load time and API response time.
+
+---
+
+📦 7. DEPLOYMENT / CI-CD CHECK:
+- Ensure build scripts are working.
+- Run unit tests before build.
+- Validate .env configurations and secret management.
+- Confirm rollback mechanism or backup on deployment fail.
+
+---
+
+📚 8. LOGGING AND ERROR TRACKING:
+- Validate centralized logging (errors, warnings, system logs).
+- Simulate 500 error and check if it’s captured/logged.
+- Log user activity (anonymized).
+
+---
+
+📩 9. EMAIL / NOTIFICATIONS:
+- Test email confirmation, password reset, job alerts.
+- Simulate spam or blacklisted scenarios.
+- Confirm email templates render correctly.
+
+---
+
+💸 10. PAYMENT / SUBSCRIPTIONS (if live):
+- Simulate paid subscription (success, failure, expired).
+- Test webhook from Stripe/other gateway (retry on fail).
+- Validate invoicing and billing history.
+
+---
+
+🔄 11. CROSS-DEVICE / BROWSER COMPATIBILITY:
+- Test on Chrome, Safari, Firefox, Edge (desktop).
+- Test on mobile browsers (iOS Safari, Android Chrome).
+- Ensure responsiveness and accessibility.
+
+---
+
+📝 DELIVERABLE:
+At the end, provide a structured **report** with:
+- ✅ Passed checks
+- ❌ Failed checks (with reproduction steps)
+- 🚨 Security vulnerabilities
+- 🐞 Logic or backend bugs
+- 💡 Suggestions for optimization
