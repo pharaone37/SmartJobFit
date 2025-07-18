@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { 
   Brain, 
   Video, 
@@ -33,7 +34,10 @@ import {
   Zap,
   Briefcase,
   Search,
-  Plus
+  Plus,
+  Upload,
+  DollarSign,
+  FileText
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
@@ -53,6 +57,7 @@ export default function AdvancedInterviewCoach() {
   const [jobRole, setJobRole] = useState('');
   const [isSessionActive, setIsSessionActive] = useState(false);
   const [currentQuestion, setCurrentQuestion] = useState('');
+  const [quickActions, setQuickActions] = useState(false);
   const [questionIndex, setQuestionIndex] = useState(0);
   const [sessionData, setSessionData] = useState({
     confidence: 0,
@@ -223,10 +228,113 @@ export default function AdvancedInterviewCoach() {
                   />
                 </div>
               </div>
-              <Button variant="outline" size="sm" className="gap-2 px-2 sm:px-3">
-                <Plus className="h-4 w-4" />
-                <span className="hidden sm:inline">Quick Actions</span>
-              </Button>
+              <Sheet open={quickActions} onOpenChange={setQuickActions}>
+                <SheetTrigger asChild>
+                  <Button variant="outline" size="sm" className="gap-2 px-2 sm:px-3">
+                    <Plus className="h-4 w-4" />
+                    <span className="hidden sm:inline">Quick Actions</span>
+                  </Button>
+                </SheetTrigger>
+                <SheetContent side="right" className="w-80">
+                  <SheetHeader>
+                    <SheetTitle>Quick Actions</SheetTitle>
+                    <SheetDescription>
+                      Access your most-used features instantly
+                    </SheetDescription>
+                  </SheetHeader>
+                  <div className="grid gap-3 mt-6">
+                    <Button
+                      variant="outline"
+                      className="justify-start gap-3 h-12"
+                      onClick={() => {
+                        navigate('/dashboard?tab=resume');
+                        setQuickActions(false);
+                        toast({
+                          title: "Opening Resume Enhancement",
+                          description: "Redirecting to AI-powered resume optimization..."
+                        });
+                      }}
+                    >
+                      <Upload className="h-5 w-5" />
+                      Upload & Enhance Resume
+                    </Button>
+                    <Button
+                      variant="outline"
+                      className="justify-start gap-3 h-12"
+                      onClick={() => {
+                        navigate('/dashboard');
+                        setQuickActions(false);
+                        toast({
+                          title: "Opening Job Search",
+                          description: "Redirecting to job search dashboard..."
+                        });
+                      }}
+                    >
+                      <Search className="h-5 w-5" />
+                      Search Jobs
+                    </Button>
+                    <Button
+                      variant="outline"
+                      className="justify-start gap-3 h-12"
+                      onClick={() => {
+                        setQuickActions(false);
+                        toast({
+                          title: "Starting Interview Session",
+                          description: "You're already in the interview coaching area!"
+                        });
+                      }}
+                    >
+                      <PlayCircle className="h-5 w-5" />
+                      Start Interview Practice
+                    </Button>
+                    <Button
+                      variant="outline"
+                      className="justify-start gap-3 h-12"
+                      onClick={() => {
+                        navigate('/dashboard?tab=applications');
+                        setQuickActions(false);
+                        toast({
+                          title: "Opening Application Tracker",
+                          description: "Redirecting to track your job applications..."
+                        });
+                      }}
+                    >
+                      <FileText className="h-5 w-5" />
+                      Track Applications
+                    </Button>
+                    <Button
+                      variant="outline"
+                      className="justify-start gap-3 h-12"
+                      onClick={() => {
+                        navigate('/dashboard?tab=salary');
+                        setQuickActions(false);
+                        toast({
+                          title: "Opening Salary Intelligence",
+                          description: "Redirecting to salary insights and negotiation tools..."
+                        });
+                      }}
+                    >
+                      <DollarSign className="h-5 w-5" />
+                      Check Salary Insights
+                    </Button>
+                    <Button
+                      variant="outline"
+                      className="justify-start gap-3 h-12"
+                      onClick={() => {
+                        navigate('/dashboard?tab=gamified');
+                        setQuickActions(false);
+                        toast({
+                          title: "Opening Game Center",
+                          description: "Redirecting to your gamified job search progress..."
+                        });
+                      }}
+                    >
+                      <Target className="h-5 w-5" />
+                      Career Goals & Achievements
+                    </Button>
+                  </div>
+                </SheetContent>
+              </Sheet>
               <Button
                 variant="outline"
                 onClick={() => navigate('/dashboard')}
