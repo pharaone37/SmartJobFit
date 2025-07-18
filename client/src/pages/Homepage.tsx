@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import ImagePreviewModal from '@/components/ui/image-preview-modal';
 import { 
   Search, 
   FileText, 
@@ -63,16 +64,16 @@ import {
   Gift
 } from 'lucide-react';
 
-// Import screenshots
-import jobSearchScreenshot from '@/assets/Screenshot 2025-07-16 at 18.29.41_1752684043849.png';
-import applicationTrackerScreenshot from '@/assets/Screenshot 2025-07-16 at 18.29.56_1752684043850.png';
-import autoApplyScreenshot from '@/assets/Screenshot 2025-07-16 at 18.30.04_1752684043850.png';
-import resumeOptimizationScreenshot from '@/assets/Screenshot 2025-07-16 at 18.30.14_1752684043851.png';
-import interviewCoachingScreenshot from '@/assets/Screenshot 2025-07-16 at 18.30.23_1752684043851.png';
-import salaryIntelligenceScreenshot from '@/assets/Screenshot 2025-07-16 at 18.30.33_1752684043852.png';
-import jobAlertsScreenshot from '@/assets/Screenshot 2025-07-16 at 18.31.05_1752684043852.png';
-import analyticsScreenshot from '@/assets/Screenshot 2025-07-16 at 18.31.13_1752684043853.png';
-import careerCoachingScreenshot from '@/assets/Screenshot 2025-07-16 at 18.32.15_1752684043853.png';
+// Import screenshots with descriptive names
+import smartJobSearchDashboard from '@/assets/Screenshot 2025-07-16 at 18.29.41_1752684043849.png';
+import applicationTrackerDashboard from '@/assets/Screenshot 2025-07-16 at 18.29.56_1752684043850.png';
+import oneClickAutoApplySystem from '@/assets/Screenshot 2025-07-16 at 18.30.04_1752684043850.png';
+import aiResumeOptimizationTool from '@/assets/Screenshot 2025-07-16 at 18.30.14_1752684043851.png';
+import interviewCoachingSystem from '@/assets/Screenshot 2025-07-16 at 18.30.23_1752684043851.png';
+import salaryIntelligenceAnalytics from '@/assets/Screenshot 2025-07-16 at 18.30.33_1752684043852.png';
+import jobAlertsNotifications from '@/assets/Screenshot 2025-07-16 at 18.31.05_1752684043852.png';
+import careerAnalyticsDashboard from '@/assets/Screenshot 2025-07-16 at 18.31.13_1752684043853.png';
+import careerCoachingInterface from '@/assets/Screenshot 2025-07-16 at 18.32.15_1752684043853.png';
 
 // Hero Section Component
 const HeroSection = () => {
@@ -415,6 +416,7 @@ const WaitingListSection = () => {
 // Feature Showcase Component
 const FeatureShowcase = () => {
   const [activeFeature, setActiveFeature] = useState(0);
+  const [previewModal, setPreviewModal] = useState({ isOpen: false, imageSrc: '', imageAlt: '', title: '' });
   
   // Auto-rotate through features
   useEffect(() => {
@@ -431,7 +433,7 @@ const FeatureShowcase = () => {
       title: "AI-Powered Job Search",
       description: "Find 94% relevant jobs in under 2 seconds",
       benefits: ["Multi-platform search", "Smart deduplication", "Real-time matching"],
-      screenshot: jobSearchScreenshot,
+      screenshot: smartJobSearchDashboard,
       demo: {
         metric: "2.3 seconds",
         label: "Average search time",
@@ -444,7 +446,7 @@ const FeatureShowcase = () => {
       title: "Resume Optimization",
       description: "300% increase in recruiter responses",
       benefits: ["ATS compatibility", "Keyword optimization", "Industry-specific tailoring"],
-      screenshot: resumeOptimizationScreenshot,
+      screenshot: aiResumeOptimizationTool,
       demo: {
         metric: "98.7%",
         label: "ATS compatibility score",
@@ -457,7 +459,7 @@ const FeatureShowcase = () => {
       title: "Interview Preparation",
       description: "78% interview success rate",
       benefits: ["AI-powered coaching", "Multi-language support", "Real-time feedback"],
-      screenshot: interviewCoachingScreenshot,
+      screenshot: interviewCoachingSystem,
       demo: {
         metric: "78%",
         label: "Interview success rate",
@@ -470,7 +472,7 @@ const FeatureShowcase = () => {
       title: "Application Tracking",
       description: "87% outcome prediction accuracy",
       benefits: ["Automated tracking", "Communication timeline", "Success prediction"],
-      screenshot: applicationTrackerScreenshot,
+      screenshot: applicationTrackerDashboard,
       demo: {
         metric: "87%",
         label: "Prediction accuracy",
@@ -483,7 +485,7 @@ const FeatureShowcase = () => {
       title: "Salary Intelligence",
       description: "73% achieve salary increases",
       benefits: ["Real-time market data", "Negotiation coaching", "Geographic analysis"],
-      screenshot: salaryIntelligenceScreenshot,
+      screenshot: salaryIntelligenceAnalytics,
       demo: {
         metric: "73%",
         label: "Salary increase rate",
@@ -496,7 +498,7 @@ const FeatureShowcase = () => {
       title: "Career Coaching",
       description: "68% career advancement in 12 months",
       benefits: ["Personalized roadmaps", "Skill gap analysis", "Mentorship matching"],
-      screenshot: careerCoachingScreenshot,
+      screenshot: careerCoachingInterface,
       demo: {
         metric: "68%",
         label: "Career advancement rate",
@@ -509,7 +511,7 @@ const FeatureShowcase = () => {
       title: "Job Alerts",
       description: "67% early opportunity discovery",
       benefits: ["Predictive algorithms", "Multi-channel alerts", "Natural language processing"],
-      screenshot: jobAlertsScreenshot,
+      screenshot: jobAlertsNotifications,
       demo: {
         metric: "67%",
         label: "Early discovery rate",
@@ -522,7 +524,7 @@ const FeatureShowcase = () => {
       title: "One-Click Apply",
       description: "95% time savings, 34% higher response rates",
       benefits: ["Quality automation", "AI review process", "Time optimization"],
-      screenshot: autoApplyScreenshot,
+      screenshot: oneClickAutoApplySystem,
       demo: {
         metric: "95%",
         label: "Time savings",
@@ -535,7 +537,7 @@ const FeatureShowcase = () => {
       title: "Company Intelligence",
       description: "96% accuracy in culture assessments",
       benefits: ["Culture analysis", "Leadership insights", "Competitive intelligence"],
-      screenshot: analyticsScreenshot,
+      screenshot: careerAnalyticsDashboard,
       demo: {
         metric: "96%",
         label: "Culture accuracy",
@@ -545,6 +547,19 @@ const FeatureShowcase = () => {
   ];
 
   const currentFeature = features[activeFeature];
+
+  const openPreview = (imageSrc: string, imageAlt: string, title: string) => {
+    setPreviewModal({
+      isOpen: true,
+      imageSrc,
+      imageAlt,
+      title
+    });
+  };
+
+  const closePreview = () => {
+    setPreviewModal({ isOpen: false, imageSrc: '', imageAlt: '', title: '' });
+  };
 
   return (
     <section id="features" className="py-20 bg-white dark:bg-gray-900">
@@ -663,7 +678,7 @@ const FeatureShowcase = () => {
                             imageRendering: 'high-quality',
                             imageResolution: 'from-image'
                           }}
-                          onClick={() => window.open(currentFeature.screenshot, '_blank')}
+                          onClick={() => openPreview(currentFeature.screenshot, `${currentFeature.title} screenshot`, currentFeature.title)}
                         />
                       </div>
                       <div className="absolute top-2 right-2 bg-black/50 text-white px-2 py-1 rounded text-xs opacity-0 group-hover:opacity-100 transition-opacity">
@@ -773,7 +788,7 @@ const FeatureShowcase = () => {
                                 imageRendering: 'high-quality',
                                 imageResolution: 'from-image'
                               }}
-                              onClick={() => window.open(feature.screenshot, '_blank')}
+                              onClick={() => openPreview(feature.screenshot, `${feature.title} screenshot`, feature.title)}
                             />
                           </div>
                         </div>
@@ -808,6 +823,15 @@ const FeatureShowcase = () => {
           </div>
         </div>
       </div>
+
+      {/* Preview Modal */}
+      <ImagePreviewModal
+        isOpen={previewModal.isOpen}
+        onClose={closePreview}
+        imageSrc={previewModal.imageSrc}
+        imageAlt={previewModal.imageAlt}
+        title={previewModal.title}
+      />
     </section>
   );
 };
