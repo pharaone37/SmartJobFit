@@ -87,7 +87,7 @@ export default function Footer() {
                   placeholder="Enter your email address"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="flex-1 h-12 bg-gray-800/50 border-gray-600 text-white placeholder-gray-400 focus:border-purple-500 focus:ring-purple-500 rounded-lg backdrop-blur-sm"
+                  className="flex-1 h-12 border-gray-600 text-white placeholder-gray-400 focus:border-purple-500 focus:ring-purple-500 rounded-lg backdrop-blur-sm bg-[#ffffff]"
                   disabled={isLoading}
                 />
                 <Button
