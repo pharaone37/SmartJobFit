@@ -186,6 +186,63 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.use(sanitizeInput);
   
   // Public AI endpoints before auth middleware
+
+  // Mood Analysis endpoints
+  app.post('/api/mood/analyze', async (req, res) => {
+    try {
+      const { mood, energy, motivation, confidence, notes, previousEntries } = req.body;
+      
+      if (!mood || !energy || !motivation || !confidence) {
+        return res.status(400).json({ message: 'All mood metrics are required' });
+      }
+
+      const { moodAnalysisService } = await import('./services/moodAnalysis');
+      
+      const moodData = {
+        mood: Number(mood),
+        energy: Number(energy),
+        motivation: Number(motivation),
+        confidence: Number(confidence),
+        notes: notes || '',
+        date: new Date().toISOString().split('T')[0],
+        previousEntries: previousEntries || []
+      };
+
+      const analysis = await moodAnalysisService.analyzeMood(moodData);
+      
+      res.json({
+        success: true,
+        analysis,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Mood analysis error:', error);
+      res.status(500).json({ message: 'Failed to analyze mood data' });
+    }
+  });
+
+  app.post('/api/mood/action-plan', async (req, res) => {
+    try {
+      const { moodData, analysisResult } = req.body;
+      
+      if (!moodData || !analysisResult) {
+        return res.status(400).json({ message: 'Mood data and analysis result are required' });
+      }
+
+      const { moodAnalysisService } = await import('./services/moodAnalysis');
+      
+      const actionPlan = await moodAnalysisService.generateCareerActionPlan(moodData, analysisResult);
+      
+      res.json({
+        success: true,
+        actionPlan,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Action plan generation error:', error);
+      res.status(500).json({ message: 'Failed to generate action plan' });
+    }
+  });
   
   // Eden AI Resume Parsing
   app.post('/api/resume/parse', async (req, res) => {

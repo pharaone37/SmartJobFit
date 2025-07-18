@@ -15,6 +15,8 @@ import SalaryIntelligence from '@/components/SalaryIntelligence';
 import CareerCoaching from '@/components/CareerCoaching';
 import JobAlerts from '@/components/JobAlerts';
 import { AutoApply } from '@/components/AutoApply';
+import CareerMoodTracker from '@/components/CareerMoodTracker';
+import JobMarketHeatMap from '@/components/JobMarketHeatMap';
 import { 
   Search, 
   FileText, 
@@ -200,8 +202,9 @@ export default function Dashboard() {
 
         {/* Tabs Navigation */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-6">
+          <TabsList className="grid w-full grid-cols-7">
             <TabsTrigger value="overview">Overview</TabsTrigger>
+            <TabsTrigger value="mood">Mood Tracker</TabsTrigger>
             <TabsTrigger value="applications">Applications</TabsTrigger>
             <TabsTrigger value="salary">Salary Intelligence</TabsTrigger>
             <TabsTrigger value="career">Career Coaching</TabsTrigger>
@@ -351,6 +354,16 @@ export default function Dashboard() {
                 </CardContent>
               </Card>
             </div>
+          </TabsContent>
+
+          <TabsContent value="mood" className="space-y-6">
+            <CareerMoodTracker onMoodUpdate={(mood) => {
+              console.log('Mood updated:', mood);
+              toast({
+                title: "Mood Tracked",
+                description: "Your career mood has been saved successfully."
+              });
+            }} />
           </TabsContent>
 
           <TabsContent value="applications">
