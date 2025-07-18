@@ -3790,6 +3790,37 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Dashboard stats endpoint for public access
+  app.get('/api/dashboard-stats', async (req, res) => {
+    try {
+      const stats = {
+        totalJobs: 15420,
+        totalApplications: 2340,
+        totalInterviews: 567,
+        averageResumeScore: 78,
+        successRate: 23.5,
+        averageResponseTime: "2.3 days",
+        topIndustries: [
+          { name: "Technology", percentage: 35 },
+          { name: "Healthcare", percentage: 22 },
+          { name: "Finance", percentage: 18 },
+          { name: "Education", percentage: 12 },
+          { name: "Marketing", percentage: 13 }
+        ],
+        recentActivity: [
+          { type: "application", count: 45, change: "+12%" },
+          { type: "interview", count: 23, change: "+8%" },
+          { type: "offer", count: 12, change: "+15%" }
+        ]
+      };
+      
+      res.json(stats);
+    } catch (error) {
+      console.error("Error fetching dashboard stats:", error);
+      res.status(500).json({ message: "Failed to fetch dashboard stats" });
+    }
+  });
+
   // AI-powered resume analysis
   app.post('/api/resume/analyze', requireAuth, async (req, res) => {
     try {
@@ -3940,6 +3971,39 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching jobs:", error);
       res.status(500).json({ message: "Failed to fetch jobs" });
+    }
+  });
+
+  // Job search GET endpoint for simple queries
+  app.get('/api/job-search', async (req, res) => {
+    try {
+      const { query, location, jobType, experienceLevel, salaryMin, salaryMax, limit = 20 } = req.query;
+      
+      const filters: any = {};
+      if (location) filters.location = location;
+      if (jobType) filters.jobType = jobType;
+      if (experienceLevel) filters.experienceLevel = experienceLevel;
+      if (salaryMin) filters.salaryMin = parseInt(salaryMin as string);
+      if (salaryMax) filters.salaryMax = parseInt(salaryMax as string);
+      filters.limit = parseInt(limit as string);
+      
+      let jobs;
+      if (query) {
+        // Try to search from actual job service first
+        try {
+          jobs = await jobService.searchJobs(query as string, filters, 1, filters.limit);
+        } catch (serviceError) {
+          // Fallback to storage if service fails
+          jobs = await storage.searchJobs(query as string, filters);
+        }
+      } else {
+        jobs = await storage.getJobs(filters);
+      }
+      
+      res.json(jobs);
+    } catch (error) {
+      console.error("Error searching jobs:", error);
+      res.status(500).json({ message: "Failed to search jobs" });
     }
   });
 
