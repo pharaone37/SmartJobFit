@@ -5,7 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Cookie, Shield, BarChart3, Target, X, Settings, Check } from 'lucide-react';
 
 interface CookiePreferences {
@@ -106,7 +106,7 @@ export function CookieConsent({ onAccept, onDecline }: CookieConsentProps) {
                 variant="outline"
                 size="sm"
                 onClick={() => setShowSettings(true)}
-                className="w-full sm:w-auto border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white"
+                className="w-full sm:w-auto border-gray-400 text-white bg-gray-800 hover:bg-gray-700 hover:border-gray-300 font-medium"
               >
                 <Settings className="h-4 w-4 mr-2" />
                 Manage Preferences
@@ -115,7 +115,7 @@ export function CookieConsent({ onAccept, onDecline }: CookieConsentProps) {
                 variant="outline"
                 size="sm"
                 onClick={handleDeclineAll}
-                className="w-full sm:w-auto border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white"
+                className="w-full sm:w-auto border-gray-400 text-white bg-gray-800 hover:bg-gray-700 hover:border-gray-300 font-medium"
               >
                 Decline All
               </Button>
@@ -142,6 +142,9 @@ export function CookieConsent({ onAccept, onDecline }: CookieConsentProps) {
               </div>
               🍪 Cookie Preferences
             </DialogTitle>
+            <DialogDescription className="text-gray-300">
+              Manage your cookie preferences and choose which cookies you want to accept.
+            </DialogDescription>
           </DialogHeader>
           
           <div className="space-y-6">
@@ -150,19 +153,19 @@ export function CookieConsent({ onAccept, onDecline }: CookieConsentProps) {
             </p>
 
             <Tabs defaultValue="necessary" className="w-full">
-              <TabsList className="grid w-full grid-cols-4">
-                <TabsTrigger value="necessary">Necessary</TabsTrigger>
-                <TabsTrigger value="functional">Functional</TabsTrigger>
-                <TabsTrigger value="analytics">Analytics</TabsTrigger>
-                <TabsTrigger value="marketing">Marketing</TabsTrigger>
+              <TabsList className="grid w-full grid-cols-4 bg-gray-800 border border-gray-600">
+                <TabsTrigger value="necessary" className="text-white data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:to-blue-600 data-[state=active]:text-white font-medium">Necessary</TabsTrigger>
+                <TabsTrigger value="functional" className="text-white data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:to-blue-600 data-[state=active]:text-white font-medium">Functional</TabsTrigger>
+                <TabsTrigger value="analytics" className="text-white data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:to-blue-600 data-[state=active]:text-white font-medium">Analytics</TabsTrigger>
+                <TabsTrigger value="marketing" className="text-white data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:to-blue-600 data-[state=active]:text-white font-medium">Marketing</TabsTrigger>
               </TabsList>
 
               <TabsContent value="necessary" className="space-y-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <Shield className="h-5 w-5 text-green-600" />
-                    <Label className="text-base font-medium">Necessary Cookies</Label>
-                    <Badge variant="secondary">Always Active</Badge>
+                    <Shield className="h-5 w-5 text-green-400" />
+                    <Label className="text-base font-semibold text-white">Necessary Cookies</Label>
+                    <Badge variant="secondary" className="bg-green-900 text-green-100 border-green-600">Always Active</Badge>
                   </div>
                   <Switch checked={true} disabled />
                 </div>
@@ -180,8 +183,8 @@ export function CookieConsent({ onAccept, onDecline }: CookieConsentProps) {
               <TabsContent value="functional" className="space-y-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <Settings className="h-5 w-5 text-blue-600" />
-                    <Label className="text-base font-medium">Functional Cookies</Label>
+                    <Settings className="h-5 w-5 text-blue-400" />
+                    <Label className="text-base font-semibold text-white">Functional Cookies</Label>
                   </div>
                   <Switch
                     checked={preferences.functional}
@@ -202,8 +205,8 @@ export function CookieConsent({ onAccept, onDecline }: CookieConsentProps) {
               <TabsContent value="analytics" className="space-y-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <BarChart3 className="h-5 w-5 text-purple-600" />
-                    <Label className="text-base font-medium">Analytics Cookies</Label>
+                    <BarChart3 className="h-5 w-5 text-purple-400" />
+                    <Label className="text-base font-semibold text-white">Analytics Cookies</Label>
                   </div>
                   <Switch
                     checked={preferences.analytics}
@@ -224,8 +227,8 @@ export function CookieConsent({ onAccept, onDecline }: CookieConsentProps) {
               <TabsContent value="marketing" className="space-y-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <Target className="h-5 w-5 text-red-600" />
-                    <Label className="text-base font-medium">Marketing Cookies</Label>
+                    <Target className="h-5 w-5 text-red-400" />
+                    <Label className="text-base font-semibold text-white">Marketing Cookies</Label>
                   </div>
                   <Switch
                     checked={preferences.marketing}
@@ -249,14 +252,14 @@ export function CookieConsent({ onAccept, onDecline }: CookieConsentProps) {
                 <Button 
                   variant="outline" 
                   onClick={() => setShowSettings(false)}
-                  className="border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white"
+                  className="border-gray-400 text-white bg-gray-800 hover:bg-gray-700 hover:border-gray-300 font-medium"
                 >
                   Cancel
                 </Button>
                 <Button
                   variant="outline"
                   onClick={handleDeclineAll}
-                  className="border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white"
+                  className="border-gray-400 text-white bg-gray-800 hover:bg-gray-700 hover:border-gray-300 font-medium"
                 >
                   Decline All
                 </Button>
