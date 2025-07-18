@@ -243,8 +243,54 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: 'Failed to generate action plan' });
     }
   });
-  
-  // Eden AI Resume Parsing
+
+  // Resume Enhancement endpoints
+  app.post('/api/resume/enhance', async (req, res) => {
+    try {
+      const { resumeData, jobDescription } = req.body;
+      
+      if (!resumeData) {
+        return res.status(400).json({ message: 'Resume data is required' });
+      }
+
+      const { resumeEnhancementService } = await import('./services/resumeEnhancement');
+      
+      const enhancementResult = await resumeEnhancementService.enhanceResume(resumeData, jobDescription);
+      
+      res.json({
+        success: true,
+        result: enhancementResult,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Resume enhancement error:', error);
+      res.status(500).json({ message: 'Failed to enhance resume' });
+    }
+  });
+
+  app.post('/api/resume/cover-letter', async (req, res) => {
+    try {
+      const { resumeData, jobDescription } = req.body;
+      
+      if (!resumeData || !jobDescription) {
+        return res.status(400).json({ message: 'Resume data and job description are required' });
+      }
+
+      const { resumeEnhancementService } = await import('./services/resumeEnhancement');
+      
+      const coverLetter = await resumeEnhancementService.generateCoverLetter(resumeData, jobDescription);
+      
+      res.json({
+        success: true,
+        coverLetter,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Cover letter generation error:', error);
+      res.status(500).json({ message: 'Failed to generate cover letter' });
+    }
+  });
+
   app.post('/api/resume/parse', async (req, res) => {
     try {
       const { resumeContent, fileName } = req.body;

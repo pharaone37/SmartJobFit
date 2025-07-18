@@ -17,6 +17,8 @@ import JobAlerts from '@/components/JobAlerts';
 import { AutoApply } from '@/components/AutoApply';
 import CareerMoodTracker from '@/components/CareerMoodTracker';
 import JobMarketHeatMap from '@/components/JobMarketHeatMap';
+import OneClickResumeEnhancement from '@/components/OneClickResumeEnhancement';
+import GamifiedJobTracker from '@/components/GamifiedJobTracker';
 import { 
   Search, 
   FileText, 
@@ -202,9 +204,11 @@ export default function Dashboard() {
 
         {/* Tabs Navigation */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-7">
+          <TabsList className="grid w-full grid-cols-9">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="mood">Mood Tracker</TabsTrigger>
+            <TabsTrigger value="resume">Resume Enhance</TabsTrigger>
+            <TabsTrigger value="gamified">Game Center</TabsTrigger>
             <TabsTrigger value="applications">Applications</TabsTrigger>
             <TabsTrigger value="salary">Salary Intelligence</TabsTrigger>
             <TabsTrigger value="career">Career Coaching</TabsTrigger>
@@ -364,6 +368,14 @@ export default function Dashboard() {
                 description: "Your career mood has been saved successfully."
               });
             }} />
+          </TabsContent>
+
+          <TabsContent value="resume" className="space-y-6">
+            <OneClickResumeEnhancement />
+          </TabsContent>
+
+          <TabsContent value="gamified" className="space-y-6">
+            <GamifiedJobTracker />
           </TabsContent>
 
           <TabsContent value="applications">
