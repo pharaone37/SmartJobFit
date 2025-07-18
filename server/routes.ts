@@ -67,6 +67,8 @@ import {
   getChatbotAnalytics
 } from "./chatbot";
 import multer from "multer";
+import DOMPurify from 'isomorphic-dompurify';
+import validator from 'validator';
 import { 
   insertJobSchema, 
   insertResumeSchema, 
@@ -145,7 +147,44 @@ const upload = multer({
   }
 });
 
+// Input sanitization middleware
+function sanitizeInput(req: any, res: any, next: any) {
+  if (req.body) {
+    req.body = sanitizeObject(req.body);
+  }
+  if (req.query) {
+    req.query = sanitizeObject(req.query);
+  }
+  if (req.params) {
+    req.params = sanitizeObject(req.params);
+  }
+  next();
+}
+
+function sanitizeObject(obj: any): any {
+  if (typeof obj === 'string') {
+    // Remove potential XSS and script injection
+    return DOMPurify.sanitize(obj, { ALLOWED_TAGS: [], ALLOWED_ATTR: [] });
+  }
+  if (Array.isArray(obj)) {
+    return obj.map(sanitizeObject);
+  }
+  if (obj && typeof obj === 'object') {
+    const sanitized: any = {};
+    for (const key in obj) {
+      if (obj.hasOwnProperty(key)) {
+        sanitized[key] = sanitizeObject(obj[key]);
+      }
+    }
+    return sanitized;
+  }
+  return obj;
+}
+
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Apply input sanitization to all routes
+  app.use(sanitizeInput);
+  
   // Public AI endpoints before auth middleware
   
   // Eden AI Resume Parsing
@@ -3825,6 +3864,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post('/api/resume/analyze', requireAuth, async (req, res) => {
     try {
       const { resumeContent, jobDescription } = req.body;
+      
+      if (!resumeContent) {
+        return res.status(400).json({ message: "Resume content is required" });
+      }
+      
       const analysis = await openRouterService.analyzeResume(resumeContent, jobDescription);
       res.json(analysis);
     } catch (error) {

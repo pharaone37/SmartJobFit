@@ -6,15 +6,15 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { LanguageProvider } from "@/components/LanguageProvider";
 
 // Pages
-import Landing from "@/pages/landing";
+import Landing from "@/pages/Landing";
 import Homepage from "@/pages/Homepage";
-import Dashboard from "@/pages/dashboard";
+import Dashboard from "@/pages/Dashboard";
 import ImprovedDashboard from "@/pages/ImprovedDashboard";
 import JobSearch from "@/pages/JobSearch";
 import ResumeOptimization from "@/pages/ResumeOptimization";
 import InterviewPrep from "@/pages/InterviewPrep";
-import Analytics from "@/pages/analytics";
-import Pricing from "@/pages/pricing";
+import Analytics from "@/pages/Analytics";
+import Pricing from "@/pages/Pricing";
 import Subscribe from "@/pages/Subscribe";
 import HelpCenter from "@/pages/HelpCenter";
 import PrivacyPolicy from "@/pages/PrivacyPolicy";
