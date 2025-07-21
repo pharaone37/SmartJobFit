@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { Button } from "@/components/ui/button";
@@ -6,7 +6,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
-import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useToast } from "@/hooks/use-toast";
 import { 
   Play, 
@@ -16,19 +15,22 @@ import {
   BarChart3, 
   Users, 
   Clock,
-  CheckCircle2,
-  XCircle,
-  AlertCircle,
   Target,
   Brain,
-  Zap,
-  Filter,
-  TrendingUp,
-  MessageSquare,
   FileText,
   Award,
-  Shield,
-  Activity
+  Search,
+  DollarSign,
+  Building,
+  MapPin,
+  Timer,
+  Sparkles,
+  Rocket,
+  Filter,
+  MessageSquare,
+  Calendar,
+  Zap,
+  CheckCircle
 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 
@@ -38,110 +40,194 @@ interface AutoApplyProps {
 
 export function AutoApply({ userId }: AutoApplyProps) {
   const [activeTab, setActiveTab] = useState("dashboard");
+  const [timelineStep, setTimelineStep] = useState(0);
+  const [isDemoActive, setIsDemoActive] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  // Queries
-  const { data: automationProfiles, isLoading: profilesLoading } = useQuery({
-    queryKey: ['/api/auto-apply/profiles'],
-    enabled: !!userId,
-  });
+  // Demo timeline for AI agents workflow
+  const agentWorkflow = [
+    {
+      id: 1,
+      name: "Search Agent",
+      icon: Search,
+      task: "Scanning 15+ job boards",
+      description: "Finding ML Engineer positions in Berlin",
+      duration: "8s",
+      status: "completed",
+      result: "47 positions found"
+    },
+    {
+      id: 2,
+      name: "Filter Agent",
+      icon: Filter,
+      task: "Applying salary & location filters",
+      description: "Filtering for ≥€90k remote positions",
+      duration: "3s",
+      status: "completed",
+      result: "12 qualified matches"
+    },
+    {
+      id: 3,
+      name: "Resume Agent",
+      icon: FileText,
+      task: "Tailoring resume for each role",
+      description: "Optimizing keywords & ATS compatibility",
+      duration: "12s",
+      status: "active",
+      result: "99.8% ATS score achieved"
+    },
+    {
+      id: 4,
+      name: "Company Intel Agent",
+      icon: Building,
+      task: "Researching target companies",
+      description: "Culture analysis & leadership insights",
+      duration: "15s",
+      status: "pending",
+      result: "Deep reports ready"
+    },
+    {
+      id: 5,
+      name: "Interview Prep Agent",
+      icon: MessageSquare,
+      task: "Generating custom questions",
+      description: "Role-specific & company-specific prep",
+      duration: "10s",
+      status: "pending",
+      result: "Practice sessions ready"
+    },
+    {
+      id: 6,
+      name: "Salary Intel Agent",
+      icon: DollarSign,
+      task: "Market analysis & negotiation",
+      description: "Benchmarking salary data",
+      duration: "7s",
+      status: "pending",
+      result: "Negotiation scripts ready"
+    },
+    {
+      id: 7,
+      name: "Application Agent",
+      icon: Zap,
+      task: "Submitting applications",
+      description: "Quality control & personalization",
+      duration: "8s",
+      status: "pending",
+      result: "12 applications sent"
+    },
+    {
+      id: 8,
+      name: "Follow-up Agent",
+      icon: Calendar,
+      task: "Scheduling follow-ups",
+      description: "Strategic timing optimization",
+      duration: "5s",
+      status: "pending",
+      result: "Follow-up sequence active"
+    },
+    {
+      id: 9,
+      name: "Analytics Agent",
+      icon: BarChart3,
+      task: "Performance tracking",
+      description: "Success metrics & optimization",
+      duration: "4s",
+      status: "pending",
+      result: "Real-time insights available"
+    }
+  ];
 
-  const { data: dashboardData, isLoading: dashboardLoading } = useQuery({
-    queryKey: ['/api/auto-apply/dashboard'],
-    enabled: !!userId,
-  });
+  // Dummy data for visualization
+  const dummyDashboardData = {
+    activeProfiles: 3,
+    totalProfiles: 5,
+    applicationsToday: 24,
+    successRate: 87,
+    queueSize: 42,
+    processing: 9,
+    qualityScore: 94
+  };
 
-  const { data: applicationQueue, isLoading: queueLoading } = useQuery({
-    queryKey: ['/api/auto-apply/queue'],
-    enabled: !!userId,
-  });
+  const dummyProfiles = [
+    {
+      id: 1,
+      name: "ML Engineer - Remote Europe",
+      targetRole: "Machine Learning Engineer",
+      location: "Berlin, Germany (Remote)",
+      salaryMin: 90000,
+      platforms: ["LinkedIn", "Indeed", "AngelList", "Xing"],
+      status: "active",
+      applicationsToday: 8,
+      totalApplications: 156,
+      responseRate: 23,
+      lastActivity: new Date(Date.now() - 1000 * 60 * 15), // 15 minutes ago
+      filters: {
+        workType: "Remote",
+        experience: "Mid-Senior",
+        industries: ["Tech", "Fintech", "AI/ML"]
+      }
+    },
+    {
+      id: 2,
+      name: "Senior Developer - Hybrid",
+      targetRole: "Senior Software Developer",
+      location: "Munich, Germany",
+      salaryMin: 75000,
+      platforms: ["LinkedIn", "StepStone", "Xing"],
+      status: "paused",
+      applicationsToday: 0,
+      totalApplications: 89,
+      responseRate: 31,
+      lastActivity: new Date(Date.now() - 1000 * 60 * 60 * 3), // 3 hours ago
+      filters: {
+        workType: "Hybrid",
+        experience: "Senior",
+        industries: ["Software", "E-commerce"]
+      }
+    },
+    {
+      id: 3,
+      name: "Data Scientist - On-site",
+      targetRole: "Data Scientist",
+      location: "Frankfurt, Germany",
+      salaryMin: 70000,
+      platforms: ["LinkedIn", "Indeed"],
+      status: "stopped",
+      applicationsToday: 0,
+      totalApplications: 45,
+      responseRate: 18,
+      lastActivity: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2), // 2 days ago
+      filters: {
+        workType: "On-site",
+        experience: "Mid-level",
+        industries: ["Data", "Analytics", "Banking"]
+      }
+    }
+  ];
 
-  const { data: analyticsData, isLoading: analyticsLoading } = useQuery({
-    queryKey: ['/api/auto-apply/analytics'],
-    enabled: !!userId,
-  });
+  // Auto-advance timeline demo
+  useEffect(() => {
+    if (isDemoActive) {
+      const interval = setInterval(() => {
+        setTimelineStep((prev) => {
+          if (prev >= agentWorkflow.length - 1) {
+            setIsDemoActive(false);
+            return 0;
+          }
+          return prev + 1;
+        });
+      }, 2000); // Advance every 2 seconds
+      
+      return () => clearInterval(interval);
+    }
+  }, [isDemoActive, agentWorkflow.length]);
 
-  // Mutations
-  const startAutomation = useMutation({
-    mutationFn: async (profileId: string) => {
-      return await apiRequest(`/api/auto-apply/start`, 'POST', { profileId });
-    },
-    onSuccess: () => {
-      toast({
-        title: "Automation Started",
-        description: "Your job application automation is now active!",
-      });
-      queryClient.invalidateQueries({ queryKey: ['/api/auto-apply/dashboard'] });
-    },
-    onError: (error) => {
-      toast({
-        title: "Error",
-        description: error.message || "Failed to start automation",
-        variant: "destructive",
-      });
-    },
-  });
-
-  const stopAutomation = useMutation({
-    mutationFn: async (profileId: string) => {
-      return await apiRequest(`/api/auto-apply/stop`, 'POST', { profileId });
-    },
-    onSuccess: () => {
-      toast({
-        title: "Automation Stopped",
-        description: "Your job application automation has been stopped.",
-      });
-      queryClient.invalidateQueries({ queryKey: ['/api/auto-apply/dashboard'] });
-    },
-    onError: (error) => {
-      toast({
-        title: "Error",
-        description: error.message || "Failed to stop automation",
-        variant: "destructive",
-      });
-    },
-  });
-
-  const pauseAutomation = useMutation({
-    mutationFn: async (profileId: string) => {
-      return await apiRequest(`/api/auto-apply/pause`, 'POST', { profileId });
-    },
-    onSuccess: () => {
-      toast({
-        title: "Automation Paused",
-        description: "Your job application automation has been paused.",
-      });
-      queryClient.invalidateQueries({ queryKey: ['/api/auto-apply/dashboard'] });
-    },
-    onError: (error) => {
-      toast({
-        title: "Error",
-        description: error.message || "Failed to pause automation",
-        variant: "destructive",
-      });
-    },
-  });
-
-  const resumeAutomation = useMutation({
-    mutationFn: async (profileId: string) => {
-      return await apiRequest(`/api/auto-apply/resume`, 'POST', { profileId });
-    },
-    onSuccess: () => {
-      toast({
-        title: "Automation Resumed",
-        description: "Your job application automation has been resumed.",
-      });
-      queryClient.invalidateQueries({ queryKey: ['/api/auto-apply/dashboard'] });
-    },
-    onError: (error) => {
-      toast({
-        title: "Error",
-        description: error.message || "Failed to resume automation",
-        variant: "destructive",
-      });
-    },
-  });
+  const startDemo = () => {
+    setIsDemoActive(true);
+    setTimelineStep(0);
+  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -165,32 +251,9 @@ export function AutoApply({ userId }: AutoApplyProps) {
       case 'stopped':
         return <Square className="w-4 h-4" />;
       default:
-        return <AlertCircle className="w-4 h-4" />;
+        return <Target className="w-4 h-4" />;
     }
   };
-
-  const getApplicationStatusColor = (status: string) => {
-    switch (status) {
-      case 'submitted':
-        return 'text-green-600 bg-green-50';
-      case 'pending':
-        return 'text-yellow-600 bg-yellow-50';
-      case 'failed':
-        return 'text-red-600 bg-red-50';
-      case 'draft':
-        return 'text-blue-600 bg-blue-50';
-      default:
-        return 'text-gray-600 bg-gray-50';
-    }
-  };
-
-  if (profilesLoading || dashboardLoading) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-      </div>
-    );
-  }
 
   return (
     <div className="w-full max-w-7xl mx-auto p-3 sm:p-6 pb-20 sm:pb-6">
@@ -232,7 +295,7 @@ export function AutoApply({ userId }: AutoApplyProps) {
             value="analytics" 
             className="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium transition-all border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:text-primary rounded-none"
           >
-            <TrendingUp className="w-4 h-4" />
+            <BarChart3 className="w-4 h-4" />
             <span className="hidden sm:inline">Analytics</span>
             <span className="sm:hidden">Stats</span>
           </TabsTrigger>
@@ -246,6 +309,92 @@ export function AutoApply({ userId }: AutoApplyProps) {
         </TabsList>
 
         <TabsContent value="dashboard" className="space-y-6">
+          {/* Hero Section with Demo */}
+          <Card className="bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 text-white border-0">
+            <CardHeader className="pb-4">
+              <div className="flex items-center justify-between">
+                <div className="space-y-2">
+                  <CardTitle className="text-2xl font-bold">
+                    From "I need a job" to "I got offers" in 60 seconds
+                  </CardTitle>
+                  <p className="text-blue-100">
+                    Simply tell our AI: <em>"Find me a remote ML Engineer role in Berlin paying ≥€90k"</em>
+                  </p>
+                  <p className="text-sm text-blue-200">
+                    → 9 specialist agents activate in parallel → Within 60 seconds, receive your tailored resume, curated job matches, company intelligence, interview preparation, and salary negotiation strategy.
+                  </p>
+                </div>
+                <Button 
+                  onClick={startDemo}
+                  disabled={isDemoActive}
+                  className="bg-white text-blue-600 hover:bg-blue-50 font-semibold"
+                >
+                  <Rocket className="w-4 h-4 mr-2" />
+                  {isDemoActive ? "Running Demo..." : "Watch Agents Work"}
+                </Button>
+              </div>
+            </CardHeader>
+            
+            {isDemoActive && (
+              <CardContent className="pt-0">
+                <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
+                  <div className="flex items-center gap-3 mb-4">
+                    <Timer className="w-5 h-5" />
+                    <span className="font-semibold">Live AI Agent Workflow</span>
+                    <Badge className="bg-green-400 text-green-900">
+                      Active: {timelineStep + 1}/9 agents
+                    </Badge>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {agentWorkflow.slice(0, 9).map((agent, index) => {
+                      const isActive = index === timelineStep;
+                      const isCompleted = index < timelineStep;
+                      const isPending = index > timelineStep;
+                      
+                      return (
+                        <div
+                          key={agent.id}
+                          className={`p-3 rounded-lg border transition-all duration-500 ${
+                            isActive 
+                              ? 'bg-yellow-400 text-yellow-900 border-yellow-300 animate-pulse' 
+                              : isCompleted 
+                                ? 'bg-green-400 text-green-900 border-green-300' 
+                                : 'bg-white/20 text-white border-white/30'
+                          }`}
+                        >
+                          <div className="flex items-center gap-2 mb-2">
+                            <agent.icon className="w-4 h-4" />
+                            <span className="font-semibold text-sm">{agent.name}</span>
+                            <span className="ml-auto text-xs">{agent.duration}</span>
+                          </div>
+                          <p className="text-xs mb-1">{agent.task}</p>
+                          <p className="text-xs opacity-80">{agent.description}</p>
+                          {(isCompleted || isActive) && (
+                            <div className="mt-2 pt-2 border-t border-current/20">
+                              <p className="text-xs font-medium">{agent.result}</p>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                  
+                  <div className="mt-4">
+                    <Progress 
+                      value={((timelineStep + 1) / agentWorkflow.length) * 100} 
+                      className="h-2"
+                    />
+                    <p className="text-center text-sm mt-2">
+                      Progress: {timelineStep + 1} of {agentWorkflow.length} agents completed
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            )}
+          </Card>
+
+          {/* Stats Overview */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -253,9 +402,9 @@ export function AutoApply({ userId }: AutoApplyProps) {
                 <Target className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">{dashboardData?.activeProfiles || 0}</div>
+                <div className="text-2xl font-bold">{dummyDashboardData.activeProfiles}</div>
                 <p className="text-xs text-muted-foreground">
-                  {dashboardData?.totalProfiles || 0} total profiles
+                  {dummyDashboardData.totalProfiles} total profiles
                 </p>
               </CardContent>
             </Card>
@@ -266,9 +415,9 @@ export function AutoApply({ userId }: AutoApplyProps) {
                 <FileText className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">{dashboardData?.applicationsToday || 0}</div>
+                <div className="text-2xl font-bold">{dummyDashboardData.applicationsToday}</div>
                 <p className="text-xs text-muted-foreground">
-                  {dashboardData?.successRate || 0}% success rate
+                  {dummyDashboardData.successRate}% success rate
                 </p>
               </CardContent>
             </Card>
@@ -279,9 +428,9 @@ export function AutoApply({ userId }: AutoApplyProps) {
                 <Clock className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">{dashboardData?.queueSize || 0}</div>
+                <div className="text-2xl font-bold">{dummyDashboardData.queueSize}</div>
                 <p className="text-xs text-muted-foreground">
-                  {dashboardData?.processing || 0} processing
+                  {dummyDashboardData.processing} processing
                 </p>
               </CardContent>
             </Card>
@@ -292,7 +441,7 @@ export function AutoApply({ userId }: AutoApplyProps) {
                 <Award className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">{dashboardData?.qualityScore || 0}%</div>
+                <div className="text-2xl font-bold">{dummyDashboardData.qualityScore}%</div>
                 <p className="text-xs text-muted-foreground">
                   AI-powered quality metrics
                 </p>
@@ -300,112 +449,91 @@ export function AutoApply({ userId }: AutoApplyProps) {
             </Card>
           </div>
 
-          {automationProfiles && automationProfiles.length > 0 && (
-            <div className="grid gap-4">
+          {/* Active Automation Profiles */}
+          <div className="grid gap-4">
+            <div className="flex items-center justify-between">
               <h3 className="text-lg font-semibold">Active Automation Profiles</h3>
-              {automationProfiles.map((profile: any) => (
-                <Card key={profile.id} className="hover:shadow-md transition-shadow">
-                  <CardHeader>
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className={`w-3 h-3 rounded-full ${getStatusColor(profile.status)}`} />
-                        <div>
-                          <CardTitle className="text-lg">{profile.name}</CardTitle>
-                          <CardDescription>
-                            {profile.targetRole} • {profile.platforms?.join(', ')}
-                          </CardDescription>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Badge variant="outline" className="flex items-center gap-1">
-                          {getStatusIcon(profile.status)}
-                          {profile.status}
-                        </Badge>
-                        <div className="flex gap-1">
-                          {profile.status === 'active' && (
-                            <>
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => pauseAutomation.mutate(profile.id)}
-                                disabled={pauseAutomation.isPending}
-                              >
-                                <Pause className="w-4 h-4" />
-                              </Button>
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => stopAutomation.mutate(profile.id)}
-                                disabled={stopAutomation.isPending}
-                              >
-                                <Square className="w-4 h-4" />
-                              </Button>
-                            </>
-                          )}
-                          {profile.status === 'paused' && (
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={() => resumeAutomation.mutate(profile.id)}
-                              disabled={resumeAutomation.isPending}
-                            >
-                              <Play className="w-4 h-4" />
-                            </Button>
-                          )}
-                          {profile.status === 'stopped' && (
-                            <Button
-                              size="sm"
-                              onClick={() => startAutomation.mutate(profile.id)}
-                              disabled={startAutomation.isPending}
-                            >
-                              <Play className="w-4 h-4" />
-                            </Button>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                      <div className="space-y-2">
-                        <div className="text-sm font-medium">Applications</div>
-                        <div className="text-2xl font-bold">{profile.applicationsCount || 0}</div>
-                        <div className="text-xs text-muted-foreground">
-                          {profile.successfulApplications || 0} successful
-                        </div>
-                      </div>
-                      <div className="space-y-2">
-                        <div className="text-sm font-medium">Match Rate</div>
-                        <div className="text-2xl font-bold">{profile.matchRate || 0}%</div>
-                        <Progress value={profile.matchRate || 0} className="h-2" />
-                      </div>
-                      <div className="space-y-2">
-                        <div className="text-sm font-medium">Last Activity</div>
-                        <div className="text-sm text-muted-foreground">
-                          {profile.lastActivity ? formatDistanceToNow(new Date(profile.lastActivity), { addSuffix: true }) : 'Never'}
-                        </div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
+              <Button variant="outline" size="sm">
+                <Sparkles className="w-4 h-4 mr-2" />
+                Create New Profile
+              </Button>
             </div>
-          )}
-
-          {(!automationProfiles || automationProfiles.length === 0) && (
-            <Card>
-              <CardContent className="text-center py-8">
-                <Brain className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
-                <h3 className="text-lg font-semibold mb-2">No Automation Profiles</h3>
-                <p className="text-muted-foreground mb-4">
-                  Create your first automation profile to start applying to jobs automatically
-                </p>
-                <Button onClick={() => setActiveTab('profiles')}>
-                  Create Profile
-                </Button>
-              </CardContent>
-            </Card>
-          )}
+            
+            {dummyProfiles.map((profile) => (
+              <Card key={profile.id} className="hover:shadow-md transition-shadow">
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className={`w-3 h-3 rounded-full ${getStatusColor(profile.status)}`} />
+                      <div>
+                        <CardTitle className="text-lg">{profile.name}</CardTitle>
+                        <CardDescription className="flex items-center gap-4">
+                          <span className="flex items-center gap-1">
+                            <MapPin className="w-3 h-3" />
+                            {profile.location}
+                          </span>
+                          <span className="flex items-center gap-1">
+                            <DollarSign className="w-3 h-3" />
+                            ≥€{profile.salaryMin.toLocaleString()}
+                          </span>
+                        </CardDescription>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Badge variant="outline" className="flex items-center gap-1">
+                        {getStatusIcon(profile.status)}
+                        {profile.status}
+                      </Badge>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-blue-600">{profile.applicationsToday}</div>
+                      <p className="text-xs text-muted-foreground">Today</p>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-green-600">{profile.totalApplications}</div>
+                      <p className="text-xs text-muted-foreground">Total</p>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-purple-600">{profile.responseRate}%</div>
+                      <p className="text-xs text-muted-foreground">Response Rate</p>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-orange-600">
+                        {formatDistanceToNow(profile.lastActivity, { addSuffix: true })}
+                      </div>
+                      <p className="text-xs text-muted-foreground">Last Activity</p>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-3">
+                    <div>
+                      <p className="text-sm font-medium mb-2">Platforms</p>
+                      <div className="flex gap-2 flex-wrap">
+                        {profile.platforms.map((platform) => (
+                          <Badge key={platform} variant="secondary">{platform}</Badge>
+                        ))}
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <p className="text-sm font-medium mb-2">Filters</p>
+                      <div className="flex gap-2 flex-wrap">
+                        <Badge variant="outline">{profile.filters.workType}</Badge>
+                        <Badge variant="outline">{profile.filters.experience}</Badge>
+                        {profile.filters.industries.map((industry) => (
+                          <Badge key={industry} variant="outline">{industry}</Badge>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         </TabsContent>
 
         <TabsContent value="profiles" className="space-y-6">
@@ -435,49 +563,22 @@ export function AutoApply({ userId }: AutoApplyProps) {
         <TabsContent value="queue" className="space-y-6">
           <Card>
             <CardHeader>
-              <CardTitle>Application Queue</CardTitle>
+              <CardTitle className="flex items-center gap-2">
+                <Clock className="w-5 h-5" />
+                Application Queue
+              </CardTitle>
               <CardDescription>
-                Monitor and manage your job application queue
+                Monitor queued applications and processing status
               </CardDescription>
             </CardHeader>
             <CardContent>
-              {queueLoading ? (
-                <div className="flex items-center justify-center py-8">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-                </div>
-              ) : applicationQueue && applicationQueue.length > 0 ? (
-                <div className="space-y-4">
-                  {applicationQueue.map((item: any) => (
-                    <div key={item.id} className="border rounded-lg p-4 hover:shadow-md transition-shadow">
-                      <div className="flex items-center justify-between mb-2">
-                        <div className="flex items-center gap-3">
-                          <div className="font-semibold">{item.jobTitle}</div>
-                          <Badge variant="outline">{item.company}</Badge>
-                        </div>
-                        <Badge className={getApplicationStatusColor(item.status)}>
-                          {item.status}
-                        </Badge>
-                      </div>
-                      <div className="text-sm text-muted-foreground mb-2">
-                        {item.location} • {item.jobType}
-                      </div>
-                      <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                        <div>Priority: {item.priority}</div>
-                        <div>Match Score: {item.matchScore}%</div>
-                        <div>Added: {formatDistanceToNow(new Date(item.createdAt), { addSuffix: true })}</div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="text-center py-8">
-                  <Clock className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
-                  <h3 className="text-lg font-semibold mb-2">Queue Empty</h3>
-                  <p className="text-muted-foreground">
-                    No applications in queue. Start automation to populate the queue.
-                  </p>
-                </div>
-              )}
+              <div className="text-center py-8">
+                <Clock className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
+                <h3 className="text-lg font-semibold mb-2">No Queued Applications</h3>
+                <p className="text-muted-foreground">
+                  Applications will appear here when queued for processing
+                </p>
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
@@ -485,37 +586,32 @@ export function AutoApply({ userId }: AutoApplyProps) {
         <TabsContent value="analytics" className="space-y-6">
           <Card>
             <CardHeader>
-              <CardTitle>Performance Analytics</CardTitle>
+              <CardTitle className="flex items-center gap-2">
+                <BarChart3 className="w-5 h-5" />
+                Performance Analytics
+              </CardTitle>
               <CardDescription>
                 Track your automation performance and success metrics
               </CardDescription>
             </CardHeader>
             <CardContent>
-              {analyticsLoading ? (
-                <div className="flex items-center justify-center py-8">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="space-y-2">
+                  <div className="text-sm font-medium">Success Rate</div>
+                  <div className="text-3xl font-bold text-green-600">87%</div>
+                  <Progress value={87} className="h-2" />
                 </div>
-              ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  <div className="space-y-2">
-                    <div className="text-sm font-medium">Total Applications</div>
-                    <div className="text-2xl font-bold">{analyticsData?.totalApplications || 0}</div>
-                    <div className="text-xs text-muted-foreground">
-                      +{analyticsData?.applicationsThisWeek || 0} this week
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <div className="text-sm font-medium">Success Rate</div>
-                    <div className="text-2xl font-bold">{analyticsData?.successRate || 0}%</div>
-                    <Progress value={analyticsData?.successRate || 0} className="h-2" />
-                  </div>
-                  <div className="space-y-2">
-                    <div className="text-sm font-medium">Response Rate</div>
-                    <div className="text-2xl font-bold">{analyticsData?.responseRate || 0}%</div>
-                    <Progress value={analyticsData?.responseRate || 0} className="h-2" />
-                  </div>
+                <div className="space-y-2">
+                  <div className="text-sm font-medium">Response Rate</div>
+                  <div className="text-3xl font-bold text-blue-600">23%</div>
+                  <Progress value={23} className="h-2" />
                 </div>
-              )}
+                <div className="space-y-2">
+                  <div className="text-sm font-medium">Interview Rate</div>
+                  <div className="text-3xl font-bold text-purple-600">12%</div>
+                  <Progress value={12} className="h-2" />
+                </div>
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
@@ -523,43 +619,25 @@ export function AutoApply({ userId }: AutoApplyProps) {
         <TabsContent value="settings" className="space-y-6">
           <Card>
             <CardHeader>
-              <CardTitle>Automation Settings</CardTitle>
+              <CardTitle className="flex items-center gap-2">
+                <Settings className="w-5 h-5" />
+                Automation Settings
+              </CardTitle>
               <CardDescription>
-                Configure AI automation parameters and safety controls
+                Configure global automation preferences and quality controls
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
-                <Alert>
-                  <Shield className="h-4 w-4" />
-                  <AlertDescription>
-                    AI safety controls ensure high-quality applications and prevent over-automation
-                  </AlertDescription>
-                </Alert>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <div className="text-sm font-medium">Daily Application Limit</div>
-                    <div className="text-2xl font-bold">25</div>
-                    <div className="text-xs text-muted-foreground">
-                      Prevents over-automation
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <div className="text-sm font-medium">Minimum Match Score</div>
-                    <div className="text-2xl font-bold">75%</div>
-                    <div className="text-xs text-muted-foreground">
-                      Quality threshold
-                    </div>
-                  </div>
-                </div>
-
-                <div className="pt-4">
-                  <Button>
-                    <Settings className="w-4 h-4 mr-2" />
-                    Configure Settings
-                  </Button>
-                </div>
+              <div className="text-center py-8">
+                <Settings className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
+                <h3 className="text-lg font-semibold mb-2">Settings Configuration</h3>
+                <p className="text-muted-foreground mb-4">
+                  Customize your automation preferences and quality controls
+                </p>
+                <Button>
+                  <Settings className="w-4 h-4 mr-2" />
+                  Configure Settings
+                </Button>
               </div>
             </CardContent>
           </Card>
