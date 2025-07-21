@@ -310,12 +310,6 @@ const HeroSection = () => {
                       Upload Your Resume & Watch Our AI Work
                     </h3>
                     
-                    <p className="text-lg text-blue-100 leading-relaxed max-w-4xl mx-auto">
-                      Our intelligent AI agents will instantly analyze your resume, optimize it for your target role, craft a personalized cover letter, 
-                      identify the perfect job matches, prepare you for interviews with custom questions, provide salary negotiation strategies, 
-                      and deliver tailored career guidance - all in under 60 seconds.
-                    </p>
-                    
                     <div className="bg-white/15 backdrop-blur-sm rounded-xl p-6 border border-white/30">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
                         <div className="text-left space-y-3">
@@ -341,6 +335,17 @@ const HeroSection = () => {
                             </code>
                           </div>
                         </div>
+                      </div>
+                    </div>
+                    
+                    <div className="bg-gradient-to-r from-white/10 to-white/5 rounded-xl p-6 border border-white/20">
+                      <div className="text-center">
+                        <h4 className="text-xl font-semibold text-white mb-3">What Happens Next?</h4>
+                        <p className="text-base text-blue-100 leading-relaxed">
+                          Our intelligent AI agents will instantly analyze your resume, optimize it for your target role, craft a personalized cover letter, 
+                          identify the perfect job matches, prepare you for interviews with custom questions, provide salary negotiation strategies, 
+                          and deliver tailored career guidance - all completed in under 60 seconds.
+                        </p>
                       </div>
                     </div>
                   </div>
