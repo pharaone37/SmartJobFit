@@ -80,13 +80,23 @@ const salaryIntelligenceScreenshot = salaryIntelligenceAnalytics;
 const careerCoachingScreenshot = careerCoachingInterface;
 const jobAlertsScreenshot = jobAlertsNotifications;
 
-// Hero Section Component
+// Hero Section Component with Auto-Apply Demo
 const HeroSection = () => {
   const [currentFeature, setCurrentFeature] = useState(0);
-  
+  const [timelineStep, setTimelineStep] = useState(0);
+  const [isDemoActive, setIsDemoActive] = useState(false);
+  const [completedJobs, setCompletedJobs] = useState(0);
+  const [currentTask, setCurrentTask] = useState("");
+  const [showParticles, setShowParticles] = useState(false);
+  const [liveMetrics, setLiveMetrics] = useState({
+    jobsScanned: 0,
+    atsScore: 0,
+    companiesAnalyzed: 0,
+  });
+
   const features = [
     "AI-Powered Job Matching",
-    "Resume Optimization",
+    "Resume Optimization", 
     "Interview Coaching",
     "Application Tracking",
     "Salary Intelligence",
@@ -96,12 +106,109 @@ const HeroSection = () => {
     "Company Intelligence"
   ];
 
+  // Demo timeline for AI agents workflow
+  const agentWorkflow = [
+    {
+      id: 1,
+      name: "Search Agent",
+      icon: Search,
+      task: "Scanning 15+ job boards",
+      description: "Finding ML Engineer positions in Berlin",
+      duration: "8s",
+      result: "47 positions found"
+    },
+    {
+      id: 2,
+      name: "Filter Agent", 
+      icon: Filter,
+      task: "Applying salary & location filters",
+      description: "Filtering for ≥€90k remote positions",
+      duration: "3s",
+      result: "12 qualified matches"
+    },
+    {
+      id: 3,
+      name: "Resume Agent",
+      icon: FileText,
+      task: "Tailoring resume for each role",
+      description: "Optimizing keywords & ATS compatibility",
+      duration: "12s",
+      result: "99.8% ATS score achieved"
+    },
+    {
+      id: 4,
+      name: "Company Intel Agent",
+      icon: Building,
+      task: "Researching target companies",
+      description: "Culture analysis & leadership insights",
+      duration: "15s",
+      result: "Deep reports ready"
+    },
+    {
+      id: 5,
+      name: "Application Agent",
+      icon: Zap,
+      task: "Submitting applications",
+      description: "Quality control & personalization",
+      duration: "8s",
+      result: "12 applications sent"
+    }
+  ];
+
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentFeature((prev) => (prev + 1) % features.length);
     }, 3000);
     return () => clearInterval(interval);
   }, []);
+
+  // Auto-advance timeline demo
+  useEffect(() => {
+    if (isDemoActive) {
+      const interval = setInterval(() => {
+        setTimelineStep((prev) => {
+          const newStep = prev + 1;
+          if (newStep >= agentWorkflow.length) {
+            setIsDemoActive(false);
+            setCompletedJobs(12);
+            setCurrentTask("All agents completed successfully!");
+            return 0;
+          }
+          
+          // Update current task
+          setCurrentTask(agentWorkflow[newStep]?.task || "Processing...");
+          
+          // Update live metrics based on agent progress
+          if (newStep === 1) { // Search Agent
+            setLiveMetrics(prev => ({ ...prev, jobsScanned: 47 }));
+          } else if (newStep === 2) { // Filter Agent
+            setLiveMetrics(prev => ({ ...prev, jobsScanned: 12 }));
+          } else if (newStep === 3) { // Resume Agent
+            setLiveMetrics(prev => ({ ...prev, atsScore: 99.8 }));
+          } else if (newStep === 4) { // Company Intel Agent
+            setLiveMetrics(prev => ({ ...prev, companiesAnalyzed: 12 }));
+          } else if (newStep === 5) { // Application Agent
+            setCompletedJobs(12);
+            setShowParticles(true);
+            setTimeout(() => setShowParticles(false), 3000);
+          }
+          
+          return newStep;
+        });
+      }, 1800);
+      
+      return () => clearInterval(interval);
+    }
+  }, [isDemoActive, agentWorkflow.length]);
+
+  const startDemo = () => {
+    setIsDemoActive(true);
+    setTimelineStep(0);
+    setCompletedJobs(0);
+    setCurrentTask("Initializing AI agents...");
+    setLiveMetrics({ jobsScanned: 0, atsScore: 0, companiesAnalyzed: 0 });
+    setShowParticles(false);
+  };
 
   return (
     <section className="relative min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-gray-900 dark:via-blue-900 dark:to-indigo-900">
@@ -213,51 +320,192 @@ const HeroSection = () => {
             </div>
           </div>
 
-          {/* Right Content - Interactive Preview */}
+          {/* Right Content - Auto-Apply Demo */}
           <div className="relative">
-            <Card className="bg-white dark:bg-gray-800 shadow-2xl border-0">
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-                    <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
-                    <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+            {/* Enhanced Auto-Apply Demo Card */}
+            <Card className="relative overflow-hidden bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 text-white border-0 shadow-2xl">
+              {/* Animated Background Elements */}
+              <div className="absolute inset-0 opacity-20">
+                <div className="absolute top-10 left-10 w-20 h-20 bg-white rounded-full animate-pulse"></div>
+                <div className="absolute top-20 right-20 w-16 h-16 bg-yellow-300 rounded-full animate-bounce"></div>
+                <div className="absolute bottom-10 left-1/4 w-12 h-12 bg-green-300 rounded-full animate-ping"></div>
+                <div className="absolute bottom-20 right-1/3 w-14 h-14 bg-pink-300 rounded-full animate-pulse"></div>
+              </div>
+              
+              {/* Particle Effect for Completed Actions */}
+              {showParticles && (
+                <div className="absolute inset-0 pointer-events-none">
+                  {[...Array(12)].map((_, i) => (
+                    <div
+                      key={i}
+                      className="absolute w-2 h-2 bg-yellow-300 rounded-full animate-ping"
+                      style={{
+                        left: `${Math.random() * 100}%`,
+                        top: `${Math.random() * 100}%`,
+                        animationDelay: `${Math.random() * 2}s`,
+                        animationDuration: '1s'
+                      }}
+                    ></div>
+                  ))}
+                </div>
+              )}
+
+              <CardHeader className="relative z-10 pb-4">
+                <div className="text-center space-y-3">
+                  <Badge className="bg-white/20 text-white border-white/30 px-3 py-1">
+                    🎯 From "I need a job" to "I got offers" in 60 seconds
+                  </Badge>
+                  <p className="text-sm text-blue-100">
+                    Simply tell our AI: <em className="bg-white/20 px-2 py-1 rounded">"Find me a remote ML Engineer role in Berlin paying ≥€90k"</em>
+                  </p>
+                  <div className="flex items-center justify-center gap-2 text-xs text-blue-200">
+                    <div className="flex items-center gap-1">
+                      <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                      <span>9 specialist agents activate in parallel</span>
+                    </div>
+                    <span>→</span>
+                    <div className="flex items-center gap-1">
+                      <Timer className="w-3 h-3" />
+                      <span>60 seconds to complete package</span>
+                    </div>
                   </div>
-                  <Badge className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">Live Preview</Badge>
+                  <Button 
+                    onClick={startDemo}
+                    disabled={isDemoActive}
+                    className="bg-white text-blue-600 hover:bg-blue-50 font-semibold shadow-lg transform transition-all hover:scale-105 mt-4"
+                  >
+                    <Rocket className={`w-4 h-4 mr-2 ${isDemoActive ? 'animate-spin' : ''}`} />
+                    {isDemoActive ? "Running Demo..." : "Watch Agents Work"}
+                  </Button>
                 </div>
               </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="space-y-4">
-                  <div className="flex items-center gap-3">
-                    <Search className="w-5 h-5 text-blue-500" />
-                    <Input 
-                      placeholder="Search for your dream job..."
-                      className="border-0 bg-gray-50 dark:bg-gray-700"
-                    />
-                  </div>
-                  
-                  <div className="space-y-3">
-                    {[
-                      { title: "Senior Software Engineer", company: "TechCorp", match: 95, salary: "$140K - $180K" },
-                      { title: "Product Manager", company: "InnovateAI", match: 88, salary: "$130K - $170K" },
-                      { title: "Data Scientist", company: "DataFlow", match: 82, salary: "$120K - $160K" }
-                    ].map((job, index) => (
-                      <div key={index} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                        <div className="flex-1">
-                          <h4 className="font-medium text-gray-900 dark:text-white">{job.title}</h4>
-                          <p className="text-sm text-gray-600 dark:text-gray-300">{job.company}</p>
+              
+              {isDemoActive && (
+                <CardContent className="pt-0 relative z-10">
+                  <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 space-y-4">
+                    {/* Real-time Status Header */}
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="relative">
+                          <Timer className="w-4 h-4 animate-spin" />
+                          <div className="absolute -top-1 -right-1 w-2 h-2 bg-green-400 rounded-full animate-ping"></div>
                         </div>
-                        <div className="text-right">
-                          <Badge className={`${job.match >= 90 ? 'bg-green-100 text-green-800' : job.match >= 80 ? 'bg-yellow-100 text-yellow-800' : 'bg-gray-100 text-gray-800'}`}>
-                            {job.match}% match
-                          </Badge>
-                          <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">{job.salary}</p>
-                        </div>
+                        <span className="font-semibold text-sm">Live AI Agent Workflow</span>
+                        <Badge className="bg-green-400 text-green-900 animate-pulse text-xs">
+                          Active: {timelineStep + 1}/5 agents
+                        </Badge>
                       </div>
-                    ))}
+                      <div className="text-right space-y-1">
+                        <div className="flex items-center gap-1 justify-end">
+                          <Sparkles className="w-3 h-3 text-yellow-300 animate-pulse" />
+                          <div className="text-sm font-bold text-green-300">{completedJobs} Jobs Ready</div>
+                        </div>
+                        <div className="text-xs text-blue-200 max-w-xs text-right">{currentTask}</div>
+                      </div>
+                    </div>
+
+                    {/* Enhanced Agent Grid */}
+                    <div className="grid grid-cols-1 gap-3">
+                      {agentWorkflow.slice(0, 5).map((agent, index) => {
+                        const isActive = index === timelineStep;
+                        const isCompleted = index < timelineStep;
+                        
+                        return (
+                          <div
+                            key={agent.id}
+                            className={`relative p-3 rounded-lg border transition-all duration-700 transform ${
+                              isActive 
+                                ? 'bg-yellow-400 text-yellow-900 border-yellow-300 animate-pulse scale-105 shadow-lg' 
+                                : isCompleted 
+                                  ? 'bg-green-400 text-green-900 border-green-300 shadow-md' 
+                                  : 'bg-white/20 text-white border-white/30 opacity-70'
+                            }`}
+                          >
+                            {/* Status indicator */}
+                            <div className="absolute -top-2 -right-2">
+                              {isCompleted && (
+                                <div className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center animate-bounce">
+                                  <CheckCircle className="w-3 h-3 text-white" />
+                                </div>
+                              )}
+                              {isActive && (
+                                <div className="w-5 h-5 bg-yellow-500 rounded-full flex items-center justify-center animate-spin">
+                                  <Timer className="w-2 h-2 text-yellow-900" />
+                                </div>
+                              )}
+                            </div>
+
+                            <div className="flex items-center gap-2 mb-2">
+                              <agent.icon className={`w-4 h-4 ${isActive ? 'animate-bounce' : ''}`} />
+                              <span className="font-semibold text-sm">{agent.name}</span>
+                              <span className="ml-auto text-xs font-mono bg-black/20 px-2 py-1 rounded">
+                                {agent.duration}
+                              </span>
+                            </div>
+                            
+                            <p className="text-xs mb-1 font-medium">{agent.task}</p>
+                            <p className="text-xs opacity-80">{agent.description}</p>
+                            
+                            {(isCompleted || isActive) && (
+                              <div className="mt-3 pt-2 border-t border-current/20">
+                                <div className="flex items-center gap-1">
+                                  <Sparkles className="w-3 h-3" />
+                                  <p className="text-xs font-semibold">{agent.result}</p>
+                                </div>
+                              </div>
+                            )}
+
+                            {/* Progress bar for active agent */}
+                            {isActive && (
+                              <div className="absolute bottom-0 left-0 right-0 h-1 bg-yellow-600/30 rounded-b-lg overflow-hidden">
+                                <div className="h-full bg-yellow-300 animate-pulse w-full"></div>
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+
+                    {/* Enhanced Live Metrics */}
+                    <div className="grid grid-cols-3 gap-2 mt-4">
+                      <div className="text-center p-2 bg-gradient-to-br from-green-500/20 to-green-600/20 rounded-lg border border-green-400/30">
+                        <div className="text-lg font-bold text-green-300 flex items-center justify-center gap-1">
+                          <Search className="w-3 h-3" />
+                          {liveMetrics.jobsScanned}
+                        </div>
+                        <div className="text-xs text-green-200">Jobs Scanned</div>
+                      </div>
+                      <div className="text-center p-2 bg-gradient-to-br from-blue-500/20 to-blue-600/20 rounded-lg border border-blue-400/30">
+                        <div className="text-lg font-bold text-blue-300 flex items-center justify-center gap-1">
+                          <Award className="w-3 h-3" />
+                          {liveMetrics.atsScore > 0 ? `${liveMetrics.atsScore}%` : '0%'}
+                        </div>
+                        <div className="text-xs text-blue-200">ATS Score</div>
+                      </div>
+                      <div className="text-center p-2 bg-gradient-to-br from-purple-500/20 to-purple-600/20 rounded-lg border border-purple-400/30">
+                        <div className="text-lg font-bold text-purple-300 flex items-center justify-center gap-1">
+                          <Building className="w-3 h-3" />
+                          {liveMetrics.companiesAnalyzed}
+                        </div>
+                        <div className="text-xs text-purple-200">Companies</div>
+                      </div>
+                    </div>
+
+                    {/* Success Message */}
+                    {completedJobs > 0 && (
+                      <div className="mt-4 p-3 bg-green-500/20 border border-green-400/30 rounded-lg text-center">
+                        <div className="flex items-center justify-center gap-2 text-green-300">
+                          <CheckCircle className="w-4 h-4 animate-bounce" />
+                          <span className="font-bold text-sm">Success! {completedJobs} applications ready for submission</span>
+                        </div>
+                        <p className="text-xs text-green-200 mt-1">
+                          Each application is tailored, ATS-optimized, and includes company research
+                        </p>
+                      </div>
+                    )}
                   </div>
-                </div>
-              </CardContent>
+                </CardContent>
+              )}
             </Card>
           </div>
         </div>
