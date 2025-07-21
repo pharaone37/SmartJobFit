@@ -61,7 +61,9 @@ import {
   Tablet,
   Crown,
   ChevronDown,
-  Gift
+  Gift,
+  Shield,
+  Trophy
 } from 'lucide-react';
 
 // Import screenshots with descriptive names
@@ -520,36 +522,94 @@ const HeroSection = () => {
 
         {/* Secondary Content - Single Column */}
         <div className="max-w-4xl mx-auto">
-          {/* Bold Challenge CTA */}
-          <div className="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 rounded-2xl p-8 border-2 border-amber-200 dark:border-amber-800">
-            <div className="text-center">
-              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
-                Don't Believe the Hype?
-              </h3>
-              <p className="text-gray-700 dark:text-gray-300 mb-6">
+          {/* Power Statement CTA */}
+          <div className="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 rounded-2xl p-8 border-2 border-amber-200 dark:border-amber-800 relative overflow-hidden">
+            {/* Background accent */}
+            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-amber-200/30 to-orange-200/30 rounded-full blur-3xl"></div>
+            
+            <div className="text-center relative z-10">
+              <div className="flex items-center justify-center gap-3 mb-4">
+                <div className="w-12 h-12 bg-gradient-to-r from-amber-500 to-orange-500 rounded-full flex items-center justify-center">
+                  <Shield className="w-6 h-6 text-white" />
+                </div>
+                <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
+                  Don't Believe the Hype?
+                </h3>
+              </div>
+              
+              <p className="text-lg text-gray-700 dark:text-gray-300 mb-6 leading-relaxed">
                 We understand your skepticism. Every platform promises transformation. 
-                <span className="font-semibold text-amber-700 dark:text-amber-400"> Give us 60 seconds to prove we're different.</span>
+                <span className="font-bold text-amber-700 dark:text-amber-400 block mt-2">
+                  But our AI agents deliver results that speak louder than words.
+                </span>
               </p>
-              <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-amber-200 dark:border-amber-700">
-                <p className="text-sm text-gray-600 dark:text-gray-400 italic mb-3">
-                  "Try it. Challenge it. Test every claim we make. We're confident our AI agents will speak for themselves."
-                </p>
-                <div className="grid grid-cols-2 gap-3 text-xs">
-                  <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                    <span className="text-gray-600 dark:text-gray-400">99.9% uptime - agents never sleep</span>
+              
+              <div className="bg-gradient-to-r from-white to-amber-50/50 dark:from-gray-800 dark:to-gray-700 rounded-xl p-6 border border-amber-200 dark:border-amber-700 shadow-inner">
+                <div className="flex items-center justify-center gap-2 mb-4">
+                  <Trophy className="w-5 h-5 text-amber-600" />
+                  <p className="text-base font-semibold text-gray-800 dark:text-gray-200">
+                    "Challenge every claim. Test every feature. Our AI agents prove themselves."
+                  </p>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                  <div className="bg-white/70 dark:bg-gray-800/70 rounded-lg p-4 border border-amber-100 dark:border-amber-800">
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="w-8 h-8 bg-green-500 rounded-lg flex items-center justify-center">
+                        <Zap className="w-4 h-4 text-white" />
+                      </div>
+                      <div>
+                        <div className="font-bold text-green-700 dark:text-green-400 text-lg">99.9%</div>
+                        <div className="text-gray-600 dark:text-gray-400 text-xs">System Uptime</div>
+                      </div>
+                    </div>
+                    <p className="text-gray-700 dark:text-gray-300">Our AI agents never sleep, working 24/7 to find your perfect opportunities</p>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                    <span className="text-gray-600 dark:text-gray-400">0.7ms response time - faster than heartbeat</span>
+                  
+                  <div className="bg-white/70 dark:bg-gray-800/70 rounded-lg p-4 border border-amber-100 dark:border-amber-800">
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center">
+                        <Clock className="w-4 h-4 text-white" />
+                      </div>
+                      <div>
+                        <div className="font-bold text-blue-700 dark:text-blue-400 text-lg">0.7ms</div>
+                        <div className="text-gray-600 dark:text-gray-400 text-xs">Response Time</div>
+                      </div>
+                    </div>
+                    <p className="text-gray-700 dark:text-gray-300">Lightning-fast analysis, faster than your heartbeat, delivering instant results</p>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-                    <span className="text-gray-600 dark:text-gray-400">2.3M opportunities analyzed monthly</span>
+                  
+                  <div className="bg-white/70 dark:bg-gray-800/70 rounded-lg p-4 border border-amber-100 dark:border-amber-800">
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="w-8 h-8 bg-purple-500 rounded-lg flex items-center justify-center">
+                        <BarChart3 className="w-4 h-4 text-white" />
+                      </div>
+                      <div>
+                        <div className="font-bold text-purple-700 dark:text-purple-400 text-lg">2.3M</div>
+                        <div className="text-gray-600 dark:text-gray-400 text-xs">Jobs Analyzed Monthly</div>
+                      </div>
+                    </div>
+                    <p className="text-gray-700 dark:text-gray-300">Massive data processing power scanning millions of opportunities continuously</p>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
-                    <span className="text-gray-600 dark:text-gray-400">78% of interviews turn into offers</span>
+                  
+                  <div className="bg-white/70 dark:bg-gray-800/70 rounded-lg p-4 border border-amber-100 dark:border-amber-800">
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center">
+                        <Target className="w-4 h-4 text-white" />
+                      </div>
+                      <div>
+                        <div className="font-bold text-orange-700 dark:text-orange-400 text-lg">78%</div>
+                        <div className="text-gray-600 dark:text-gray-400 text-xs">Interview Success Rate</div>
+                      </div>
+                    </div>
+                    <p className="text-gray-700 dark:text-gray-300">Our users land offers at nearly 4x the industry average success rate</p>
+                  </div>
+                </div>
+                
+                <div className="mt-6 pt-6 border-t border-amber-200 dark:border-amber-700">
+                  <div className="flex items-center justify-center gap-2 text-sm text-amber-700 dark:text-amber-400 font-medium">
+                    <Award className="w-4 h-4" />
+                    <span>Trusted by 50,000+ professionals • Enterprise-grade security • 24/7 AI monitoring</span>
                   </div>
                 </div>
               </div>
