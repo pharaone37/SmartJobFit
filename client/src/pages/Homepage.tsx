@@ -129,21 +129,7 @@ const HeroSection = () => {
                 while your coffee is still hot.
               </p>
               
-              {/* Key Performance Metrics */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4 border border-blue-200 dark:border-blue-800">
-                  <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">94%</div>
-                  <div className="text-sm text-gray-600 dark:text-gray-400">of matches feel like the job was written for you</div>
-                </div>
-                <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-4 border border-green-200 dark:border-green-800">
-                  <div className="text-2xl font-bold text-green-600 dark:text-green-400">99.8%</div>
-                  <div className="text-sm text-gray-600 dark:text-gray-400">of résumés pass ATS filters on first scan</div>
-                </div>
-                <div className="bg-purple-50 dark:bg-purple-900/20 rounded-lg p-4 border border-purple-200 dark:border-purple-800">
-                  <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">€12,400</div>
-                  <div className="text-sm text-gray-600 dark:text-gray-400">average salary increase in first offer</div>
-                </div>
-              </div>
+
             </div>
 
             {/* Dynamic Feature Highlight */}
@@ -949,9 +935,25 @@ const SuccessMetrics = () => {
               For Future Success
             </span>
           </h2>
-          <p className="text-xl text-blue-100 max-w-3xl mx-auto">
+          <p className="text-xl text-blue-100 max-w-3xl mx-auto mb-8">
             Our AI-powered platform has helped professionals across the globe achieve their career goals
           </p>
+          
+          {/* Key Performance Metrics */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-white/20">
+              <div className="text-3xl font-bold text-white mb-2">94%</div>
+              <div className="text-blue-100">of matches feel like the job was written for you</div>
+            </div>
+            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-white/20">
+              <div className="text-3xl font-bold text-white mb-2">99.8%</div>
+              <div className="text-blue-100">of résumés pass ATS filters on first scan</div>
+            </div>
+            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-white/20">
+              <div className="text-3xl font-bold text-white mb-2">€12,400</div>
+              <div className="text-blue-100">average salary increase in first offer</div>
+            </div>
+          </div>
         </div>
 
         {/* Metrics Grid */}
