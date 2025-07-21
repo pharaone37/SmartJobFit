@@ -114,20 +114,20 @@ const HeroSection = () => {
           <div className="space-y-8">
             <div className="space-y-4">
               <Badge className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-4 py-2 text-sm font-medium">
-                🚀 AI-Powered Job Search Revolution
+                🤖 Elite AI Agents at Work
               </Badge>
               
               <h1 className="text-4xl md:text-6xl font-bold text-gray-900 dark:text-white leading-tight">
-                Find Your Dream Job
+                Your Dream Job, Delivered by
                 <span className="block text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">
-                  10x Faster
+                  AI Agents in 60 Seconds
                 </span>
               </h1>
               
               <p className="text-xl text-gray-600 dark:text-gray-300 leading-relaxed">
-                SmartJobFit uses advanced AI to match you with perfect opportunities, 
-                optimize your applications, and coach you through interviews. 
-                Transform your career with AI-powered job search and coaching.
+                Zero typing, zero guesswork, zero wasted applications. Our elite AI agents 
+                intelligently hunt, match, and deliver your perfect opportunities while you focus 
+                on what matters most - landing the job.
               </p>
             </div>
 
@@ -143,7 +143,7 @@ const HeroSection = () => {
               </div>
               <Progress value={(currentFeature + 1) * 11.11} className="h-2 mb-2" />
               <p className="text-sm text-gray-600 dark:text-gray-300">
-                Experience our latest AI-powered features designed to accelerate your job search
+                Watch our AI agents work intelligently behind the scenes to deliver results
               </p>
             </div>
 
