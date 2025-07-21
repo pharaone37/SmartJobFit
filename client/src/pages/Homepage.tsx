@@ -310,6 +310,12 @@ const HeroSection = () => {
                       Upload Your Resume & Watch Our AI Work
                     </h3>
                     
+                    <p className="text-lg text-blue-100 leading-relaxed max-w-4xl mx-auto">
+                      Our intelligent AI agents will instantly analyze your resume, optimize it for your target role, craft a personalized cover letter, 
+                      identify the perfect job matches, prepare you for interviews with custom questions, provide salary negotiation strategies, 
+                      and deliver tailored career guidance - all in under 60 seconds.
+                    </p>
+                    
                     <div className="bg-white/15 backdrop-blur-sm rounded-xl p-6 border border-white/30">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
                         <div className="text-left space-y-3">
