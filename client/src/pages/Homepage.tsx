@@ -389,23 +389,7 @@ const WaitingListSection = () => {
             )}
           </div>
 
-          {/* Social Proof */}
-          <div className="flex items-center justify-center gap-8 text-white/80 text-sm">
-            <div className="flex items-center gap-2">
-              <div className="flex -space-x-2">
-                {[1, 2, 3, 4, 5].map((i) => (
-                  <div key={i} className="w-8 h-8 bg-gradient-to-r from-pink-400 to-purple-400 rounded-full border-2 border-white/30"></div>
-                ))}
-              </div>
-              <span>Join the Beta Program</span>
-            </div>
-            <div className="flex items-center gap-1">
-              {[1, 2, 3, 4, 5].map((i) => (
-                <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-              ))}
-              <span className="ml-1">Be among the first to try</span>
-            </div>
-          </div>
+
         </div>
       </div>
     </section>
