@@ -74,6 +74,7 @@ import salaryIntelligenceAnalytics from '@/assets/Screenshot 2025-07-16 at 18.30
 import jobAlertsNotifications from '@/assets/Screenshot 2025-07-16 at 18.31.05_1752684043852.png';
 import careerAnalyticsDashboard from '@/assets/Screenshot 2025-07-16 at 18.31.13_1752684043853.png';
 import careerCoachingInterface from '@/assets/Screenshot 2025-07-16 at 18.32.15_1752684043853.png';
+import autoApplyDashboardScreenshot from '@assets/Screenshot 2025-07-21 at 22.56.35_1753131398520.png';
 
 // Add alias variables for any references that might use different names
 const salaryIntelligenceScreenshot = salaryIntelligenceAnalytics;
@@ -321,7 +322,45 @@ const HeroSection = () => {
           </div>
 
           {/* Right Content - Auto-Apply Demo */}
-          <div className="relative">
+          <div className="relative space-y-6">
+            {/* Auto-Apply Screenshot Preview */}
+            <Card className="bg-white dark:bg-gray-800 shadow-xl border-0 overflow-hidden">
+              <CardHeader className="pb-2">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-3 h-3 bg-red-500 rounded-full"></div>
+                    <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                    <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                  </div>
+                  <Badge className="bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+                    Live Dashboard
+                  </Badge>
+                </div>
+              </CardHeader>
+              <CardContent className="p-0">
+                <div className="relative group cursor-pointer overflow-hidden">
+                  <img
+                    src={autoApplyDashboardScreenshot}
+                    alt="Auto-Apply Automation Dashboard showing active profiles with real-time metrics"
+                    className="w-full h-auto transition-transform duration-300 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300 flex items-center justify-center">
+                    <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      <div className="bg-white/90 dark:bg-gray-900/90 rounded-lg px-4 py-2 flex items-center gap-2 text-sm font-medium">
+                        <Eye className="w-4 h-4" />
+                        Click to view full size
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="p-4 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20">
+                  <p className="text-sm text-gray-600 dark:text-gray-300 text-center">
+                    Real automation profiles working 24/7 • Live metrics • Smart filtering
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+
             {/* Enhanced Auto-Apply Demo Card */}
             <Card className="relative overflow-hidden bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 text-white border-0 shadow-2xl">
               {/* Animated Background Elements */}
@@ -353,7 +392,7 @@ const HeroSection = () => {
               <CardHeader className="relative z-10 pb-4">
                 <div className="text-center space-y-3">
                   <Badge className="bg-white/20 text-white border-white/30 px-3 py-1">
-                    🎯 From "I need a job" to "I got offers" in 60 seconds
+                    🎯 Interactive Demo: Watch AI Agents Work
                   </Badge>
                   <p className="text-sm text-blue-100">
                     Simply tell our AI: <em className="bg-white/20 px-2 py-1 rounded">"Find me a remote ML Engineer role in Berlin paying ≥€90k"</em>
