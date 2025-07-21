@@ -741,7 +741,7 @@ export default function AdvancedInterviewCoach() {
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <BookOpen className="h-5 w-5" />
-                    50,000+ Interview Questions Database
+                    Comprehensive Interview Questions Database
                   </CardTitle>
                   <CardDescription>
                     Access our comprehensive collection of real interview questions

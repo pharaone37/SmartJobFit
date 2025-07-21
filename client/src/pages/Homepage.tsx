@@ -127,7 +127,7 @@ const HeroSection = () => {
               <p className="text-xl text-gray-600 dark:text-gray-300 leading-relaxed">
                 SmartJobFit uses advanced AI to match you with perfect opportunities, 
                 optimize your applications, and coach you through interviews. 
-                Join 50,000+ professionals who landed their dream jobs.
+                Transform your career with AI-powered job search and coaching.
               </p>
             </div>
 
@@ -164,19 +164,13 @@ const HeroSection = () => {
             {/* Trust Signals */}
             <div className="flex items-center gap-6 pt-4">
               <div className="flex items-center gap-2">
-                <div className="flex -space-x-2">
-                  {[1, 2, 3, 4, 5].map((i) => (
-                    <div key={i} className="w-8 h-8 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full border-2 border-white dark:border-gray-800"></div>
-                  ))}
-                </div>
-                <span className="text-sm text-gray-600 dark:text-gray-300">50,000+ users</span>
+                <Shield className="w-5 h-5 text-green-500" />
+                <span className="text-sm text-gray-600 dark:text-gray-300">Secure & Private</span>
               </div>
               
-              <div className="flex items-center gap-1">
-                {[1, 2, 3, 4, 5].map((i) => (
-                  <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                ))}
-                <span className="text-sm text-gray-600 dark:text-gray-300 ml-2">4.9/5 rating</span>
+              <div className="flex items-center gap-2">
+                <Zap className="w-5 h-5 text-blue-500" />
+                <span className="text-sm text-gray-600 dark:text-gray-300">AI-Powered</span>
               </div>
             </div>
           </div>
@@ -388,7 +382,7 @@ const WaitingListSection = () => {
                   </span>
                   <span className="flex items-center gap-1">
                     <Users className="w-4 h-4" />
-                    12,847+ members
+                    Early Access
                   </span>
                 </div>
               </div>
@@ -403,13 +397,13 @@ const WaitingListSection = () => {
                   <div key={i} className="w-8 h-8 bg-gradient-to-r from-pink-400 to-purple-400 rounded-full border-2 border-white/30"></div>
                 ))}
               </div>
-              <span>12,847+ professionals waiting</span>
+              <span>Join the Beta Program</span>
             </div>
             <div className="flex items-center gap-1">
               {[1, 2, 3, 4, 5].map((i) => (
                 <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
               ))}
-              <span className="ml-1">Coming soon reviews</span>
+              <span className="ml-1">Be among the first to try</span>
             </div>
           </div>
         </div>
@@ -844,7 +838,7 @@ const FeatureShowcase = () => {
 // Success Metrics Component
 const SuccessMetrics = () => {
   const metrics = [
-    { value: "50,000+", label: "Active Users", growth: "+127% this year" },
+    { value: "Beta", label: "Early Access", growth: "Join the revolution" },
     { value: "2.3M+", label: "Jobs Matched", growth: "+89% this quarter" },
     { value: "78%", label: "Interview Success", growth: "+12% improvement" },
     { value: "94%", label: "User Satisfaction", growth: "Industry leading" }
@@ -882,12 +876,12 @@ const SuccessMetrics = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <Badge className="bg-white/20 text-white px-4 py-2 text-sm font-medium mb-4">
-            📊 Success Stories
+            🚀 Beta Platform
           </Badge>
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-            Join 50,000+ Professionals Who
+            Built by Career Experts
             <span className="block text-blue-200">
-              Found Their Dream Jobs
+              For Future Success
             </span>
           </h2>
           <p className="text-xl text-blue-100 max-w-3xl mx-auto">
@@ -908,34 +902,7 @@ const SuccessMetrics = () => {
           ))}
         </div>
 
-        {/* Testimonials */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {testimonials.map((testimonial, index) => (
-            <Card key={index} className="bg-white/10 backdrop-blur-sm border-white/20">
-              <CardContent className="p-6">
-                <div className="flex items-center gap-1 mb-4">
-                  {[...Array(testimonial.rating)].map((_, i) => (
-                    <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                  ))}
-                </div>
-                <blockquote className="text-white mb-4">
-                  "{testimonial.quote}"
-                </blockquote>
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full flex items-center justify-center">
-                    <span className="text-white font-semibold">
-                      {testimonial.name.split(' ').map(n => n[0]).join('')}
-                    </span>
-                  </div>
-                  <div>
-                    <div className="text-white font-semibold">{testimonial.name}</div>
-                    <div className="text-blue-200 text-sm">{testimonial.role} at {testimonial.company}</div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+
 
         {/* CTA */}
         <div className="text-center mt-16">
@@ -946,7 +913,7 @@ const SuccessMetrics = () => {
           >
             <Link to="/auth">
               <Trophy className="w-5 h-5 mr-2" />
-              Join Success Stories
+              Start Your Journey
             </Link>
           </Button>
         </div>
@@ -1172,13 +1139,13 @@ const Homepage = () => {
               <div className="flex items-center justify-center gap-3">
                 <Globe className="w-6 h-6 text-blue-500" />
                 <span className="text-gray-700 dark:text-gray-300">
-                  <strong>50,000+</strong> active users worldwide
+                  <strong>Early Access</strong> to cutting-edge AI career tools
                 </span>
               </div>
               <div className="flex items-center justify-center gap-3">
                 <Trophy className="w-6 h-6 text-purple-500" />
                 <span className="text-gray-700 dark:text-gray-300">
-                  <strong>4.9/5</strong> average user rating
+                  <strong>Beta</strong> testing program available
                 </span>
               </div>
             </div>
@@ -1199,7 +1166,7 @@ const Homepage = () => {
             Ready to Transform Your Career?
           </h2>
           <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-2xl mx-auto">
-            Join thousands of professionals who have already accelerated their careers with SmartJobFit
+            Get exclusive job market insights, AI-powered career tips, and early access to new features.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button 
