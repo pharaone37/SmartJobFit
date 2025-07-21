@@ -235,21 +235,16 @@ const HeroSection = () => {
             while your coffee is still hot.
           </p>
           
-          <div className="flex flex-wrap justify-center gap-6 mt-8">
+          <div className="flex justify-center mt-8">
             <Button 
               size="lg" 
-              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-10 py-5 text-xl font-semibold shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105"
+              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-12 py-6 text-xl font-semibold shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105"
               asChild
             >
               <Link to="/auth">
                 <Rocket className="w-6 h-6 mr-3" />
                 Prove Me Wrong - Start Free
               </Link>
-            </Button>
-            
-            <Button variant="outline" size="lg" className="px-10 py-5 text-xl font-semibold border-2 hover:bg-blue-50 dark:hover:bg-blue-900/20">
-              <Play className="mr-3 w-6 h-6" />
-              Watch Demo
             </Button>
           </div>
 
