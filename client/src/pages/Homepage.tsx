@@ -217,56 +217,118 @@ const HeroSection = () => {
       <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
       
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-16">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
-          {/* Left Content */}
-          <div className="space-y-10">
-            {/* Header Section */}
-            <div className="space-y-6">
-              <Badge className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-4 py-2 text-sm font-medium inline-block">
-                🤖 Elite AI Agents at Work
-              </Badge>
-              
-              <h1 className="text-4xl md:text-6xl font-bold text-gray-900 dark:text-white leading-tight">
-                Your Dream Job, Delivered by
-                <span className="block text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">
-                  AI Agents in 60 Seconds
-                </span>
-              </h1>
-              
-              <p className="text-xl text-gray-600 dark:text-gray-300 leading-relaxed">
-                We turn 3-hour job hunts into a 60-second click. Apply to 10 perfect jobs 
-                while your coffee is still hot.
-              </p>
+        {/* Centered Header Section */}
+        <div className="text-center space-y-8 mb-16">
+          <Badge className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-6 py-3 text-base font-medium inline-block shadow-lg">
+            🤖 Elite AI Agents at Work - 60 Second Job Hunt
+          </Badge>
+          
+          <h1 className="text-5xl md:text-7xl font-bold text-gray-900 dark:text-white leading-tight max-w-5xl mx-auto">
+            Your Dream Job, Delivered by
+            <span className="block text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">
+              AI Agents in 60 Seconds
+            </span>
+          </h1>
+          
+          <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 leading-relaxed max-w-4xl mx-auto">
+            We turn 3-hour job hunts into a 60-second click. Apply to 10 perfect jobs 
+            while your coffee is still hot.
+          </p>
+          
+          <div className="flex flex-wrap justify-center gap-6 mt-8">
+            <Button 
+              size="lg" 
+              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-10 py-5 text-xl font-semibold shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105"
+              asChild
+            >
+              <Link to="/auth">
+                <Rocket className="w-6 h-6 mr-3" />
+                Prove Me Wrong - Start Free
+              </Link>
+            </Button>
+            
+            <Button variant="outline" size="lg" className="px-10 py-5 text-xl font-semibold border-2 hover:bg-blue-50 dark:hover:bg-blue-900/20">
+              <Play className="mr-3 w-6 h-6" />
+              Watch Demo
+            </Button>
+          </div>
+
+          {/* Trust Signals */}
+          <div className="flex justify-center items-center gap-8 mt-8">
+            <div className="flex items-center gap-2">
+              <Shield className="w-6 h-6 text-green-500" />
+              <span className="text-base text-gray-600 dark:text-gray-300">Secure & Private</span>
+            </div>
+            
+            <div className="flex items-center gap-2">
+              <Zap className="w-6 h-6 text-blue-500" />
+              <span className="text-base text-gray-600 dark:text-gray-300">AI-Powered</span>
             </div>
 
-            {/* CTA Section */}
-            <div className="space-y-6">
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Button 
-                  size="lg" 
-                  className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-4 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
-                  asChild
-                >
-                  <Link to="/auth">
-                    <Rocket className="w-5 h-5 mr-2" />
-                    Prove Me Wrong - Start Free
-                  </Link>
-                </Button>
-              </div>
-
-              {/* Trust Signals */}
-              <div className="flex items-center gap-6">
-                <div className="flex items-center gap-2">
-                  <Shield className="w-5 h-5 text-green-500" />
-                  <span className="text-sm text-gray-600 dark:text-gray-300">Secure & Private</span>
-                </div>
-                
-                <div className="flex items-center gap-2">
-                  <Zap className="w-5 h-5 text-blue-500" />
-                  <span className="text-sm text-gray-600 dark:text-gray-300">AI-Powered</span>
-                </div>
-              </div>
+            <div className="flex items-center gap-2">
+              <Clock className="w-6 h-6 text-purple-500" />
+              <span className="text-base text-gray-600 dark:text-gray-300">60 Seconds</span>
             </div>
+          </div>
+        </div>
+
+        {/* Live Stats Row */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-5xl mx-auto mb-16">
+          {[
+            { label: "Jobs Matched", value: "12,450+", icon: Target, color: "text-blue-600" },
+            { label: "Success Rate", value: "94.2%", icon: TrendingUp, color: "text-green-600" },
+            { label: "Users Hired", value: "3,280+", icon: Users, color: "text-purple-600" },
+            { label: "Avg. Days", value: "8.5", icon: Clock, color: "text-orange-600" }
+          ].map((stat, index) => (
+            <div key={index} className="text-center group">
+              <stat.icon className={`w-12 h-12 mx-auto mb-3 ${stat.color} group-hover:scale-110 transition-transform duration-200`} />
+              <div className="text-3xl font-bold text-gray-900 dark:text-white">{stat.value}</div>
+              <div className="text-base text-gray-600 dark:text-gray-400">{stat.label}</div>
+            </div>
+          ))}
+        </div>
+
+        {/* Two-Column Layout for Demo Content */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+          {/* Left Column - Dashboard Screenshot & Feature Highlight */}
+          <div className="space-y-8">
+            {/* Auto-Apply Screenshot Preview */}
+            <Card className="bg-white dark:bg-gray-800 shadow-xl border-0 overflow-hidden">
+              <CardHeader className="pb-2">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-3 h-3 bg-red-500 rounded-full"></div>
+                    <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                    <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                  </div>
+                  <Badge className="bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+                    Live Dashboard
+                  </Badge>
+                </div>
+              </CardHeader>
+              <CardContent className="p-0">
+                <div className="relative group cursor-pointer overflow-hidden">
+                  <img
+                    src={autoApplyDashboardScreenshot}
+                    alt="Auto-Apply Automation Dashboard showing active profiles with real-time metrics"
+                    className="w-full h-auto transition-transform duration-300 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300 flex items-center justify-center">
+                    <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      <div className="bg-white/90 dark:bg-gray-900/90 rounded-lg px-4 py-2 flex items-center gap-2 text-sm font-medium">
+                        <Eye className="w-4 h-4" />
+                        Click to view full size
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="p-4 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20">
+                  <p className="text-sm text-gray-600 dark:text-gray-300 text-center">
+                    Real automation profiles working 24/7 • Live metrics • Smart filtering
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
 
             {/* Dynamic Feature Highlight */}
             <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-200 dark:border-gray-700">
@@ -321,45 +383,8 @@ const HeroSection = () => {
             </div>
           </div>
 
-          {/* Right Content - Auto-Apply Demo */}
-          <div className="relative space-y-6">
-            {/* Auto-Apply Screenshot Preview */}
-            <Card className="bg-white dark:bg-gray-800 shadow-xl border-0 overflow-hidden">
-              <CardHeader className="pb-2">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-                    <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
-                    <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                  </div>
-                  <Badge className="bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
-                    Live Dashboard
-                  </Badge>
-                </div>
-              </CardHeader>
-              <CardContent className="p-0">
-                <div className="relative group cursor-pointer overflow-hidden">
-                  <img
-                    src={autoApplyDashboardScreenshot}
-                    alt="Auto-Apply Automation Dashboard showing active profiles with real-time metrics"
-                    className="w-full h-auto transition-transform duration-300 group-hover:scale-105"
-                  />
-                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300 flex items-center justify-center">
-                    <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      <div className="bg-white/90 dark:bg-gray-900/90 rounded-lg px-4 py-2 flex items-center gap-2 text-sm font-medium">
-                        <Eye className="w-4 h-4" />
-                        Click to view full size
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="p-4 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20">
-                  <p className="text-sm text-gray-600 dark:text-gray-300 text-center">
-                    Real automation profiles working 24/7 • Live metrics • Smart filtering
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
+          {/* Right Column - Interactive Demo */}
+          <div className="space-y-6">
 
             {/* Enhanced Auto-Apply Demo Card */}
             <Card className="relative overflow-hidden bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 text-white border-0 shadow-2xl">
