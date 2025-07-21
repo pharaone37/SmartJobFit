@@ -889,7 +889,6 @@ const FeatureShowcase = () => {
 // Success Metrics Component
 const SuccessMetrics = () => {
   const metrics = [
-    { value: "Beta", label: "Early Access", growth: "Join the revolution" },
     { value: "2.3M+", label: "Jobs Matched", growth: "+89% this quarter" },
     { value: "78%", label: "Interview Success", growth: "+12% improvement" },
     { value: "94%", label: "User Satisfaction", growth: "Industry leading" }
@@ -957,7 +956,7 @@ const SuccessMetrics = () => {
         </div>
 
         {/* Metrics Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
           {metrics.map((metric, index) => (
             <Card key={index} className="bg-white/10 backdrop-blur-sm border-white/20 text-white">
               <CardContent className="p-6 text-center">
