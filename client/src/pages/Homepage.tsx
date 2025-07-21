@@ -518,24 +518,8 @@ const HeroSection = () => {
             </Card>
         </div>
 
-        {/* Secondary Content - Two Columns */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-6xl mx-auto">
-          {/* Dynamic Feature Highlight */}
-          <div className="bg-white dark:bg-gray-800 rounded-xl p-8 shadow-lg border border-gray-200 dark:border-gray-700">
-            <div className="flex items-center gap-4 mb-4">
-              <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center">
-                <Sparkles className="w-6 h-6 text-white" />
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
-                Now Featuring: {features[currentFeature]}
-              </h3>
-            </div>
-            <Progress value={(currentFeature + 1) * 11.11} className="h-3 mb-4" />
-            <p className="text-base text-gray-600 dark:text-gray-300">
-              Watch our AI agents work intelligently behind the scenes to deliver results
-            </p>
-          </div>
-
+        {/* Secondary Content - Single Column */}
+        <div className="max-w-4xl mx-auto">
           {/* Bold Challenge CTA */}
           <div className="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 rounded-2xl p-8 border-2 border-amber-200 dark:border-amber-800">
             <div className="text-center">
