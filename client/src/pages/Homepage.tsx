@@ -27,7 +27,6 @@ import {
   MapPin,
   Building,
   Briefcase,
-  Shield,
   Globe,
   Rocket,
   ChevronRight,
@@ -62,14 +61,13 @@ import {
   Crown,
   ChevronDown,
   Gift,
-  Shield,
-  Trophy
+  Shield
 } from 'lucide-react';
 
 // Import screenshots with descriptive names
 import smartJobSearchDashboard from '@/assets/Screenshot 2025-07-16 at 18.29.41_1752684043849.png';
 import applicationTrackerDashboard from '@/assets/Screenshot 2025-07-16 at 18.29.56_1752684043850.png';
-import oneClickAutoApplySystem from '@/assets/Screenshot 2025-07-16 at 18.30.04_1752684043850.png';
+import oneClickAutoApplySystem from '@/assets/one-click-apply_1753133149427.png';
 import aiResumeOptimizationTool from '@/assets/Screenshot 2025-07-16 at 18.30.14_1752684043851.png';
 import interviewCoachingSystem from '@/assets/Screenshot 2025-07-16 at 18.30.23_1752684043851.png';
 import salaryIntelligenceAnalytics from '@/assets/Screenshot 2025-07-16 at 18.30.33_1752684043852.png';
@@ -1052,8 +1050,7 @@ const FeatureShowcase = () => {
                           alt={`${currentFeature.title} screenshot`}
                           className="w-full max-h-96 object-contain cursor-pointer hover:scale-[1.02] transition-transform duration-300"
                           style={{ 
-                            imageRendering: 'high-quality',
-                            imageResolution: 'from-image'
+                            imageRendering: 'auto'
                           }}
                           onClick={() => openPreview(currentFeature.screenshot, `${currentFeature.title} screenshot`, currentFeature.title)}
                         />
@@ -1162,8 +1159,7 @@ const FeatureShowcase = () => {
                               alt={`${feature.title} screenshot`}
                               className="w-full max-h-60 object-contain cursor-pointer"
                               style={{ 
-                                imageRendering: 'high-quality',
-                                imageResolution: 'from-image'
+                                imageRendering: 'auto'
                               }}
                               onClick={() => openPreview(feature.screenshot, `${feature.title} screenshot`, feature.title)}
                             />
