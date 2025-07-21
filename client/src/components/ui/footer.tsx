@@ -77,7 +77,7 @@ export default function Footer() {
                 🚀 Stay Ahead in Your Career
               </h3>
               <p className="text-lg text-gray-300 mb-8">
-                Join 50,000+ professionals getting exclusive job market insights, AI-powered career tips, and early access to new features.
+                Get exclusive job market insights, AI-powered career tips, and early access to revolutionary features that will transform your career.
               </p>
               
               {/* Enhanced Newsletter Form */}
@@ -119,7 +119,7 @@ export default function Footer() {
                 </div>
                 <div className="flex items-center gap-2">
                   <Users className="w-5 h-5 text-blue-400" />
-                  <span>50,000+ Subscribers</span>
+                  <span>Growing Community</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Zap className="w-5 h-5 text-purple-400" />
