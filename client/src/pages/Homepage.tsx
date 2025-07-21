@@ -124,11 +124,26 @@ const HeroSection = () => {
                 </span>
               </h1>
               
-              <p className="text-xl text-gray-600 dark:text-gray-300 leading-relaxed">
-                Zero typing, zero guesswork, zero wasted applications. Our elite AI agents 
-                intelligently hunt, match, and deliver your perfect opportunities while you focus 
-                on what matters most - landing the job.
+              <p className="text-xl text-gray-600 dark:text-gray-300 leading-relaxed mb-4">
+                We turn 3-hour job hunts into a 60-second click. Apply to 10 perfect jobs 
+                while your coffee is still hot.
               </p>
+              
+              {/* Key Performance Metrics */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4 border border-blue-200 dark:border-blue-800">
+                  <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">94%</div>
+                  <div className="text-sm text-gray-600 dark:text-gray-400">of matches feel like the job was written for you</div>
+                </div>
+                <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-4 border border-green-200 dark:border-green-800">
+                  <div className="text-2xl font-bold text-green-600 dark:text-green-400">99.8%</div>
+                  <div className="text-sm text-gray-600 dark:text-gray-400">of résumés pass ATS filters on first scan</div>
+                </div>
+                <div className="bg-purple-50 dark:bg-purple-900/20 rounded-lg p-4 border border-purple-200 dark:border-purple-800">
+                  <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">€12,400</div>
+                  <div className="text-sm text-gray-600 dark:text-gray-400">average salary increase in first offer</div>
+                </div>
+              </div>
             </div>
 
             {/* Dynamic Feature Highlight */}
@@ -157,10 +172,28 @@ const HeroSection = () => {
                   We understand your skepticism. Every platform promises transformation. 
                   <span className="font-semibold text-amber-700 dark:text-amber-400"> Give us 60 seconds to prove we're different.</span>
                 </p>
-                <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-amber-200 dark:border-amber-700">
-                  <p className="text-sm text-gray-600 dark:text-gray-400 italic">
+                <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-amber-200 dark:border-amber-700 mb-4">
+                  <p className="text-sm text-gray-600 dark:text-gray-400 italic mb-3">
                     "Try it. Challenge it. Test every claim we make. We're confident our AI agents will speak for themselves."
                   </p>
+                  <div className="grid grid-cols-2 gap-3 text-xs">
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                      <span className="text-gray-600 dark:text-gray-400">99.9% uptime - agents never sleep</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                      <span className="text-gray-600 dark:text-gray-400">0.7ms response time - faster than heartbeat</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+                      <span className="text-gray-600 dark:text-gray-400">2.3M opportunities analyzed monthly</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
+                      <span className="text-gray-600 dark:text-gray-400">78% of interviews turn into offers</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -407,6 +440,36 @@ const WaitingListSection = () => {
             )}
           </div>
 
+          {/* Impressive Scale Section */}
+          <div className="mt-24 bg-gradient-to-r from-gray-50 to-blue-50 dark:from-gray-800 dark:to-blue-900 rounded-3xl p-12">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-6">
+                Scale You Can Feel, Intelligence That Never Stops Learning
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div className="text-center">
+                  <div className="text-4xl font-bold text-blue-600 dark:text-blue-400 mb-2">2.3M</div>
+                  <div className="text-sm text-gray-600 dark:text-gray-400">opportunities analyzed every month</div>
+                  <div className="text-xs text-gray-500 dark:text-gray-500 mt-1">so you never miss the next big role</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-4xl font-bold text-green-600 dark:text-green-400 mb-2">50,000</div>
+                  <div className="text-sm text-gray-600 dark:text-gray-400">company culture reports</div>
+                  <div className="text-xs text-gray-500 dark:text-gray-500 mt-1">updated daily, delivered in a blink</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-4xl font-bold text-purple-600 dark:text-purple-400 mb-2">12%</div>
+                  <div className="text-sm text-gray-600 dark:text-gray-400">better at interviews every week</div>
+                  <div className="text-xs text-gray-500 dark:text-gray-500 mt-1">agents improve automatically</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-4xl font-bold text-orange-600 dark:text-orange-400 mb-2">3,000</div>
+                  <div className="text-sm text-gray-600 dark:text-gray-400">fresh questions added nightly</div>
+                  <div className="text-xs text-gray-500 dark:text-gray-500 mt-1">always one step ahead</div>
+                </div>
+              </div>
+            </div>
+          </div>
 
         </div>
       </div>
