@@ -109,11 +109,12 @@ const HeroSection = () => {
       <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
       
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-16">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
           {/* Left Content */}
-          <div className="space-y-8">
-            <div className="space-y-4">
-              <Badge className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-4 py-2 text-sm font-medium">
+          <div className="space-y-10">
+            {/* Header Section */}
+            <div className="space-y-6">
+              <Badge className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-4 py-2 text-sm font-medium inline-block">
                 🤖 Elite AI Agents at Work
               </Badge>
               
@@ -124,12 +125,39 @@ const HeroSection = () => {
                 </span>
               </h1>
               
-              <p className="text-xl text-gray-600 dark:text-gray-300 leading-relaxed mb-4">
+              <p className="text-xl text-gray-600 dark:text-gray-300 leading-relaxed">
                 We turn 3-hour job hunts into a 60-second click. Apply to 10 perfect jobs 
                 while your coffee is still hot.
               </p>
-              
+            </div>
 
+            {/* CTA Section */}
+            <div className="space-y-6">
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Button 
+                  size="lg" 
+                  className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-4 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
+                  asChild
+                >
+                  <Link to="/auth">
+                    <Rocket className="w-5 h-5 mr-2" />
+                    Prove Me Wrong - Start Free
+                  </Link>
+                </Button>
+              </div>
+
+              {/* Trust Signals */}
+              <div className="flex items-center gap-6">
+                <div className="flex items-center gap-2">
+                  <Shield className="w-5 h-5 text-green-500" />
+                  <span className="text-sm text-gray-600 dark:text-gray-300">Secure & Private</span>
+                </div>
+                
+                <div className="flex items-center gap-2">
+                  <Zap className="w-5 h-5 text-blue-500" />
+                  <span className="text-sm text-gray-600 dark:text-gray-300">AI-Powered</span>
+                </div>
+              </div>
             </div>
 
             {/* Dynamic Feature Highlight */}
@@ -151,14 +179,14 @@ const HeroSection = () => {
             {/* Bold Challenge CTA */}
             <div className="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 rounded-2xl p-6 border-2 border-amber-200 dark:border-amber-800">
               <div className="text-center">
-                <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">
                   Don't Believe the Hype?
                 </h3>
-                <p className="text-lg text-gray-700 dark:text-gray-300 mb-4">
+                <p className="text-gray-700 dark:text-gray-300 mb-4">
                   We understand your skepticism. Every platform promises transformation. 
                   <span className="font-semibold text-amber-700 dark:text-amber-400"> Give us 60 seconds to prove we're different.</span>
                 </p>
-                <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-amber-200 dark:border-amber-700 mb-4">
+                <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-amber-200 dark:border-amber-700">
                   <p className="text-sm text-gray-600 dark:text-gray-400 italic mb-3">
                     "Try it. Challenge it. Test every claim we make. We're confident our AI agents will speak for themselves."
                   </p>
@@ -181,33 +209,6 @@ const HeroSection = () => {
                     </div>
                   </div>
                 </div>
-              </div>
-            </div>
-
-            {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4">
-              <Button 
-                size="lg" 
-                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-4 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
-                asChild
-              >
-                <Link to="/auth">
-                  <Rocket className="w-5 h-5 mr-2" />
-                  Prove Me Wrong - Start Free
-                </Link>
-              </Button>
-            </div>
-
-            {/* Trust Signals */}
-            <div className="flex items-center gap-6 pt-4">
-              <div className="flex items-center gap-2">
-                <Shield className="w-5 h-5 text-green-500" />
-                <span className="text-sm text-gray-600 dark:text-gray-300">Secure & Private</span>
-              </div>
-              
-              <div className="flex items-center gap-2">
-                <Zap className="w-5 h-5 text-blue-500" />
-                <span className="text-sm text-gray-600 dark:text-gray-300">AI-Powered</span>
               </div>
             </div>
           </div>
