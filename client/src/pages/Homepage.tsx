@@ -427,36 +427,7 @@ const WaitingListSection = () => {
             )}
           </div>
 
-          {/* Impressive Scale Section */}
-          <div className="mt-24 bg-gradient-to-r from-gray-50 to-blue-50 dark:from-gray-800 dark:to-blue-900 rounded-3xl p-12">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-6">
-                Scale You Can Feel, Intelligence That Never Stops Learning
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                <div className="text-center">
-                  <div className="text-4xl font-bold text-blue-600 dark:text-blue-400 mb-2">2.3M</div>
-                  <div className="text-sm text-gray-600 dark:text-gray-400">opportunities analyzed every month</div>
-                  <div className="text-xs text-gray-500 dark:text-gray-500 mt-1">so you never miss the next big role</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-4xl font-bold text-green-600 dark:text-green-400 mb-2">50,000</div>
-                  <div className="text-sm text-gray-600 dark:text-gray-400">company culture reports</div>
-                  <div className="text-xs text-gray-500 dark:text-gray-500 mt-1">updated daily, delivered in a blink</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-4xl font-bold text-purple-600 dark:text-purple-400 mb-2">12%</div>
-                  <div className="text-sm text-gray-600 dark:text-gray-400">better at interviews every week</div>
-                  <div className="text-xs text-gray-500 dark:text-gray-500 mt-1">agents improve automatically</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-4xl font-bold text-orange-600 dark:text-orange-400 mb-2">3,000</div>
-                  <div className="text-sm text-gray-600 dark:text-gray-400">fresh questions added nightly</div>
-                  <div className="text-xs text-gray-500 dark:text-gray-500 mt-1">always one step ahead</div>
-                </div>
-              </div>
-            </div>
-          </div>
+
 
         </div>
       </div>
