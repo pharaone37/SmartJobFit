@@ -607,7 +607,7 @@ const HeroSection = () => {
                 <div className="mt-6 pt-6 border-t border-amber-200 dark:border-amber-700">
                   <div className="flex items-center justify-center gap-2 text-sm text-amber-700 dark:text-amber-400 font-medium">
                     <Award className="w-4 h-4" />
-                    <span>Trusted by 50,000+ professionals • Enterprise-grade security • 24/7 AI monitoring</span>
+                    <span>Enterprise-grade security • 24/7 AI monitoring</span>
                   </div>
                 </div>
               </div>
