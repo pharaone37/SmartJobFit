@@ -889,11 +889,6 @@ const FeatureShowcase = () => {
 
 // Success Metrics Component
 const SuccessMetrics = () => {
-  const metrics = [
-    { value: "2.3M+", label: "Jobs Matched", growth: "+89% this quarter" },
-    { value: "78%", label: "Interview Success", growth: "+12% improvement" },
-    { value: "94%", label: "User Satisfaction", growth: "Industry leading" }
-  ];
 
   const testimonials = [
     {
@@ -926,9 +921,6 @@ const SuccessMetrics = () => {
     <section id="reviews" className="py-20 bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <Badge className="bg-white/20 text-white px-4 py-2 text-sm font-medium mb-4">
-            🚀 Beta Platform
-          </Badge>
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
             Built by Career Experts
             <span className="block text-blue-200">
@@ -956,18 +948,7 @@ const SuccessMetrics = () => {
           </div>
         </div>
 
-        {/* Metrics Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
-          {metrics.map((metric, index) => (
-            <Card key={index} className="bg-white/10 backdrop-blur-sm border-white/20 text-white">
-              <CardContent className="p-6 text-center">
-                <div className="text-4xl font-bold mb-2">{metric.value}</div>
-                <div className="text-lg font-medium mb-1">{metric.label}</div>
-                <div className="text-sm text-blue-200">{metric.growth}</div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+
 
 
 
