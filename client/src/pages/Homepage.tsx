@@ -148,24 +148,6 @@ const HeroSection = () => {
             </div>
 
             {/* Bold Challenge CTA */}
-            <div className="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 rounded-2xl p-6 border-2 border-amber-200 dark:border-amber-800 mb-6">
-              <div className="text-center">
-                <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-                  Don't Believe the Hype?
-                </h3>
-                <p className="text-lg text-gray-700 dark:text-gray-300 mb-4">
-                  We understand your skepticism. Every platform promises transformation. 
-                  <span className="font-semibold text-amber-700 dark:text-amber-400"> Give us 60 seconds to prove we're different.</span>
-                </p>
-                <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-amber-200 dark:border-amber-700">
-                  <p className="text-sm text-gray-600 dark:text-gray-400 italic">
-                    "Try it. Challenge it. Test every claim we make. We're confident our AI agents will speak for themselves."
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Bold Challenge CTA */}
             <div className="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 rounded-2xl p-6 border-2 border-amber-200 dark:border-amber-800">
               <div className="text-center">
                 <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
