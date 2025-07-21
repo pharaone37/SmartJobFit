@@ -48,6 +48,7 @@ import SkillTracker from "@/components/SkillTracker";
 import InterviewChatbot from "@/components/InterviewChatbot";
 import NetworkSync from "@/components/NetworkSync";
 import ChatBot from "@/components/ChatBot";
+import ScrollToTop from "@/components/ui/scroll-to-top";
 
 // New AI Systems
 import { JobSearchEngine } from "@/pages/JobSearchEngine";
@@ -141,6 +142,9 @@ function AppContent() {
         
         {/* Global Chatbot - available on all pages */}
         <ChatBot />
+        
+        {/* Scroll to top button - positioned to avoid chatbot conflict */}
+        <ScrollToTop />
       </div>
     </BrowserRouter>
   );
