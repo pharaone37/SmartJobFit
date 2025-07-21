@@ -216,12 +216,33 @@ const HeroSection = () => {
       {/* Background Pattern */}
       <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
       
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-16">
+      {/* Floating Badge - Enhanced Position */}
+      <div className="absolute top-8 left-1/2 transform -translate-x-1/2 z-20">
+        <div className="relative">
+          <Badge className="bg-gradient-to-r from-emerald-500 via-blue-500 to-purple-600 text-white px-8 py-4 text-lg font-bold shadow-2xl border-2 border-white/20 backdrop-blur-sm animate-pulse hover:animate-none transition-all duration-300 hover:scale-110 cursor-pointer">
+            <div className="flex items-center gap-3">
+              <div className="relative">
+                <div className="w-3 h-3 bg-green-400 rounded-full animate-ping absolute"></div>
+                <div className="w-3 h-3 bg-green-300 rounded-full"></div>
+              </div>
+              <span className="bg-gradient-to-r from-yellow-200 to-orange-200 bg-clip-text text-transparent font-extrabold">
+                🤖 Elite AI Agents at Work - 60 Second Job Hunt
+              </span>
+              <div className="relative">
+                <div className="w-3 h-3 bg-yellow-400 rounded-full animate-ping absolute"></div>
+                <div className="w-3 h-3 bg-yellow-300 rounded-full"></div>
+              </div>
+            </div>
+          </Badge>
+          
+          {/* Glow effect */}
+          <div className="absolute inset-0 bg-gradient-to-r from-emerald-500 via-blue-500 to-purple-600 rounded-full blur-xl opacity-30 animate-pulse"></div>
+        </div>
+      </div>
+
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-16">
         {/* Centered Header Section */}
         <div className="text-center space-y-8 mb-16">
-          <Badge className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-6 py-3 text-base font-medium inline-block shadow-lg">
-            🤖 Elite AI Agents at Work - 60 Second Job Hunt
-          </Badge>
           
           <h1 className="text-5xl md:text-7xl font-bold text-gray-900 dark:text-white leading-tight max-w-5xl mx-auto">
             Your Dream Job, Delivered by
