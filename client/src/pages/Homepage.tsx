@@ -269,8 +269,8 @@ const HeroSection = () => {
 
 
 
-        {/* Main Interactive Demo - Full Width */}
-        <div className="max-w-4xl mx-auto mb-16">
+        {/* Main Interactive Demo - Extra Wide */}
+        <div className="max-w-6xl mx-auto mb-16">
           {/* Enhanced Auto-Apply Demo Card */}
           <Card className="relative overflow-hidden bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 text-white border-0 shadow-2xl">
               {/* Animated Background Elements */}
@@ -299,32 +299,65 @@ const HeroSection = () => {
                 </div>
               )}
 
-              <CardHeader className="relative z-10 pb-4">
-                <div className="text-center space-y-3">
-                  <Badge className="bg-white/20 text-white border-white/30 px-3 py-1">
-                    🎯 Interactive Demo: Watch AI Agents Work
+              <CardHeader className="relative z-10 pb-6">
+                <div className="text-center space-y-5">
+                  <Badge className="bg-white/25 text-white border-white/40 px-5 py-2 text-base font-semibold">
+                    🎯 Live AI Demo: Experience the Magic
                   </Badge>
-                  <p className="text-sm text-blue-100">
-                    Simply tell our AI: <em className="bg-white/20 px-2 py-1 rounded">"Find me a remote ML Engineer role in Berlin paying ≥€90k"</em>
-                  </p>
-                  <div className="flex items-center justify-center gap-2 text-xs text-blue-200">
-                    <div className="flex items-center gap-1">
-                      <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                      <span>9 specialist agents activate in parallel</span>
-                    </div>
-                    <span>→</span>
-                    <div className="flex items-center gap-1">
-                      <Timer className="w-3 h-3" />
-                      <span>60 seconds to complete package</span>
+                  
+                  <div className="space-y-4">
+                    <h3 className="text-2xl font-bold text-white">
+                      Upload Your Resume & Watch Our AI Work
+                    </h3>
+                    
+                    <div className="bg-white/15 backdrop-blur-sm rounded-xl p-6 border border-white/30">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+                        <div className="text-left space-y-3">
+                          <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 bg-yellow-400 rounded-full flex items-center justify-center">
+                              <FileText className="w-4 h-4 text-yellow-900" />
+                            </div>
+                            <span className="text-white font-medium">Step 1: Upload your resume</span>
+                          </div>
+                          <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 bg-green-400 rounded-full flex items-center justify-center">
+                              <MessageCircle className="w-4 h-4 text-green-900" />
+                            </div>
+                            <span className="text-white font-medium">Step 2: Tell our AI your dream job</span>
+                          </div>
+                        </div>
+                        
+                        <div className="bg-white/20 rounded-lg p-4">
+                          <p className="text-white text-sm mb-2 font-medium">Example command:</p>
+                          <div className="bg-gray-900/50 rounded-lg p-3 border border-white/20">
+                            <code className="text-green-300 text-sm">
+                              "Find me a Marketing Manager role in Berlin paying €75k+ with remote flexibility"
+                            </code>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
+                  
+                  <div className="flex items-center justify-center gap-4 text-sm text-blue-100">
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
+                      <span>12 AI agents activate instantly</span>
+                    </div>
+                    <span className="text-blue-300">→</span>
+                    <div className="flex items-center gap-2">
+                      <Timer className="w-4 h-4 animate-pulse" />
+                      <span>Complete job package in 60 seconds</span>
+                    </div>
+                  </div>
+                  
                   <Button 
                     onClick={startDemo}
                     disabled={isDemoActive}
-                    className="bg-white text-blue-600 hover:bg-blue-50 font-semibold shadow-lg transform transition-all hover:scale-105 mt-4"
+                    className="bg-gradient-to-r from-white to-blue-50 text-blue-700 hover:from-blue-50 hover:to-white font-bold shadow-xl transform transition-all hover:scale-105 px-8 py-4 text-lg mt-6"
                   >
-                    <Rocket className={`w-4 h-4 mr-2 ${isDemoActive ? 'animate-spin' : ''}`} />
-                    {isDemoActive ? "Running Demo..." : "Watch Agents Work"}
+                    <Rocket className={`w-5 h-5 mr-3 ${isDemoActive ? 'animate-spin' : ''}`} />
+                    {isDemoActive ? "AI Agents Working..." : "Start AI Demo Now"}
                   </Button>
                 </div>
               </CardHeader>
