@@ -1462,7 +1462,7 @@ const Homepage = () => {
                     <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
                     <div>
                       <span className="text-gray-900 dark:text-white font-medium">Company intelligence reports</span>
-                      <div className="text-sm text-purple-600 dark:text-purple-400">Deep insights on 50,000+ companies</div>
+                      <div className="text-sm text-purple-600 dark:text-purple-400">Deep insights on Fortune 500 & emerging companies</div>
                     </div>
                   </li>
                   <li className="flex items-start gap-3">
