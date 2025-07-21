@@ -267,21 +267,7 @@ const HeroSection = () => {
           </div>
         </div>
 
-        {/* Live Stats Row */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-5xl mx-auto mb-16">
-          {[
-            { label: "Jobs Matched", value: "12,450+", icon: Target, color: "text-blue-600" },
-            { label: "Success Rate", value: "94.2%", icon: TrendingUp, color: "text-green-600" },
-            { label: "Users Hired", value: "3,280+", icon: Users, color: "text-purple-600" },
-            { label: "Avg. Days", value: "8.5", icon: Clock, color: "text-orange-600" }
-          ].map((stat, index) => (
-            <div key={index} className="text-center group">
-              <stat.icon className={`w-12 h-12 mx-auto mb-3 ${stat.color} group-hover:scale-110 transition-transform duration-200`} />
-              <div className="text-3xl font-bold text-gray-900 dark:text-white">{stat.value}</div>
-              <div className="text-base text-gray-600 dark:text-gray-400">{stat.label}</div>
-            </div>
-          ))}
-        </div>
+
 
         {/* Main Interactive Demo - Full Width */}
         <div className="max-w-4xl mx-auto mb-16">
