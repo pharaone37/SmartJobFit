@@ -350,15 +350,31 @@ const HeroSection = () => {
                     </div>
                   </div>
                   
-                  <div className="flex items-center justify-center gap-4 text-sm text-blue-100">
-                    <div className="flex items-center gap-2">
-                      <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
-                      <span>12 AI agents activate instantly</span>
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-center gap-4 text-sm text-blue-100">
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
+                        <span>12 AI agents activate instantly</span>
+                      </div>
+                      <span className="text-blue-300">→</span>
+                      <div className="flex items-center gap-2">
+                        <Timer className="w-4 h-4 animate-pulse" />
+                        <span>Complete job package in 60 seconds</span>
+                      </div>
                     </div>
-                    <span className="text-blue-300">→</span>
-                    <div className="flex items-center gap-2">
-                      <Timer className="w-4 h-4 animate-pulse" />
-                      <span>Complete job package in 60 seconds</span>
+                    
+                    <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+                      <div className="flex items-center justify-center gap-3">
+                        <div className="w-8 h-8 bg-gradient-to-r from-blue-400 to-purple-400 rounded-lg flex items-center justify-center">
+                          <Sparkles className="w-4 h-4 text-white" />
+                        </div>
+                        <div className="text-center">
+                          <h4 className="text-lg font-semibold text-white">
+                            Now Featuring: {features[currentFeature]}
+                          </h4>
+                          <Progress value={(currentFeature + 1) * 11.11} className="h-2 mt-2 w-48" />
+                        </div>
+                      </div>
                     </div>
                   </div>
                   
