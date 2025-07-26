@@ -1,17 +1,17 @@
-# Use Node.js 18 Alpine for smaller image size
-FROM node:18-alpine AS base
+# Use Node.js 20 Alpine for better compatibility
+FROM node:20-alpine AS base
 
 # Install dependencies only when needed
 FROM base AS deps
-RUN apk add --no-cache libc6-compat
+RUN apk add --no-cache libc6-compat python3 make g++ git
 WORKDIR /app
 
 # Copy package files
 COPY package*.json ./
 COPY client/package*.json ./client/
 
-# Install dependencies
-RUN npm ci --only=production && npm cache clean --force
+# Install dependencies (including dev dependencies for build)
+RUN npm ci && npm cache clean --force
 
 # Rebuild the source code only when needed
 FROM base AS builder

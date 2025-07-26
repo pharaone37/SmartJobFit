@@ -7,6 +7,9 @@ import helmet from "helmet";
 import compression from "compression";
 import rateLimit from "express-rate-limit";
 
+// Optional database import (for production without SQLite)
+let db: any = null;
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
