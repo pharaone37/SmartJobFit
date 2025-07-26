@@ -1,0 +1,2132 @@
+---
+description:# SmartJobFit: Complete Replit Implementation Prompts Collection
+
+## 13 Super Detailed Prompts for World-Class Job Search Platform
+
+Author: Manus AIDate: July 15, 2025Implementation Order: Sequential (1-13)
+
+## PROMPT 1: AI-Powered Universal Job Search Engine
+
+**Implementation Objective**
+
+Create an intelligent job search engine that aggregates jobs from 15+ platforms, processes natural language queries, and delivers personalized results with 95% relevance using advanced AI matching algorithms.
+
+**Detailed Replit Prompt**
+
+Plain Text
+
+Create a comprehensive AI-powered job search engine for SmartJobFit with the following specifications:
+
+CORE FUNCTIONALITY:
+1. Multi-platform job aggregation from 15+ sources (LinkedIn, Indeed, Glassdoor, ZipRecruiter, Monster, etc.)
+2. Natural language query processing using Google Gemini 2.5 Flash API
+3. Intelligent job matching with 94% accuracy prediction
+4. Real-time search results under 2 seconds
+5. Personalized recommendations based on user profile
+
+REQUIRED APIs & TOOLS:
+- Primary AI: Google Gemini 2.5 Flash API (cost-effective, high performance)
+- Job Aggregation: RapidAPI Job Search APIs, Adzuna API, JSearch API
+- Resume Parsing: Eden AI Hub (Affinda + HireAbility integration)
+- Vector Database: Pinecone for semantic job matching
+- Search Enhancement: Algolia for instant search capabilities
+
+TECHNICAL IMPLEMENTATION:
+1. Create Flask backend with endpoints:
+   - POST /api/search/jobs (natural language search)
+   - GET /api/search/suggestions (autocomplete)
+   - POST /api/search/filters (advanced filtering)
+   - GET /api/jobs/{job_id} (detailed job view)
+   - POST /api/jobs/save (save job to profile)
+
+2. Database Schema (SQLite for development):
+   - jobs table: id, title, company, description, salary_min, salary_max, location, remote, posted_date, source, requirements, benefits
+   - user_searches table: user_id, query, filters, timestamp, results_count
+   - saved_jobs table: user_id, job_id, saved_date, notes
+   - job_matches table: user_id, job_id, match_score, reasons
+
+3. AI Integration:
+   - Implement Gemini API for query understanding and job description analysis
+   - Create semantic matching using Pinecone vector embeddings
+   - Build personalization engine that learns from user behavior
+   - Implement real-time job scoring based on user profile
+
+4. Frontend Components:
+   - Smart search bar with autocomplete and natural language processing
+   - Advanced filter panel (location, salary, remote, company size, industry)
+   - Job results grid with match scores and quick actions
+   - Job detail modal with company insights and application tracking
+   - Saved jobs management interface
+
+5. Data Coordination Setup:
+   - Create shared user profile schema for cross-feature integration
+   - Implement event tracking for user interactions
+   - Set up data export functions for other features
+   - Create API endpoints for feature coordination
+
+SPECIFIC IMPLEMENTATION STEPS:
+1. Set up Flask app with CORS enabled for frontend integration
+2. Configure Google Gemini API with rate limiting and error handling
+3. Implement job aggregation pipeline with data normalization
+4. Create Pinecone vector database for semantic search
+5. Build intelligent matching algorithm with explainable AI
+6. Develop responsive frontend with React components
+7. Implement real-time search with debouncing and caching
+8. Add user authentication and profile management
+9. Create comprehensive logging and analytics
+10. Set up automated testing and performance monitoring
+
+PERFORMANCE REQUIREMENTS:
+- Search response time: <2 seconds for complex queries
+- Job aggregation: Update every 15 minutes
+- Match accuracy: >94% relevance for top 10 results
+- Concurrent users: Support 1000+ simultaneous searches
+- Data freshness: 99.7% of jobs captured within 24 hours
+
+INTEGRATION POINTS:
+- Export user search behavior to resume optimization feature
+- Share job requirements with interview preparation system
+- Provide company data to company intelligence feature
+- Send application data to tracking system
+- Coordinate with salary intelligence for compensation insights
+
+Create a production-ready implementation with comprehensive error handling, logging, and scalability considerations. Include detailed API documentation and setup instructions.
+
+## PROMPT 2: Intelligent Resume Optimization & ATS Mastery
+
+**Implementation Objective**
+
+Build an AI-powered resume optimization system that achieves 99.8% ATS compatibility, increases response rates by 300%, and provides real-time content enhancement using advanced NLP and industry-specific optimization.
+
+**Detailed Replit Prompt**
+
+Plain Text
+
+## PROMPT 3: Advanced Interview Preparation & Coaching System
+
+**Implementation Objective**
+
+Develop a sophisticated interview coaching platform with AI-powered feedback, multi-language support, real-time performance analytics, and 78% interview success rate through personalized training and company-specific preparation.
+
+**Detailed Replit Prompt**
+
+Plain Text
+
+Build a comprehensive interview preparation and coaching system for SmartJobFit with the following specifications:
+
+CORE FUNCTIONALITY:
+1. AI interview coach with emotional intelligence and real-time feedback
+2. Comprehensive question database with 50,000+ interview questions
+3. Multi-language support (English, Spanish, French, German, Portuguese, Italian)
+4. Company-specific interview preparation with insider insights
+5. Real-time performance analytics and improvement tracking
+
+REQUIRED APIs & TOOLS:
+- Primary AI: Google Gemini 2.5 Flash for intelligent coaching and feedback
+- Speech Analysis: Yoodli AI API for advanced speech coaching (premium integration)
+- Video Processing: Agora.io SDK for real-time video interview simulation
+- Question Database: Custom integration with Glassdoor API for company-specific questions
+- Language Processing: Google Cloud Translation API for multi-language support
+- Sentiment Analysis: IBM Watson Tone Analyzer for emotional intelligence feedback
+- Company Data: Clearbit API for company culture and interview insights
+
+TECHNICAL IMPLEMENTATION:
+1. Create Flask backend with endpoints:
+   - POST /api/interview/start-session (begin practice session)
+   - POST /api/interview/submit-answer (process and analyze responses)
+   - GET /api/interview/questions (fetch relevant questions)
+   - POST /api/interview/feedback (AI-powered feedback generation)
+   - GET /api/interview/analytics (performance tracking)
+   - POST /api/interview/company-prep (company-specific preparation)
+   - GET /api/interview/progress (improvement tracking)
+
+2. Database Schema:
+   - interview_sessions table: id, user_id, session_type, company_id, duration, overall_score, created_date
+   - questions table: id, question_text, category, difficulty, industry, company_specific
+   - responses table: session_id, question_id, response_text, response_audio, confidence_score, clarity_score
+   - feedback table: response_id, feedback_text, improvement_suggestions, strengths, areas_to_improve
+   - company_insights table: company_id, interview_process, common_questions, culture_notes, success_tips
+
+3. AI-Powered Coaching Features:
+   - Implement Gemini API for intelligent question generation and feedback
+   - Integrate Yoodli AI for advanced speech analysis and coaching
+   - Create emotional intelligence assessment using tone analysis
+   - Build personalized coaching plans based on user weaknesses
+   - Develop real-time feedback system with actionable suggestions
+
+4. Frontend Components:
+   - Interactive video interview simulator with webcam integration
+   - Real-time feedback display during practice sessions
+   - Question bank browser with filtering and search
+   - Performance analytics dashboard with progress tracking
+   - Company-specific preparation modules
+   - Multi-language interface with cultural adaptation
+   - Mobile-responsive design for practice on any device
+
+5. Advanced Features:
+   - AI-powered mock interviewer with different personality types
+   - Group interview and panel interview simulations
+   - Technical interview practice with coding challenges
+   - Behavioral interview coaching with STAR method training
+   - Salary negotiation practice with market data integration
+
+SPECIFIC IMPLEMENTATION STEPS:
+1. Set up Flask app with WebRTC support for real-time video/audio
+2. Integrate Google Gemini API for intelligent coaching and question generation
+3. Implement Yoodli AI API for advanced speech analysis and feedback
+4. Create comprehensive question database with categorization and tagging
+5. Build real-time feedback system with multiple analysis dimensions
+6. Develop company-specific preparation modules with insider insights
+7. Implement multi-language support with cultural adaptation
+8. Create performance analytics with detailed progress tracking
+9. Add mobile-responsive interface for practice flexibility
+10. Set up automated testing and quality assurance for coaching accuracy
+
+PERFORMANCE REQUIREMENTS:
+- Interview success rate: 78% of users receive job offers after coaching
+- Feedback accuracy: 92% correlation between practice scores and actual outcomes
+- Response time: Real-time feedback within 3 seconds of answer completion
+- Multi-language support: Native-level coaching in 6 languages
+- Question relevance: 97% of questions rated as relevant for target roles
+
+INTEGRATION POINTS:
+- Import job requirements from search engine for targeted question selection
+- Export interview performance data to application tracking system
+- Share company insights with company intelligence feature
+- Coordinate with salary intelligence for negotiation coaching
+- Provide skill assessment data to career coaching feature
+
+DATA COORDINATION:
+- Maintain shared user profile with interview performance history
+- Track coaching effectiveness metrics for platform optimization
+- Export interview readiness scores to dashboard
+- Share company-specific insights across features
+- Coordinate with resume optimization for interview preparation alignment
+
+SPECIAL FEATURES:
+1. Cultural Adaptation Engine:
+   - Adjust coaching style based on cultural background
+   - Provide region-specific interview etiquette guidance
+   - Adapt communication style recommendations for different cultures
+
+2. Emotional Intelligence Coaching:
+   - Analyze vocal patterns and emotional states during practice
+   - Provide stress management and confidence building exercises
+   - Offer personalized anxiety reduction techniques
+
+3. Company Intelligence Integration:
+   - Research interviewer backgrounds and communication styles
+   - Provide company culture insights and value alignment coaching
+   - Offer specific preparation strategies for different company types
+
+Create a production-ready system with comprehensive privacy protection for video/audio data, scalable architecture for real-time processing, and detailed analytics for continuous improvement.
+
+## PROMPT 4: Comprehensive Application Tracking & Management
+
+**Implementation Objective**
+
+Create an intelligent application lifecycle management system that provides 100% automated data capture, 87% outcome prediction accuracy, and strategic portfolio analysis with proactive guidance throughout the entire application process.
+
+**Detailed Replit Prompt**
+
+Plain Text
+
+Develop a comprehensive application tracking and management system for SmartJobFit with the following specifications:
+
+CORE FUNCTIONALITY:
+1. Intelligent application lifecycle management with automated status tracking
+2. Automated data capture from emails, job boards, and application confirmations
+3. Strategic portfolio analysis with success rate optimization
+4. Intelligent follow-up automation with personalized messaging
+5. Integration with communication channels and calendar systems
+
+REQUIRED APIs & TOOLS:
+- Email Integration: Gmail API and Outlook API for automated email processing
+- Calendar Integration: Google Calendar API and Outlook Calendar API
+- Natural Language Processing: Google Gemini 2.5 Flash for email analysis
+- Communication Automation: SendGrid API for automated follow-up emails
+- Document Processing: Google Cloud Document AI for application document analysis
+- CRM Integration: HubSpot API for advanced relationship management
+- Analytics Engine: Custom ML models for outcome prediction
+
+TECHNICAL IMPLEMENTATION:
+1. Create Flask backend with endpoints:
+   - POST /api/applications/create (manual application entry)
+   - GET /api/applications/list (application portfolio view)
+   - PUT /api/applications/{id}/status (status updates)
+   - POST /api/applications/email-sync (email integration sync)
+   - GET /api/applications/analytics (portfolio analysis)
+   - POST /api/applications/follow-up (automated follow-up generation)
+   - GET /api/applications/timeline (application timeline view)
+
+2. Database Schema:
+   - applications table: id, user_id, job_id, company_id, position_title, application_date, status, source, priority_score
+   - application_timeline table: application_id, event_type, event_date, description, source, confidence_score
+   - communications table: application_id, communication_type, direction, content, timestamp, sentiment_score
+   - follow_ups table: application_id, follow_up_date, message_template, sent_status, response_received
+   - outcome_predictions table: application_id, prediction_score, factors, confidence_level, last_updated
+
+3. Automated Data Capture:
+   - Implement Gmail/Outlook API integration for email monitoring
+   - Create NLP pipeline using Gemini API for email content analysis
+   - Build automatic status detection from email patterns
+   - Develop document processing for application confirmations
+   - Implement calendar integration for interview scheduling
+
+4. Frontend Components:
+   - Kanban-style application pipeline view with drag-and-drop status updates
+   - Detailed application cards with timeline and communication history
+   - Analytics dashboard with success rate trends and optimization insights
+   - Automated follow-up management interface
+   - Email integration setup and monitoring dashboard
+   - Mobile-responsive design for on-the-go application management
+
+5. Advanced Analytics Features:
+   - Machine learning models for outcome prediction
+   - Portfolio optimization recommendations
+   - Success rate analysis by company type, role, and application strategy
+   - Time-to-hire tracking and benchmarking
+   - Response rate analysis and improvement suggestions
+
+SPECIFIC IMPLEMENTATION STEPS:
+1. Set up Flask app with OAuth integration for email and calendar APIs
+2. Implement Gmail and Outlook API integration with secure authentication
+3. Create NLP pipeline using Gemini API for intelligent email analysis
+4. Build automated status tracking with confidence scoring
+5. Develop outcome prediction models using historical application data
+6. Create intelligent follow-up system with personalized message generation
+7. Implement comprehensive analytics dashboard with actionable insights
+8. Add calendar integration for interview scheduling and reminders
+9. Build mobile-responsive interface for application management
+10. Set up automated testing and data validation systems
+
+PERFORMANCE REQUIREMENTS:
+- Data capture accuracy: 100% automated capture of application communications
+- Prediction accuracy: 87% accuracy in predicting application outcomes
+- Processing speed: Real-time email analysis and status updates
+- Follow-up effectiveness: 45% increase in response rates through optimized timing
+- Time savings: 75% reduction in administrative application management time
+
+INTEGRATION POINTS:
+- Import job data from search engine for application context
+- Export application status to dashboard for comprehensive view
+- Share company interaction data with company intelligence feature
+- Coordinate with interview preparation for scheduled interviews
+- Provide application success data to career coaching for strategy optimization
+
+DATA COORDINATION:
+- Maintain shared application history across all platform features
+- Track application success metrics for platform-wide optimization
+- Export communication patterns for AI training and improvement
+- Share company response data with other features
+- Coordinate timeline data with interview preparation and salary negotiation
+
+ADVANCED FEATURES:
+1. Intelligent Email Analysis:
+   - Automatic detection of interview invitations, rejections, and requests for information
+   - Sentiment analysis of recruiter communications
+   - Priority scoring based on email content and sender importance
+   - Automatic calendar event creation for interviews and deadlines
+
+2. Strategic Portfolio Management:
+   - Application diversification recommendations
+   - Success rate optimization based on historical data
+   - Market timing analysis for application submission
+   - Company response pattern analysis and strategic insights
+
+3. Automated Follow-Up System:
+   - Intelligent timing based on company response patterns and industry norms
+   - Personalized message generation based on application context
+   - A/B testing for follow-up message effectiveness
+   - Automatic escalation for time-sensitive opportunities
+
+4. Communication Intelligence:
+   - Recruiter communication style analysis and adaptation recommendations
+   - Company culture insights based on communication patterns
+   - Response time analysis and optimization suggestions
+   - Integration with company intelligence for enhanced context
+
+Create a production-ready system with robust security for email integration, comprehensive privacy protection, and scalable architecture for processing high volumes of application data.
+
+## PROMPT 5: AI-Powered Salary Intelligence & Negotiation Coach
+
+**Implementation Objective**
+
+Build a comprehensive salary intelligence platform that provides 95% accurate compensation data, achieves 73% negotiation success rate, and delivers personalized negotiation strategies with real-time market intelligence and interactive coaching.
+
+**Detailed Replit Prompt**
+
+Plain Text
+
+Create a comprehensive salary intelligence and negotiation coaching system for SmartJobFit with the following specifications:
+
+CORE FUNCTIONALITY:
+1. Real-time market salary analytics with granular compensation breakdowns
+2. Personalized negotiation strategy development with AI coaching
+3. Company-specific compensation intelligence and negotiation insights
+4. Interactive negotiation simulation with realistic scenarios
+5. Comprehensive market intelligence with cost-of-living adjustments
+
+REQUIRED APIs & TOOLS:
+- Salary Data: Glassdoor API, PayScale API, Salary.com API for comprehensive market data
+- Market Intelligence: Bureau of Labor Statistics API for official salary statistics
+- Cost of Living: Numbeo API for location-based salary adjustments
+- AI Coaching: Google Gemini 2.5 Flash for personalized negotiation strategies
+- Company Data: Clearbit API and Crunchbase API for company financial insights
+- Economic Data: Federal Reserve Economic Data (FRED) API for market trends
+- Communication Training: Custom integration with negotiation simulation engines
+
+TECHNICAL IMPLEMENTATION:
+1. Create Flask backend with endpoints:
+   - GET /api/salary/market-data (comprehensive salary research)
+   - POST /api/salary/personalized-range (customized salary recommendations)
+   - GET /api/salary/company-insights (company-specific compensation data)
+   - POST /api/salary/negotiation-strategy (AI-generated negotiation plan)
+   - POST /api/salary/simulation (interactive negotiation practice)
+   - GET /api/salary/benchmarks (industry and role benchmarking)
+   - POST /api/salary/offer-analysis (job offer evaluation and optimization)
+
+2. Database Schema:
+   - salary_data table: id, job_title, company, location, salary_min, salary_max, equity, benefits, data_source, last_updated
+   - user_negotiations table: user_id, position, current_offer, target_salary, negotiation_status, outcome
+   - company_compensation table: company_id, avg_salary, equity_policy, benefits_package, negotiation_flexibility
+   - market_trends table: industry, location, time_period, salary_trend, demand_level, growth_projection
+   - negotiation_sessions table: user_id, session_type, performance_score, areas_improved, recommendations
+
+3. AI-Powered Intelligence:
+   - Implement Gemini API for personalized negotiation strategy development
+   - Create market analysis engine with real-time data aggregation
+   - Build company financial health assessment for negotiation context
+   - Develop personalized coaching based on user profile and market position
+   - Implement predictive modeling for negotiation success probability
+
+4. Frontend Components:
+   - Interactive salary research dashboard with multiple data visualization options
+   - Personalized negotiation strategy generator with step-by-step guidance
+   - Company compensation intelligence viewer with insider insights
+   - Negotiation simulation interface with realistic scenarios
+   - Market trends analyzer with predictive insights
+   - Offer evaluation tool with optimization recommendations
+
+5. Advanced Features:
+   - Real-time salary alerts for market changes in user's field
+   - Equity valuation calculator for startup offers
+   - Benefits package comparison and optimization
+   - Geographic salary arbitrage analysis for remote work
+   - Career progression salary planning with timeline projections
+
+SPECIFIC IMPLEMENTATION STEPS:
+1. Set up Flask app with comprehensive API integration for salary data sources
+2. Implement real-time data aggregation from multiple salary databases
+3. Create AI-powered personalization engine using Gemini API
+4. Build company intelligence system with financial health assessment
+5. Develop interactive negotiation simulation with realistic scenarios
+6. Implement cost-of-living adjustments and geographic salary analysis
+7. Create comprehensive market trend analysis with predictive modeling
+8. Build personalized coaching system with strategy development
+9. Add offer evaluation and optimization tools
+10. Set up automated testing and data validation for accuracy
+
+PERFORMANCE REQUIREMENTS:
+- Salary accuracy: 95% accuracy within $5,000 for roles under $150,000
+- Negotiation success: 73% of coached users achieve salary increases
+- Data freshness: Real-time updates from 50+ sources every 24 hours
+- Market coverage: Comprehensive data for 10,000+ job titles across 500+ cities
+- User satisfaction: 92% report increased confidence in salary negotiations
+
+INTEGRATION POINTS:
+- Import job data from search engine for salary research context
+- Export negotiation outcomes to application tracking system
+- Share compensation insights with career coaching for strategic planning
+- Coordinate with company intelligence for negotiation context
+- Provide salary data to interview preparation for negotiation coaching
+
+DATA COORDINATION:
+- Maintain shared user profile with salary history and negotiation outcomes
+- Track negotiation success metrics for platform-wide optimization
+- Export market intelligence data for dashboard integration
+- Share company compensation data across features
+- Coordinate with other features for comprehensive career planning
+
+ADVANCED FEATURES:
+1. Intelligent Market Analysis:
+   - Real-time salary trend detection and alerts
+   - Predictive modeling for future salary growth
+   - Industry disruption impact analysis on compensation
+   - Skills premium analysis for in-demand capabilities
+
+2. Personalized Negotiation Coaching:
+   - Communication style adaptation based on company culture
+   - Timing optimization for negotiation conversations
+   - Alternative compensation strategy development
+   - Confidence building exercises and practice scenarios
+
+3. Company Intelligence Integration:
+   - Financial health assessment for negotiation leverage
+   - Compensation philosophy analysis and strategy adaptation
+   - Insider insights from successful negotiations at target companies
+   - Equity valuation and long-term compensation planning
+
+4. Advanced Simulation Engine:
+   - Multiple negotiation scenario practice with different personality types
+   - Real-time feedback on negotiation performance and strategy
+   - Cultural adaptation for international negotiation styles
+   - Group negotiation and complex compensation package scenarios
+
+SPECIAL CONSIDERATIONS:
+1. Data Privacy and Security:
+   - Implement comprehensive encryption for sensitive salary data
+   - Provide granular privacy controls for user compensation information
+   - Ensure compliance with employment law and data protection regulations
+
+2. Market Intelligence Accuracy:
+   - Implement data validation and cross-referencing across multiple sources
+   - Create confidence scoring for salary data based on source reliability
+   - Provide transparency about data sources and collection methods
+
+3. Ethical Negotiation Coaching:
+   - Ensure coaching promotes fair and ethical negotiation practices
+   - Provide guidance on legal considerations and employment rights
+   - Promote transparency and honesty in negotiation strategies
+
+Create a production-ready system with robust data security, comprehensive market coverage, and scalable architecture for real-time salary intelligence processing.
+
+## PROMPT 6: Intelligent Career Coaching & Development Platform
+
+**Implementation Objective**
+
+Develop a personalized AI-driven career guidance system that achieves 68% career advancement within 12 months through strategic planning, skill development, mentorship matching, and industry trend analysis.
+
+**Detailed Replit Prompt**
+
+Plain Text
+
+Build a comprehensive career coaching and development platform for SmartJobFit with the following specifications:
+
+CORE FUNCTIONALITY:
+1. AI career strategist providing personalized career roadmaps and guidance
+2. Comprehensive skill gap analysis with development planning
+3. Industry trend analysis and future career planning
+4. Mentorship matching and networking facilitation
+5. Strategic career move recommendations with timing optimization
+
+REQUIRED APIs & TOOLS:
+- Primary AI: Google Gemini 2.5 Flash for strategic career guidance and planning
+- Skills Analysis: IBM Watson Natural Language Understanding for skill extraction
+- Learning Platforms: Coursera API, Udemy API, LinkedIn Learning API for course recommendations
+- Industry Data: Bureau of Labor Statistics API for employment trends and projections
+- Professional Networks: LinkedIn API for mentorship matching and networking
+- Personality Assessment: IBM Watson Personality Insights for career fit analysis
+- Market Intelligence: Burning Glass Technologies API for skills demand analysis
+
+TECHNICAL IMPLEMENTATION:
+1. Create Flask backend with endpoints:
+   - POST /api/career/assessment (comprehensive career assessment)
+   - GET /api/career/roadmap (personalized career development plan)
+   - POST /api/career/skills-analysis (skill gap identification)
+   - GET /api/career/learning-plan (customized learning recommendations)
+   - POST /api/career/mentor-matching (mentorship connection system)
+   - GET /api/career/industry-trends (market analysis and predictions)
+   - POST /api/career/goal-tracking (progress monitoring and adjustment)
+
+2. Database Schema:
+   - career_profiles table: user_id, current_role, target_role, experience_level, industry, career_stage
+   - skill_assessments table: user_id, skill_name, current_level, target_level, importance_score, last_assessed
+   - career_goals table: user_id, goal_type, description, target_date, progress_percentage, milestones
+   - learning_plans table: user_id, course_id, platform, status, completion_date, skill_impact
+   - mentorship_matches table: mentor_id, mentee_id, match_score, status, start_date, goals
+   - industry_insights table: industry, trend_type, description, impact_score, time_horizon
+
+3. AI-Powered Career Intelligence:
+   - Implement Gemini API for strategic career planning and personalized guidance
+   - Create skill gap analysis using Watson NLU and market demand data
+   - Build career trajectory prediction models based on industry trends
+   - Develop personalized learning path optimization
+   - Implement mentorship matching algorithm with compatibility scoring
+
+4. Frontend Components:
+   - Interactive career assessment questionnaire with personality insights
+   - Visual career roadmap with milestones and progress tracking
+   - Skills dashboard with gap analysis and development recommendations
+   - Learning platform integration with progress tracking
+   - Mentorship matching interface with communication tools
+   - Industry trends analyzer with career impact insights
+
+5. Advanced Features:
+   - Career pivot planning with risk assessment and transition strategies
+   - Networking event recommendations based on career goals
+   - Personal branding guidance with LinkedIn optimization
+   - Salary progression planning integrated with market intelligence
+   - Work-life balance optimization based on career stage and goals
+
+SPECIFIC IMPLEMENTATION STEPS:
+1. Set up Flask app with comprehensive user profiling and assessment systems
+2. Integrate Google Gemini API for intelligent career guidance and strategy development
+3. Implement skills analysis using Watson NLU and market demand APIs
+4. Create personalized learning recommendation engine with multiple platform integration
+5. Build mentorship matching system with compatibility algorithms
+6. Develop industry trend analysis with predictive career impact modeling
+7. Create interactive career roadmap with milestone tracking and adjustment
+8. Implement goal setting and progress monitoring with automated reminders
+9. Add networking facilitation with event recommendations and connection tools
+10. Set up comprehensive analytics and success tracking systems
+
+PERFORMANCE REQUIREMENTS:
+- Career advancement: 68% of users achieve career progression within 12 months
+- Skill development: 85% complete recommended development programs
+- Mentorship success: 79% of matched relationships continue beyond 6 months
+- Strategic planning: 91% report improved career clarity and direction
+- Learning effectiveness: 73% achieve target skill levels within planned timeframes
+
+INTEGRATION POINTS:
+- Import user skills and experience from resume optimization feature
+- Export career goals to job search engine for targeted opportunity discovery
+- Share skill development progress with interview preparation system
+- Coordinate with salary intelligence for career progression planning
+- Provide career insights to application tracking for strategic decision making
+
+DATA COORDINATION:
+- Maintain comprehensive user career profile across all platform features
+- Track career development metrics for platform-wide success measurement
+- Export skill assessments and learning progress to dashboard
+- Share industry insights and trend analysis with other features
+- Coordinate mentorship and networking data for relationship management
+
+ADVANCED FEATURES:
+1. Intelligent Career Strategy Development:
+   - Multi-scenario career path analysis with risk-reward assessment
+   - Industry disruption impact analysis and adaptation strategies
+   - Geographic career opportunity analysis for relocation planning
+   - Entrepreneurship readiness assessment and startup guidance
+
+2. Personalized Learning Optimization:
+   - Learning style assessment and customized content delivery
+   - Microlearning integration with busy professional schedules
+   - Skill validation through project-based assessments
+   - Peer learning group formation based on career goals and interests
+
+3. Advanced Mentorship and Networking:
+   - AI-powered conversation starters and relationship building guidance
+   - Group mentorship programs for specific career transitions
+   - Industry expert access for specialized guidance and insights
+   - Alumni network integration for career advancement opportunities
+
+4. Career Intelligence and Market Analysis:
+   - Predictive modeling for emerging career opportunities
+   - Skills demand forecasting with proactive development recommendations
+   - Company culture fit analysis for career satisfaction optimization
+   - Work-life integration planning based on career stage and personal priorities
+
+Create a production-ready system with comprehensive privacy protection for personal career data, scalable architecture for learning content delivery, and detailed analytics for continuous coaching improvement.
+
+## PROMPT 7: Advanced Job Alerts & Opportunity Intelligence
+
+**Implementation Objective**
+
+Create a predictive opportunity discovery system that identifies relevant positions 67% earlier than public posting, delivers 94% relevant alerts, and provides comprehensive market intelligence for strategic application timing.
+
+**Detailed Replit Prompt**
+
+Plain Text
+
+Develop an advanced job alerts and opportunity intelligence system for SmartJobFit with the following specifications:
+
+CORE FUNCTIONALITY:
+1. Predictive opportunity discovery using machine learning and market analysis
+2. Intelligent alert customization with natural language preference understanding
+3. Market intelligence integration with comprehensive opportunity context
+4. Multi-channel notification system with intelligent timing optimization
+5. Early opportunity identification with competitive advantage insights
+
+REQUIRED APIs & TOOLS:
+- Job Aggregation: RapidAPI Job Search, Adzuna API, JSearch API for comprehensive coverage
+- Predictive Analytics: Google Cloud AI Platform for opportunity prediction modeling
+- Company Intelligence: Clearbit API, Crunchbase API for company growth analysis
+- News Monitoring: NewsAPI, Google News API for company expansion signals
+- Social Media: Twitter API, LinkedIn API for hiring signal detection
+- Email Delivery: SendGrid API for intelligent notification delivery
+- Push Notifications: Firebase Cloud Messaging for real-time mobile alerts
+
+TECHNICAL IMPLEMENTATION:
+1. Create Flask backend with endpoints:
+   - POST /api/alerts/create (intelligent alert setup)
+   - GET /api/alerts/opportunities (predictive opportunity discovery)
+   - PUT /api/alerts/preferences (alert customization and optimization)
+   - GET /api/alerts/market-intelligence (comprehensive opportunity context)
+   - POST /api/alerts/notification-settings (multi-channel notification management)
+   - GET /api/alerts/analytics (alert performance and effectiveness tracking)
+   - POST /api/alerts/feedback (user feedback for alert optimization)
+
+2. Database Schema:
+   - alert_profiles table: user_id, alert_name, criteria_json, prediction_enabled, created_date, last_modified
+   - opportunity_predictions table: company_id, predicted_roles, confidence_score, prediction_date, signals_detected
+   - alert_deliveries table: alert_id, opportunity_id, delivery_channel, sent_date, user_action, relevance_score
+   - market_signals table: signal_type, company_id, signal_data, detection_date, impact_score
+   - user_preferences table: user_id, notification_channels, timing_preferences, frequency_settings
+
+3. Predictive Intelligence Engine:
+   - Implement machine learning models for opportunity prediction using company growth signals
+   - Create natural language processing for complex alert criteria understanding
+   - Build market intelligence aggregation with real-time signal detection
+   - Develop intelligent timing algorithms for optimal notification delivery
+   - Implement relevance scoring with continuous learning from user feedback
+
+4. Frontend Components:
+   - Intelligent alert creation interface with natural language input
+   - Predictive opportunity dashboard with early discovery highlights
+   - Market intelligence viewer with comprehensive opportunity context
+   - Multi-channel notification management with timing optimization
+   - Alert performance analytics with relevance and effectiveness metrics
+   - Mobile-responsive design with push notification integration
+
+5. Advanced Features:
+   - Company expansion tracking with hiring prediction models
+   - Industry trend analysis with opportunity impact assessment
+   - Competitive intelligence for application timing optimization
+   - Geographic opportunity mapping with relocation insights
+   - Salary trend integration with compensation opportunity alerts
+
+SPECIFIC IMPLEMENTATION STEPS:
+1. Set up Flask app with comprehensive job aggregation and real-time processing
+2. Implement machine learning pipeline for predictive opportunity discovery
+3. Create natural language processing system for intelligent alert customization
+4. Build market intelligence aggregation with multi-source signal detection
+5. Develop intelligent notification system with timing and channel optimization
+6. Implement comprehensive analytics and feedback systems for continuous improvement
+7. Create mobile-responsive interface with push notification integration
+8. Add predictive modeling for company hiring patterns and expansion signals
+9. Build competitive intelligence system for strategic application timing
+10. Set up automated testing and performance monitoring for alert accuracy
+
+PERFORMANCE REQUIREMENTS:
+- Alert relevance: 94% of alerts rated as relevant or highly relevant by users
+- Early discovery: 67% of opportunities identified 3-7 days before public posting
+- Prediction accuracy: 84% accuracy in predicting company hiring within 30 days
+- User engagement: 78% of users take action on high-priority alerts within 24 hours
+- Notification optimization: 52% higher engagement through intelligent timing
+
+INTEGRATION POINTS:
+- Import user preferences and search history from job search engine
+- Export opportunity data to application tracking system for pipeline management
+- Share market intelligence with salary intelligence for compensation insights
+- Coordinate with company intelligence for comprehensive opportunity context
+- Provide alert data to career coaching for strategic opportunity planning
+
+DATA COORDINATION:
+- Maintain shared user preference profile across all platform features
+- Track alert effectiveness metrics for platform-wide optimization
+- Export opportunity intelligence data for dashboard integration
+- Share market signals and company insights with other features
+- Coordinate notification preferences with other platform communications
+
+ADVANCED FEATURES:
+1. Predictive Opportunity Discovery:
+   - Company growth signal analysis using financial data and news monitoring
+   - Team expansion detection through LinkedIn and social media analysis
+   - Funding round impact analysis for startup hiring prediction
+   - Industry disruption monitoring with opportunity impact assessment
+
+2. Intelligent Market Intelligence:
+   - Competitive landscape analysis for application timing optimization
+   - Salary trend integration with compensation opportunity identification
+   - Skills demand forecasting with proactive alert recommendations
+   - Geographic opportunity mapping with relocation and remote work insights
+
+3. Advanced Notification Optimization:
+   - User behavior analysis for optimal notification timing
+   - Channel preference learning with effectiveness optimization
+   - Urgency scoring based on opportunity competitiveness and user fit
+   - Batch notification optimization to prevent alert fatigue
+
+4. Strategic Application Intelligence:
+   - Application deadline prediction based on historical company patterns
+   - Competitive analysis with application volume and success rate insights
+   - Optimal application timing recommendations based on company hiring cycles
+   - Interview scheduling prediction for calendar planning and preparation
+
+SPECIAL CONSIDERATIONS:
+1. Privacy and Data Protection:
+   - Implement comprehensive privacy controls for alert data and preferences
+   - Provide granular notification settings with easy opt-out mechanisms
+   - Ensure compliance with anti-spam regulations and communication preferences
+
+2. Alert Quality and Relevance:
+   - Implement continuous learning algorithms for relevance improvement
+   - Provide detailed feedback mechanisms for alert optimization
+   - Create quality scoring systems for opportunity validation
+
+3. Scalability and Performance:
+   - Design for processing millions of job postings and market signals daily
+   - Implement efficient notification delivery with rate limiting and optimization
+   - Create scalable prediction models that improve with increased data volume
+
+Create a production-ready system with robust real-time processing capabilities, comprehensive privacy protection, and scalable architecture for high-volume alert delivery and market intelligence processing.
+
+## PROMPT 8: One-Click Apply Automation & AI Agent System
+
+**Implementation Objective**
+
+Build an intelligent application automation system that achieves 95% time savings, 34% higher response rates, and maintains 91% application quality through sophisticated AI agents and personalized automation workflows.
+
+**Detailed Replit Prompt**
+
+Plain Text
+
+Create a comprehensive one-click apply automation and AI agent system for SmartJobFit with the following specifications:
+
+CORE FUNCTIONALITY:
+1. Intelligent application automation with personalized content generation
+2. Advanced personalization engine maintaining authenticity and relevance
+3. Quality control and human oversight with approval workflows
+4. Strategic application management with timing and frequency optimization
+5. Browser automation for complex application processes
+
+REQUIRED APIs & TOOLS:
+- Primary AI: Google Gemini 2.5 Flash for intelligent application content generation
+- Browser Automation: Selenium WebDriver with Chrome/Firefox support
+- Form Processing: Custom form detection and completion algorithms
+- Document Generation: PDFKit for resume and cover letter formatting
+- Quality Assurance: LanguageTool API for content quality validation
+- Application Tracking: Integration with existing application management system
+- Security: Secure credential management with encryption
+
+TECHNICAL IMPLEMENTATION:
+1. Create Flask backend with endpoints:
+   - POST /api/auto-apply/setup (automation configuration and preferences)
+   - POST /api/auto-apply/job-analysis (job requirement analysis for customization)
+   - POST /api/auto-apply/generate-application (AI-powered application material creation)
+   - POST /api/auto-apply/submit (automated application submission)
+   - GET /api/auto-apply/queue (application queue management)
+   - POST /api/auto-apply/review (human review and approval workflow)
+   - GET /api/auto-apply/analytics (automation performance and success tracking)
+
+2. Database Schema:
+   - automation_profiles table: user_id, profile_name, automation_rules, quality_settings, approval_required
+   - application_queue table: id, user_id, job_id, status, generated_content, review_status, submission_date
+   - automation_rules table: user_id, rule_type, conditions, actions, priority, active_status
+   - quality_metrics table: application_id, quality_score, personalization_score, ats_compatibility, human_review
+   - submission_logs table: application_id, submission_method, success_status, error_details, response_data
+
+3. AI-Powered Automation Engine:
+   - Implement Gemini API for intelligent content generation and personalization
+   - Create job analysis system for requirement extraction and matching
+   - Build personalization engine that maintains authenticity while customizing content
+   - Develop quality control algorithms with human-like review capabilities
+   - Implement strategic timing and frequency management for optimal results
+
+4. Frontend Components:
+   - Automation setup wizard with preference configuration and rule creation
+   - Application queue management with review and approval interface
+   - Quality control dashboard with content preview and editing capabilities
+   - Performance analytics with success rate tracking and optimization insights
+   - Browser automation monitoring with real-time status updates
+   - Mobile interface for queue management and approval workflows
+
+5. Advanced Features:
+   - Multi-platform application support (LinkedIn, Indeed, company websites)
+   - Intelligent form detection and completion with field mapping
+   - Document customization with dynamic content insertion
+   - A/B testing for application content optimization
+   - Integration with calendar for interview scheduling automation
+
+SPECIFIC IMPLEMENTATION STEPS:
+1. Set up Flask app with secure credential management and browser automation capabilities
+2. Implement Google Gemini API for intelligent content generation and personalization
+3. Create comprehensive job analysis system for requirement extraction and matching
+4. Build browser automation engine with multi-platform support and error handling
+5. Develop quality control system with AI-powered review and human oversight
+6. Implement strategic application management with timing and frequency optimization
+7. Create user-friendly interface for automation setup and queue management
+8. Add comprehensive analytics and performance tracking with optimization insights
+9. Build mobile-responsive interface for on-the-go application management
+10. Set up automated testing and security validation for application submission
+
+PERFORMANCE REQUIREMENTS:
+- Time savings: 95% reduction in time spent on application completion
+- Response rates: 34% higher response rate compared to manual applications
+- Application quality: 91% of automated applications rated as professional and relevant
+- Success rate: 42% of automated applications result in interview invitations
+- Processing speed: Complete application generation and submission in under 2 minutes
+
+INTEGRATION POINTS:
+- Import job data from search engine for automated application targeting
+- Export application data to tracking system for comprehensive pipeline management
+- Share application success metrics with career coaching for strategy optimization
+- Coordinate with resume optimization for dynamic content customization
+- Provide automation analytics to dashboard for performance monitoring
+
+DATA COORDINATION:
+- Maintain shared user profile with application preferences and success patterns
+- Track automation effectiveness metrics for platform-wide optimization
+- Export application submission data for comprehensive analytics
+- Share personalization insights with other features for improved customization
+- Coordinate with other features for strategic application timing and targeting
+
+ADVANCED FEATURES:
+1. Intelligent Content Generation:
+   - Dynamic cover letter creation based on job requirements and company culture
+   - Resume customization with keyword optimization and section emphasis
+   - Personal statement generation with authentic voice and relevant experience
+   - Follow-up message templates with personalized timing and content
+
+2. Advanced Browser Automation:
+   - Multi-step application process handling with session management
+   - CAPTCHA detection and human intervention requests
+   - File upload automation with document selection and formatting
+   - Form validation and error handling with retry mechanisms
+
+3. Quality Assurance and Control:
+   - AI-powered content review with quality scoring and improvement suggestions
+   - Plagiarism detection and originality verification
+   - ATS compatibility testing before submission
+   - Human review workflow with approval and editing capabilities
+
+4. Strategic Application Management:
+   - Application frequency optimization to avoid spam-like behavior
+   - Company-specific timing analysis for optimal submission windows
+   - Portfolio diversification recommendations for balanced application strategy
+   - Success pattern analysis with strategy refinement suggestions
+
+SECURITY AND PRIVACY CONSIDERATIONS:
+1. Credential Security:
+   - Implement secure credential storage with encryption and access controls
+   - Provide granular permission settings for different platforms and actions
+   - Create audit trails for all automated actions and data access
+
+2. Data Protection:
+   - Ensure comprehensive privacy protection for application data and content
+   - Implement data minimization practices for automation processing
+   - Provide user control over data retention and deletion
+
+3. Compliance and Ethics:
+   - Ensure automation practices comply with platform terms of service
+   - Implement rate limiting to respect platform usage policies
+   - Provide transparency about automation use in application processes
+
+QUALITY CONTROL FRAMEWORK:
+1. Pre-Submission Review:
+   - AI-powered content quality assessment with scoring and recommendations
+   - Plagiarism detection and originality verification
+   - ATS compatibility testing and optimization
+
+2. Human Oversight Integration:
+   - Configurable approval workflows for different application types
+   - Quick review interface with editing and approval capabilities
+   - Quality feedback integration for continuous improvement
+
+3. Post-Submission Monitoring:
+   - Success rate tracking with correlation to automation parameters
+   - Response analysis for content effectiveness optimization
+   - Error detection and resolution with automated retry mechanisms
+
+Create a production-ready system with robust security measures, comprehensive quality control, and scalable architecture for high-volume application processing while maintaining authenticity and professional standards.
+
+## PROMPT 9: Company Intelligence & Culture Insights Platform
+
+**Implementation Objective**
+
+Develop a comprehensive company intelligence system that provides 96% accurate culture assessments, 84% prediction accuracy for major company changes, and detailed insights for 50,000+ companies globally with real-time monitoring and analysis.
+
+**Detailed Replit Prompt**
+
+Plain Text
+
+Build a comprehensive company intelligence and culture insights platform for SmartJobFit with the following specifications:
+
+CORE FUNCTIONALITY:
+1. Comprehensive company profiling with multi-source data aggregation
+2. Real-time culture analysis using employee communications and review patterns
+3. Leadership and management assessment with performance tracking
+4. Growth and stability predictions with early warning systems
+5. Competitive intelligence and market positioning analysis
+
+REQUIRED APIs & TOOLS:
+- Company Data: Clearbit API, Crunchbase API, PitchBook API for comprehensive company information
+- Employee Reviews: Glassdoor API, Indeed Company Reviews API for culture insights
+- Financial Data: Alpha Vantage API, Yahoo Finance API for financial health assessment
+- News Monitoring: NewsAPI, Google News API for real-time company monitoring
+- Social Media: Twitter API, LinkedIn API for employee sentiment and company culture
+- SEC Filings: SEC EDGAR API for public company financial and governance data
+- Leadership Analysis: Custom algorithms for executive team assessment
+
+TECHNICAL IMPLEMENTATION:
+1. Create Flask backend with endpoints:
+   - GET /api/company/{id}/profile (comprehensive company overview)
+   - GET /api/company/{id}/culture (detailed culture analysis and insights)
+   - GET /api/company/{id}/leadership (leadership team assessment and analysis)
+   - GET /api/company/{id}/predictions (growth and stability forecasting)
+   - GET /api/company/{id}/competitive-analysis (market positioning and competition)
+   - POST /api/company/search (intelligent company search and discovery)
+   - GET /api/company/{id}/real-time-updates (live monitoring and alerts)
+
+2. Database Schema:
+   - companies table: id, name, industry, size, headquarters, founded_date, website, description
+   - company_metrics table: company_id, metric_type, value, date_recorded, source, confidence_score
+   - culture_analysis table: company_id, culture_dimension, score, trend, last_updated, data_sources
+   - leadership_profiles table: company_id, executive_name, role, tenure, background, performance_score
+   - prediction_models table: company_id, prediction_type, probability, confidence, factors, last_updated
+   - competitive_intelligence table: company_id, competitor_id, relationship_type, market_share, positioning
+
+3. Intelligence Aggregation Engine:
+   - Implement multi-source data aggregation with real-time processing and validation
+   - Create culture analysis algorithms using natural language processing and sentiment analysis
+   - Build leadership assessment models with performance tracking and prediction
+   - Develop financial health monitoring with early warning systems
+   - Implement competitive intelligence gathering with market positioning analysis
+
+4. Frontend Components:
+   - Comprehensive company profile dashboard with multi-dimensional insights
+   - Interactive culture analysis visualization with trend tracking
+   - Leadership team assessment with performance metrics and background analysis
+   - Predictive analytics dashboard with growth and stability forecasting
+   - Competitive landscape viewer with market positioning and comparison tools
+   - Real-time monitoring interface with alerts and update notifications
+
+5. Advanced Features:
+   - Industry benchmarking with peer comparison and ranking systems
+   - Employee satisfaction prediction based on culture and leadership analysis
+   - Acquisition and merger probability assessment with market impact analysis
+   - Regulatory compliance monitoring with risk assessment
+   - Innovation index calculation based on R&D investment and patent activity
+
+SPECIFIC IMPLEMENTATION STEPS:
+1. Set up Flask app with comprehensive API integration and real-time data processing
+2. Implement multi-source data aggregation with validation and confidence scoring
+3. Create culture analysis engine using NLP and sentiment analysis algorithms
+4. Build leadership assessment system with performance tracking and prediction models
+5. Develop financial health monitoring with predictive analytics and early warning systems
+6. Implement competitive intelligence gathering with market positioning analysis
+7. Create comprehensive company profiling with multi-dimensional insights
+8. Add real-time monitoring and alert systems for company changes and updates
+9. Build interactive visualization interface with drill-down capabilities
+10. Set up automated testing and data validation for accuracy and reliability
+
+PERFORMANCE REQUIREMENTS:
+- Data accuracy: 96% accuracy in company culture and stability assessments
+- Prediction capability: 84% accuracy in predicting major company changes within 6 months
+- Coverage: Detailed profiles for 50,000+ companies globally
+- Update frequency: Real-time monitoring with updates within 48 hours of significant changes
+- User satisfaction: 89% report improved company selection based on intelligence insights
+
+INTEGRATION POINTS:
+- Import job data from search engine for company context and opportunity analysis
+- Export company insights to application tracking for strategic application decisions
+- Share culture data with interview preparation for company-specific coaching
+- Coordinate with salary intelligence for compensation benchmarking and negotiation
+- Provide company intelligence to career coaching for strategic career planning
+
+DATA COORDINATION:
+- Maintain comprehensive company database shared across all platform features
+- Track company intelligence accuracy and user feedback for continuous improvement
+- Export company insights and predictions for dashboard integration
+- Share competitive intelligence and market positioning data with other features
+- Coordinate with other features for comprehensive career and application strategy
+
+ADVANCED FEATURES:
+1. Comprehensive Culture Analysis:
+   - Multi-dimensional culture assessment using employee reviews and communications
+   - Culture trend analysis with predictive modeling for future changes
+   - Department-specific culture insights for targeted application strategies
+   - Culture fit assessment based on user preferences and values
+
+2. Leadership Intelligence and Assessment:
+   - Executive team background analysis with performance tracking
+   - Leadership stability assessment with turnover prediction
+   - Management effectiveness scoring based on employee feedback and company performance
+   - Board composition analysis with governance quality assessment
+
+3. Financial Health and Stability Monitoring:
+   - Real-time financial health assessment with early warning indicators
+   - Cash flow analysis and burn rate monitoring for startups
+   - Revenue growth prediction with market trend correlation
+   - Acquisition probability assessment with strategic fit analysis
+
+4. Competitive Intelligence and Market Positioning:
+   - Market share analysis with competitive positioning insights
+   - Product portfolio assessment with innovation tracking
+   - Strategic partnership monitoring with ecosystem analysis
+   - Industry disruption impact assessment with adaptation strategies
+
+SPECIAL INTELLIGENCE FEATURES:
+1. Early Warning Systems:
+   - Layoff prediction based on financial indicators and market signals
+   - Leadership change detection with impact assessment
+   - Acquisition target identification with probability scoring
+   - Regulatory compliance risk monitoring with impact analysis
+
+2. Employee Experience Prediction:
+   - Job satisfaction forecasting based on culture and leadership analysis
+   - Career advancement opportunity assessment with promotion rate analysis
+   - Work-life balance evaluation with employee feedback integration
+   - Compensation competitiveness analysis with market benchmarking
+
+3. Strategic Business Intelligence:
+   - Growth trajectory analysis with market opportunity assessment
+   - Innovation capacity evaluation with R&D investment tracking
+   - Digital transformation readiness with technology adoption analysis
+   - ESG (Environmental, Social, Governance) scoring with sustainability assessment
+
+DATA SOURCES AND VALIDATION:
+1. Primary Data Sources:
+   - Official company filings and financial reports
+   - Employee review platforms and social media
+   - News articles and press releases
+   - Industry reports and analyst assessments
+
+2. Data Validation Framework:
+   - Cross-source verification with confidence scoring
+   - Temporal consistency checking with trend analysis
+   - Outlier detection and anomaly flagging
+   - User feedback integration for accuracy improvement
+
+3. Real-Time Monitoring:
+   - Automated news and social media monitoring
+   - Financial data updates with alert systems
+   - Leadership change detection with impact assessment
+   - Market event correlation with company impact analysis
+
+Create a production-ready system with comprehensive data privacy protection, scalable architecture for processing large volumes of company data, and detailed analytics for continuous intelligence improvement and validation.
+
+## PROMPT 10: Enhanced Homepage with Core 9 Features Integration
+
+**Implementation Objective**
+
+Transform the SmartJobFit homepage into a stunning, conversion-optimized landing page that showcases all 9 core features with interactive demonstrations, compelling value propositions, and seamless user journey mapping.
+
+**Detailed Replit Prompt**
+
+Plain Text
+
+Create a world-class homepage for SmartJobFit that showcases all 9 core features with the following specifications:
+
+CORE FUNCTIONALITY:
+1. Hero section with compelling value proposition and interactive feature preview
+2. Feature showcase with interactive demonstrations and real-time examples
+3. Success metrics and social proof with dynamic testimonials
+4. Smart user journey mapping with personalized feature recommendations
+5. Conversion optimization with A/B testing and analytics integration
+
+REQUIRED TECHNOLOGIES & TOOLS:
+- Frontend Framework: React with TypeScript for type safety and scalability
+- Styling: Tailwind CSS with custom design system and animations
+- Icons: Lucide React for consistent iconography
+- Animations: Framer Motion for smooth transitions and micro-interactions
+- Analytics: Google Analytics 4 with custom event tracking
+- A/B Testing: Google Optimize for conversion optimization
+- Performance: React.lazy for code splitting and performance optimization
+
+TECHNICAL IMPLEMENTATION:
+1. Create React components structure:
+   - HeroSection: Dynamic value proposition with feature rotation
+   - FeatureShowcase: Interactive demonstrations of all 9 features
+   - SuccessMetrics: Real-time statistics and user testimonials
+   - UserJourneyMap: Personalized feature recommendations
+   - CallToAction: Conversion-optimized signup and trial sections
+   - TrustSignals: Security badges, certifications, and company logos
+
+2. Feature Integration Components:
+   - JobSearchPreview: Live job search demonstration with real results
+   - ResumeOptimizerDemo: Interactive resume analysis with instant feedback
+   - InterviewCoachPreview: Sample interview question with AI feedback
+   - ApplicationTrackerDemo: Visual pipeline with sample applications
+   - SalaryIntelligenceWidget: Real-time salary data for popular roles
+   - CareerCoachingPreview: Personalized career roadmap visualization
+   - JobAlertsDemo: Smart alert setup with instant preview
+   - AutoApplyPreview: One-click application demonstration
+   - CompanyIntelligenceWidget: Live company culture insights
+
+3. Interactive Elements:
+   - Feature carousel with smooth transitions and auto-play
+   - Hover effects and micro-interactions for enhanced engagement
+   - Progressive disclosure for detailed feature information
+   - Interactive calculators for ROI and time savings
+   - Real-time feature demonstrations with sample data
+
+4. Conversion Optimization:
+   - Multiple CTA buttons strategically placed throughout the page
+   - Social proof integration with real user testimonials and success stories
+   - Trust signals including security badges and company partnerships
+   - Urgency elements with limited-time offers and feature highlights
+   - Mobile-first responsive design with touch-optimized interactions
+
+SPECIFIC IMPLEMENTATION STEPS:
+1. Set up React app with TypeScript and Tailwind CSS configuration
+2. Create responsive layout with mobile-first design approach
+3. Implement hero section with dynamic value proposition and feature rotation
+4. Build interactive feature showcase with live demonstrations
+5. Add success metrics dashboard with real-time statistics
+6. Create user journey mapping with personalized recommendations
+7. Implement conversion optimization with multiple CTAs and A/B testing
+8. Add performance optimization with lazy loading and code splitting
+9. Integrate analytics and tracking for user behavior analysis
+10. Test across devices and browsers for compatibility and performance
+
+FEATURE SHOWCASE SPECIFICATIONS:
+1. AI-Powered Job Search:
+   - Live search bar with autocomplete and instant results
+   - Interactive filter demonstration with real job data
+   - Match score visualization with explanatory tooltips
+   - Success metrics: "Find 94% relevant jobs in under 2 seconds"
+
+2. Resume Optimization:
+   - Before/after resume comparison with ATS score improvement
+   - Interactive keyword optimization with real-time suggestions
+   - Success metrics: "300% increase in recruiter responses"
+   - Live ATS compatibility checker with instant feedback
+
+3. Interview Preparation:
+   - Sample interview question with AI coach feedback
+   - Speech analysis demonstration with confidence scoring
+   - Success metrics: "78% interview success rate"
+   - Multi-language coaching preview with cultural adaptation
+
+4. Application Tracking:
+   - Interactive pipeline visualization with sample applications
+   - Automated status detection demonstration
+   - Success metrics: "87% outcome prediction accuracy"
+   - Timeline view with communication history
+
+5. Salary Intelligence:
+   - Real-time salary data widget for popular roles
+   - Negotiation strategy preview with personalized recommendations
+   - Success metrics: "73% achieve salary increases"
+   - Market trend visualization with geographic data
+
+6. Career Coaching:
+   - Interactive career roadmap with milestone tracking
+   - Skill gap analysis with development recommendations
+   - Success metrics: "68% career advancement in 12 months"
+   - Mentorship matching preview with compatibility scoring
+
+7. Job Alerts:
+   - Smart alert setup with natural language processing
+   - Predictive opportunity discovery demonstration
+   - Success metrics: "67% early opportunity discovery"
+   - Multi-channel notification preview
+
+8. One-Click Apply:
+   - Application automation demonstration with quality preview
+   - Time savings calculator with personalized estimates
+   - Success metrics: "95% time savings, 34% higher response rates"
+   - Quality control showcase with AI review process
+
+9. Company Intelligence:
+   - Live company culture analysis with real data
+   - Leadership assessment with performance metrics
+   - Success metrics: "96% accuracy in culture assessments"
+   - Competitive intelligence preview with market positioning
+
+PERFORMANCE REQUIREMENTS:
+- Page load time: Under 2 seconds for initial content
+- Mobile responsiveness: Perfect functionality across all device sizes
+- Accessibility: WCAG 2.1 AA compliance with screen reader support
+- SEO optimization: Perfect Core Web Vitals and search engine optimization
+- Conversion rate: Target 15% signup rate from homepage visitors
+
+INTEGRATION POINTS:
+- Seamless navigation to feature-specific pages and demos
+- User authentication integration with social login options
+- Trial signup with immediate access to core features
+- Analytics integration for user behavior tracking and optimization
+- A/B testing framework for continuous conversion improvement
+
+USER JOURNEY OPTIMIZATION:
+1. Awareness Stage:
+   - Compelling headline addressing job search pain points
+   - Feature overview with clear value propositions
+   - Social proof and success metrics for credibility
+
+2. Interest Stage:
+   - Interactive feature demonstrations with real examples
+   - Detailed benefit explanations with ROI calculations
+   - User testimonials and case studies for validation
+
+3. Consideration Stage:
+   - Feature comparison with competitors
+   - Pricing transparency with value justification
+   - Free trial offer with immediate access
+
+4. Action Stage:
+   - Multiple conversion points with clear CTAs
+   - Simplified signup process with social login options
+   - Immediate value delivery with instant feature access
+
+Create a production-ready homepage that serves as the primary conversion driver for SmartJobFit, showcasing the platform's revolutionary capabilities while providing an exceptional user experience that encourages immediate signup and engagement.
+
+## PROMPT 11: Comprehensive FAQ System Update
+
+**Implementation Objective**
+
+Create a comprehensive, AI-powered FAQ system that addresses all aspects of SmartJobFit's 9 core features, provides intelligent search capabilities, and delivers instant, accurate answers to user questions with 95% satisfaction rate.
+
+**Detailed Replit Prompt**
+
+Plain Text
+
+Develop a comprehensive FAQ system for SmartJobFit that covers all 9 core features with the following specifications:
+
+CORE FUNCTIONALITY:
+1. Comprehensive FAQ database covering all platform features and user scenarios
+2. Intelligent search with natural language processing and semantic understanding
+3. Dynamic content organization with categorization and tagging
+4. User feedback integration with continuous improvement mechanisms
+5. Multi-language support with localized content for global users
+
+REQUIRED TECHNOLOGIES & TOOLS:
+- Search Engine: Algolia for instant, intelligent FAQ search
+- Content Management: Strapi CMS for easy FAQ content management
+- Natural Language Processing: Google Gemini 2.5 Flash for semantic search
+- Analytics: Google Analytics for FAQ usage tracking and optimization
+- Feedback System: Custom rating and feedback collection system
+- Multi-language: i18next for internationalization support
+
+TECHNICAL IMPLEMENTATION:
+1. Create React components for FAQ system:
+   - FAQSearch: Intelligent search with autocomplete and suggestions
+   - FAQCategories: Organized category navigation with feature grouping
+   - FAQItem: Expandable FAQ items with rich content and media
+   - FAQFeedback: User rating and feedback collection system
+   - FAQSuggestions: Related questions and recommended content
+   - FAQContact: Escalation to human support when needed
+
+2. FAQ Database Structure:
+   - Categories: Feature-based organization (9 core features + general)
+   - Tags: Cross-cutting topics (pricing, security, integration, etc.)
+   - Difficulty Levels: Beginner, intermediate, advanced user questions
+   - User Types: Job seekers, recruiters, enterprise customers
+   - Languages: English, Spanish, French, German, Portuguese, Italian
+
+3. Content Organization:
+   - Feature-specific sections for each of the 9 core features
+   - Getting started guides with step-by-step instructions
+   - Troubleshooting sections with common issues and solutions
+   - Best practices and optimization tips for maximum results
+   - Integration guides for third-party tools and platforms
+
+COMPREHENSIVE FAQ CONTENT:
+
+### AI-Powered Job Search FAQs:
+- How does SmartJobFit's AI job search work differently from other platforms?
+- What makes the job matching 94% accurate compared to traditional keyword search?
+- How can I use natural language to search for jobs effectively?
+- What job boards and platforms does SmartJobFit aggregate from?
+- How often are new jobs added to the platform?
+- Can I save searches and get alerts for new matching jobs?
+- How does the platform handle remote work and location preferences?
+- What industries and job types are covered by the platform?
+- How can I filter jobs by salary, company size, and other criteria?
+- What should I do if I'm not finding relevant job matches?
+
+### Resume Optimization FAQs:
+- How does the ATS compatibility checker work and why is it 99.8% accurate?
+- What file formats are supported for resume upload and optimization?
+- How does the AI improve my resume content and achievement descriptions?
+- Can I create multiple resume versions for different types of roles?
+- How does keyword optimization work without making my resume sound robotic?
+- What's the difference between ATS optimization and human readability?
+- How can I track my resume's performance and response rates?
+- Can the platform help with cover letter optimization as well?
+- How does the system ensure my resume stands out while being ATS-friendly?
+- What should I do if my ATS score is low after optimization?
+
+### Interview Preparation FAQs:
+- How does the AI interview coach provide personalized feedback?
+- What languages are supported for interview coaching and practice?
+- How accurate is the speech analysis and confidence scoring?
+- Can I practice company-specific interview questions?
+- How does the platform help with different types of interviews (behavioral, technical, etc.)?
+- What's included in the 78% interview success rate statistic?
+- How can I access company-specific interview insights and preparation?
+- Can I practice group interviews and panel interview scenarios?
+- How does the emotional intelligence coaching work?
+- What should I do if I'm still nervous after practicing?
+
+### Application Tracking FAQs:
+- How does the automated application tracking capture email communications?
+- What email providers are supported for automatic integration?
+- How accurate is the 87% outcome prediction for applications?
+- Can I manually add applications that weren't automatically detected?
+- How does the follow-up automation work and when does it send messages?
+- What analytics are provided for my application portfolio?
+- How can I optimize my application strategy based on the data?
+- Can I integrate my calendar for interview scheduling?
+- How does the platform protect my email privacy and security?
+- What should I do if an application status isn't updating correctly?
+
+### Salary Intelligence FAQs:
+- How accurate is the salary data and how often is it updated?
+- What sources does SmartJobFit use for salary information?
+- How does the negotiation coaching achieve 73% success rates?
+- Can I get salary data for specific companies and locations?
+- How does cost-of-living adjustment work for different cities?
+- What's included in total compensation beyond base salary?
+- How can I practice salary negotiation conversations?
+- Can I get industry-specific salary benchmarking?
+- How does the platform help with equity and benefits negotiation?
+- What should I do if the salary data seems inaccurate for my role?
+
+### Career Coaching FAQs:
+- How does the AI career coach create personalized development plans?
+- What's included in the 68% career advancement success rate?
+- How does skill gap analysis work and what learning resources are recommended?
+- Can I get matched with human mentors through the platform?
+- How does industry trend analysis inform career recommendations?
+- What types of career transitions does the coaching support?
+- How can I track my progress toward career goals?
+- Can the platform help with personal branding and LinkedIn optimization?
+- How does the coaching adapt to different career stages and industries?
+- What should I do if I'm unsure about my career direction?
+
+### Job Alerts FAQs:
+- How does predictive opportunity discovery work and how accurate is it?
+- What makes SmartJobFit alerts 94% more relevant than other platforms?
+- How can I set up complex alert criteria using natural language?
+- What notification channels are available and how can I customize them?
+- How does the platform identify opportunities before they're publicly posted?
+- Can I get alerts for specific companies or industry changes?
+- How does intelligent timing optimization work for notifications?
+- What should I do if I'm getting too many or too few alerts?
+- How can I provide feedback to improve alert relevance?
+- Can I pause alerts temporarily without losing my settings?
+
+### One-Click Apply FAQs:
+- How does one-click apply maintain 91% application quality while saving 95% time?
+- What platforms and job boards support automated application submission?
+- How does the AI personalize applications for different jobs and companies?
+- Can I review applications before they're submitted automatically?
+- How does the quality control system work to ensure professional applications?
+- What happens if an application fails to submit automatically?
+- How does the platform handle different application requirements and forms?
+- Can I customize the automation rules for different types of jobs?
+- How does automated application affect my response rates?
+- What should I do if I want to disable automation for specific applications?
+
+### Company Intelligence FAQs:
+- How does SmartJobFit gather company culture and intelligence data?
+- What makes the company assessments 96% accurate?
+- How often is company information updated and what triggers updates?
+- Can I get insights about specific teams or departments within companies?
+- How does leadership analysis work and what factors are considered?
+- What early warning systems are available for company changes?
+- How can I use company intelligence to improve my application strategy?
+- Can I get competitive intelligence about multiple companies I'm considering?
+- How does the platform predict company growth and stability?
+- What should I do if company information seems outdated or incorrect?
+
+SPECIFIC IMPLEMENTATION STEPS:
+1. Set up React app with Algolia search integration and CMS connection
+2. Create comprehensive FAQ content covering all 9 features with detailed answers
+3. Implement intelligent search with natural language processing and semantic understanding
+4. Build category navigation with feature-based organization and cross-references
+5. Add user feedback system with rating, comments, and improvement suggestions
+6. Implement multi-language support with localized content for global users
+7. Create analytics dashboard for FAQ usage tracking and content optimization
+8. Add related questions and content suggestions for enhanced user experience
+9. Implement escalation system for complex questions requiring human support
+10. Test search accuracy and user experience across different question types
+
+PERFORMANCE REQUIREMENTS:
+- Search response time: Under 500ms for instant results
+- Content accuracy: 95% user satisfaction with FAQ answers
+- Search relevance: 90% of searches return helpful results in top 3 results
+- Multi-language support: Complete FAQ coverage in 6 languages
+- User engagement: 70% of users find answers without contacting support
+
+INTEGRATION POINTS:
+- Seamless navigation to relevant feature pages and tutorials
+- Integration with customer support system for escalation
+- Connection to user onboarding and help documentation
+- Analytics integration for continuous content improvement
+- Feedback loop with product development for feature enhancement
+
+USER EXPERIENCE OPTIMIZATION:
+1. Progressive Disclosure:
+   - Start with most common questions and expand based on user needs
+   - Provide quick answers with option to view detailed explanations
+   - Use visual cues and formatting for easy scanning
+
+2. Contextual Help:
+   - Show relevant FAQs based on user's current page or feature usage
+   - Provide just-in-time help during onboarding and feature adoption
+   - Integrate FAQ suggestions within the main application interface
+
+3. Continuous Improvement:
+   - Track which questions are most searched and viewed
+   - Identify gaps in content based on user feedback and support tickets
+   - A/B test different answer formats and content organization
+
+Create a production-ready FAQ system that serves as the primary self-service support resource for SmartJobFit users, reducing support ticket volume while providing exceptional user experience and comprehensive information coverage.
+
+## PROMPT 12: AI-Powered Chatbot Training & Implementation
+
+**Implementation Objective**
+
+Develop an intelligent chatbot that can answer all questions about SmartJobFit's 9 core features, provide personalized guidance, and achieve 92% user satisfaction through advanced AI training and comprehensive knowledge integration.
+
+**Detailed Replit Prompt**
+
+Plain Text
+
+Create a comprehensive AI-powered chatbot for SmartJobFit that can answer all user questions with the following specifications:
+
+CORE FUNCTIONALITY:
+1. Advanced conversational AI with deep knowledge of all 9 platform features
+2. Personalized guidance based on user profile and current platform usage
+3. Multi-turn conversations with context awareness and memory
+4. Seamless escalation to human support when needed
+5. Proactive assistance with feature discovery and optimization tips
+
+REQUIRED TECHNOLOGIES & TOOLS:
+- Primary AI: Google Gemini 2.5 Flash for conversational intelligence and reasoning
+- Knowledge Base: Vector database (Pinecone) for comprehensive platform knowledge
+- Chat Interface: React with real-time messaging and typing indicators
+- Natural Language Processing: Advanced intent recognition and entity extraction
+- Analytics: Conversation analytics with satisfaction tracking and improvement insights
+- Integration: Seamless connection with all platform features and user data
+
+TECHNICAL IMPLEMENTATION:
+1. Create Flask backend for chatbot API:
+   - POST /api/chatbot/message (process user messages and generate responses)
+   - GET /api/chatbot/conversation (retrieve conversation history)
+   - POST /api/chatbot/feedback (collect user satisfaction and improvement feedback)
+   - GET /api/chatbot/suggestions (proactive assistance and feature recommendations)
+   - POST /api/chatbot/escalate (transfer to human support when needed)
+
+2. React frontend components:
+   - ChatInterface: Main chat window with message history and input
+   - MessageBubble: Individual message display with typing indicators
+   - QuickActions: Suggested responses and common question shortcuts
+   - FeatureIntegration: Direct links to relevant platform features
+   - FeedbackWidget: User satisfaction rating and feedback collection
+
+3. Knowledge Base Structure:
+   - Feature Documentation: Comprehensive information about all 9 core features
+   - User Guides: Step-by-step instructions for common tasks and workflows
+   - Troubleshooting: Solutions for common issues and error scenarios
+   - Best Practices: Optimization tips and advanced usage strategies
+   - FAQ Integration: Complete FAQ database with contextual answers
+
+COMPREHENSIVE CHATBOT TRAINING DATA:
+
+### Platform Overview Knowledge:
+- SmartJobFit mission, vision, and unique value propositions
+- Complete feature overview with benefits and use cases
+- User onboarding process and getting started guidance
+- Pricing plans, trial options, and subscription management
+- Platform security, privacy, and data protection measures
+
+### AI-Powered Job Search Expertise:
+- How the AI job matching algorithm works and its 94% accuracy
+- Natural language search capabilities and optimization tips
+- Job aggregation sources and update frequencies
+- Advanced filtering options and search customization
+- Saved searches, alerts, and recommendation personalization
+
+### Resume Optimization Mastery:
+- ATS compatibility analysis and 99.8% success rate explanation
+- AI-powered content enhancement and achievement rewriting
+- Keyword optimization strategies without compromising readability
+- Multi-version resume management for different career paths
+- Performance analytics and response rate improvement tracking
+
+### Interview Preparation Coaching:
+- AI coach capabilities and 78% success rate methodology
+- Multi-language support and cultural adaptation features
+- Company-specific preparation and insider insights
+- Practice session types and performance analytics
+- Confidence building and anxiety management techniques
+
+### Application Tracking Intelligence:
+- Automated email integration and status detection
+- 87% outcome prediction accuracy and methodology
+- Portfolio analytics and optimization recommendations
+- Follow-up automation and timing strategies
+- Calendar integration and interview scheduling
+
+### Salary Intelligence Guidance:
+- Market data sources and 95% accuracy validation
+- Negotiation coaching and 73% success rate strategies
+- Company-specific compensation insights and benchmarking
+- Cost-of-living adjustments and geographic analysis
+- Total compensation evaluation including equity and benefits
+
+### Career Coaching Wisdom:
+- Personalized development planning and 68% advancement rate
+- Skill gap analysis and learning resource recommendations
+- Industry trend analysis and future career planning
+- Mentorship matching and networking facilitation
+- Career transition strategies and risk assessment
+
+### Job Alerts Intelligence:
+- Predictive opportunity discovery and 67% early identification
+- Natural language alert setup and customization
+- Multi-channel notification optimization and timing
+- Market intelligence integration and opportunity context
+- Alert performance analytics and relevance improvement
+
+### One-Click Apply Automation:
+- Intelligent automation with 91% quality maintenance
+- Personalization engine and authenticity preservation
+- Quality control processes and human oversight options
+- Strategic application management and timing optimization
+- Success rate improvement and response analytics
+
+### Company Intelligence Insights:
+- Multi-source data aggregation and 96% accuracy methodology
+- Culture analysis and leadership assessment capabilities
+- Growth prediction and stability forecasting
+- Competitive intelligence and market positioning insights
+- Real-time monitoring and early warning systems
+
+SPECIFIC IMPLEMENTATION STEPS:
+1. Set up Flask backend with Gemini API integration and vector database
+2. Create comprehensive knowledge base with all platform information and FAQs
+3. Implement advanced conversation management with context awareness
+4. Build React chat interface with real-time messaging and rich interactions
+5. Train AI model with platform-specific knowledge and conversation patterns
+6. Implement intent recognition and entity extraction for accurate responses
+7. Add proactive assistance with feature recommendations and optimization tips
+8. Create seamless escalation system for complex queries requiring human support
+9. Implement conversation analytics and satisfaction tracking
+10. Test chatbot across all feature areas and conversation scenarios
+
+CONVERSATION CAPABILITIES:
+
+1. Feature Explanation and Guidance:
+   - Detailed explanations of how each feature works
+   - Step-by-step guidance for feature setup and optimization
+   - Best practices and advanced usage tips
+   - Troubleshooting common issues and error resolution
+
+2. Personalized Recommendations:
+   - Feature suggestions based on user profile and goals
+   - Optimization recommendations for current platform usage
+   - Career guidance based on user's industry and experience level
+   - Strategic advice for job search and career advancement
+
+3. Technical Support:
+   - Account setup and configuration assistance
+   - Integration help with email, calendar, and other tools
+   - Troubleshooting technical issues and error messages
+   - Performance optimization and platform usage tips
+
+4. Strategic Consultation:
+   - Job search strategy development and optimization
+   - Career planning and development guidance
+   - Application strategy and timing recommendations
+   - Salary negotiation preparation and strategy
+
+PERFORMANCE REQUIREMENTS:
+- Response time: Under 2 seconds for most queries
+- Accuracy: 92% user satisfaction with chatbot responses
+- Context retention: Maintain conversation context for up to 50 message exchanges
+- Escalation rate: Less than 15% of conversations require human intervention
+- Feature coverage: Comprehensive knowledge of all 9 core features
+
+INTEGRATION POINTS:
+- Direct access to user profile and platform usage data
+- Seamless navigation to relevant features and pages
+- Integration with FAQ system for comprehensive answer coverage
+- Connection to human support system for complex query escalation
+- Analytics integration for conversation tracking and improvement
+
+ADVANCED FEATURES:
+1. Proactive Assistance:
+   - Feature discovery based on user behavior and goals
+   - Optimization suggestions for improving platform results
+   - Timely reminders for important actions and follow-ups
+   - Personalized tips based on user's career stage and industry
+
+2. Contextual Intelligence:
+   - Understanding of user's current platform context and recent actions
+   - Personalized responses based on user profile and preferences
+   - Memory of previous conversations and established preferences
+   - Adaptive communication style based on user expertise level
+
+3. Multi-Modal Support:
+   - Text-based conversations with rich formatting and links
+   - Quick action buttons for common tasks and navigation
+   - Integration with voice input for accessibility
+   - Visual elements and screenshots for complex explanations
+
+4. Continuous Learning:
+   - Feedback integration for response quality improvement
+   - Conversation analysis for identifying knowledge gaps
+   - User satisfaction tracking with targeted improvements
+   - Regular knowledge base updates based on user questions
+
+Create a production-ready chatbot that serves as an intelligent assistant for SmartJobFit users, providing instant, accurate, and personalized support while reducing the burden on human customer service and enhancing overall user experience.
+
+## PROMPT 13: Enhanced Dashboard with Smart Feature Linking
+
+**Implementation Objective**
+
+Create a revolutionary dashboard that intelligently coordinates all 9 core features, provides seamless user journey mapping, and delivers a stunning visual experience with 90+ NPS score through adaptive intelligence and intuitive design.
+
+**Detailed Replit Prompt**
+
+Plain Text
+
+Develop a comprehensive, intelligent dashboard for SmartJobFit that coordinates all 9 core features with the following specifications:
+
+CORE FUNCTIONALITY:
+1. Adaptive intelligence hub that learns user behavior and predicts needs
+2. Unified information architecture with smart feature coordination
+3. Advanced visualization and analytics with actionable insights
+4. Intelligent workflow orchestration across all platform features
+5. Personalized user experience with dynamic content prioritization
+
+REQUIRED TECHNOLOGIES & TOOLS:
+- Frontend Framework: React with TypeScript for scalability and type safety
+- State Management: Redux Toolkit for complex state coordination across features
+- Visualization: Recharts and D3.js for advanced data visualization and analytics
+- Styling: Tailwind CSS with custom design system and animations
+- Real-time Updates: Socket.io for live data updates and notifications
+- Performance: React Query for efficient data fetching and caching
+- Analytics: Custom analytics integration for user behavior tracking
+
+TECHNICAL IMPLEMENTATION:
+1. Create comprehensive React dashboard structure:
+   - DashboardLayout: Main layout with navigation and feature coordination
+   - OverviewWidget: High-level summary of all platform activities
+   - FeatureWidgets: Individual widgets for each of the 9 core features
+   - AnalyticsPanel: Advanced analytics and performance insights
+   - NotificationCenter: Intelligent notifications and action items
+   - QuickActions: Smart shortcuts based on user behavior and context
+
+2. Smart Feature Integration Components:
+   - JobSearchWidget: Active searches, saved jobs, and new recommendations
+   - ResumeStatusWidget: Optimization scores, performance metrics, and improvement suggestions
+   - InterviewPrepWidget: Upcoming interviews, practice sessions, and readiness scores
+   - ApplicationPipelineWidget: Visual pipeline with status updates and next actions
+   - SalaryInsightsWidget: Market data, negotiation opportunities, and compensation tracking
+   - CareerProgressWidget: Goal tracking, skill development, and milestone achievements
+   - AlertsWidget: Active alerts, new opportunities, and notification management
+   - AutoApplyWidget: Queue status, success metrics, and automation settings
+   - CompanyIntelWidget: Researched companies, culture insights, and opportunity alerts
+
+3. Intelligent Coordination System:
+   - Cross-feature data sharing with real-time synchronization
+   - Predictive workflow suggestions based on user patterns
+   - Contextual feature recommendations and optimization tips
+   - Automated task prioritization with urgency and importance scoring
+   - Smart notification management with timing and channel optimization
+
+DASHBOARD LAYOUT AND DESIGN:
+
+### Main Dashboard Overview:
+- Hero metrics section with key performance indicators across all features
+- Feature status grid showing current activity and progress for each core feature
+- Recent activity timeline with cross-feature event correlation
+- Quick action panel with intelligent suggestions based on current context
+- Notification center with prioritized alerts and action items
+
+### Smart Feature Widgets:
+
+1. AI-Powered Job Search Widget:
+   - Active search queries with real-time result counts
+   - Saved jobs with match scores and application status
+   - New recommendations with relevance explanations
+   - Search performance analytics with optimization suggestions
+   - Quick search bar with autocomplete and recent searches
+
+2. Resume Optimization Widget:
+   - Current ATS scores with trend analysis and improvement tracking
+   - Optimization suggestions with one-click implementation
+   - Performance metrics showing view rates and response improvements
+   - Version management with quick switching and comparison tools
+   - Integration with job applications for targeted customization
+
+3. Interview Preparation Widget:
+   - Upcoming interviews with preparation status and readiness scores
+   - Recent practice sessions with performance analytics and improvement areas
+   - Company-specific preparation materials with insider insights
+   - Confidence tracking with trend analysis and coaching recommendations
+   - Quick practice session launcher with intelligent question selection
+
+4. Application Tracking Widget:
+   - Visual pipeline with drag-and-drop status management
+   - Recent activity with automated status updates and communication tracking
+   - Success rate analytics with strategy optimization recommendations
+   - Follow-up reminders with intelligent timing and message suggestions
+   - Integration with calendar for interview scheduling and deadline management
+
+5. Salary Intelligence Widget:
+   - Market data for current searches with real-time updates
+   - Negotiation opportunities with strategy recommendations
+   - Compensation tracking with offer comparison and optimization
+   - Market trend analysis with career impact insights
+   - Quick salary research with role and location customization
+
+6. Career Coaching Widget:
+   - Goal progress tracking with milestone achievements and timeline visualization
+   - Skill development recommendations with learning resource integration
+   - Career roadmap with next steps and strategic guidance
+   - Mentorship connections with communication and progress tracking
+   - Industry insights with trend analysis and opportunity identification
+
+7. Job Alerts Widget:
+   - Active alerts with performance metrics and relevance scoring
+   - New opportunities with early discovery highlights and competitive analysis
+   - Alert management with quick editing and optimization tools
+   - Market intelligence with trend analysis and opportunity forecasting
+   - Notification preferences with channel and timing customization
+
+8. One-Click Apply Widget:
+   - Application queue with status tracking and quality metrics
+   - Automation settings with rule management and performance optimization
+   - Success analytics with response rate tracking and strategy insights
+   - Quality control with review and approval workflow management
+   - Integration with other features for strategic application coordination
+
+9. Company Intelligence Widget:
+   - Researched companies with culture scores and stability assessments
+   - Market updates with real-time monitoring and change alerts
+   - Competitive analysis with positioning insights and opportunity identification
+   - Leadership changes with impact assessment and strategic implications
+   - Integration with job search and applications for informed decision making
+
+SPECIFIC IMPLEMENTATION STEPS:
+1. Set up React app with TypeScript, Redux Toolkit, and comprehensive state management
+2. Create responsive dashboard layout with adaptive grid system and mobile optimization
+3. Implement individual feature widgets with real-time data integration
+4. Build intelligent coordination system with cross-feature data sharing
+5. Add advanced analytics and visualization with interactive charts and insights
+6. Implement smart notification system with prioritization and timing optimization
+7. Create personalization engine with user behavior learning and adaptation
+8. Add performance monitoring with real-time metrics and optimization suggestions
+9. Implement accessibility features with WCAG compliance and screen reader support
+10. Test across devices and browsers with comprehensive quality assurance
+
+SMART LINKING AND USER JOURNEY OPTIMIZATION:
+
+### Intelligent Feature Coordination:
+- Automatic data flow between features with real-time synchronization
+- Contextual suggestions for feature usage based on current activity
+- Smart workflow orchestration with next-step recommendations
+- Cross-feature analytics with correlation analysis and optimization insights
+- Unified search across all features with intelligent result prioritization
+
+### Personalized User Experience:
+- Adaptive layout based on user preferences and usage patterns
+- Dynamic content prioritization with relevance scoring and importance weighting
+- Intelligent feature discovery with guided tours and progressive disclosure
+- Customizable widgets with drag-and-drop arrangement and size adjustment
+- Smart defaults based on user profile and industry best practices
+
+### Advanced Analytics and Insights:
+- Comprehensive performance tracking across all features with trend analysis
+- Success correlation analysis with strategy optimization recommendations
+- Predictive modeling for career outcomes and goal achievement probability
+- Benchmarking against industry standards and peer performance
+- ROI calculation with time savings and success rate improvements
+
+PERFORMANCE REQUIREMENTS:
+- Dashboard load time: Under 1.5 seconds for complete rendering
+- Real-time updates: Sub-second synchronization across all features
+- User satisfaction: 90+ Net Promoter Score for dashboard experience
+- Feature discovery: 85% of users discover new features within 30 days
+- Workflow efficiency: 70% reduction in time spent navigating between features
+
+INTEGRATION POINTS:
+- Seamless data sharing between all 9 core features
+- Real-time synchronization with external APIs and data sources
+- Integration with notification systems and communication channels
+- Connection to analytics and performance monitoring systems
+- Coordination with user authentication and profile management
+
+ADVANCED FEATURES:
+1. Predictive Intelligence:
+   - AI-powered recommendations for next actions and feature usage
+   - Predictive analytics for career outcomes and success probability
+   - Intelligent automation suggestions based on user behavior patterns
+   - Proactive alerts for opportunities and optimization recommendations
+
+2. Collaborative Features:
+   - Shared dashboards for team collaboration and mentorship
+   - Progress sharing with mentors and career coaches
+   - Group analytics for peer comparison and benchmarking
+   - Integration with professional networks and communication tools
+
+3. Mobile Optimization:
+   - Responsive design with touch-optimized interactions
+   - Progressive web app capabilities with offline functionality
+   - Mobile-specific features with location-based services
+   - Push notifications with intelligent timing and relevance
+
+4. Accessibility and Inclusion:
+   - WCAG 2.1 AA compliance with comprehensive accessibility features
+   - Multi-language support with localized content and cultural adaptation
+   - High contrast mode and visual accessibility options
+   - Screen reader optimization with semantic markup and ARIA labels
+
+Create a production-ready dashboard that serves as the central command center for SmartJobFit users, providing an exceptional user experience that seamlessly coordinates all platform features while delivering actionable insights and intelligent guidance for career success.
+
+## IMPLEMENTATION COORDINATION GUIDELINES
+
+**Sequential Implementation Strategy**
+
+The 13 prompts should be implemented in the following strategic order to ensure optimal data coordination and feature integration:
+
+**Phase 1: Foundation Features (Weeks 1-4)**
+
+Implementation Order:
+
+1.Prompt 1: AI-Powered Job Search Engine - Core data foundation
+
+2.Prompt 2: Resume Optimization System - User profile establishment
+
+3.Prompt 4: Application Tracking System - Pipeline management foundation
+
+Coordination Requirements:
+
+- Establish shared user profile schema across all three features
+- Implement unified job data structure for cross-feature compatibility
+- Create common API authentication and rate limiting systems
+- Set up shared database with proper indexing and relationships
+
+**Phase 2: Intelligence Features (Weeks 5-8)**
+
+Implementation Order:
+4. Prompt 9: Company Intelligence Platform - Market data foundation
+5. Prompt 5: Salary Intelligence System - Compensation data integration
+6. Prompt 7: Job Alerts & Opportunity Intelligence - Predictive capabilities
+
+Coordination Requirements:
+
+- Integrate company data across job search, applications, and salary features
+- Establish real-time data synchronization between intelligence systems
+- Implement shared market analysis and trend detection algorithms
+- Create unified notification and alert management system
+
+**Phase 3: Coaching & Automation (Weeks 9-12)**
+
+Implementation Order:
+7. Prompt 3: Interview Preparation System - Coaching foundation
+8. Prompt 6: Career Coaching Platform - Strategic guidance
+9. Prompt 8: One-Click Apply Automation - Advanced automation
+
+Coordination Requirements:
+
+- Integrate coaching insights with job search and application data
+- Coordinate automation rules with application tracking and success metrics
+- Establish feedback loops between coaching effectiveness and user outcomes
+- Implement cross-feature learning and optimization algorithms
+
+**Phase 4: User Experience Integration (Weeks 13-16)**
+
+Implementation Order:
+10. Prompt 13: Enhanced Dashboard - Central coordination hub
+11. Prompt 10: Homepage Enhancement - User acquisition optimization
+12. Prompt 11: FAQ System - Support and documentation
+13. Prompt 12: AI Chatbot - Intelligent assistance
+
+Coordination Requirements:
+
+- Integrate all feature data into unified dashboard experience
+- Ensure seamless navigation and data flow between all components
+- Implement comprehensive analytics and performance monitoring
+- Create cohesive user experience with consistent design and interaction patterns
+
+**Data Coordination Schema**
+
+**Shared User Profile Structure**
+
+JSON
+
+{
+  "user_id": "unique_identifier",
+  "profile": {
+    "personal_info": {
+      "name": "string",
+      "email": "string",
+      "location": "object",
+      "preferences": "object"
+    },
+    "career_info": {
+      "current_role": "string",
+      "experience_level": "string",
+      "target_roles": "array",
+      "industries": "array",
+      "skills": "array"
+    },
+    "platform_usage": {
+      "feature_preferences": "object",
+      "automation_settings": "object",
+      "notification_preferences": "object",
+      "success_metrics": "object"
+    }
+  }
+}
+
+**Cross-Feature Data Integration Points**
+
+Job Search ↔ Resume Optimization:
+
+- Share job requirements for targeted resume customization
+- Export user skills and experience for enhanced job matching
+- Coordinate keyword optimization with search performance
+
+Application Tracking ↔ Interview Preparation:
+
+- Automatically trigger interview prep for scheduled interviews
+- Share company research for interview-specific preparation
+- Coordinate follow-up timing with interview outcomes
+
+Salary Intelligence ↔ Career Coaching:
+
+- Integrate compensation data with career progression planning
+- Share negotiation outcomes for coaching effectiveness measurement
+- Coordinate market trends with career development recommendations
+
+Company Intelligence ↔ All Features:
+
+- Provide company insights for job search filtering and ranking
+- Enhance application strategy with culture and stability data
+- Inform interview preparation with company-specific insights
+- Support salary negotiation with compensation benchmarking
+
+**API Coordination Requirements**
+
+**Shared API Infrastructure**
+
+- Authentication: Unified OAuth system with role-based access control
+- Rate Limiting: Coordinated rate limiting across all external API calls
+- Error Handling: Consistent error handling and retry mechanisms
+- Caching: Intelligent caching with cross-feature data sharing
+- Monitoring: Comprehensive API performance and usage monitoring
+
+**External API Management**
+
+- Primary AI Provider: Google Gemini 2.5 Flash for all AI-powered features
+- Job Data Sources: Coordinated access to prevent duplicate API calls
+- Company Data: Shared company intelligence across all relevant features
+- Communication APIs: Unified email and notification management
+- Analytics: Coordinated user behavior tracking and performance measurement
+
+**Performance Optimization Strategy**
+
+**Database Optimization**
+
+- Indexing: Strategic indexing for cross-feature queries and analytics
+- Caching: Redis implementation for frequently accessed data
+- Replication: Read replicas for analytics and reporting queries
+- Partitioning: Data partitioning for scalability and performance
+
+**Frontend Performance**
+
+- Code Splitting: Feature-based code splitting for optimal loading
+- State Management: Efficient state management with Redux Toolkit
+- Caching: Intelligent client-side caching with React Query
+- Lazy Loading: Progressive loading of features and components
+
+**API Performance**
+
+- Batching: Batch API requests where possible to reduce latency
+- Parallel Processing: Concurrent API calls for independent operations
+- Response Optimization: Minimize payload sizes and optimize data structures
+- CDN Integration: Content delivery network for static assets and data
+
+**Security and Privacy Coordination**
+
+**Data Protection**
+
+- Encryption: End-to-end encryption for sensitive user data
+- Access Control: Granular permissions for feature-specific data access
+- Audit Logging: Comprehensive audit trails for all data operations
+- Privacy Controls: User-controlled privacy settings across all features
+
+**Compliance Requirements**
+
+- GDPR Compliance: Data minimization and user consent management
+- CCPA Compliance: California privacy rights and data transparency
+- SOC 2 Compliance: Security and availability controls
+- Industry Standards: Adherence to employment and HR data protection standards
+
+**Quality Assurance Framework**
+
+**Testing Strategy**
+
+- Unit Testing: Comprehensive unit tests for all feature components
+- Integration Testing: Cross-feature integration and data flow testing
+- End-to-End Testing: Complete user journey testing across all features
+- Performance Testing: Load testing and scalability validation
+
+**Monitoring and Analytics**
+
+- User Experience Monitoring: Real-time UX monitoring and optimization
+- Performance Monitoring: Application performance and API response tracking
+- Business Metrics: Feature adoption, user engagement, and success tracking
+- Error Monitoring: Comprehensive error tracking and resolution
+
+**Success Metrics and KPIs**
+
+**Platform-Wide Success Metrics**
+
+- User Engagement: Daily/monthly active users across all features
+- Feature Adoption: Percentage of users utilizing each core feature
+- User Satisfaction: Net Promoter Score and feature-specific satisfaction
+- Business Impact: Job search success rates and career advancement outcomes
+
+**Feature-Specific KPIs**
+
+- Job Search: Search relevance, application conversion, interview rates
+- Resume Optimization: ATS scores, response rates, optimization adoption
+- Interview Preparation: Success rates, confidence improvement, coaching effectiveness
+- Application Tracking: Pipeline management efficiency, outcome prediction accuracy
+- Salary Intelligence: Negotiation success, market data accuracy, user satisfaction
+- Career Coaching: Goal achievement, skill development, career advancement
+- Job Alerts: Relevance scores, early discovery rates, user engagement
+- Auto-Apply: Time savings, response rates, application quality
+- Company Intelligence: Data accuracy, user decision support, prediction reliability
+
+**Implementation Timeline and Milestones**
+
+**Week 1-4: Foundation Phase**
+
+- Milestone 1: Core job search engine with basic functionality
+- Milestone 2: Resume optimization with ATS compatibility
+- Milestone 3: Application tracking with email integration
+- Milestone 4: Basic user authentication and profile management
+
+**Week 5-8: Intelligence Phase**
+
+- Milestone 5: Company intelligence with culture analysis
+- Milestone 6: Salary intelligence with market data integration
+- Milestone 7: Job alerts with predictive capabilities
+- Milestone 8: Cross-feature data coordination and synchronization
+
+**Week 9-12: Coaching & Automation Phase**
+
+- Milestone 9: Interview preparation with AI coaching
+- Milestone 10: Career coaching with personalized guidance
+- Milestone 11: One-click apply automation with quality control
+- Milestone 12: Advanced feature integration and optimization
+
+**Week 13-16: User Experience Phase**
+
+- Milestone 13: Enhanced dashboard with intelligent coordination
+- Milestone 14: Homepage optimization with feature showcase
+- Milestone 15: FAQ system and AI chatbot implementation
+- Milestone 16: Complete platform integration and launch readiness
+
+**Deployment and Launch Strategy**
+
+**Staging Environment**
+
+- Feature Testing: Individual feature testing in isolated environments
+- Integration Testing: Cross-feature testing with full data coordination
+- Performance Testing: Load testing with simulated user traffic
+- Security Testing: Comprehensive security and penetration testing
+
+**Production Deployment**
+
+- Phased Rollout: Gradual feature rollout with user feedback integration
+- Monitoring: Real-time monitoring and performance optimization
+- Support: Comprehensive user support and issue resolution
+- Optimization: Continuous optimization based on user feedback and analytics
+
+This comprehensive coordination framework ensures that all 13 prompts work together seamlessly to create a world-class job search platform that delivers exceptional user experience and measurable career success outcomes.
+globs:
+alwaysApply: false
+---

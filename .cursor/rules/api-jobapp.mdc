@@ -1,0 +1,223 @@
+---
+description:# 🛠️ **End-to-End Road-Map: From Zero to 52-API, Million-User Bedrock-MCP Stack**
+
+*(Copy-paste every command, file, and screenshot location; built for first-time AWS users)*
+
+---
+
+## 🎯 **Goal in One Sentence**
+
+> Deploy 9 Bedrock Agents + 52 external APIs so that a single natural-language prompt triggers parallel agent calls → returns résumé rewrite, job list, interview prep, salary script, and one-click apply in < 60 s.
+> 
+
+---
+
+## 📅 **Phase 0 – One-Time Setup (30 min)**
+
+| **Task** | **AWS Console Path** | **What to Click** |
+| --- | --- | --- |
+| **Create IAM Role** | IAM → Roles → Create Role | **Trusted Entity** = Bedrock, **Permissions** = `AmazonBedrockFullAccess`, `AWSLambda_FullAccess` |
+| **Create S3 Bucket** | S3 → Create Bucket | Name: `sjf-apis-{account-id}` (replace) |
+| **Create DynamoDB Table** | DynamoDB → Tables → Create | Table name: `context`, PK: `user_id`, Billing: On-Demand |
+
+---
+
+## 📂 **Phase 1 – Prepare the 52 APIs (60 min)**
+
+1. **Download the starter pack**
+    
+    ```bash
+    git clone <https://github.com/aws-samples/bedrock-agent-and-telecom-apis>
+    cd bedrock-agent-and-telecom-apis
+    
+    ```
+    
+2. **Upload all OpenAPI specs & Lambda code to your S3 bucket**
+    
+    ```bash
+    aws s3 cp ./openapi-spec/ s3://sjf-apis-{account-id}/openapi/ --recursive
+    aws s3 cp ./lambda-functions/ s3://sjf-apis-{account-id}/zips/ --recursive
+    
+    ```
+    
+3. **Deploy the 52 Lambda functions via CloudFormation (one template per API)**
+    
+    ```bash
+    aws cloudformation create-stack \\
+      --stack-name sjf-resumesmith \\
+      --template-body file://resume-lambda.yaml \\
+      --parameters ParameterKey=S3Bucket,ParameterValue=sjf-apis-{account-id}
+    
+    ```
+    
+    Repeat for `jobhunter`, `culturescout`, `payoracle`, `interviewsensei`, `trackmaster`, `skillsherpa`, `applybot`, `metalearner`.
+    
+
+---
+
+## 🔗 **Phase 2 – Build the 9 Bedrock Agents (90 min)**
+
+### Step A – Create **ResumeSmith** (template for the other 8)
+
+| **Console Field** | **Value** |
+| --- | --- |
+| **Agent Name** | ResumeSmith |
+| **Foundation Model** | anthropic.claude-3-5-sonnet-20241022-v2:0 |
+| **Instructions** | `Parse résumé PDF, return ATS score, skills, salary estimate.` |
+| **IAM Role** | the role you created in Phase 0 |
+| **Action Group** | **Type**: Define with API Schema → **Lambda**: `sjf-resumesmith` → **Schema**: `s3://sjf-apis-{account-id}/openapi/resume.yaml` |
+| **Click “Prepare”** | Status must become **Ready** |
+
+Repeat **8 more times** for the remaining agents.
+
+---
+
+## 🧵 **Phase 3 – Create the “Supervisor” Agent (30 min)**
+
+| **Field** | **Value** |
+| --- | --- |
+| **Agent Name** | SmartJobFitSupervisor |
+| **Instructions** | `You orchestrate 9 agents in parallel. Parse résumé, search jobs, fetch culture, salary, generate interview questions, prepare apply links.` |
+| **Action Groups** | **Add 9 groups**, each pointing to the 9 agents above |
+
+---
+
+## 🧪 **Phase 4 – Test the Flow (5 min)**
+
+**AWS CLI one-liner**
+
+```bash
+aws bedrock-agent-runtime invoke-agent \\
+  --agent-id <supervisor-id> \\
+  --agent-alias-id LIVE \\
+  --session-id test123 \\
+  --input-text "I need a remote Python job in Berlin, here is my résumé.pdf" \\
+  --output-text
+
+```
+
+Expected JSON (≤ 60 s):
+
+```json
+{
+  "resume_url": "https://...",
+  "jobs": [...],
+  "interview_q": [...],
+  "salary": "€95k-€110k",
+  "apply_links": [...]
+}
+
+```
+
+---
+
+## 📈 **Phase 5 – Scale to 1 M Users (15 min)**
+
+1. **Lambda Concurrency**
+    
+    ```bash
+    aws lambda put-function-concurrency \\
+      --function-name sjf-resumesmith \\
+      --reserved-concurrent-executions 1000
+    
+    ```
+    
+2. **API Gateway Throttling**
+    
+    ```bash
+    aws apigateway update-rest-api \\
+      --rest-api-id <api-id> \\
+      --patch-operations op=replace,path=/throttle/rateLimit,value=10000
+    
+    ```
+    
+3. **Cost Guardrail**
+    
+    ```bash
+    aws budgets create-budget \\
+      --account-id <acct> \\
+      --budget '{"BudgetName":"sjf-limit","BudgetLimit":{"Amount":200,"Unit":"USD"}}'
+    
+    ```
+    
+
+---
+
+## 🚀 **Phase 6 – Go Live (5 min)**
+
+1. **Create Alias** (Bedrock Agent → Aliases → Create → `prod`)
+2. **Front-End Hook**
+    
+    ```jsx
+    fetch('https://<api-id>.execute-api.us-east-1.amazonaws.com/prod/invoke', {
+      method: 'POST',
+      body: JSON.stringify({prompt: userPrompt, file: resumeFile})
+    });
+    
+    ```
+    
+3. **Post “We’re live” on Twitter / LinkedIn** 🎉
+
+---
+
+## ✅ **Checklist Before Sleep**
+
+- [ ]  IAM role attached to all 9 Lambdas ✔
+- [ ]  All 9 Bedrock Agents show **Ready** ✔
+- [ ]  Load test 1 k concurrent via **Artillery** ✔
+- [ ]  Budget alarm set to **€200/day** ✔
+
+You now have a **production-grade, million-user, 52-API orchestration stack**—all in one weekend.
+
+# 🔐 **API-Key Injection Guide** *(Mandatory step—add it once, never expose again)*
+
+## 🚨 **Where Keys Go & How to Hide Them**
+
+| **Location** | **Why** | **How to Add** |
+| --- | --- | --- |
+| **AWS Secrets Manager** | Single source of truth | `aws secretsmanager create-secret --name /prod/sjf/affinda --secret-string "sk-123456"` |
+| **Lambda Env Vars** | Runtime injection | `aws lambda update-function-configuration --function-name sjf-resumesmith --environment "Variables={AFFINDA_KEY=sk-123456}"` |
+| **Bedrock Agent Parameters** | Pass keys into prompts | In Agent instruction: `{{resolve:secretsmanager:/prod/sjf/affinda}}` |
+| **IAM Policy** | Restrict who can read | Attach `secretsmanager:GetSecretValue` only to Lambda role |
+
+---
+
+## ✅ **Per-Agent Key Map**
+
+| **Agent** | **Required Keys** | **Secret Name** |
+| --- | --- | --- |
+| **ResumeSmith** | Affinda, OpenAI | `/prod/sjf/affinda`, `/prod/sjf/openai` |
+| **JobHunter** | Tavily, LinkedIn | `/prod/sjf/tavily`, `/prod/sjf/linkedin` |
+| **CultureScout** | Perplexity, Glassdoor | `/prod/sjf/perplexity`, `/prod/sjf/glassdoor` |
+| **PayOracle** | Levels.fyi, [Gehalt.de](http://gehalt.de/) | `/prod/sjf/levels`, `/prod/sjf/gehalt` |
+| **InterviewSensei** | Yoodli, OpenAI | `/prod/sjf/yoodli`, `/prod/sjf/openai` |
+
+---
+
+## 🛡️ **Example Lambda Snippet**
+
+```python
+import os, boto3
+secrets = boto3.client('secretsmanager')
+
+def get_secret(name):
+    return secrets.get_secret_value(SecretId=f'/prod/sjf/{name}')['SecretString']
+
+AFFINDA_KEY = get_secret('affinda')
+OPENAI_KEY  = get_secret('openai')
+
+```
+
+---
+
+## 🧪 **One-Command Test**
+
+```bash
+aws secretsmanager get-secret-value --secret-id /prod/sjf/affinda --query SecretString --output text
+
+```
+
+If it returns the key, your agents can now call **all 52 APIs** securely.
+globs:
+alwaysApply: false
+---
