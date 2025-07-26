@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - HOST=0.0.0.0
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    restart: unless-stopped
+
+  # For local development with hot reload
+  app-dev:
+    build: 
+      context: .
+      target: builder
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - PORT=3000
+      - HOST=0.0.0.0
+    volumes:
+      - .:/app
+      - /app/node_modules
+    command: npm run start:dev
+    profiles:
+      - dev
+
+  # Mock database for local development
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: smartjobfit
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    profiles:
+      - dev
+
+volumes:
+  postgres_data: 
