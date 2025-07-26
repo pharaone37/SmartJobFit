@@ -140,16 +140,7 @@ export interface DashboardStats {
 // Job API
 export const jobsApi = {
   search: async (query: string, filters: JobSearchFilters = {}, page = 1, limit = 20): Promise<JobSearchResult> => {
-    const params = new URLSearchParams({
-      q: query,
-      page: page.toString(),
-      limit: limit.toString(),
-      ...Object.fromEntries(
-        Object.entries(filters).filter(([_, v]) => v !== undefined).map(([k, v]) => [k, v.toString()])
-      ),
-    });
-    
-    const response = await apiRequest('GET', `/api/jobs/search?${params}`);
+    const response = await apiRequest('POST', '/api/jobs/search', { query, location: filters.location, filters });
     return response.json();
   },
 
@@ -324,7 +315,25 @@ export const subscriptionApi = {
 // Analytics API
 export const analyticsApi = {
   getDashboard: async (): Promise<DashboardStats> => {
-    const response = await apiRequest('GET', '/api/analytics/dashboard');
+    const response = await apiRequest('GET', '/api/dashboard/stats');
+    return response.json();
+  },
+};
+
+// Dashboard API
+export const dashboardApi = {
+  getStats: async () => {
+    const response = await apiRequest('GET', '/api/dashboard/stats');
+    return response.json();
+  },
+  
+  getActivity: async () => {
+    const response = await apiRequest('GET', '/api/dashboard/activity');
+    return response.json();
+  },
+  
+  getUser: async () => {
+    const response = await apiRequest('GET', '/api/user');
     return response.json();
   },
 };

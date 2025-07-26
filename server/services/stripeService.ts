@@ -1,13 +1,16 @@
 import Stripe from 'stripe';
 import { storage } from '../storage';
 
-if (!process.env.STRIPE_SECRET_KEY) {
-  throw new Error('Missing required Stripe secret: STRIPE_SECRET_KEY');
-}
+let stripe: Stripe | null = null;
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-  apiVersion: "2025-06-30.basil",
-});
+// Only initialize if API key is available and not a placeholder
+if (process.env.STRIPE_SECRET_KEY && 
+    process.env.STRIPE_SECRET_KEY !== "sk_test_placeholder" && 
+    process.env.STRIPE_SECRET_KEY !== "placeholder") {
+  stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+    apiVersion: "2025-06-30.basil",
+  });
+}
 
 export interface SubscriptionPlan {
   id: string;

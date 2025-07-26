@@ -1,19 +1,27 @@
 import OpenAI from "openai";
 import { User, Job, Resume } from "@shared/schema";
+import { mockAIService } from "./mockAIService";
 
 /*
 Using OpenRouter for better rate limits and model access.
 OpenRouter provides access to multiple AI models including GPT-4o with better pricing.
 */
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-  baseURL: "https://openrouter.ai/api/v1",
-  defaultHeaders: {
-    "HTTP-Referer": "https://smartjobfit.com",
-    "X-Title": "SmartJobFit AI",
-  },
-});
+let openai: OpenAI | null = null;
+
+// Only initialize if API key is available and not a placeholder
+if (process.env.OPENAI_API_KEY && 
+    process.env.OPENAI_API_KEY !== "sk-placeholder" && 
+    process.env.OPENAI_API_KEY !== "placeholder") {
+  openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY,
+    baseURL: "https://openrouter.ai/api/v1",
+    defaultHeaders: {
+      "HTTP-Referer": "https://smartjobfit.com",
+      "X-Title": "SmartJobFit AI",
+    },
+  });
+}
 
 export class OpenAIService {
   async calculateJobMatchScore(user: User, job: Job): Promise<number> {

@@ -1,14 +1,26 @@
 import { OpenAI } from "openai";
+import { mockAIService } from "./mockAIService";
 
 // OpenRouter.ai service for AI functions
-const openrouter = new OpenAI({
-  baseURL: "https://openrouter.ai/api/v1",
-  apiKey: process.env.OPENROUTER_API_KEY,
-});
+let openrouter: OpenAI | null = null;
+
+// Only initialize if API key is available and not a placeholder
+if (process.env.OPENROUTER_API_KEY && 
+    process.env.OPENROUTER_API_KEY !== "sk-or-placeholder" && 
+    process.env.OPENROUTER_API_KEY !== "placeholder") {
+  openrouter = new OpenAI({
+    baseURL: "https://openrouter.ai/api/v1",
+    apiKey: process.env.OPENROUTER_API_KEY,
+  });
+}
 
 export class OpenRouterService {
   // Resume Analysis and Optimization
   async analyzeResume(resumeContent: string, jobDescription?: string): Promise<any> {
+    if (!openrouter) {
+      return mockAIService.analyzeResume(resumeContent, jobDescription);
+    }
+
     try {
       const prompt = `Analyze this resume and provide a comprehensive assessment:
       
@@ -38,7 +50,7 @@ export class OpenRouterService {
       return JSON.parse(response.choices[0].message.content || '{}');
     } catch (error) {
       console.error('Error analyzing resume:', error);
-      throw new Error('Failed to analyze resume');
+      return mockAIService.analyzeResume(resumeContent, jobDescription);
     }
   }
 

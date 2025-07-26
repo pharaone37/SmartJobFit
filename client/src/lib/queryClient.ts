@@ -8,13 +8,15 @@ async function throwIfResNotOk(res: Response) {
 }
 
 export async function apiRequest(
+  method: string,
   url: string,
-  options: {
-    method: string;
-    body?: any;
-  }
-): Promise<any> {
+  body?: any
+): Promise<Response> {
   const token = localStorage.getItem('auth_token');
+  
+  // Use mock API server for development
+  const baseUrl = import.meta.env.DEV ? 'http://localhost:3001' : '';
+  const fullUrl = `${baseUrl}${url}`;
   
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
@@ -24,15 +26,15 @@ export async function apiRequest(
     headers['Authorization'] = `Bearer ${token}`;
   }
   
-  const res = await fetch(url, {
-    method: options.method,
+  const res = await fetch(fullUrl, {
+    method,
     headers,
-    body: options.body,
+    body: body ? JSON.stringify(body) : undefined,
     credentials: "include",
   });
 
   await throwIfResNotOk(res);
-  return res.json();
+  return res;
 }
 
 type UnauthorizedBehavior = "returnNull" | "throw";

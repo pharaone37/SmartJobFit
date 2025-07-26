@@ -28,6 +28,8 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useAuth } from '@/hooks/useAuth';
+import { dashboardApi } from '@/lib/api';
+import { useQuery } from '@tanstack/react-query';
 
 interface DashboardStats {
   applicationsSubmitted: number;
@@ -49,49 +51,24 @@ interface RecentActivity {
 
 const Dashboard: React.FC = () => {
   const { user } = useAuth();
-  const [stats, setStats] = useState<DashboardStats>({
+  
+  // Fetch data from mock API
+  const { data: stats = {
     applicationsSubmitted: 12,
     interviewsScheduled: 3,
     resumeOptimizations: 5,
     jobMatches: 47,
     salaryInsights: 8,
     careerGoals: 2
+  } } = useQuery({
+    queryKey: ['dashboard-stats'],
+    queryFn: dashboardApi.getStats,
   });
-
-  const [recentActivity] = useState<RecentActivity[]>([
-    {
-      id: '1',
-      type: 'application',
-      title: 'Applied to Senior Software Engineer',
-      description: 'Google • Mountain View, CA',
-      timestamp: '2 hours ago',
-      status: 'pending'
-    },
-    {
-      id: '2',
-      type: 'interview',
-      title: 'Interview Scheduled',
-      description: 'Microsoft • Technical Round',
-      timestamp: '1 day ago',
-      status: 'in-progress'
-    },
-    {
-      id: '3',
-      type: 'resume',
-      title: 'Resume Optimized',
-      description: 'ATS Score: 98/100',
-      timestamp: '2 days ago',
-      status: 'completed'
-    },
-    {
-      id: '4',
-      type: 'salary',
-      title: 'Salary Analysis Complete',
-      description: 'Market rate: $140K - $180K',
-      timestamp: '3 days ago',
-      status: 'completed'
-    }
-  ]);
+  
+  const { data: recentActivity = [] } = useQuery({
+    queryKey: ['dashboard-activity'],
+    queryFn: dashboardApi.getActivity,
+  });
 
   const features = [
     {
